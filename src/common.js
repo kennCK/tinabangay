@@ -12,7 +12,7 @@ export default {
     route: '/referrals'
   }],
   APP_NAME: 'TINABANGAY',
-  APP_NAME_HTML: 'ARK<b>ILA</b>',
+  APP_NAME_HTML: 'TINABANGAY',
   APP_EMAIL: 'support@tinabangay.ph',
   COMPANY: 'Increment Technologies',
   COMPANY_URL: 'www.increment.ltd',
