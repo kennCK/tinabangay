@@ -1,8 +1,8 @@
 <template>
 	<div class="cw-features">
     <div class="header">
-      <span class="title text-green">
-        <h1>Made for you to have more time to relax</h1>
+      <span class="title text-green text-center">
+        <h1>Application Features</h1>
       </span>
       <span class="description">
         <h6></h6>
@@ -83,14 +83,10 @@ export default {
   data(){
     return {
       data: [
-        {title: 'Comments', description: 'Allows our customers and printing partners to exchange ideas and provide timely feedback through our collaboration feature for design specific concerns.', icon: 'fas fa-comments'},
-        {title: 'ID Generator', description: 'Automatically generates ID based on specifications and the ID template created', icon: 'fas fa-id-badge'},
-        {title: 'Marketplace', description: 'ID templates and designs can be purchased for a hassle free ID experience. This is also where our printing partners can sell and advertise their products.', icon: 'fas fa-store'},
-        {title: 'Messenger', description: 'Ease of communication between users through an embedded messenger feature within our platform.', icon: 'fas fa-envelope'},
-        {title: 'Pricing', description: 'Customers can view the priceing of our different printing partners, as this is one way to promote transparency', icon: 'fas fa-money-bill-alt'},
-        {title: 'Printing', description: 'A fully integrated printing experience at just one click of the button. This is possible through integration with printing partners who meet the compatibility requirements.', icon: 'fas fa-print'},
-        {title: 'Template Editor', description: 'Creativity knows no bounds just as how you can put your dream IDs into reality through our interactive template editor.', icon: 'fas fa-edit'},
-        {title: 'Verification', description: '2-step verification requires our customer and printing partners to confirm design specifications before the IDs can be generated.', icon: 'fas fa-check'}
+        {title: 'Visited Places', description: 'List visited places for affected indviduals. You can view also if your visited places matches with affected visited places for COVID19.', icon: 'fas fa-map-marker'},
+        {title: 'Temperature Reading', description: 'Anaylise temperature within the area. Government Agencies can check the history of temperature of indviduals living within its area.', icon: 'fas fa-chart-line'},
+        {title: 'Tracings', description: 'Government Agencies can trace indviduals based on the visited places listed and visited places listed from affected indviduals', icon: 'fas fa-sitemap'},
+        {title: 'Patient Monitoring', description: 'Government Agencies can manage patients information and trace indviduals that might have contact with.', icon: 'fas fa-sitemap'}
       ]
     }
   },
