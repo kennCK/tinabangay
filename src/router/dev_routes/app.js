@@ -98,6 +98,13 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/tracing/',
+    name: 'tracing',
+    component: resolve => require(['modules/tracing/Places.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
