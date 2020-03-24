@@ -91,6 +91,13 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/patients/',
+    name: 'patients',
+    component: resolve => require(['modules/patients/Patients.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
