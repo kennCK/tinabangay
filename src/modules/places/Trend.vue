@@ -1,19 +1,16 @@
 <template>
   <div>
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
-    <h1 v-if="messageFlag === true">{{message}}</h1>
-    <h2 v-else>You hide me: {{message}}</h2>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Coutry</td>
+        <td>Country</td>
         <td>Region</td>
         <td>Locality</td>
         <td>Action</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-warning">{{item.country}}</td>
+          <td class="text-success">{{item.country}}</td>
           <td class="text-danger">{{item.region}}</td>
           <td class="text-primary">{{item.locality === 'testin' ? 'true' : item.locality}}</td>
           <td>
