@@ -7,7 +7,7 @@
     <!-- JER CHANGES -->
     <br>
     <div class="form-group">
-      <input type="text" class="form-control" name="" id="" placeholder="Search Location">
+      <input type="text" class="form-control" v-model="search" placeholder="Search Location">
     </div>
     <!-- UNTIL HERE -->
     <table class="table table-responsive table-bordered">
@@ -21,7 +21,7 @@
         <td>Action</td>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index">
+        <tr v-for="(item, index) in filteredLocation" :key="index">
           <!-- JER CHANGES -->
           <td>{{item.username}}</td>
           <td>{{item.address}}</td>
@@ -31,11 +31,7 @@
           <td>{{item.contact_no}}</td>
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
-              <i class="fas fa-edit"></i>
-            </button>
-
-            <button class="btn btn-danger" @click="removeItem(item.id)">
-              <i class="fas fa-trash"></i>
+              Show Visited Places
             </button>
           </td>
         </tr>
@@ -77,10 +73,35 @@ export default {
         temperature: 37.8,
         temperature_taken: 31520,
         contact_no: 9458034816
+      },
+      {
+        username: 'Jeanille',
+        address: 'Lapu-lapu Cebu',
+        location: 'Ayala',
+        temperature: 35.8,
+        temperature_taken: 31520,
+        contact_no: 9555531254
+      },
+      {
+        username: 'Ainz',
+        address: 'Oslob Cebu',
+        location: 'Mandaue',
+        temperature: 35.8,
+        temperature_taken: 31520,
+        contact_no: 9258945611
       }],
       // data: null,
       message: 'Test message',
-      messageFlag: true
+      messageFlag: true,
+      search: ''
+    }
+  },
+  // JER CHANGES
+  computed: {
+    filteredLocation: function(){
+      return this.data.filter((data, checktemp) => {
+        return data.location.match(this.search)
+      })
     }
   },
   components: {
