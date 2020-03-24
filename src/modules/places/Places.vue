@@ -3,7 +3,7 @@
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Coutry</td>
+        <td>Country</td>
         <td>Region</td>
         <td>Locality</td>
         <td>Action</td>
