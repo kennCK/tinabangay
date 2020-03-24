@@ -3,16 +3,16 @@
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
    <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Country</td>
-        <td>Region</td>
-        <td>Locality</td>
-        <td>Action</td>
+        <th scope="col">Country</th>
+        <th scope="col">Region</th>
+        <th scope="col">Locality</th>
+        <th scope="col">Action</th>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-success">{{item.country}}</td>
-          <td class="text-danger">{{item.region}}</td>
-          <td class="text-primary">{{item.locality}}</td>
+          <td>{{item.country}}</td>
+          <td>{{item.region}}</td>
+          <td>{{item.locality}}</td>
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
