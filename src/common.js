@@ -11,16 +11,16 @@ export default {
     icon: 'fa fa-users',
     route: '/referrals'
   }],
-  APP_NAME: 'TINABANGAY',
-  APP_NAME_HTML: 'TINABANGAY',
-  APP_EMAIL: 'support@tinabangay.ph',
+  APP_NAME: 'BIRDSEYE',
+  APP_NAME_HTML: 'BIRDSEYE',
+  APP_EMAIL: 'support@increment.ltd',
   COMPANY: 'Increment Technologies',
   COMPANY_URL: 'www.increment.ltd',
-  COPYRIGHT: 'TINABANGAY ' + new Date().getFullYear(),
+  COPYRIGHT: 'BIRDSEYE ' + new Date().getFullYear(),
   USER_TYPE: [{
     title: 'USER'
   }, {
-    title: 'PARTNER'
+    title: 'AGENCY'
   }],
   plan: false,
   header: ['status', 'notification'], // 'messenger', '',
@@ -41,10 +41,10 @@ export default {
     emailMessage: '.They help me to manage my investments and allow me to borrow money and approved instantly by other investors. It\'s awesome.'
   },
   socialMedia: {
-    facebook: 'arkila'
+    facebook: 'birdseye'
   },
   pusher: {
-    channel: 'arkila',
+    channel: 'birdseye',
     notifications: 'Notifications',
     messages: 'Message',
     validation: 'Validation'
