@@ -1,6 +1,7 @@
 export default {
   sidebarMenu: [
-    {accountType: 'ALL', accountStatus: 'ALL', description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null}
+    {accountType: 'ALL', accountStatus: 'ALL', description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', description: 'Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null}
   ],
   profileMenu: [{
     title: 'My Profile',

@@ -84,6 +84,13 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/places/',
+    name: 'places',
+    component: resolve => require(['modules/places/Places.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
