@@ -1,18 +1,18 @@
 <template>
   <div class="mx-3">
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <table class="table table-responsive table-bordered">
+   <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <th span="col">Country</th>
-        <th span="col">Region</th>
-        <th span="col">Locality</th>
-        <th span="col">Actions</th>
+        <td>Country</td>
+        <td>Region</td>
+        <td>Locality</td>
+        <td>Action</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.country}}</td>
-          <td>{{item.region}}</td>
-          <td>{{item.locality}}</td>
+          <td class="text-success">{{item.country}}</td>
+          <td class="text-danger">{{item.region}}</td>
+          <td class="text-primary">{{item.locality}}</td>
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
@@ -41,7 +41,6 @@ import COMMON from 'src/common.js'
 import ModalProperty from './CreatePlaces.js'
 export default {
   mounted(){
-    console.log(this.user.type + '/' + this.user.userID)
     this.retrieve()
   },
   data(){
@@ -80,7 +79,7 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('patients/retrieve', parameter).then(response => {
+      this.APIRequest('visited_places/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
       })
