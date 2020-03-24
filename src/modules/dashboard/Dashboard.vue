@@ -2,6 +2,11 @@
   <div>
     <div class="row">
       <div class="col-lg-6">
+        <!-- For trend places -->
+        <trend></trend>
+      </div>
+      <div>
+        <!-- For temperature -->
         <trend></trend>
       </div>
     </div>
