@@ -124,20 +124,8 @@ export default {
           modalData = {...modalData, ...parameter} // updated data without
           let object = Object.keys(item)
           modalData.inputs.map(data => {
-            if(data.variable === 'longitude'){
-              data.value = item.location.longitude
-            }
-            if(data.variable === 'latitude'){
-              data.value = item.location.latitude
-            }
-            if(data.variable === 'country'){
-              data.value = item.location.country
-            }
-            if(data.variable === 'locality'){
-              data.value = item.location.locality
-            }
-            if(data.variable === 'region'){
-              data.value = item.location.region
+            if(data.variable === 'location') {
+              data.value = item.route + ', ' + item.locality + ', ' + item.country
             }
             if(data.variable === 'date'){
               data.value = item.date

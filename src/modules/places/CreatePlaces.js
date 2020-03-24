@@ -10,7 +10,7 @@ export default {
     placeholder: 'Set location',
     value: null,
     required: true,
-    id: 'latitude',
+    id: 'location',
     type: 'location',
     inputType: 'text',
     validation: {
