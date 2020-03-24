@@ -4,6 +4,7 @@
     <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
     <h1 v-if="messageFlag === true">{{message}}</h1>
     <h2 v-else>You hide me: {{message}}</h2>
+    <h1>This is a test from trend</h1>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <td>Coutry</td>
