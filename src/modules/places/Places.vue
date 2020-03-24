@@ -44,6 +44,7 @@ import COMMON from 'src/common.js'
 import ModalProperty from './CreatePlaces.js'
 export default {
   mounted(){
+
     this.retrieve()
   },
   data(){
