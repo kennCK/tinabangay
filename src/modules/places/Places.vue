@@ -41,6 +41,7 @@ import COMMON from 'src/common.js'
 import ModalProperty from './CreatePlaces.js'
 export default {
   mounted(){
+    console.log(this.user.type + '/' + this.user.userID)
     this.retrieve()
   },
   data(){
@@ -79,7 +80,7 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/retrieve', parameter).then(response => {
+      this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
       })

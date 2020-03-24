@@ -51,7 +51,21 @@ export default {
       common: COMMON,
       user: AUTH.user,
       modalProperty: ModalProperty,
-      data: null,
+      data: [{
+        username: 'test',
+        temperature: 37.6,
+        temperature_date: '2312',
+        places: [],
+        address: '',
+        contact_number: ''
+      }, {
+        username: 'test',
+        temperature: 37.6,
+        temperature_date: '2312',
+        places: [],
+        address: '',
+        contact_number: ''
+      }],
       message: 'Test message',
       messageFlag: true
     }
