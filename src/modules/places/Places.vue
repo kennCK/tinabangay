@@ -1,9 +1,6 @@
 <template>
-  <div>
+  <div class="mx-3">
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
-    <h1 v-if="messageFlag === true">{{message}}</h1>
-    <h2 v-else>You hide me: {{message}}</h2>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <td>Coutry</td>
@@ -13,9 +10,9 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-warning">{{item.country}}</td>
-          <td class="text-danger">{{item.region}}</td>
-          <td class="text-primary">{{item.locality === 'testin' ? 'true' : item.locality}}</td>
+          <td class="text-warning">{{item.location.country}}</td>
+          <td class="text-danger">{{item.location.region}}</td>
+          <td class="text-primary">{{item.location.locality}}</td>
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
@@ -52,8 +49,15 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       data: null,
-      message: 'Test message',
-      messageFlag: true
+      searchLocation: '',
+      location: {
+        route: null,
+        locality: null,
+        region: null,
+        country: null,
+        latitude: 0,
+        longitude: 0
+      }
     }
   },
   components: {
@@ -62,9 +66,6 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
-    },
-    hideMessage(){
-      this.messageFlag = false
     },
     retrieve(){
       let parameter = {
@@ -124,19 +125,19 @@ export default {
           let object = Object.keys(item)
           modalData.inputs.map(data => {
             if(data.variable === 'longitude'){
-              data.value = item.longitude
+              data.value = item.location.longitude
             }
             if(data.variable === 'latitude'){
-              data.value = item.latitude
+              data.value = item.location.latitude
             }
             if(data.variable === 'country'){
-              data.value = item.country
+              data.value = item.location.country
             }
             if(data.variable === 'locality'){
-              data.value = item.locality
+              data.value = item.location.locality
             }
             if(data.variable === 'region'){
-              data.value = item.region
+              data.value = item.location.region
             }
             if(data.variable === 'date'){
               data.value = item.date
