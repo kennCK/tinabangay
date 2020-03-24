@@ -1,5 +1,5 @@
 {
-  "name": "Tinabangay",
+  "name": "tinabangay",
   "version": "1.0.0",
   "description": "Tinabangay",
   "author": "kennCK <kennettecanales@gmail.com>",
@@ -136,5 +136,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://kennCK@bitbucket.org/kennCK/classworx.git"
-  }
+  },
+  "homepage": "https://bitbucket.org/kennCK/classworx#readme",
+  "license": "ISC"
 }

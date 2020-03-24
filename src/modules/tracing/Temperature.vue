@@ -4,18 +4,31 @@
     <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
     <h1 v-if="messageFlag === true">{{message}}</h1>
     <h2 v-else>You hide me: {{message}}</h2>
+    <!-- JER CHANGES -->
+    <br>
+    <div class="form-group">
+      <input type="text" class="form-control" name="" id="" placeholder="Search Location">
+    </div>
+    <!-- UNTIL HERE -->
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Coutry</td>
-        <td>Region</td>
-        <td>Locality</td>
+        <td>Username</td>
+        <td>Address</td>
+        <td>Location</td>
+        <td>Temperature</td>
+        <td>Date Taken</td>
+        <td>Contact Number</td>
         <td>Action</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-warning">{{item.country}}</td>
-          <td class="text-danger">{{item.region}}</td>
-          <td class="text-primary">{{item.locality === 'testin' ? 'true' : item.locality}}</td>
+          <!-- JER CHANGES -->
+          <td>{{item.username}}</td>
+          <td>{{item.address}}</td>
+          <td>{{item.location}}</td>
+          <td>{{item.temperature}}</td>
+          <td>{{item.temperature_taken}}</td>
+          <td>{{item.contact_no}}</td>
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
@@ -36,6 +49,10 @@
 .custom-header-color{
   color: $primary;
 }
+// JER CHANGES
+.form-control{
+  width: 30%!important;
+}
 </style>
 <script>
 import ROUTER from 'src/router'
@@ -43,15 +60,25 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
-  mounted(){
-    this.retrieve()
-  },
+  // JER CHANGES
+  // mounted(){
+  //   this.retrieve()
+  // },
   data(){
     return {
       common: COMMON,
       user: AUTH.user,
       modalProperty: ModalProperty,
-      data: null,
+      // JER CHANGES
+      data: [{
+        username: 'Allan12345',
+        address: 'Cansaga, Consolacion Cebu',
+        location: 'Mandaue',
+        temperature: 37.8,
+        temperature_taken: 31520,
+        contact_no: 9458034816
+      }],
+      // data: null,
       message: 'Test message',
       messageFlag: true
     }
@@ -78,7 +105,8 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/retrieve', parameter).then(response => {
+      // JER CHANGES
+      this.APIRequest('tracing_temperatures/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
       })
@@ -88,7 +116,8 @@ export default {
         id: id
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/delete', parameter).then(response => {
+      // JER CHANGES
+      this.APIRequest('tracing_temperatures/delete', parameter).then(response => {
         this.retrieve()
       })
     },
@@ -106,7 +135,8 @@ export default {
           let modalData = {...this.modalProperty}
           let parameter = {
             title: 'Update Requests',
-            route: 'visited_places/update',
+            // JER CHANGES
+            route: 'tracing_temperatures/update',
             button: {
               left: 'Cancel',
               right: 'Update'
