@@ -26,19 +26,11 @@ export default {
   header: ['status', 'notification'], // 'messenger', '',
   settingsMenu: [
     {title: 'Profile', type: 'profile', allowed: ['cellular_number', 'address', 'sex', 'birth_date']},
-    {title: 'Educations', type: 'educations', allowed: []},
-    {title: 'Work Experience', type: 'work-experience', allowed: []},
-    {title: 'Idenfication Cards', type: 'identifications', allowed: []},
-    {title: 'Guarantor', type: 'guarantor', allowed: []},
-    {title: 'Account', type: 'account', allowed: []},
-    {title: 'Payment Accounts', type: 'payment_method', allowed: []},
-    {title: 'Billing Information', type: 'billing_information', allowed: []},
-    // {title: 'Merchant Setting', type: 'merchant', allowed: []},
-    {title: 'Notifications', type: 'notification', allowed: []}
+    {title: 'Account', type: 'account', allowed: []}
   ],
   referral: {
-    message: 'to help them in case of emergency.',
-    emailMessage: '.They help me to manage my investments and allow me to borrow money and approved instantly by other investors. It\'s awesome.'
+    message: 'and let\'s be one in fighting COVID-19. ',
+    emailMessage: '.They can trace and have an birdseye view for COVID-19. Let\'s spread the good news!'
   },
   socialMedia: {
     facebook: 'birdseye'
