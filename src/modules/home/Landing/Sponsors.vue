@@ -9,8 +9,8 @@
       </span>
     </div>
     <div class="holder d-flex flex-row justify-content-center my-4 row w-100 mx-0 p-0">
-      <div class="card sponsor border-0 m-3 shadow" style="max-width: 18rem;" v-for="(item, index) in data" :key="index">
-        <div class="card-header sponsor alert-info text-capitalize"><h6>{{item}}</h6></div>
+      <div class="border-0 m-3" style="max-width: 18rem;" v-for="(item, index) in data" :key="index">
+        <div class="p-3 bg-dark text-light text-capitalize"><h6>{{item}}</h6></div>
       </div>
     </div>
 	</div>
@@ -39,9 +39,6 @@
 .holder{
   width: 100%;
   float: left;
-}
-.sponsor {
-  border-radius: 0px;
 }
 .item{
   float: left; 
