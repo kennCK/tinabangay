@@ -21,7 +21,7 @@
         </span>
       </div>
 
-      <a :href="item.link" class="item shadow bg-white text-dark" v-for="(item, index) in data.filter(d => d.link)" v-bind:key="index">
+      <!-- <a :href="item.link" class="item shadow bg-white text-dark" v-for="(item, index) in data.filter(d => d.link)" v-bind:key="index">
         <span class="icon text-green text-center">
           <i :class="item.icon"></i>
         </span>
@@ -32,9 +32,13 @@
           {{item.description}}
           <button type="button" class="btn btn-dark w-100 d-block mt-3 mx-auto mb-5">{{item.btnText}}</button>
         </span>
-      </a>
+      </a> -->
+
+      <a class="mx-auto w-100 d-flex flex-row justify-content-center"href='#'>
+        <img class="img-fluid w-15" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
     </div>
 	</div>
+  
 </template>
 <style scoped>
 .cw-features{
@@ -76,6 +80,10 @@
 .item .description{
   text-align: justify;
   margin-top: 25px;
+}
+
+.w-15{
+  width:15%!important
 }
 
 @media screen and (max-width: 992px){
