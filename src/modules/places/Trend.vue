@@ -1,31 +1,19 @@
 <template>
   <div>
-    <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-<<<<<<< HEAD
-    <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
-    <h1 v-if="messageFlag === true">{{message}}</h1>
-    <h2 v-else>You hide me: {{message}}</h2>
+  
+     <h1 v-if="messageFlag === true">{{message}}</h1>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <td>Data</td>
       
-   
-=======
-    <table class="table table-responsive table-bordered">
-      <thead class="custom-header-color">
-        <td>Country</td>
-        <td>Region</td>
-        <td>Locality</td>
->>>>>>> 9c591c8b7cdb71ab27362070055dc7b0b2448cd8
-        <td>Action</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-<<<<<<< HEAD
          <td>
             <div class="card">
                 <div class="row">
-                  <div class="col-md-4 bg-info" style="font-size: 25px;">
+                  <div class="col-md-4 bg-info text-center" style="font-size: 25px;">
+                  
                        {{item.size}}
                   </div>
                   <div class="col-md-8 px-3">
@@ -39,20 +27,7 @@
              </div> 
         </td>
 
-=======
-          <td class="text-success">{{item.country}}</td>
-          <td class="text-danger">{{item.region}}</td>
-          <td class="text-primary">{{item.locality === 'testin' ? 'true' : item.locality}}</td>
->>>>>>> 9c591c8b7cdb71ab27362070055dc7b0b2448cd8
-          <td>
-            <button class="btn btn-primary" @click="showModal('update', item)">
-              <i class="fas fa-edit"></i>
-            </button>
-
-            <button class="btn btn-danger" @click="removeItem(item.id)">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
+          
         </tr>
       </tbody>
     </table>
