@@ -16,12 +16,12 @@ export default {
     icon: 'fa fa-users',
     route: '/referrals'
   }],
-  APP_NAME: 'BIRDSEYE',
-  APP_NAME_HTML: 'BIRDSEYE',
+  APP_NAME: 'BirdsEye',
+  APP_NAME_HTML: 'BirdsEye',
   APP_EMAIL: 'support@increment.ltd',
   COMPANY: 'Increment Technologies',
   COMPANY_URL: 'www.increment.ltd',
-  COPYRIGHT: 'BIRDSEYE ' + new Date().getFullYear(),
+  COPYRIGHT: 'BirdsEye ' + new Date().getFullYear(),
   USER_TYPE: [{
     title: 'USER'
   }, {
