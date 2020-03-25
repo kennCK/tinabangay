@@ -98,7 +98,7 @@ export default {
   data(){
     return {
       data: [
-        {img: SETTINGS.page[0].paypal, backgroundColor: '#26b0ff', backgroundImg: require('assets/img/paypal-background.jpg'), donateLink: 'https://goo.gl/9S8VGb'},
+        {img: SETTINGS.page[0].paypal, backgroundColor: '#26b0ff', backgroundImg: require('assets/img/paypal-background.jpg'), donateLink: 'changeme'},//test link https://goo.gl/9S8VGb 
         {img: SETTINGS.page[0].gcash, backgroundColor: '#297dfa', backgroundImg: require('assets/img/gcash-background.jpeg'), donateLink: 'changeme'},
         {img: SETTINGS.page[0].paymaya, backgroundColor: '#1760ff', backgroundImg: require('assets/img/paymaya-background.png'), donateLink: 'changeme'}
       ]
