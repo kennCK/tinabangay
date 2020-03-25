@@ -8,6 +8,13 @@
     <br>
     <div class="form-group">
       <input type="text" class="form-control" v-model="search" placeholder="Search Location">
+      <select class="form-control select-range" v-model="range">
+        <option value="all">--Choose Temperature Range--</option>
+        <option value="hypotermia">Below 36.5</option>
+        <option value="normal">36.5 - 37.5</option>
+        <option value="fever">37.6 - 40.0</option>
+        <option value="hyperpyrexia">Above 40.0</option>
+      </select>
     </div>
     <!-- UNTIL HERE -->
      <table class="table table-responsive table-bordered">
@@ -18,11 +25,11 @@
         <th>Temperature</th>
         <th>Temperature Taken At</th>
         <th>Date Taken</th>
-        <th style='text-align: center;'>Action</th>
+        <th>Action</th>
       </thead>
       <tbody>
-        <tr v-for="user in users" v-bind:key="user">
-          <td>{{user.last_name}}, {{user.first_name}}</td>
+        <tr v-for="user in filteredLocation " v-bind:key="user">
+          <td>{{user.last_name}}, {{users.first_name}}</td>
           <td>{{user.address}}</td>
           <td>{{user.contact_number}}</td>
           <td>{{user.temperature.value}}°</td>
@@ -47,6 +54,9 @@
 // JER CHANGES
 .form-control{
   width: 30%!important;
+}
+.select-range{
+  width: 22%!important;
 }
 </style>
 <script>
@@ -117,23 +127,66 @@ export default {
             }
           ],
           temperature: {
-            value: 36,
+            value: 35,
             date_taken: '2020-3-26',
-            location: 'Opon'
+            location: 'Mandaue'
+          }
+        },
+        {
+          id: 3,
+          first_name: 'Ainz',
+          last_name: 'Gown',
+          contact_number: '+639999024633',
+          address: 'La Aldea Buena Mactan',
+          visited_places: [
+            {
+              locality: 'Timpolok',
+              region: 'Lapulapu City, Cebu',
+              country: 'Philippines',
+              date: '2020-3-25',
+              time: '9:30AM'
+            },
+            {
+              locality: 'Mandaue',
+              region: 'Lapulapu City, Cebu',
+              country: 'Philippines',
+              date: '2020-3-25',
+              time: '12:30AM'
+            }
+          ],
+          temperature: {
+            value: 37,
+            date_taken: '2020-3-26',
+            location: 'Mandaue'
           }
         }
       ],
       // data: null,
       message: 'Test message',
       messageFlag: true,
-      search: ''
+      search: '',
+      checktemp: false,
+      range: 'all'
     }
   },
   // JER CHANGES
   computed: {
     filteredLocation: function(){
-      return this.data.filter((data, checktemp) => {
-        return data.location.match(this.search)
+      var range = this.range
+      return this.users.filter((users) => {
+        var search = this.search.toLowerCase()
+        var loc = users.temperature.location.toLowerCase()
+        if(range === 'hypotermia'){
+          return (loc.match(search) && users.temperature.value < 36.5)
+        }else if(range === 'normal'){
+          return (loc.match(search) && (users.temperature.value >= 36.5 && users.temperature.value <= 37.5))
+        }else if(range === 'fever'){
+          return (loc.match(search) && (users.temperature.value >= 37.6 && users.temperature.value <= 40.0))
+        }else if(range === 'hyperpyrexia'){
+          return (loc.match(search) && users.temperature.value > 40.0)
+        }else{
+          return loc.match(search)
+        }
       })
     }
   },
