@@ -9,7 +9,7 @@
         <th scope="col">Action</th>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index">
+        <tr v-for="(item, index) in data" :key="index" :class="item.status === 'negative' ? 'bg-success' : item.status === 'positive' ? 'bg-danger' : 'bg-warning'">
           <td>{{item.country}}</td>
           <td>{{item.region}}</td>
           <td>{{item.locality}}</td>
@@ -53,7 +53,8 @@ export default {
         region: null,
         country: null,
         latitude: 0,
-        longitude: 0
+        longitude: 0,
+        status: null
       }
     }
   },
