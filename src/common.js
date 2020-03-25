@@ -37,7 +37,7 @@ export default {
     emailMessage: '.They can trace and have an birdseye view for COVID-19. Let\'s spread the good news!'
   },
   socialMedia: {
-    facebook: 'birdseye'
+    facebook: 'birdseyeph'
   },
   pusher: {
     channel: 'birdseye',
