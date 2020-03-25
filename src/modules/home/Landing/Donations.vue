@@ -10,12 +10,13 @@
     </div>
     <div class="holder d-flex flex-row justify-content-center my-4">
 
-      <a href="#" class="item text-light d-flex flex-column justify-content-center align-items-center py-5" :style="{'background': 'linear-gradient(to left, ' + item.backgroundColor+'50, '+item.backgroundColor+'c0), url('+item.backgroundImg+') center/cover no-repeat'}" v-for="item, index in data" v-if="data !== null">
+      <a :href="item.donateLink" class="item text-light d-flex flex-column justify-content-center align-items-center py-5" :style="{'background': 'linear-gradient(to left, ' + item.backgroundColor+'50, '+item.backgroundColor+'c0), url('+item.backgroundImg+') center/cover no-repeat'}" v-for="item, index in data" v-if="data !== null">
         <span class="icon text-center mb-1 mt-3">
           <div class="position-relative mx-auto" :style="{'-webkit-mask': 'url('+item.img+') center/50% no-repeat'}"></div>
         </span>
         <div class="description mx-5 px-3 text-center mt-5">
-          <button type="button" class="btn btn-dark btn-lg font-weight-bold">Donate</button>
+            <button type="button" class="btn btn-dark btn-lg font-weight-bold">Donate</button>
+            
         </div>
       </a>
       
@@ -23,7 +24,10 @@
         <span class="description text-center">
             <h2>Time is not on our side but you can be</h2>
             <p>
-              As more municipalities and people use <b>Bird's Eye</b> the cost for our domain and utilities also increase. We need help 
+              Birdseye is a non-profit and is run by students, faculty, and other volunteers at the University of San Carlos.<br>
+              We rely on donations to keep our site up and running and free for everyone to use.<br>
+              As more municipalities use <b>Birdseye</b>, our cost of operations increase. You can help our cause by donating to us, even the smallest donations help.<br>
+              <h4>Help keep Birdseye flying, donate today!</h4>
             </p>
          </span>
 	</div>
@@ -87,7 +91,7 @@ export default {
   data(){
     return {
       data: [
-        {img: require('assets/img/paypal.png'), backgroundColor: '#26b0ff', backgroundImg: require('assets/img/paypal-background.jpg')},
+        {img: require('assets/img/paypal.png'), backgroundColor: '#26b0ff', backgroundImg: require('assets/img/paypal-background.jpg')}, // test link https://goo.gl/9S8VGb
         {img: require('assets/img/gcash.png'), backgroundColor: '#297dfa', backgroundImg: require('assets/img/gcash-background.jpeg')},
         {img: require('assets/img/paymaya-logo.png'), backgroundColor: '#1760ff', backgroundImg: require('assets/img/paymaya-background.png')}
       ]
