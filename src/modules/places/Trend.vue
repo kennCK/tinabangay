@@ -75,17 +75,10 @@ export default {
     },
     retrieve(){
       let parameter = {
-        condition: [{
-          clause: '=',
-          column: 'account_id',
-          value: this.user.userID
-        }],
-        sort: {
-          locality: 'desc'
-        }
+        status: 'positive'
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/retrieve', parameter).then(response => {
+      this.APIRequest('tracing_places/places', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
       })
