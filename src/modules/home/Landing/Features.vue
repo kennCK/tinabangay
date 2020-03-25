@@ -1,5 +1,5 @@
 <template>
-	<div class="cw-features">
+	<div class="cw-features" v-if="data !== null">
     <div class="header">
       <span class="title text-green text-center">
         <h1>Application Features</h1>
@@ -8,9 +8,8 @@
         <h6></h6>
       </span>
     </div>
-    <div class="holder d-flex flex-row justify-content-center flex-wrap" v-if="data !== null">
-
-      <div class="item shadow" v-for="(item, index) in data" v-bind:key="index">
+    <div class="holder d-flex flex-row justify-content-center flex-wrap">
+      <div class="item shadow bg-white text-dark" v-for="(item, index) in data.filter(d => !d.link)" v-bind:key="index">
         <span class="icon text-green text-center">
           <i :class="item.icon"></i>
         </span>
@@ -21,6 +20,19 @@
           {{item.description}}
         </span>
       </div>
+
+      <a :href="item.link" class="item shadow bg-white text-dark" v-for="(item, index) in data.filter(d => d.link)" v-bind:key="index">
+        <span class="icon text-green text-center">
+          <i :class="item.icon"></i>
+        </span>
+        <span class="title text-center text-green">
+          <h5>{{item.title}}</h5>
+        </span>
+        <span class="description">
+          {{item.description}}
+          <button type="button" class="btn btn-dark w-100 d-block mt-3 mx-auto mb-5">{{item.btnText}}</button>
+        </span>
+      </a>
     </div>
 	</div>
 </template>
@@ -45,9 +57,9 @@
   margin: 50px 5% 0 5%;
 }
 .item{
-  width: 18%;
+  width: 21%;
   margin-right: 2%;
-  min-height: 350px;
+  min-height: 250px;
   margin-left: 2%;
 }
 .item span{
@@ -87,7 +99,7 @@ export default {
         {title: 'Temperature Reading', description: 'Analyze temperature within the area. Government Agencies can check the history of temperature of indviduals living within its area.', icon: 'fas fa-chart-line'},
         {title: 'Tracings', description: 'Government Agencies can trace indviduals based on the visited places listed and visited places listed from affected indviduals', icon: 'fas fa-sitemap'},
         {title: 'Patient Monitoring', description: 'Government Agencies can manage patients information and trace indviduals that might have contact with.', icon: 'fas fa-sitemap'},
-        {title: 'Mobile App', description: 'Mobile App is available so that people can connect and monitor information anywhere and at anytime.', icon: 'fas fa-mobile', link: '#'}
+        {title: 'Mobile App', description: 'Mobile App is available so that people can connect and monitor information anywhere and at anytime.', icon: 'fas fa-mobile', link: '#', btnText: 'Get App'}
       ]
     }
   },
