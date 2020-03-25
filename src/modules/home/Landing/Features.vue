@@ -9,7 +9,7 @@
       </span>
     </div>
     <div class="holder d-flex flex-row justify-content-center flex-wrap">
-      <div class="item shadow bg-white text-dark" v-for="(item, index) in data" v-bind:key="index">
+      <div class="item shadow bg-white text-dark mx-5" v-for="(item, index) in data" v-bind:key="index">
         <span class="icon text-green text-center">
           <i :class="item.icon"></i>
         </span>
