@@ -66,30 +66,44 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       // JER CHANGES
-      data: [{
-        username: 'Allan12345',
-        address: 'Cansaga, Consolacion Cebu',
-        location: 'Mandaue',
-        temperature: 37.8,
-        temperature_taken: 31520,
-        contact_no: 9458034816
-      },
-      {
-        username: 'Jeanille',
-        address: 'Lapu-lapu Cebu',
-        location: 'Ayala',
-        temperature: 35.8,
-        temperature_taken: 31520,
-        contact_no: 9555531254
-      },
-      {
-        username: 'Ainz',
-        address: 'Oslob Cebu',
-        location: 'Mandaue',
-        temperature: 35.8,
-        temperature_taken: 31520,
-        contact_no: 9258945611
-      }],
+      accounts:[
+        {
+          id:1, 
+          code:'', 
+          username: 'Allan12345', 
+          password: '12345',
+          email: 'allan12345@gmail.com',
+          account_type: '',
+          status: '',
+          created_at: '',
+          updated_at: '',
+          deleted_at: '' 
+        }
+      ], 
+
+      visited_places:[
+        {
+          id: 1, 
+          account_id: 1,
+          longitude: '',
+          latitude: '',
+          route: '',
+          locality: 'Babag 2',
+          country: 'Philippines',
+          region: '',
+          date: '',
+          time: ''  
+        }
+      ],
+
+      temperatures: [
+        {
+          id: 1,
+          account_id: 1,
+          value: 37
+        }
+
+      ],
       // data: null,
       message: 'Test message',
       messageFlag: true,
