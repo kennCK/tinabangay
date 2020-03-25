@@ -4,12 +4,14 @@
     <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
     <h1 v-if="messageFlag === true">{{message}}</h1>
     <h2 v-else>You hide me: {{message}}</h2>
-    <h1>This is a test from trend</h1>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Coutry</td>
+        <td>Country</td>
         <td>Region</td>
         <td>Locality</td>
+        <td>Positive Count</td>
+        <td>PUI Count</td>
+        <td>PUM Count</td>
         <td>Action</td>
       </thead>
       <tbody>
@@ -17,6 +19,10 @@
           <td class="text-warning">{{item.country}}</td>
           <td class="text-danger">{{item.region}}</td>
           <td class="text-primary">{{item.locality === 'testin' ? 'true' : item.locality}}</td>
+          <td class="text-danger">{{item.PositiveCount}}</td>
+          <td class="text-danger">{{item.PUICount}}</td>
+          <td class="text-danger">{{item.PUMCount}}</td>
+
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
@@ -53,7 +59,7 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       data: null,
-      message: 'Test message',
+      message: 'High risk areas',
       messageFlag: true
     }
   },
@@ -144,6 +150,15 @@ export default {
             }
             if(data.variable === 'time'){
               data.value = item.time
+            }
+            if(data.variable === 'PositiveCount'){
+              data.value = item.PositiveCount
+            }
+            if(data.variable === 'PUICount'){
+              data.value = item.PUICount
+            }
+            if(data.variable === 'PUMCount'){
+              data.value = item.PUMCount
             }
           })
           this.modalProperty = {...modalData}

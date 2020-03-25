@@ -78,6 +78,20 @@ export default {
     }
   }, {
     row: 'full',
+    label: 'Positive Cases Count',
+    variable: 'PositiveCount',
+    placeholder: 'Enter Number Of Positive cases',
+    value: null,
+    required: true,
+    id: 'PositiveCount',
+    type: 'input',
+    inputType: 'text',
+    validation: {
+      size: 1,
+      type: 'text'
+    }
+  }, {
+    row: 'full',
     label: 'Region',
     variable: 'region',
     placeholder: 'Enter Region',
