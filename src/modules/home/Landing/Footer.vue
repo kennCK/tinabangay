@@ -7,13 +7,12 @@
        <!--  <li class="link"><a v-on:click="redirect('/')">About Us</a></li>
         <li class="link"><a v-on:click="redirect('/')">Contact Us</a></li> -->
       </ul>
-      <ul class="footer-widget">
+      <!-- <ul class="footer-widget">
         <li class="title"><b>Privacy and Terms</b></li>
         <li class="link"><a @click="openModal('#termsAndConditionsModal')">Terms & Conditions</a></li>
         <li class="link"><a @click="openModal('#privacyModal')">Privacy Policy</a></li>
-        <li class="link"><a @click="openModal('#termsAndConditionsModal')">Billing Terms</a></li>
-      </ul>
-       <ul class="footer-widget">
+      </ul> -->
+       <!-- <ul class="footer-widget">
         <li class="title"><b>Resources</b></li>
         <li class="link"><a @click="openModal('#guideModal')">Guide</a></li>
       </ul>
@@ -23,7 +22,7 @@
           <a target="_BLANK" class="text-gray" :href="'https://www.facebook.com/' + common.socialMedia.facebook" ><i class="fab fa-facebook"></i></a>
         </span>
       </span>
-      
+  -->     
       <span class="copyright">
         <label>Copyright @{{common.COPYRIGHT}}. All rights reserved.</label>
       </span>

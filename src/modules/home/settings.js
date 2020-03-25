@@ -1,8 +1,8 @@
 export default {
   page: [{
-    title: 'We have what you need!',
-    description: 'Welcome to arkila',
-    image: require('assets/img/2.png'),
+    title: 'COVID Contact Tracing',
+    description: 'Help us locate individuals with possible infected by COVID-19. BirdsEye is made possible by Increment Technologies, and Students, Faculties and Alumnis from University of San Carlos, Cebu City, Philippines.',
+    image: require('assets/img/logo.png'),
     template: 'right',
     background: '#005b96',
     textColor: 'text-white'

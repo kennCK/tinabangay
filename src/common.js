@@ -3,7 +3,8 @@ export default {
     {accountType: 'ALL', accountStatus: 'ALL', description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', description: 'Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null}
+    {accountType: 'ALL', accountStatus: 'ALL', description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null}
   ],
   profileMenu: [{
     title: 'My Profile',

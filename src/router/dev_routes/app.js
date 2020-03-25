@@ -105,6 +105,13 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/temperature/',
+    name: 'temperature',
+    component: resolve => require(['modules/tracing/Temperature.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
