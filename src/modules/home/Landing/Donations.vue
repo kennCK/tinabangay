@@ -8,9 +8,9 @@
         <h6></h6>
       </span>
     </div>
-    <div class="holder d-flex flex-row justify-content-center my-4">
+    <div class="holder d-flex flex-row justify-content-center my-4 row w-100 mx-0 p-0">
 
-      <a :href="item.donateLink" class="item text-light d-flex flex-column justify-content-center align-items-center py-5" :style="{'background': 'linear-gradient(to left, ' + item.backgroundColor+'50, '+item.backgroundColor+'c0), url('+item.backgroundImg+') center/cover no-repeat'}" v-for="item, index in data" v-if="data !== null">
+      <a :href="item.donateLink" class="item text-light d-flex flex-column justify-content-center align-items-center py-5 col-lg-4 col-md-10" :style="{'background': 'linear-gradient(to left, ' + item.backgroundColor+'50, '+item.backgroundColor+'c0), url('+item.backgroundImg+') center/cover no-repeat'}" v-for="item, index in data" v-if="data !== null">
         <span class="icon text-center mb-1 mt-3">
           <div class="position-relative mx-auto" :style="{'-webkit-mask': 'url('+item.img+') center/auto 100% no-repeat'}"></div>
         </span>
@@ -20,16 +20,16 @@
         </div>
       </a>
       
+      <span class="description text-center mb-5 col-10 mt-4">
+          <h2>Time is not on our side but you can be</h2>
+          <p class="my-4">
+            Birdseye is a non-profit and is run by students, faculty, and other volunteers at the University of San Carlos.<br>
+            We rely on donations to keep our site up and running and free for everyone to use.<br>
+            As more municipalities use <b>Birdseye</b>, our cost of operations increase. You can help our cause by donating to us, even the smallest donations help.<br>
+            <h4>Help keep Birdseye flying, donate today!</h4>
+          </p>
+        </span>
     </div>
-        <span class="description text-center mb-5">
-            <h2>Time is not on our side but you can be</h2>
-            <p class="my-4">
-              Birdseye is a non-profit and is run by students, faculty, and other volunteers at the University of San Carlos.<br>
-              We rely on donations to keep our site up and running and free for everyone to use.<br>
-              As more municipalities use <b>Birdseye</b>, our cost of operations increase. You can help our cause by donating to us, even the smallest donations help.<br>
-              <h4>Help keep Birdseye flying, donate today!</h4>
-            </p>
-         </span>
 	</div>
 </template>
 <style scoped>
@@ -52,7 +52,6 @@
   float: left;
 }
 .item{
-  width: 33%;
   float: left; 
   min-height: 150px;
 }
@@ -78,7 +77,6 @@
   .holder, .item{
     width: 90%;
     margin: 25px 5% 0 5%;
-    color: #26afff50;
   }
 }
 </style>

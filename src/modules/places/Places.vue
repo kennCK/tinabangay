@@ -14,6 +14,7 @@
         <th scope="col">Country</th>
         <th scope="col">Region</th>
         <th scope="col">Locality</th>
+        <th scope="col">Route</th>
         <th scope="col">Date</th>
         <th scope="col">Time</th>
         <th scope="col">Action</th>
@@ -23,6 +24,7 @@
           <td>{{item.country}}</td>
           <td>{{item.region}}</td>
           <td>{{item.locality}}</td>
+          <td>{{item.route}}</td>
           <td>{{item.date | formatDate}}</td>
           <td>{{item.date+' '+item.time | formatTime}}</td>
           <td>
