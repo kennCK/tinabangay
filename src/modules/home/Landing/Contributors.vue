@@ -7,7 +7,7 @@
       <div class="card img-full" v-for="(item, index) in data" :key="index" :style="{'background-image': 'url('+item.img+')'}">
         <div class="card-body pt-4 text-light">
           <h5 class="card-title text-green">{{item.name}}</h5>
-          <p class="card-text">{{item.org}}, {{item.position}}</p>
+          <p class="card-text">{{item.org}} <br> {{item.position}}</p>
         </div>
       </div>
     </div>
