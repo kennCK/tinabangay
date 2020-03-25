@@ -1,5 +1,5 @@
 <template>
-	<div class="cw-features">
+	<div class="cw-features bg-light">
     <div class="header">
       <span class="title text-green text-center">
         <h1>Bayanihan ; Spirit of Communal Unity and Cooperation</h1>
@@ -81,16 +81,15 @@
 <script>
 import ROUTER from '../../../router'
 import AUTH from '../../../services/auth'
-import SETTINGS from 'src/modules/home/settings.js'
 export default {
   mounted(){
   },
   data(){
     return {
       data: [
-        {img: SETTINGS.page[0].paypal, backgroundColor: '#26b0ff', backgroundImg: require('assets/img/paypal-background.jpg')},
-        {img: SETTINGS.page[0].gcash, backgroundColor: '#297dfa', backgroundImg: require('assets/img/gcash-background.jpeg')},
-        {img: SETTINGS.page[0].paymaya, backgroundColor: '#1760ff', backgroundImg: require('assets/img/paymaya-background.png')}
+        {img: require('assets/img/paypal.png'), backgroundColor: '#26b0ff', backgroundImg: require('assets/img/paypal-background.jpg')},
+        {img: require('assets/img/gcash.png'), backgroundColor: '#297dfa', backgroundImg: require('assets/img/gcash-background.jpeg')},
+        {img: require('assets/img/paymaya-logo.png'), backgroundColor: '#1760ff', backgroundImg: require('assets/img/paymaya-background.png')}
       ]
     }
   },

@@ -8,9 +8,9 @@
         <h6></h6>
       </span>
     </div>
-    <div class="holder">
+    <div class="holder d-flex flex-row justify-content-center flex-wrap" v-if="data !== null">
 
-      <span class="item" v-for="item, index in data" v-if="data !== null">
+      <div class="item shadow" v-for="(item, index) in data" v-bind:key="index">
         <span class="icon text-green text-center">
           <i :class="item.icon"></i>
         </span>
@@ -20,7 +20,7 @@
         <span class="description">
           {{item.description}}
         </span>
-      </span>
+      </div>
     </div>
 	</div>
 </template>
@@ -45,8 +45,7 @@
   margin: 50px 5% 0 5%;
 }
 .item{
-  width: 21%;
-  float: left; 
+  width: 18%;
   margin-right: 2%;
   min-height: 350px;
   margin-left: 2%;
@@ -84,10 +83,11 @@ export default {
     return {
       data: [
         {title: 'Visited Places', description: 'List visited places for affected indviduals. You can view also if your visited places matches with affected visited places for COVID19.', icon: 'fas fa-map-marker'},
-        {title: 'Temperature Reading', description: 'Anaylise temperature within the area. Government Agencies can check the history of temperature of indviduals living within its area.', icon: 'fas fa-chart-line'},
+        {title: 'Connect with the Government', description: 'Government Agencies can register into this platform that will allow them to help disburse important tracking information to other agencies.', icon: 'fas fa-balance-scale'},
+        {title: 'Temperature Reading', description: 'Analyze temperature within the area. Government Agencies can check the history of temperature of indviduals living within its area.', icon: 'fas fa-chart-line'},
         {title: 'Tracings', description: 'Government Agencies can trace indviduals based on the visited places listed and visited places listed from affected indviduals', icon: 'fas fa-sitemap'},
         {title: 'Patient Monitoring', description: 'Government Agencies can manage patients information and trace indviduals that might have contact with.', icon: 'fas fa-sitemap'},
-        {title: 'Connect with'}
+        {title: 'Mobile App', description: 'Mobile App is available so that people can connect and monitor information anywhere and at anytime.', icon: 'fas fa-mobile', link: '#'}
       ]
     }
   },
