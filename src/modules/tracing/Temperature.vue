@@ -12,29 +12,22 @@
     <!-- UNTIL HERE -->
      <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Username</td>
-        <td>Address</td>
-        <td>Location</td>
-        <td>Temperature</td>
-        <td>Date Taken</td>
-        <td>Contact Number</td>
-        <td>Action</td>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Contact Number</th>
+        <th>Temperature</th>
+        <th>Temperature Taken At</th>
+        <th>Date Taken</th>
+        <th style='text-align: center;'>Action</th>
       </thead>
       <tbody>
-        <tr v-for="account in accounts" v-bind:key="account">
-          <td>{{account.username}}</td>
-        </tr>
-      </tbody>
-    </table>
-      <!--<tbody>
-        <tr v-for="(item, index) in filteredLocation" :key="index">-->
-          <!-- JER CHANGES -->
-          <!-- <td>{{item.username}}</td>
-          <td>{{item.address}}</td>
-          <td>{{item.location}}</td>
-          <td>{{item.temperature}}</td>
-          <td>{{item.temperature_taken}}</td>
-          <td>{{item.contact_no}}</td>
+        <tr v-for="user in users" v-bind:key="user">
+          <td>{{user.last_name}}, {{user.first_name}}</td>
+          <td>{{user.address}}</td>
+          <td>{{user.contact_number}}</td>
+          <td>{{user.temperature.value}}°</td>
+          <td>{{user.temperature.location}}</td>
+          <td>{{user.temperature.date_taken}}</td>
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
               Show Visited Places
@@ -42,7 +35,7 @@
           </td>
         </tr>
       </tbody>
-    </table>  -->
+    </table>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
@@ -72,16 +65,63 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       // JER CHANGES
-      accounts: [
-        {id: 1, username: 'Allan12345', password: '12345', email: 'allan12345@gmail.com'},
-        {id: 2, username: 'jeanille', password: '12345', email: 'jeanille@gmail.com'}
-      ],
-      visited_places: [
-        {id: 1, account_id: 1, locality: 'Babag 2', country: 'Philippines'}
-      ],
-      temperatures: [
-        {id: 1, account_id: 1, value: 37},
-        {id: 2, account_id: 2, value: 40}
+      users: [
+        {
+          id: 1,
+          first_name: 'Allan',
+          last_name: 'Bargamento',
+          contact_number: '+639205024633',
+          address: 'Consolacion',
+          visited_places: [
+            {
+              locality: 'Babag 2',
+              region: 'Lapulapu City, Cebu',
+              country: 'Philippines',
+              date: '2020-3-25',
+              time: '9:30AM'
+            },
+            {
+              locality: 'Timpolok',
+              region: 'Lapulapu City, Cebu',
+              country: 'Philippines',
+              date: '2020-3-25',
+              time: '12:30AM'
+            }
+          ],
+          temperature: {
+            value: 37,
+            date_taken: '2020-3-26',
+            location: 'Opon'
+          }
+        },
+        {
+          id: 2,
+          first_name: 'Jeanille',
+          last_name: 'Abayon',
+          contact_number: '+639999024633',
+          address: 'La Aldea Buena Mactan',
+          visited_places: [
+            {
+              locality: 'Timpolok',
+              region: 'Lapulapu City, Cebu',
+              country: 'Philippines',
+              date: '2020-3-25',
+              time: '9:30AM'
+            },
+            {
+              locality: 'Mandaue',
+              region: 'Lapulapu City, Cebu',
+              country: 'Philippines',
+              date: '2020-3-25',
+              time: '12:30AM'
+            }
+          ],
+          temperature: {
+            value: 36,
+            date_taken: '2020-3-26',
+            location: 'Opon'
+          }
+        }
       ],
       // data: null,
       message: 'Test message',
