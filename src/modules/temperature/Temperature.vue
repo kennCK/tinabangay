@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 25px;">
-    <table class="table table-responsive table-bordered" v-if="data !== null"  >
+    <table class="table table-responsive table-bordered"   >
       <thead>
         <td>Read By</td>
         <td>Temperature</td>
@@ -13,14 +13,14 @@
           <td>{{item.value}} Degree Celsius</td>
           <td>{{item.remarks}}</td>
           <td>
-            <label v-if="item.location !== null">
+            <!-- <label v-if="item.location !== null">
               {{item.location.route + ',' + item.location.locality + ', ' + item.location.country}}
-            </label>
+            </label> -->
           </td>
         </tr>
       </tbody>
     </table>
-    <empty v-if="data === null" :title="'No temperature readings available.'" :action="' You will get data here once frontliners will read your temperature via thermal scanner. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
+    <!-- <empty v-if="data === null" :title="'No temperature readings available.'" :action="' You will get data here once frontliners will read your temperature via thermal scanner. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty> -->
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -37,9 +37,9 @@ export default {
   },
   data(){
     return {
-      common: COMMON,
-      user: AUTH.user,
-      data: null
+      // common: COMMON,
+      // user: AUTH.user,
+      data: [{added_by: 'test'}]
     }
   },
   components: {
@@ -48,26 +48,26 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
-    },
-    retrieve(){
-      let parameter = {
-        condition: [{
-          clause: '=',
-          column: 'account_id',
-          value: this.user.userID
-        }]
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('temperatures/retrieve', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        if(response.data.length > 0){
-          this.data = response.data
-        }else{
-          this.data = null
-          // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
-        }
-      })
     }
+    // retrieve(){
+    //   let parameter = {
+    //     condition: [{
+    //       clause: '=',
+    //       column: 'account_id',
+    //       value: this.user.userID
+    //     }]
+    //   }
+    //   $('#loading').css({display: 'block'})
+    //   this.APIRequest('temperatures/retrieve', parameter).then(response => {
+    //     $('#loading').css({display: 'none'})
+    //     if(response.data.length > 0){
+    //       this.data = response.data
+    //     }else{
+    //       this.data = null
+    //       // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
+    //     }
+    //   })
+    // }
   }
 }
 </script>
