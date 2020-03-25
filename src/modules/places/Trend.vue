@@ -6,7 +6,7 @@
     <h2 v-else>You hide me: {{message}}</h2>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Country</td>
+        <td>Data</td>
       
    
         <td>Action</td>
@@ -14,15 +14,20 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
          <td>
-            
-             
-                   <span class="bg-info text-light d-inline rounded-circle p-2 font-weight-bold" style="font-size: 22px ,height: 25px, width: 25px;">{{item.size}}</span>
-    
-                  <h5 class="card-title" style="font-size: 25px;">{{item.route}}</h5>
-                   <p class="card-text">{{item.locality === 'testin' ? 'true' : item.locality}} , {{item.country}}</p>
-                   
-       
-        
+            <div class="card">
+                <div class="row">
+                  <div class="col-md-4 bg-info" style="font-size: 25px;">
+                       {{item.size}}
+                  </div>
+                  <div class="col-md-8 px-3">
+                       <div class="card-block px-3">
+                            <h4 class="card-title" style="font-size: 25px;">{{item.route}}</h4>
+                            <p class="card-text" style="font-size: 16px;">POSITIVE : {{item.positive_size}} | PUI : {{item.pui_size}} | PUM : {{item.pum_size}}</p>
+                            <p class="card-text">{{item.locality === 'testin' ? 'true' : item.locality}} , {{item.country}}</p>
+                        </div> 
+                   </div> 
+                </div>
+             </div> 
         </td>
 
           <td>
