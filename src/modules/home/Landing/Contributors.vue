@@ -85,8 +85,8 @@
   width: 24%;
   float: left;
   margin-right: 1%;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 10px;
+  margin-top: 10px;
 }
 .card-body{
   text-align: justify;
@@ -126,7 +126,8 @@ export default {
         {name: 'Elsie Kathryn Tagupa', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/elle.jpg')},
         {name: 'Patrick Elalto', org: 'University of San Carlos', position: 'Teacher', img: require('assets/img/contributors/patrick.jpg')},
         {name: 'Ismael Francisco', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/ismael.jpg')},
-        {name: 'Jeanille Abayon', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/jeanille.jpg')}
+        {name: 'Jeanille Abayon', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/jeanille.jpg')},
+        {name: 'Yol Torres', org: 'University of San Carlos | Passerelles Numeriques Philippines', position: 'Student', img: require('assets/img/contributors/yol.jpg')}
       ]
     }
   },
