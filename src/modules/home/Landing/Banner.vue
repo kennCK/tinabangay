@@ -16,6 +16,8 @@
             {{item.description}}
           </h4>
         </span>
+          <a class="" href='#'>
+          <img class="button img-fluid float-left mt-3" alt='Get it on Google Play' :src="require('assets/img/playstore.png')"/></a>
       </div>
       <div class="image" v-if="item.template === 'right'">
         <img :src="item.image" style="margin-bottom: 5px;" width="100%">
@@ -56,6 +58,10 @@
   margin-left: 5%;
   display: block;
 }
+.button{
+  position:left;
+  width:194px;
+}
 
 @media screen and (max-width: 992px){
   .text{
@@ -72,6 +78,7 @@
     display: none;
   }
 }
+
 </style>
 <script>
 import ROUTER from 'src/router'
