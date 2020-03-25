@@ -119,6 +119,13 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/places/trend',
+    name: 'placesTrend',
+    component: resolve => require(['modules/places/TrendAll.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }

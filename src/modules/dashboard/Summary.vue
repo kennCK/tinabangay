@@ -22,6 +22,13 @@
   color: $primary !important;
 }
 
+.text-danger{
+  color: $danger !important;
+}
+
+.text-warning{
+  color: $warning !important;
+}
 label{
   font-size: 16px;
   width: 100%;
