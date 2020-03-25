@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 25px;">
-    <table class="table table-responsive table-bordered" v-if="data !== null">
+    <table class="table table-responsive table-bordered" >
       <thead>
         <td>Read By</td>
         <td>Temperature</td>
@@ -33,13 +33,13 @@ import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
-    this.retrieveLocations()
+    this.retrieveValue()
   },
   data(){
     return {
       common: COMMON,
-      user: AUTH.user,
-      data: null
+      user: AUTH.user
+      // data: null
     }
   },
   components: {
@@ -49,50 +49,73 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieveLocations(){
-      console.log('retrieving locations...')
+    retrieveValue(){
+      // this.data.forEach((tempLoc, index) => {
       let parameter = {
         condition: [{
           clause: '=',
-          column: 'account_id',
-          value: this.user.userID
+          column: 'id',
+          value: this.temperature_id
         }]
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('temperature_locations/retrieve', parameter).then(response => {
+      this.APIRequest('temperatures/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
-          this.data = response.data
-          this.retrieveValue()
-          console.log('I found something')
+          // this.data[0].value = response.data[0].value
+          this.data[0].value = 12
+          console.log('Hi world')
         }else{
           this.data = null
-          console.log('Nope. There\'s nothing here')
-          // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
+          console.log('this.data = null')
         }
       })
-    },
-    retrieveValue(){
-      this.data.forEach((tempLoc, index) => {
-        let parameter = {
-          condition: [{
-            clause: '=',
-            column: 'id',
-            value: tempLoc.temperature_id
-          }]
-        }
-        $('#loading').css({display: 'block'})
-        this.APIRequest('temperatures/retrieve', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          if(response.data.length > 0){
-            this.data[index].value = response.data[0].value
-            // this.data[index].value = 12
-          }else{
-            this.data = null
-          }
-        })
-      })
+      // })
     }
+    // retrieveLocations(){
+    //   console.log('retrieving locations...')
+    //   let parameter = {
+    //     condition: [{
+    //       clause: '=',
+    //       column: 'account_id',
+    //       value: this.user.userID
+    //     }]
+    //   }
+    //   $('#loading').css({display: 'block'})
+    //   this.APIRequest('temperature_locations/retrieve', parameter).then(response => {
+    //     $('#loading').css({display: 'none'})
+    //     if(response.data.length > 0){
+    //       this.data = response.data
+    //       this.retrieveValue()
+    //       console.log('I found something')
+    //     }else{
+    //       this.data = null
+    //       console.log('Nope. There\'s nothing here')
+    //       // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
+    //     }
+    //   })
+    // },
+    // retrieveValue(){
+    //   this.data.forEach((tempLoc, index) => {
+    //     let parameter = {
+    //       condition: [{
+    //         clause: '=',
+    //         column: 'id',
+    //         value: tempLoc.temperature_id
+    //       }]
+    //     }
+    //     $('#loading').css({display: 'block'})
+    //     this.APIRequest('temperature/retrieve', parameter).then(response => {
+    //       $('#loading').css({display: 'none'})
+    //       if(response.data.length > 0){
+    //         this.data[index].value = response.data[0].value
+    //         // this.data[index].value = 12
+    //       }else{
+    //         this.data = null
+    //       }
+    //     })
+    //   })
+    // }
   }
 }
 </script>
