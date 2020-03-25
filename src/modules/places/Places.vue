@@ -1,16 +1,16 @@
 <template>
   <div class="mx-3">
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <table class="table table-responsive table-bordered">
+    <table class="table table-responsive legend-table">
       <thead>
-        <th scope="col" class="font-weight-bold alert-success">COVID Negative</th>
-        <th scope="col" class="font-weight-bold alert-info">Person Under Investigation</th>
-        <th scope="col" class="font-weight-bold alert-warning">Person Under Monitoring</th>
-        <th scope="col" class="font-weight-bold alert-danger">COVID Positive</th>
+        <th scope="col" class="font-weight-bold alert-success legend">COVID Negative</th>
+        <th scope="col" class="font-weight-bold alert-info legend">Person Under Investigation</th>
+        <th scope="col" class="font-weight-bold alert-warning legend">Person Under Monitoring</th>
+        <th scope="col" class="font-weight-bold alert-danger legend">COVID Positive</th>
       </thead>
     </table>
    <table class="table table-responsive table-bordered">
-      <thead class="custom-header-color">
+      <thead>
         <th scope="col">Country</th>
         <th scope="col">Region</th>
         <th scope="col">Locality</th>
@@ -40,9 +40,25 @@
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
-.custom-header-color{
-  color: $primary;
+
+.legend {
+  background-color: transparent !important;
+
+  &::before {
+    content: 'x';
+    height: 5px;
+    padding: 0 4px;
+    font-size: 10px;
+    background: currentColor;
+    border-radius: 50px;
+    margin-right: .5rem;
+  }
+
+  &-table thead th {
+    border: none;
+  }
 }
+
 
 </style>
 <script>
