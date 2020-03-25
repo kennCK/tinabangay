@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!-- <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
-    <h1 v-if="messageFlag === true">{{message}}</h1>
-    <h2 v-else>You hide me: {{message}}</h2> -->
-    
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <th colspan="3" class="text-center">Patient's Name</th>
@@ -26,11 +21,8 @@
           <td class="text-danger text-center">{{item.temperature_value}}</td>
            <td class="text-info text-center">{{item.created_at}}</td>
           <td>
-            <button class="btn btn-primary" @click="showModal('update', item)">
+            <button class="btn btn-primary justify-content-center align-items-center" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn btn-danger" @click="removeItem(item.id)">
-              <i class="fas fa-trash"></i>
             </button>
           </td>
         </tr>
