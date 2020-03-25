@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div style="margin-top: 25px;">
+    <!-- v-if="data !== null" -->
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <th colspan="3" class="text-center">Patient's Name</th>
@@ -17,17 +18,56 @@
           <td>{{item.country}}</td>
           <td>{{item.region}}</td>
           <td>{{item.locality}}</td>
-          <td class="text-warning text-center">{{item.status}}</td>
-          <td class="text-danger text-center">{{item.temperature_value}}</td>
-           <td class="text-info text-center">{{item.created_at}}</td>
+          <td v-if="(item.status === 'PUI' || item.status === 'PUM')" class="text-warning text-center">{{item.status}}</td>
+          <td v-if="(item.status === 'POSITIVE')" class="text-danger text-center">{{item.status}}</td>
+          <td v-if="(item.status === 'NEGATIVE')" class="text-success text-center">{{item.status}}</td>
+          <td class="text-center text-danger">{{item.temperature_value}}</td>
+          <td class="text-info text-center">{{item.created_at}}</td>
           <td>
-            <button class="btn btn-primary justify-content-center align-items-center" @click="showModal('update', item)">
-              <i class="fas fa-edit"></i>
+            <button class="btn btn-primary" @click="showModal('update', item)">
+              <i class="fas fa-edit pl-2"></i>
             </button>
+            <button type="button" class="btn btn-danger" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
+            <i class="fas fa-map-marker-alt pl-2"></i></button>
           </td>
         </tr>
       </tbody>
     </table>
+    
+    <!--MODAL FOR VISITED PATIENTS-->
+    <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true" data-backdrop="false">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content text-center">
+          <div class="modal-header">
+            <p class="heading">Visited Places of the Patient</p>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" v-if="selectedItem !== null">
+            <table class="table table-responsive table-bordered">
+              <thead class="custom-header-color">
+                <th class="text-center">Date</th>
+                <th class="text-center">Time</th>
+                <th class="text-center">Route</th>
+                <th class="text-center">Locality</th>
+                <th class="text-center">Region</th>
+              </thead>
+             <tbody>
+              <tr v-for="(item, index) in selectedItem.places" :key="index">
+                <td class="text-center text-info">{{item.date}}</td>
+                <td class="text-center text-danger">{{item.time}}</td>
+                <td>{{item.route}}</td>
+                <td>{{item.locality}}</td>
+                <td>{{item.region}}</td>
+              </tr>
+             </tbody>
+            </table>
+        </div>
+      </div>
+  </div>
+</div>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
@@ -48,61 +88,11 @@ export default {
   },
   data(){
     return {
-      // if(this.user.type == 'AGENT');
       common: COMMON,
       user: AUTH.user,
       modalProperty: ModalProperty,
-      data: [{
-        first_name: 'Monica Claire',
-        middle_name: 'Mamalias',
-        last_name: 'Apor',
-        country: 'Philippines',
-        region: 'Region VII',
-        locality: 'Mandaue City',
-        status: 'PUI',
-        temperature_value: '37.6',
-        created_at: '2020-03-19'
-      }, {
-        first_name: 'Nicole Amber',
-        middle_name: 'Gonzales',
-        last_name: 'Mariscal',
-        country: 'Philippines',
-        region: 'Region VII',
-        locality: 'Cebu City',
-        status: 'PUM',
-        temperature_value: '38.6',
-        created_at: '2020-03-21'
-      }, {
-        first_name: 'Mary Therese',
-        middle_name: 'Sun',
-        last_name: 'Alegre',
-        country: 'Philippines',
-        region: 'Region VII',
-        locality: 'Lapu-Lapu City',
-        status: 'POSITIVE',
-        temperature_value: '40.6',
-        created_at: '2020-03-20'
-      }, {
-        first_name: 'Leah Joyce',
-        middle_name: 'Gonzales',
-        last_name: 'Bancale',
-        country: 'Philippines',
-        region: 'Region VII',
-        locality: 'Danao City',
-        status: 'NEGATIVE',
-        temperature_value: '36.6',
-        created_at: '2020-03-24'
-      }, {
-        first_name: 'James Michael',
-        middle_name: 'Gonzales',
-        last_name: 'Bañes',
-        country: 'Philippines',
-        region: 'Region VII',
-        locality: 'Toledo City',
-        status: 'POSITIVE',
-        temperature_value: '39.6',
-        created_at: '2020-03-20'
-      }],
+      selectedItem: null,
+      data: null,
       message: 'Test message',
       messageFlag: true
     }
@@ -134,25 +124,8 @@ export default {
         this.data = response.data
       })
     },
-    removeItem(id){
-      let parameter = {
-        id: id
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('patients/delete', parameter).then(response => {
-        this.retrieve()
-      })
-    },
     showModal(action, item = null){
       switch(action){
-        // case 'create':
-        //   this.modalProperty = {...ModalProperty}
-        //   let inputs = this.modalProperty.inputs
-        //   inputs.map(input => {
-        //     input.value = null
-        //   })
-        //   this.modalProperty.params[0].value = this.user.userID
-        //   break
         case 'update':
           let modalData = {...this.modalProperty}
           let parameter = {

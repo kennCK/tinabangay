@@ -1,27 +1,47 @@
 <template>
   <div>
-    <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
+  
+     <h1 v-if="messageFlag === true">{{message}}</h1>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Country</td>
-        <td>Region</td>
-        <td>Locality</td>
-        <td>Action</td>
+        <td>Data</td>
+      
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-success">{{item.country}}</td>
-          <td class="text-danger">{{item.region}}</td>
-          <td class="text-primary">{{item.locality === 'testin' ? 'true' : item.locality}}</td>
-          <td>
-            <button class="btn btn-primary" @click="showModal('update', item)">
-              <i class="fas fa-edit"></i>
-            </button>
+         <td>
+            <div class="card">
+                <div class="row">
+                  
+                  <div class="col-md-8 px-3">
+                       <div class="card-block px-3">
+                            <h4 class="card-title" style="font-size: 25px; margin-top:15px">{{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}} </h4>
+                            <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">route , locality </h6>                            
+                              <h4 class="card-title">
+                                   <b-button variant="danger" style="margin-bottom: 25px; margin-top: 5px; ">
+                                 POSITIVE
+                             <b-badge variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
+                            </b-button>
+                             <b-button variant="warning" style="margin-bottom: 25px; margin-top: 5px;">
+                            PUI
+                        <b-badge variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
+                        </b-button>
+                         <b-button variant="primary" style="margin-bottom: 25px; margin-top: 5px;"> 
+                       PUM
+                       <b-badge variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
+                      </b-button>
+                       <b-button variant="info" style="margin-bottom: 25px; margin-top: 5px;">
+                       NEGATIVE
+                       <b-badge variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
+                      </b-button>
+                      </h4>
+           
+                        </div> 
+                   </div> 
+                </div>
+             </div> 
+        </td>
 
-            <button class="btn btn-danger" @click="removeItem(item.id)">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
         </tr>
       </tbody>
     </table>
@@ -49,7 +69,7 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       data: null,
-      message: 'Test message',
+      message: 'High risk areas',
       messageFlag: true
     }
   },
@@ -65,17 +85,10 @@ export default {
     },
     retrieve(){
       let parameter = {
-        condition: [{
-          clause: '=',
-          column: 'account_id',
-          value: this.user.userID
-        }],
-        sort: {
-          locality: 'desc'
-        }
+        status: 'positive'
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/retrieve', parameter).then(response => {
+      this.APIRequest('tracing_places/places', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
       })
@@ -140,6 +153,15 @@ export default {
             }
             if(data.variable === 'time'){
               data.value = item.time
+            }
+            if(data.variable === 'PositiveCount'){
+              data.value = item.PositiveCount
+            }
+            if(data.variable === 'PUICount'){
+              data.value = item.PUICount
+            }
+            if(data.variable === 'PUMCount'){
+              data.value = item.PUMCount
             }
           })
           this.modalProperty = {...modalData}
