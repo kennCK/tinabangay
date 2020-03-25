@@ -121,8 +121,8 @@ export default {
   data(){
     return {
       data: [
-        {name: 'Kennette Canales', org: 'Increment Technologies | University of San Carlos', position: 'Owner | Teacher', img: require('assets/img/contributors/kennette.jpg')},
-        {name: 'Patrick Elalto', org: 'University of San Carlos', position: 'Teacher', img: require('assets/img/contributors/patrick.jpg')},
+        {name: 'Kennette Canales', org: 'Increment Technologies | University of San Carlos', position: 'Owner | Faculty', img: require('assets/img/contributors/kennette.jpg')},
+        {name: 'Patrick Elalto', org: 'University of San Carlos', position: 'Faculty', img: require('assets/img/contributors/patrick.jpg')},
         {name: 'Yol Torres', org: 'University of San Carlos | Passerelles Numeriques Philippines', position: 'Student', img: require('assets/img/contributors/yol.jpg')},
         {name: 'Elsie Kathryn Tagupa', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/elle.jpg')},
         {name: 'Kent Yohann Bacatan', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/kent.png')},

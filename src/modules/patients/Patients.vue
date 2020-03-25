@@ -1,34 +1,23 @@
 <template>
   <div style="margin-top: 25px;">
-    <!-- v-if="data !== null" -->
-    <table class="table table-responsive table-bordered">
+    <table class="table table-responsive table-bordered" style="margin-top: 25px;">
       <thead class="custom-header-color">
-        <th colspan="3" class="text-center">Patient's Name</th>
-        <th colspan="3" class="text-center">Location</th>
+        <th class="text-center">Patient's Username</th>
+        <th class="text-center">Contact Number</th>
         <th class="text-center">Status</th>
-        <th class="text-center">Temperature</th>
         <th class="text-center">Date Recorded</th>
-        <th  colspan="2" class="text-center">Action</th>
+        <th class="text-center">Action</th>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.first_name}}</td>
-          <td>{{item.middle_name}}</td>
-          <td>{{item.last_name}}</td>
-          <td>{{item.country}}</td>
-          <td>{{item.region}}</td>
-          <td>{{item.locality}}</td>
-          <td v-if="(item.status === 'PUI' || item.status === 'PUM')" class="text-warning text-center">{{item.status}}</td>
-          <td v-if="(item.status === 'POSITIVE')" class="text-danger text-center">{{item.status}}</td>
-          <td v-if="(item.status === 'NEGATIVE')" class="text-success text-center">{{item.status}}</td>
-          <td class="text-center text-danger">{{item.temperature_value}}</td>
-          <td class="text-info text-center">{{item.created_at}}</td>
+          <td>{{item.account.username}}</td>
+          <td>{{item.account.information.contact_number}}</td>
+          <td class="text-warning text-center">{{item.status}}</td>
+          <td class="text-info text-center">{{item.created_at_human}}</td>
           <td>
-            <button class="btn btn-primary" @click="showModal('update', item)">
-              <i class="fas fa-edit pl-2"></i>
-            </button>
             <button type="button" class="btn btn-danger" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
-            <i class="fas fa-map-marker-alt pl-2"></i></button>
+              <i class="fas fa-map-marker-alt pl-2"></i>
+            </button></i>
           </td>
         </tr>
       </tbody>
@@ -92,9 +81,7 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       selectedItem: null,
-      data: null,
-      message: 'Test message',
-      messageFlag: true
+      data: null
     }
   },
   components: {
@@ -104,18 +91,10 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    hideMessage(){
-      this.messageFlag = false
-    },
     retrieve(){
       let parameter = {
-        condition: [{
-          clause: '=',
-          column: 'account_id',
-          value: this.user.userID
-        }],
         sort: {
-          locality: 'desc'
+          created_at: 'desc'
         }
       }
       $('#loading').css({display: 'block'})
