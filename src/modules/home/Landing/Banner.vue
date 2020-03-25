@@ -8,6 +8,9 @@
         <span class="title">
           <h1>{{item.title}}</h1>
         </span>
+        <span class="subtitle">
+          <h2>{{item.subtitle}}</h2>
+        </span>
         <span class="description">
           <h4>
             {{item.description}}
