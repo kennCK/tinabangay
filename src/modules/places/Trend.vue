@@ -12,22 +12,44 @@
          <td>
             <div class="card">
                 <div class="row">
-                  <div class="col-md-4 bg-info text-center" style="font-size: 25px;">
-                  
-                       {{item.size}}
+                  <div class="col-md-4 " style="font-size: 25px;">
+                       <div class="text-center">
+                            <b-button variant="primary" style="margin-bottom: 10px; margin-top: 25px; ">
+                                 PUI
+                             <b-badge variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
+                            </b-button>
+                        </div>
+                       <div class="text-center">
+                         <b-button variant="warning">
+                            PUM
+                        <b-badge variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
+                        </b-button>
+                      </div>
+                      <div class="text-center text-white">
+                       <b-button variant="danger">
+                       POSITIVE
+                       <b-badge variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
+                      </b-button>
+                      </div>
+                      <div class="text-center text-white">
+                       <b-button variant="info">
+                       NEGATIVE
+                       <b-badge variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
+                      </b-button>
+                      </div>
                   </div>
                   <div class="col-md-8 px-3">
                        <div class="card-block px-3">
-                            <h4 class="card-title" style="font-size: 25px;">{{item.route}}</h4>
-                            <p class="card-text" style="font-size: 16px;">POSITIVE : {{item.positive_size}} | PUI : {{item.pui_size}} | PUM : {{item.pum_size}}</p>
-                            <p class="card-text">{{item.locality === 'testin' ? 'true' : item.locality}} , {{item.country}}</p>
+                            <h4 class="card-title" style="font-size: 25px;">{{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}} </h4>
+
+                               <a class="btn btn-primary text-white">Add Calendar</a>
+           
                         </div> 
                    </div> 
                 </div>
              </div> 
         </td>
 
-          
         </tr>
       </tbody>
     </table>
