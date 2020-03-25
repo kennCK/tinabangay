@@ -1,18 +1,30 @@
 <template>
   <div class="mx-3">
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
+    <table class="table table-responsive table-bordered">
+      <thead>
+        <th scope="col" class="font-weight-bold alert-success">COVID Negative</th>
+        <th scope="col" class="font-weight-bold alert-info">Person Under Investigation</th>
+        <th scope="col" class="font-weight-bold alert-warning">Person Under Monitoring</th>
+        <th scope="col" class="font-weight-bold alert-danger">COVID Positive</th>
+      </thead>
+    </table>
    <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <th scope="col">Country</th>
         <th scope="col">Region</th>
         <th scope="col">Locality</th>
+        <th scope="col">Date</th>
+        <th scope="col">Time</th>
         <th scope="col">Action</th>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index" :class="item.status === 'negative' ? 'bg-success' : item.status === 'positive' ? 'bg-danger' : 'bg-warning'">
+        <tr v-for="(item, index) in data" :key="index" :class="item.status === 'negative' ? 'alert-success' : item.status === 'positive' ? 'alert-danger' : item.status === 'pui' ? 'alert-info' : 'alert-warning'">
           <td>{{item.country}}</td>
           <td>{{item.region}}</td>
           <td>{{item.locality}}</td>
+          <td>{{item.date | formatDate}}</td>
+          <td>{{item.date+' '+item.time | formatTime}}</td>
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
@@ -29,12 +41,28 @@
 .custom-header-color{
   color: $primary;
 }
+
 </style>
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import ModalProperty from './CreatePlaces.js'
+import moment from 'moment'
+import Vue from 'vue'
+
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    return moment(String(value)).format('MM/DD/YYYY')
+  }
+})
+
+Vue.filter('formatTime', function(value){
+  if(value) {
+    return moment(String(value)).format('hh:mm A')
+  }
+})
+
 export default {
   mounted(){
 
@@ -54,7 +82,9 @@ export default {
         country: null,
         latitude: 0,
         longitude: 0,
-        status: null
+        status: null,
+        date: null,
+        time: null
       }
     }
   },
