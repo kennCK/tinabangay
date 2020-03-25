@@ -10,7 +10,7 @@
       <input type="text" class="form-control" v-model="search" placeholder="Search Location">
     </div>
     <!-- UNTIL HERE -->
-    <table class="table table-responsive table-bordered">
+     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <td>Username</td>
         <td>Address</td>
@@ -21,9 +21,15 @@
         <td>Action</td>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in filteredLocation" :key="index">
+        <tr v-for="account in accounts" v-bind:key="account">
+          <td>{{account.username}}</td>
+        </tr>
+      </tbody>
+    </table>
+      <!--<tbody>
+        <tr v-for="(item, index) in filteredLocation" :key="index">-->
           <!-- JER CHANGES -->
-          <td>{{item.username}}</td>
+          <!-- <td>{{item.username}}</td>
           <td>{{item.address}}</td>
           <td>{{item.location}}</td>
           <td>{{item.temperature}}</td>
@@ -36,7 +42,7 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </table>  -->
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
