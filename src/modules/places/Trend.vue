@@ -7,21 +7,23 @@
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
         <td>Country</td>
-        <td>Region</td>
-        <td>Locality</td>
-        <td>Positive Count</td>
-        <td>PUI Count</td>
-        <td>PUM Count</td>
+      
+   
         <td>Action</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-warning">{{item.country}}</td>
-          <td class="text-danger">{{item.region}}</td>
-          <td class="text-primary">{{item.locality === 'testin' ? 'true' : item.locality}}</td>
-          <td class="text-danger">{{item.PositiveCount}}</td>
-          <td class="text-danger">{{item.PUICount}}</td>
-          <td class="text-danger">{{item.PUMCount}}</td>
+         <td>
+            
+             
+                   <span class="bg-info text-light d-inline rounded-circle p-2 font-weight-bold" style="font-size: 22px ,height: 25px, width: 25px;">{{item.size}}</span>
+    
+                  <h5 class="card-title" style="font-size: 25px;">{{item.route}}</h5>
+                   <p class="card-text">{{item.locality === 'testin' ? 'true' : item.locality}} , {{item.country}}</p>
+                   
+       
+        
+        </td>
 
           <td>
             <button class="btn btn-primary" @click="showModal('update', item)">
