@@ -1,50 +1,95 @@
 <template>
   <div>
-    <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <button class="btn btn-primary" @click="hideMessage()">Hide Message</button>
-    <h1 v-if="messageFlag === true">{{message}}</h1>
-    <h2 v-else>You hide me: {{message}}</h2>
-    <!-- JER CHANGES -->
+    
+    <h1>Temperature Summary</h1>
     <br>
-    <div class="form-group">
+    <div class="input-group">
       <input type="text" class="form-control" v-model="search" placeholder="Search Location">
+      <div class="input-group-append">
       <select class="form-control select-range" v-model="range">
         <option value="all">--Choose Temperature Range--</option>
+        <option value="all">All</option>
         <option value="hypotermia">Below 36.5</option>
         <option value="normal">36.5 - 37.5</option>
         <option value="fever">37.6 - 40.0</option>
         <option value="hyperpyrexia">Above 40.0</option>
       </select>
+      </div>
     </div>
-    <!-- UNTIL HERE -->
-     <table class="table table-responsive table-bordered">
-      <thead class="custom-header-color">
-        <th>Name</th>
-        <th>Address</th>
-        <th>Contact Number</th>
-        <th>Temperature</th>
-        <th>Temperature Taken At</th>
-        <th>Date Taken</th>
-        <th>Action</th>
-      </thead>
-      <tbody>
-        <tr v-for="user in filteredLocation " v-bind:key="user">
-          <td>{{user.last_name}}, {{users.first_name}}</td>
-          <td>{{user.address}}</td>
-          <td>{{user.contact_number}}</td>
-          <td>{{user.temperature.value}}°</td>
-          <td>{{user.temperature.location}}</td>
-          <td>{{user.temperature.date_taken}}</td>
-          <td>
-            <button class="btn btn-primary" @click="showModal('update', item)">
-              Show Visited Places
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+
+    <div class="card-body" style=' overflow-y: auto; height: auto;'>
+      <table class="table table-responsive table-bordered">
+        <thead class="custom-header-color">
+          <th style='text-align: center;'>Name</th>
+          <th style='text-align: center;'>Address</th>
+          <th style='text-align: center;'>Contact Number</th>
+          <th style='text-align: center;'>Temperature</th>
+          <th style='text-align: center;'>Location</th>
+          <th style='text-align: center;'>Date Taken</th>
+          <th style='text-align: center;'>Action</th>
+        </thead>
+        <tbody>
+          <tr v-for="(u, index) in filteredLocation" v-bind:key="index">
+            <td>{{u.last_name}}, {{u.first_name}}</td>
+            <td>{{u.address}}</td>
+            <td>{{u.contact_number}}</td>
+            <td>{{u.temperature.value}}°</td>
+            <td>{{u.temperature.location}}</td>
+            <td>{{u.temperature.date_taken}}</td>
+            <td style='text-align: center;'>
+              <button class='btn btn-primary' data-toggle="modal" @click="selected_user = u" data-target="#visitedPlaces">
+                <i style='padding: 2px;' class="fa fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    <!-- VISITED PLACES MODAL -->
+      <div class="modal fade" id='visitedPlaces' tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" >Visited Places</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          <div class="modal-body" >
+            <div v-if="selected_user!=null">
+              <table class="table">
+                <thead class="custom-header-color">
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Locality</th>
+                    <th scope="col">Country</th>
+                  </tr>
+                </thead>
+                <tbody style='height: 300px; overflow-y:auto;'>
+                  <tr v-for="(place, index) in selected_user.visited_places" v-bind:key="index">
+                    <td>{{place.date}}</td>
+                    <td>{{place.time}}</td>
+                    <td>{{place.locality}}</td>
+                    <td>{{place.country}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+       </div>
+      </div>
+      
+    </div>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
+
+  
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
@@ -55,8 +100,13 @@
 .form-control{
   width: 30%!important;
 }
+
 .select-range{
-  width: 22%!important;
+  width: 100%!important;
+}
+
+.input-group{
+  width: 50%;
 }
 </style>
 <script>
@@ -75,6 +125,7 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       // JER CHANGES
+      selected_user: null,
       users: [
         {
           id: 1,
@@ -117,47 +168,12 @@ export default {
               country: 'Philippines',
               date: '2020-3-25',
               time: '9:30AM'
-            },
-            {
-              locality: 'Mandaue',
-              region: 'Lapulapu City, Cebu',
-              country: 'Philippines',
-              date: '2020-3-25',
-              time: '12:30AM'
             }
           ],
           temperature: {
-            value: 35,
+            value: 36,
             date_taken: '2020-3-26',
-            location: 'Mandaue'
-          }
-        },
-        {
-          id: 3,
-          first_name: 'Ainz',
-          last_name: 'Gown',
-          contact_number: '+639999024633',
-          address: 'La Aldea Buena Mactan',
-          visited_places: [
-            {
-              locality: 'Timpolok',
-              region: 'Lapulapu City, Cebu',
-              country: 'Philippines',
-              date: '2020-3-25',
-              time: '9:30AM'
-            },
-            {
-              locality: 'Mandaue',
-              region: 'Lapulapu City, Cebu',
-              country: 'Philippines',
-              date: '2020-3-25',
-              time: '12:30AM'
-            }
-          ],
-          temperature: {
-            value: 37,
-            date_taken: '2020-3-26',
-            location: 'Mandaue'
+            location: 'Opon'
           }
         }
       ],
@@ -165,7 +181,6 @@ export default {
       message: 'Test message',
       messageFlag: true,
       search: '',
-      checktemp: false,
       range: 'all'
     }
   },
