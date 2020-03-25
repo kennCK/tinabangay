@@ -17,10 +17,6 @@
             <button class="btn btn-primary" @click="showModal('update', item)">
               <i class="fas fa-edit"></i>
             </button>
-
-            <button class="btn btn-danger" @click="removeItem(item.id)">
-              <i class="fas fa-trash"></i>
-            </button>
           </td>
         </tr>
       </tbody>
@@ -83,15 +79,6 @@ export default {
       this.APIRequest('visited_places/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
-      })
-    },
-    removeItem(id){
-      let parameter = {
-        id: id
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/delete', parameter).then(response => {
-        this.retrieve()
       })
     },
     showModal(action, item = null){
