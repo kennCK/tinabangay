@@ -2,6 +2,7 @@
 	<div class="body">
 		<landing-banner></landing-banner>
     <landing-features></landing-features>
+    <landing-contributors></landing-contributors>
     <landing-donations></landing-donations>
 	</div>
 </template>
@@ -12,7 +13,8 @@ export default {
   components: {
     'landing-banner': require('modules/home/Landing/Banner.vue'),
     'landing-features': require('modules/home/Landing/Features.vue'),
-    'landing-donations': require('modules/home/Landing/Donations.vue')
+    'landing-donations': require('modules/home/Landing/Donations.vue'),
+    'landing-contributors': require('modules/home/Landing/Contributors.vue')
   },
   mounted(){
   },

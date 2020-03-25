@@ -1,5 +1,5 @@
 <template>
-	<div class="cw-features bg-light">
+	<div class="cw-features">
     <div class="header">
       <span class="title text-green text-center">
         <h1>Bayanihan ; Spirit of Communal Unity and Cooperation</h1>
@@ -21,7 +21,7 @@
       </a>
       
     </div>
-        <span class="description text-center">
+        <span class="description text-center mb-5">
             <h2>Time is not on our side but you can be</h2>
             <p class="my-4">
               Birdseye is a non-profit and is run by students, faculty, and other volunteers at the University of San Carlos.<br>

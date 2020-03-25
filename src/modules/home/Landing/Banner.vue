@@ -51,7 +51,6 @@
   margin-right: 5%;
   float: left;
   margin-left: 5%;
-  margin-top: 100px;
   display: block;
 }
 
