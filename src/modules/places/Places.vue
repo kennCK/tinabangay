@@ -83,7 +83,6 @@ Vue.filter('formatTime', function(value){
 
 export default {
   mounted(){
-
     this.retrieve()
   },
   data(){
