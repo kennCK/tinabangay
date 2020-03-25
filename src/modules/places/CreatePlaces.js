@@ -1,6 +1,3 @@
-import AUTH from 'src/services/auth'
-import CONFIG from 'src/config.js'
-import COMMON from 'src/common.js'
 export default {
   id: 'createPlacesModal',
   size: 'modal-md',
@@ -8,11 +5,12 @@ export default {
   background: null,
   inputs: [{
     row: 'full',
-    label: 'Latitude',
-    variable: 'latitude',
-    placeholder: 'Enter Latitude',
+    label: 'Location',
+    variable: 'location',
+    placeholder: 'Set location',
     value: null,
     required: true,
+<<<<<<< HEAD
     id: 'latitude',
     type: 'input',
     inputType: 'text',
@@ -99,38 +97,40 @@ export default {
     required: true,
     id: 'region',
     type: 'input',
+=======
+    id: 'location',
+    type: 'location',
+>>>>>>> 9c591c8b7cdb71ab27362070055dc7b0b2448cd8
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'text'
+      type: 'location'
     }
   }, {
     row: 'full',
     label: 'Date',
     variable: 'date',
-    placeholder: 'Enter date',
+    placeholder: 'Enter Date',
     value: null,
-    required: true,
-    id: 'longitude',
+    id: 'date',
     type: 'input',
     inputType: 'date',
     validation: {
       size: 1,
-      type: 'text'
+      type: 'date'
     }
   }, {
     row: 'full',
     label: 'Time',
     variable: 'time',
-    placeholder: 'Enter time',
+    placeholder: 'Enter Time',
     value: null,
-    required: true,
     id: 'time',
     type: 'input',
     inputType: 'time',
     validation: {
       size: 1,
-      type: 'text'
+      type: 'time'
     }
   }],
   route: 'visited_places/create',

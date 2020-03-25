@@ -6,7 +6,7 @@
     <h2 v-else>You hide me: {{message}}</h2>
     <table class="table table-responsive table-bordered">
       <thead class="custom-header-color">
-        <td>Coutry</td>
+        <td>Country</td>
         <td>Region</td>
         <td>Locality</td>
         <td>Action</td>
