@@ -15,11 +15,9 @@
           <td class="text-warning text-center">{{item.status}}</td>
           <td class="text-info text-center">{{item.created_at_human}}</td>
           <td>
-            <button class="btn btn-primary" @click="showModal('update', item)">
-              <i class="fas fa-edit pl-2"></i>
-            </button>
             <button type="button" class="btn btn-danger" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
-            <i class="fas fa-map-marker-alt pl-2"></i></button>
+              <i class="fas fa-map-marker-alt pl-2"></i>
+            </button></i>
           </td>
         </tr>
       </tbody>
