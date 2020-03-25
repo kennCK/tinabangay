@@ -20,7 +20,7 @@
         </tr>
       </tbody>
     </table>
-    <!-- <empty v-if="data === null" :title="'No temperature readings available.'" :action="' You will get data here once frontliners will read your temperature via thermal scanner. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-primary'"></empty> -->
+    <empty v-if="data === null" :title="'No temperature readings available.'" :action="' You will get data here once frontliners will read your temperature via thermal scanner. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -34,8 +34,6 @@ import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
     this.retrieve()
-    // this.retrieve()
-    this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
   },
   data(){
     return {
@@ -63,9 +61,10 @@ export default {
       this.APIRequest('temperatures/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
-          this.data = 'response.data'
+          this.data = response.data
         }else{
           this.data = null
+          // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
         }
       })
     }

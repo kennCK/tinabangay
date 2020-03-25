@@ -1,7 +1,7 @@
 <template>
   <div class="mx-3">
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <table class="table table-responsive legend-table">
+    <table class="table w-50 mt-5 legend-table">
       <thead>
         <th scope="col" class="font-weight-bold alert-success legend">COVID Negative</th>
         <th scope="col" class="font-weight-bold alert-info legend">Person Under Investigation</th>

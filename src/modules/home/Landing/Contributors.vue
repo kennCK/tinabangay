@@ -37,7 +37,7 @@
   position: absolute;
   width: 100%;
   bottom: 0;
-  height: 40%;
+  min-height: 40%;
   background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8) 50%);
   border-radius: 0 0 10px 10px;
 }
