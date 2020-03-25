@@ -21,7 +21,7 @@
         </span>
       </div>
 
-      <a class="mx-auto w-100 d-flex flex-row justify-content-center" href='#'>
+      <a class="mx-auto w-100 d-flex flex-row justify-content-center mb-5" href='#'>
         <img class="img-fluid w-15" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
     </div>
 	</div>
