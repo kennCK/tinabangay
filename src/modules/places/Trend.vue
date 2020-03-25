@@ -10,16 +10,16 @@
             <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
             <h4 class="card-title">
               <b-button variant="danger" style="margin-bottom: 25px; margin-top: 5px; ">
-                POSITIVE<b-badge variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
+                POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
               <b-button variant="warning" style="margin-bottom: 25px; margin-top: 5px;">
-                PUI<b-badge variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
+                PUI<b-badge class="badge" variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
               <b-button variant="primary" style="margin-bottom: 25px; margin-top: 5px;"> 
-                PUM<b-badge variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
+                PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
               <b-button variant="info" style="margin-bottom: 25px; margin-top: 5px;">
-               NEGATIVE<b-badge variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
+               NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
             </h4>
            </div> 
@@ -32,6 +32,9 @@
 @import "~assets/style/colors.scss";
 .custom-header-color{
   color: $primary;
+}
+.badge{
+  margin-left: 5px;
 }
 </style>
 <script>
