@@ -15,26 +15,26 @@
                   
                   <div class="col-md-8 px-3">
                        <div class="card-block px-3">
-                            <h4 class="card-title" style="font-size: 25px;">{{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}} </h4>
+                            <h4 class="card-title" style="font-size: 25px; margin-top:15px">{{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}} </h4>
+                            <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">route , locality </h6>                            
                               <h4 class="card-title">
-                                   <b-button variant="primary" style="margin-bottom: 10px; margin-top: 25px; ">
-                                 PUI
+                                   <b-button variant="danger" style="margin-bottom: 25px; margin-top: 5px; ">
+                                 POSITIVE
                              <b-badge variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
                             </b-button>
-                             <b-button variant="warning">
-                            PUM
+                             <b-button variant="warning" style="margin-bottom: 25px; margin-top: 5px;">
+                            PUI
                         <b-badge variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
                         </b-button>
-                         <b-button variant="danger">
-                       POSITIVE
+                         <b-button variant="primary" style="margin-bottom: 25px; margin-top: 5px;"> 
+                       PUM
                        <b-badge variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
                       </b-button>
-                       <b-button variant="info">
+                       <b-button variant="info" style="margin-bottom: 25px; margin-top: 5px;">
                        NEGATIVE
                        <b-badge variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
                       </b-button>
                       </h4>
-                               <a class="btn btn-primary text-white">Add Calendar</a>
            
                         </div> 
                    </div> 
