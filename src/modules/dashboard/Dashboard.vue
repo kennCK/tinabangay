@@ -3,25 +3,25 @@
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
-          <b>Hi <b class="text-primary">{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature.</b>
-        </p>
-        <qr-code></qr-code>
-      </div>
-      <div class="col-lg-6" style="margin-bottom: 25px;">
-        <p>
           <b>List of places visited by affected individual</b>
         </p>
         <trend></trend>
       </div>
+      <div class="col-lg-6" style="margin-bottom: 25px;">
+        <p>
+          <b>Hi <b class="text-primary">{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature.</b>
+        </p>
+        <qr-code></qr-code>
+      </div>
     </div>
-    <div class="row" style="margin-bottom: 25px;">
+    <!-- <div class="row" style="margin-bottom: 25px;">
       <div class="col-lg-6">
         <p>
           <b>Summary of temperature within Locality</b>
         </p>
         <temperature-summary></temperature-summary>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <style scoped>
