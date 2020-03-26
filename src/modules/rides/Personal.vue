@@ -1,49 +1,36 @@
 <template>
-  <div v-if="data !== null">
-    <div class="card" v-for="(item, index) in (data.length > 5 ? 5 : data.length)" :key="index" style="margin-bottom: 10px;">  
-      <div>
-        <div class="card-block px-3">
-          <h6 class="card-title" style="margin-top:15px">
-            {{data[index].route}} , {{data[index].locality === 'testin' ? 'true' : data[index].locality}}
-          </h6>
-          <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{data[index].country}}</h6>                            
-          <span class="card-title">
-            <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
-              POSITIVE<b-badge class="badge" variant="light">{{data[index].positive_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
-              PUI<b-badge class="badge" variant="light">{{data[index].pui_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
-              PUM<b-badge class="badge" variant="light">{{data[index].pum_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="info" style="margin-bottom: 25px; margin-bottom: 5px;">
-             NEGATIVE<b-badge class="badge" variant="light">{{data[index].negative_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-          </span>
-        </div> 
-      </div> 
-    </div>
-    <button class="btn btn-primary" @click="redirect('places/trend')">View more</button>
+  <div style="margin-top: 25px;">
+    <table class="table table-responsive table-bordered" v-if="data !== null"  >
+      <thead>
+        <td>Read By</td>
+        <td>Temperature</td>
+        <td>Remarks</td>
+        <td>Location</td>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in data" :key="index">
+          <td>{{item.added_by}}</td>
+          <td>{{item.value}} Degree Celsius</td>
+          <td>{{item.remarks}}</td>
+          <td>
+            <label v-if="item.location !== null">
+              {{item.location.route + ',' + item.location.locality + ', ' + item.location.country}}
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <empty v-if="data === null" :title="'No temperature readings available.'" :action="' You will get data here once frontliners will read your temperature via thermal scanner. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
-.custom-header-color{
-  color: $primary;
-}
-.badge{
-  margin-left: 5px;
-}
-.card-title{
-  width: 100%;
-  float: left;
-}
 </style>
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
     this.retrieve()
@@ -55,21 +42,29 @@ export default {
       data: null
     }
   },
+  components: {
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
+  },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
     },
     retrieve(){
       let parameter = {
-        status: 'positive'
+        condition: [{
+          clause: '=',
+          column: 'account_id',
+          value: this.user.userID
+        }]
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('tracing_places/places', parameter).then(response => {
+      this.APIRequest('temperatures/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
         }else{
           this.data = null
+          // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
         }
       })
     }
