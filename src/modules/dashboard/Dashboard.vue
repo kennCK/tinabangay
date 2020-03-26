@@ -2,6 +2,7 @@
   <div style="margin-bottom: 200px;">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
+        <google-places-auto-complete :property="property" @onFinish="manageInput($event)"></google-places-auto-complete>
         <p>
           Current data on the system. [Not updated as other users are not registered yet]
         </p>
@@ -48,10 +49,21 @@ p{
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import CONFIG from 'src/config.js'
 export default{
   data(){
     return {
-      user: AUTH.user
+      user: AUTH.user,
+      property: {
+        style: {
+          height: '45px !important'
+        },
+        GOOGLE_API_KEY: CONFIG.GOOGLE_API_KEY,
+        results: {
+          style: {
+          }
+        }
+      }
     }
   },
   props: {
@@ -60,9 +72,13 @@ export default{
     'trend': require('modules/places/Trend.vue'),
     'qr-code': require('modules/dashboard/QrCode.vue'),
     'temperature-summary': require('modules/temperature/Summary.vue'),
-    'data-summary': require('modules/dashboard/Summary.vue')
+    'data-summary': require('modules/dashboard/Summary.vue'),
+    'google-places-auto-complete': require('components/increment/generic/location/GooglePlacesAutoComplete.vue')
   },
   methods: {
+    manageInput(data){
+      console.log(data)
+    }
   }
 }
 </script>
