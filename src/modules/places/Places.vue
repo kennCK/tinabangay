@@ -15,7 +15,7 @@
         <th scope="col" class="font-weight-bold alert-danger legend">COVID Positive</th>
       </thead>
     </table>
-   <table class="table table-responsive table-bordered">
+   <table class="table table-responsive table-bordered" v-if="data.length > 0">
       <thead>
         <th scope="col">Country</th>
         <th scope="col">Region</th>
@@ -41,6 +41,7 @@
         </tr>
       </tbody>
     </table>
+    <empty v-else :title="'You have not visited any places yet.'" :action="'Your data will show up here once you have added places you\'ve visited. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
@@ -113,7 +114,8 @@ export default {
     }
   },
   components: {
-    'increment-modal': require('components/increment/generic/modal/Modal.vue')
+    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
     redirect(parameter){
@@ -134,6 +136,7 @@ export default {
       this.APIRequest('visited_places/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
+        console.log(this.data)
       })
     },
     showModal(action, item = null){
