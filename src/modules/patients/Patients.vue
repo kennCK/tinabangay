@@ -41,13 +41,13 @@
               <thead>
                 <th class="text-center">Date</th>
                 <th class="text-center">Time</th>
-                <th class="text-center">Route</th>
+                <th class="text-center">Establishment</th>
                 <th class="text-center">Locality</th>
                 <th class="text-center">Region</th>
               </thead>
              <tbody>
               <tr v-for="(item, index) in selectedItem.places" :key="index">
-                <td class="text-center">{{item.date}}</td>
+                <td class="text-center">{{item.date_human}}</td>
                 <td class="text-center">{{item.time}}</td>
                 <td>{{item.route}}</td>
                 <td>{{item.locality}}</td>
