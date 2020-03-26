@@ -11,6 +11,7 @@ node_modules/
 src/config.js
 api/.env
 dist/
+birdseye/
 src/assets/img/messy/GCash_Horizontal_-_Full_Blue_(Transparent).png
 src/assets/img/messy/banner.png
 src/assets/img/messy/forelle.pdn

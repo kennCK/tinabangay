@@ -202,7 +202,7 @@ export default {
     'system-header': () => import('components/increment/generic/frame/Header.vue'),
     'system-sidebar': () => import('components/increment/generic/frame/Sidebar.vue'),
     'system-content': () => import('modules/frame/Content.vue'),
-    'system-footer': () => import('modules/frame/Footer.vue'),
+    'system-footer': () => import('components/increment/generic/frame/Footer.vue'),
     'system-loading': () => import('components/loader/Loading.vue'),
     'landing-footer': () => import('modules/home/Landing/Footer.vue'),
     'privacy-policy': () => import('modules/docs/PrivacyPolicy.vue'),
