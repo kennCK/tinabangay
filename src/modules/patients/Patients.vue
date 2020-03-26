@@ -1,7 +1,7 @@
 <template>
-  <div style="margin-top: 25px;">
+  <div style="margin-top: 25px;" v-if="data !== null">
     <table class="table table-responsive table-bordered" style="margin-top: 25px;">
-      <thead class="custom-header-color">
+      <thead>
         <th class="text-center">Patient's Username</th>
         <th class="text-center">Contact Number</th>
         <th class="text-center">Status</th>
@@ -10,11 +10,13 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.account.username}}</td>
-          <td>{{item.account.information.contact_number}}</td>
-          <td class="text-warning text-center">{{item.status}}</td>
-          <td class="text-info text-center">{{item.created_at_human}}</td>
-          <td class="text-center"> 
+          <td class="text-center">{{item.account.username}}</td>
+          <td class="text-center">{{item.account.information.contact_number}}</td>
+          <td v-if="(item.status === 'positive')" class="text-danger text-center text-uppercase"><strong>{{item.status}}</strong></td>
+          <td v-if="(item.status === 'negative')" class="text-success text-center text-uppercase"><strong>{{item.status}}</strong></td>
+          <td v-else-if="((item.status === 'pui' || item.status === 'pum'))" class="text-warning text-center text-uppercase"><strong>{{item.status}}</strong></td>
+          <td class="text-center">{{item.created_at_human}}</td>
+          <td class = "text-center">
             <button type="button" class="btn btn-danger" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
               <i class="fas fa-map-marker-alt pl-2"></i>
             </button>
@@ -36,7 +38,7 @@
           </div>
           <div class="modal-body" v-if="selectedItem !== null">
             <table class="table table-responsive table-bordered">
-              <thead class="custom-header-color">
+              <thead>
                 <th class="text-center">Date</th>
                 <th class="text-center">Time</th>
                 <th class="text-center">Route</th>
@@ -45,8 +47,8 @@
               </thead>
              <tbody>
               <tr v-for="(item, index) in selectedItem.places" :key="index">
-                <td class="text-center text-info">{{item.date}}</td>
-                <td class="text-center text-danger">{{item.time}}</td>
+                <td class="text-center">{{item.date}}</td>
+                <td class="text-center">{{item.time}}</td>
                 <td>{{item.route}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.region}}</td>
@@ -70,7 +72,7 @@
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
-import ModalProperty from 'src/modules/patients/UpdatePatient.js'
+import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
     this.retrieve()
@@ -101,42 +103,8 @@ export default {
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
+        console.log(response)
       })
-    },
-    showModal(action, item = null){
-      switch(action){
-        case 'update':
-          let modalData = {...this.modalProperty}
-          let parameter = {
-            title: 'Update Requests',
-            route: 'patients/update',
-            button: {
-              left: 'Cancel',
-              right: 'Update'
-            },
-            sort: {
-              column: 'created_at',
-              value: 'desc'
-            },
-            params: [{
-              variable: 'id',
-              value: item.id
-            }]
-          }
-          modalData = {...modalData, ...parameter} // updated data without
-          let object = Object.keys(item)
-          modalData.inputs.map(data => {
-            if(data.variable === 'status'){
-              data.value = item.status
-            }
-            if(data.variable === 'date'){
-              data.value = item.created_at
-            }
-          })
-          this.modalProperty = {...modalData}
-          break
-      }
-      $('#updatePatientModal').modal('show')
     }
   }
 }
