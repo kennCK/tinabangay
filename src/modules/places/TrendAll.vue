@@ -1,6 +1,11 @@
 <template>
   <div v-if="data !== null" class="holder">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
+    <div class="number-input md-number-input">
+  <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
+  <input class="quantity" min="1" name="quantity" value="1" type="number">
+  <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button>
+</div>
     <div class="card" v-for="(item, index) in result" :key="index" style="margin-bottom: 10px;" >
       <div>
         <div class="card-block px-3">
@@ -50,6 +55,83 @@
   height: 45px !important;
   margin-bottom: 25px;
 }
+
+input[type="number"] {
+  -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+          appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none;
+}
+.number-input {
+  margin: 3rem;
+}
+.number-input button {
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+}
+.number-input button:before,
+.number-input button:after {
+  display: inline-block;
+  position: absolute;
+  content: '';
+  height: 2px;
+  transform: translate(-50%, -50%);
+}
+.number-input button.plus:after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.number-input input[type=number] {
+  text-align: center;
+}
+
+
+.md-number-input.number-input {
+  border: 2px solid #ddd;
+  width: 11.8rem;
+}
+.md-number-input.number-input button {
+  outline: none;
+  width: 3rem;
+  height: 2rem;
+  padding-top: .8rem;
+}
+.md-number-input.number-input button.minus {
+  padding-left: 8px;
+}
+.md-number-input.number-input button.plus {
+  padding-left: 2px;
+}
+.md-number-input.number-input button:before,
+.md-number-input.number-input button:after {
+  width: 1rem;
+  background-color: #212121;
+}
+.md-number-input.number-input input[type=number] {
+  max-width: 5rem;
+  padding: .5rem;
+  border: solid #ddd;
+  border-width: 0 2px;
+  font-size: 2rem;
+  height: 3rem;
+  font-weight: bold;
+  outline: none;
+}
+@media not all and (min-resolution:.001dpcm)
+{ @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+  .number-input.md-number-input.safari_only button:before, 
+  .number-input.md-number-input.safari_only button:after {
+    margin-top: -.6rem;
+  }
+}}
 </style>
 <script>
 import ROUTER from 'src/router'
