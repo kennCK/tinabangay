@@ -7,7 +7,7 @@
       Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
     </div>
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <table class="table w-50 mt-5 legend-table">
+    <table class="mt-5 legend-table">
       <thead>
         <th scope="col" class="font-weight-bold alert-success legend">COVID Negative</th>
         <th scope="col" class="font-weight-bold alert-info legend">Person Under Investigation</th>
@@ -62,6 +62,7 @@
 
   &-table thead th {
     border: none;
+    padding: 2rem;
   }
 }
 
