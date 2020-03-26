@@ -15,14 +15,14 @@
        <!-- <ul class="footer-widget">
         <li class="title"><b>Resources</b></li>
         <li class="link"><a @click="openModal('#guideModal')">Guide</a></li>
-      </ul>
+      </ul> -->
       <span class="footer-widget community">
         <span class="title"><b>Community</b></span>
         <span class="link">
           <a target="_BLANK" class="text-gray" :href="'https://www.facebook.com/' + common.socialMedia.facebook" ><i class="fab fa-facebook"></i></a>
         </span>
       </span>
-  -->     
+      
       <span class="copyright">
         <label>Copyright @{{common.COPYRIGHT}}. All rights reserved.</label>
       </span>

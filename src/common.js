@@ -1,10 +1,12 @@
 export default {
   sidebarMenu: [
     {accountType: 'ALL', accountStatus: 'ALL', description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', description: 'Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null}
+    {accountType: 'ALL', accountStatus: 'ALL', description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', description: 'My Temperature', icon: 'fa fa-chart-line', path: 'temperature/p', flag: false, subMenu: null},
+    {accountType: 'ADMIN', accountStatus: 'ALL', description: 'Accounts', icon: 'fa fa-users', path: 'admin/accounts', flag: false, subMenu: null},
+    {accountType: 'AGENCY', accountStatus: 'ALL', description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
+    {accountType: 'AGENCY', accountStatus: 'ALL', description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
+    {accountType: 'AGENCY', accountStatus: 'ALL', description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null}
   ],
   profileMenu: [{
     title: 'My Profile',
@@ -15,12 +17,12 @@ export default {
     icon: 'fa fa-users',
     route: '/referrals'
   }],
-  APP_NAME: 'BIRDSEYE',
-  APP_NAME_HTML: 'BIRDSEYE',
+  APP_NAME: 'BirdsEye',
+  APP_NAME_HTML: 'BirdsEye',
   APP_EMAIL: 'support@increment.ltd',
   COMPANY: 'Increment Technologies',
-  COMPANY_URL: 'www.increment.ltd',
-  COPYRIGHT: 'BIRDSEYE ' + new Date().getFullYear(),
+  COMPANY_URL: 'http://www.increment.ltd',
+  COPYRIGHT: 'BirdsEye ' + new Date().getFullYear(),
   USER_TYPE: [{
     title: 'USER'
   }, {
@@ -37,7 +39,7 @@ export default {
     emailMessage: '.They can trace and have an birdseye view for COVID-19. Let\'s spread the good news!'
   },
   socialMedia: {
-    facebook: 'birdseye'
+    facebook: 'birdseyeph'
   },
   pusher: {
     channel: 'birdseye',

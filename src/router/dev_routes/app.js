@@ -112,6 +112,27 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/temperature/p',
+    name: 'temperaturePersonal',
+    component: resolve => require(['modules/temperature/Temperature.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  }, {
+    path: '/places/trend',
+    name: 'placesTrend',
+    component: resolve => require(['modules/places/TrendAll.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  }, {
+    path: '/admin/accounts',
+    name: 'adminAccounts',
+    component: resolve => require(['modules/admin/Accounts.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
