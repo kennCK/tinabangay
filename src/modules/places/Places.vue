@@ -1,5 +1,11 @@
 <template>
   <div class="mx-3">
+    <div class="alert alert-info mt-3 p-3" role="alert">
+      <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically you have contracted the virus. It just means the location matches an reportedly affected location.
+    </div>
+    <div class="alert alert-success bg-transparent border-success mt-3 p-3" role="alert">
+      Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
+    </div>
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
     <table class="table w-50 mt-5 legend-table">
       <thead>
@@ -14,7 +20,7 @@
         <th scope="col">Country</th>
         <th scope="col">Region</th>
         <th scope="col">Locality</th>
-        <th scope="col">Route</th>
+        <th scope="col">Establishment</th>
         <th scope="col">Date</th>
         <th scope="col">Time</th>
         <th scope="col">Action</th>
@@ -120,7 +126,7 @@ export default {
           value: this.user.userID
         }],
         sort: {
-          locality: 'desc'
+          date: 'asc'
         }
       }
       $('#loading').css({display: 'block'})
