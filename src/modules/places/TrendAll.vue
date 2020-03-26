@@ -1,10 +1,16 @@
 <template>
   <div v-if="data !== null" class="holder">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
-    <div class="number-input md-number-input">
-  <a onclick="this.parentNode.querySelector('input[type=number]').stepDown()"  >Previous</a>
-  <input class="quantity" min="1" name="quantity" value="1" type="number">
-  <a onclick="this.parentNode.querySelector('input[type=number]').stepUp()" > Next </a>
+    <div class="number-input md-number-input " id="inputNumber">
+        <nav>
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul>
+        </nav>
 </div>
     <div class="card" v-for="(item, index) in result" :key="index" style="margin-bottom: 10px;" >
       <div>
@@ -67,7 +73,10 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
 .number-input {
-  margin: 3rem;
+    margin-bottom: 1rem;
+    margin-left: 50rem;
+    margin-right: 4rem;
+    float: right;
 }
 .number-input button {
   -webkit-appearance: none;
@@ -96,7 +105,6 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 .md-number-input.number-input {
-  border: 2px solid #ddd;
   width: 11.8rem;
 }
 .md-number-input.number-input button {
