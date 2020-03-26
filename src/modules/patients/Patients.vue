@@ -1,6 +1,15 @@
 <template>
-  <div style="margin-top: 25px;" v-if="data !== null">
-    <table class="table table-responsive table-bordered" style="margin-top: 25px;">
+
+  <div style="margin-top: 25px;" >
+    <basic-filter 
+      v-bind:category="category" 
+      :activeCategoryIndex="0"
+      :activeSortingIndex="0"
+      @changeSortEvent="retrieve($event.sort, $event.filter)"
+      @changeStyle="manageGrid($event)"
+      :grid="['list', 'th-large']"></basic-filter>
+
+    <table class="table table-responsive table-bordered" style="margin-top: 25px;" v-if="data !== null">
       <thead>
         <th class="text-center">Patient's Username</th>
         <th class="text-center">Contact Number</th>
@@ -72,10 +81,12 @@
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import CONFIG from 'src/config.js'
 import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
-    this.retrieve()
+   // this.retrieve()
+    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
   },
   data(){
     return {
@@ -83,21 +94,69 @@ export default {
       user: AUTH.user,
       modalProperty: ModalProperty,
       selectedItem: null,
-      data: null
+      data: null,
+      config: CONFIG,
+      category: [{
+        title: 'Sort by',
+        sorting: [{
+          title: 'Patient Username ascending',
+          payload: 'username',
+          payload_value: 'asc'
+        }, {
+          title: 'Patient Username descending',
+          payload: 'username',
+          payload_value: 'desc'
+        }, {
+          title: 'Status ascending',
+          payload: 'status',
+          payload_value: 'asc'
+        }, {
+          title: 'Status descending',
+          payload: 'status',
+          payload_value: 'desc'
+        }, {
+          title: 'Created ascending',
+          payload: 'created_at',
+          payload_value: 'asc'
+        }, {
+          title: 'Created descending',
+          payload: 'created_at',
+          payload_value: 'desc'
+        }]
+      }],
+      filter: null,
+      sort: null
     }
   },
   components: {
-    'increment-modal': require('components/increment/generic/modal/Modal.vue')
+    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
+    'basic-filter': require('components/increment/generic/filter/Basic.vue'),
+    'empty': require('components/increment/generic/empty/Empty.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(){
+    retrieve(sort, filter){
+      if(sort !== null){
+        this.sort = sort
+      }
+      if(filter !== null){
+        this.filter = filter
+      }
+      if(sort === null && this.sort !== null){
+        sort = this.sort
+      }
+      if(filter === null && this.filter !== null){
+        filter = this.filter
+      }
       let parameter = {
-        sort: {
-          created_at: 'desc'
-        }
+        condition: [{
+          value: filter.value + '%',
+          column: filter.column,
+          clause: 'like'
+        }],
+        sort: sort
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('patients/retrieve', parameter).then(response => {
