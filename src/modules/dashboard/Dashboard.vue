@@ -3,32 +3,45 @@
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
-          Hi <b class="text-primary">{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature.
+          Current data on the system. [Not updated as other users are not registered yet]
+        </p>
+        <data-summary></data-summary>
+        <p>
+          Hi {{user.username}}! Below is your qr code. Show this to frontliners everytime they read your temperature.
         </p>
         <qr-code></qr-code>
       </div>
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
-          List of places visited by affected individual
+          List of places visited by affected individual(Hot Places)
         </p>
         <trend></trend>
       </div>
     </div>
-    <div class="row" style="margin-bottom: 25px;">
+    <!-- <div class="row" style="margin-bottom: 25px;">
       <div class="col-lg-6">
         <p>
-          Summary of temperature within Locality
+          <b>Summary of temperature within Locality</b>
         </p>
         <temperature-summary></temperature-summary>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
-<style scoped>
+<style lang="scss" scoped> 
+@import "~assets/style/colors.scss";
 .half-rule {
   margin-left: 0;
   text-align: left;
   width: 50%;
+}
+
+p{
+  padding: 10px;
+  background: $primary;
+  color: $white;
+  width: 100%;
+  float: left;
 }
 </style>
 <script>
@@ -46,7 +59,8 @@ export default{
   components: {
     'trend': require('modules/places/Trend.vue'),
     'qr-code': require('modules/dashboard/QrCode.vue'),
-    'temperature-summary': require('modules/temperature/Summary.vue')
+    'temperature-summary': require('modules/temperature/Summary.vue'),
+    'data-summary': require('modules/dashboard/Summary.vue')
   },
   methods: {
   }

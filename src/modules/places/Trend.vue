@@ -1,51 +1,30 @@
 <template>
-  <div>
-  
-     <h1 v-if="messageFlag === true">{{message}}</h1>
-    <table class="table table-responsive table-bordered">
-      <thead class="custom-header-color">
-        <td>Data</td>
-      
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in data" :key="index">
-         <td>
-            <div class="card">
-                <div class="row">
-                  
-                  <div class="col-md-8 px-3">
-                       <div class="card-block px-3">
-                            <h4 class="card-title" style="font-size: 25px; margin-top:15px">{{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}} </h4>
-                            <h6 class="card-title" style="font-size: 15px; margin-top:15px; ">{{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}} </h6>                            
-                              <h4 class="card-title">
-                                   <b-button variant="danger" style="margin-bottom: 25px; margin-top: 5px; ">
-                                 POSITIVE
-                             <b-badge variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
-                            </b-button>
-                             <b-button variant="warning" style="margin-bottom: 25px; margin-top: 5px;">
-                            PUI
-                        <b-badge variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
-                        </b-button>
-                         <b-button variant="primary" style="margin-bottom: 25px; margin-top: 5px;"> 
-                       PUM
-                       <b-badge variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
-                      </b-button>
-                       <b-button variant="info" style="margin-bottom: 25px; margin-top: 5px;">
-                       NEGATIVE
-                       <b-badge variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
-                      </b-button>
-                      </h4>
-           
-                        </div> 
-                   </div> 
-                </div>
-             </div> 
-        </td>
-
-        </tr>
-      </tbody>
-    </table>
-    <increment-modal :property="modalProperty"></increment-modal>
+  <div v-if="data !== null">
+    <div class="card" v-for="(item, index) in (data.length > 5 ? 5 : data.length)" :key="index" style="margin-bottom: 10px;">  
+      <div>
+        <div class="card-block px-3">
+          <h6 class="card-title" style="margin-top:15px">
+            {{data[index].route}} , {{data[index].locality === 'testin' ? 'true' : data[index].locality}}
+          </h6>
+          <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{data[index].country}}</h6>                            
+          <span class="card-title">
+            <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
+              POSITIVE<b-badge class="badge" variant="light">{{data[index].positive_size}} <span class="sr-only">unread messages</span></b-badge>
+            </b-button>
+            <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
+              PUI<b-badge class="badge" variant="light">{{data[index].pui_size}} <span class="sr-only">unread messages</span></b-badge>
+            </b-button>
+            <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
+              PUM<b-badge class="badge" variant="light">{{data[index].pum_size}} <span class="sr-only">unread messages</span></b-badge>
+            </b-button>
+            <b-button variant="info" style="margin-bottom: 25px; margin-bottom: 5px;">
+             NEGATIVE<b-badge class="badge" variant="light">{{data[index].negative_size}} <span class="sr-only">unread messages</span></b-badge>
+            </b-button>
+          </span>
+        </div> 
+      </div> 
+    </div>
+    <button class="btn btn-primary" @click="redirect('places/trend')">View more</button>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -53,12 +32,18 @@
 .custom-header-color{
   color: $primary;
 }
+.badge{
+  margin-left: 5px;
+}
+.card-title{
+  width: 100%;
+  float: left;
+}
 </style>
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
-import ModalProperty from './CreatePlaces.js'
 export default {
   mounted(){
     this.retrieve()
@@ -67,21 +52,12 @@ export default {
     return {
       common: COMMON,
       user: AUTH.user,
-      modalProperty: ModalProperty,
-      data: null,
-      message: 'High risk areas',
-      messageFlag: true
+      data: null
     }
-  },
-  components: {
-    'increment-modal': require('components/increment/generic/modal/Modal.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
-    },
-    hideMessage(){
-      this.messageFlag = false
     },
     retrieve(){
       let parameter = {
@@ -90,84 +66,12 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('tracing_places/places', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.data = response.data
+        if(response.data.length > 0){
+          this.data = response.data
+        }else{
+          this.data = null
+        }
       })
-    },
-    removeItem(id){
-      let parameter = {
-        id: id
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/delete', parameter).then(response => {
-        this.retrieve()
-      })
-    },
-    showModal(action, item = null){
-      switch(action){
-        case 'create':
-          this.modalProperty = {...ModalProperty}
-          let inputs = this.modalProperty.inputs
-          inputs.map(input => {
-            input.value = null
-          })
-          this.modalProperty.params[0].value = this.user.userID
-          break
-        case 'update':
-          let modalData = {...this.modalProperty}
-          let parameter = {
-            title: 'Update Requests',
-            route: 'visited_places/update',
-            button: {
-              left: 'Cancel',
-              right: 'Update'
-            },
-            sort: {
-              column: 'created_at',
-              value: 'desc'
-            },
-            params: [{
-              variable: 'id',
-              value: item.id
-            }]
-          }
-          modalData = {...modalData, ...parameter} // updated data without
-          let object = Object.keys(item)
-          modalData.inputs.map(data => {
-            if(data.variable === 'longitude'){
-              data.value = item.longitude
-            }
-            if(data.variable === 'latitude'){
-              data.value = item.latitude
-            }
-            if(data.variable === 'country'){
-              data.value = item.country
-            }
-            if(data.variable === 'locality'){
-              data.value = item.locality
-            }
-            if(data.variable === 'region'){
-              data.value = item.region
-            }
-            if(data.variable === 'date'){
-              data.value = item.date
-            }
-            if(data.variable === 'time'){
-              data.value = item.time
-            }
-            if(data.variable === 'PositiveCount'){
-              data.value = item.PositiveCount
-            }
-            if(data.variable === 'PUICount'){
-              data.value = item.PUICount
-            }
-            if(data.variable === 'PUMCount'){
-              data.value = item.PUMCount
-            }
-          })
-          this.modalProperty = {...modalData}
-          break
-      }
-      $('#createPlacesModal').modal('show')
     }
   }
 }

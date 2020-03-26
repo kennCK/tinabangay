@@ -8,11 +8,16 @@
         <span class="title">
           <h1>{{item.title}}</h1>
         </span>
+        <span class="subtitle">
+          <h2>{{item.subtitle}}</h2>
+        </span>
         <span class="description">
           <h4>
             {{item.description}}
           </h4>
         </span>
+          <a class="" href='#'>
+          <img class="button img-fluid float-left mt-3" alt='Get it on Google Play' :src="require('assets/img/playstore.png')"/></a>
       </div>
       <div class="image" v-if="item.template === 'right'">
         <img :src="item.image" style="margin-bottom: 5px;" width="100%">
@@ -51,8 +56,11 @@
   margin-right: 5%;
   float: left;
   margin-left: 5%;
-  margin-top: 100px;
   display: block;
+}
+.button{
+  position:left;
+  width:194px;
 }
 
 @media screen and (max-width: 992px){
@@ -70,6 +78,7 @@
     display: none;
   }
 }
+
 </style>
 <script>
 import ROUTER from 'src/router'

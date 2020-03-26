@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 25px;">
-    <table class="table table-responsive table-bordered" v-if="data !== null">
+    <table class="table table-responsive table-bordered" v-if="data !== null"  >
       <thead>
         <td>Read By</td>
         <td>Temperature</td>
@@ -12,15 +12,15 @@
           <td>{{item.added_by}}</td>
           <td>{{item.value}} Degree Celsius</td>
           <td>{{item.remarks}}</td>
-          <!-- <td>
+          <td>
             <label v-if="item.location !== null">
               {{item.location.route + ',' + item.location.locality + ', ' + item.location.country}}
             </label>
-          </td> -->
+          </td>
         </tr>
       </tbody>
     </table>
-    <empty v-if="data === null" :title="'No temperature readings available.'" :action="' You will get data here once frontliners will read your temperature via thermal scanner. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-primary'"></empty>
+    <empty v-if="data === null" :title="'No temperature readings available.'" :action="' You will get data here once frontliners will read your temperature via thermal scanner. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -64,6 +64,7 @@ export default {
           this.data = response.data
         }else{
           this.data = null
+          // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
         }
       })
     }

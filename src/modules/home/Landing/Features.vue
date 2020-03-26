@@ -1,5 +1,5 @@
 <template>
-	<div class="cw-features">
+	<div class="cw-features" v-if="data !== null">
     <div class="header">
       <span class="title text-green text-center">
         <h1>Application Features</h1>
@@ -8,9 +8,8 @@
         <h6></h6>
       </span>
     </div>
-    <div class="holder">
-
-      <span class="item" v-for="item, index in data" v-if="data !== null">
+    <div class="holder d-flex flex-row justify-content-center flex-wrap">
+      <div class="item shadow bg-white text-dark mx-5" v-for="(item, index) in data" v-bind:key="index">
         <span class="icon text-green text-center">
           <i :class="item.icon"></i>
         </span>
@@ -20,9 +19,13 @@
         <span class="description">
           {{item.description}}
         </span>
-      </span>
+      </div>
+
+      <!-- <a class="mx-auto w-100 d-flex flex-row justify-content-center mb-5" href='#'>
+        <img class="img-fluid w-15" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a> -->
     </div>
 	</div>
+  
 </template>
 <style scoped>
 .cw-features{
@@ -46,9 +49,8 @@
 }
 .item{
   width: 21%;
-  float: left; 
   margin-right: 2%;
-  min-height: 350px;
+  min-height: 250px;
   margin-left: 2%;
 }
 .item span{
@@ -65,6 +67,10 @@
 .item .description{
   text-align: justify;
   margin-top: 25px;
+}
+
+.w-15{
+  width:15%!important
 }
 
 @media screen and (max-width: 992px){
@@ -84,7 +90,8 @@ export default {
     return {
       data: [
         {title: 'Visited Places', description: 'List visited places for affected indviduals. You can view also if your visited places matches with affected visited places for COVID19.', icon: 'fas fa-map-marker'},
-        {title: 'Temperature Reading', description: 'Anaylise temperature within the area. Government Agencies can check the history of temperature of indviduals living within its area.', icon: 'fas fa-chart-line'},
+        {title: 'Connect with the Government', description: 'Government Agencies can register into this platform that will allow them to help disburse important tracking information to other agencies.', icon: 'fas fa-balance-scale'},
+        {title: 'Temperature Reading', description: 'Analyze temperature within the area. Government Agencies can check the history of temperature of indviduals living within its area.', icon: 'fas fa-chart-line'},
         {title: 'Tracings', description: 'Government Agencies can trace indviduals based on the visited places listed and visited places listed from affected indviduals', icon: 'fas fa-sitemap'},
         {title: 'Patient Monitoring', description: 'Government Agencies can manage patients information and trace indviduals that might have contact with.', icon: 'fas fa-sitemap'}
       ]

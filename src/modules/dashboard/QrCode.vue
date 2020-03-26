@@ -16,7 +16,6 @@ import COMMON from 'src/common.js'
 import QrcodeVue from 'qrcode.vue'
 export default {
   mounted(){
-    this.retrieve()
   },
   data(){
     return {
