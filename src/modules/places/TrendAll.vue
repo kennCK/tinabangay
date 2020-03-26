@@ -2,9 +2,9 @@
   <div v-if="data !== null" class="holder">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
     <div class="number-input md-number-input">
-  <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" class="minus"></button>
+  <a onclick="this.parentNode.querySelector('input[type=number]').stepDown()"  >Previous</a>
   <input class="quantity" min="1" name="quantity" value="1" type="number">
-  <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button>
+  <a onclick="this.parentNode.querySelector('input[type=number]').stepUp()" > Next </a>
 </div>
     <div class="card" v-for="(item, index) in result" :key="index" style="margin-bottom: 10px;" >
       <div>
@@ -55,6 +55,7 @@
   height: 45px !important;
   margin-bottom: 25px;
 }
+
 
 input[type="number"] {
   -webkit-appearance: textfield;
