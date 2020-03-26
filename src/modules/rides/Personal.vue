@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 25px;">
-    <table class="table table-responsive table-bordered" >
+    <table class="table table-responsive table-bordered" v-if="data !== null"  >
       <thead>
         <td>Read By</td>
         <td>Temperature</td>
@@ -13,8 +13,8 @@
           <td>{{item.value}} Degree Celsius</td>
           <td>{{item.remarks}}</td>
           <td>
-            <label v-if="item.route !== null">
-              {{item.route + ',' + item.locality + ', ' + item.country}}
+            <label v-if="item.location !== null">
+              {{item.location.route + ',' + item.location.locality + ', ' + item.location.country}}
             </label>
           </td>
         </tr>
@@ -33,7 +33,7 @@ import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
-    this.retrieveLocations()
+    this.retrieve()
   },
   data(){
     return {
@@ -49,8 +49,7 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieveLocations(){
-      console.log('retrieving locations...')
+    retrieve(){
       let parameter = {
         condition: [{
           clause: '=',
@@ -59,38 +58,14 @@ export default {
         }]
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/retrieve', parameter).then(response => {
+      this.APIRequest('temperatures/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          this.retrieveValue()
         }else{
           this.data = null
-          console.log('Nope. There\'s nothing here')
-          this.retrieveValue()
+          // this.data = [{added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}, {added_by: 'Hatdog', value: 37.8, remarks: 'kamatyunon'}]
         }
-      })
-    },
-    retrieveValue(){
-      this.data.forEach((tempLoc, index) => {
-        let parameter = {
-          condition: [{
-            clause: '=',
-            column: 'id',
-            value: tempLoc.temperature_id
-          }]
-        }
-        $('#loading').css({display: 'block'})
-        this.APIRequest('temperatures/retrieve', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          if(response.data.length > 0){
-            this.data[index].value = response.data[0].value
-            console.log(this.data)
-          }else{
-            this.data = null
-            // these are just test values this.data = [{route: 'asdf', locality: 'hatdog', country: 'Germany', added_by: 'Ice cream', value: '35', remarks: 'bugnaw keyo'}, {route: 'fdsa', locality: 'cornedbeef', country: 'Japan', added_by: 'Sisig', value: '39', remarks: 'init keyo'}]
-          }
-        })
       })
     }
   }

@@ -2,13 +2,13 @@
   <div style="margin-bottom: 200px;">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
-        <google-places-auto-complete :property="property" @onFinish="manageInput($event)"></google-places-auto-complete>
+        <!-- <google-places-auto-complete :property="property" @onFinish="manageInput($event)"></google-places-auto-complete> -->
         <p>
           Current data on the system. [Not updated as other users are not registered yet]
         </p>
         <data-summary></data-summary>
         <p>
-          Hi {{user.username}}! Below is your qr code. Show this to frontliners everytime they read your temperature.
+          Hi {{user.username}}! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
         </p>
         <qr-code></qr-code>
       </div>
