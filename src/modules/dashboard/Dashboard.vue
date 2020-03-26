@@ -62,7 +62,8 @@ export default{
         results: {
           style: {
           }
-        }
+        },
+        placeholder: 'Type places'
       }
     }
   },
