@@ -1,6 +1,7 @@
 <template>
-
-  <div style="margin-top: 25px;" >
+  <div style="margin-top: 25px;">
+    <h1 class="my-1">Patients</h1>
+    <div class="card-body" style='overflow-y: auto; height: auto;'>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -8,14 +9,13 @@
       @changeSortEvent="retrieve($event.sort, $event.filter)"
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']"></basic-filter>
-
-    <table class="table table-responsive table-bordered" style="margin-top: 25px;" v-if="data !== null">
-      <thead>
+    <table class="table table-responsive table-bordered">
+      <thead class="custom-header-color">
         <th class="text-center">Patient's Username</th>
         <th class="text-center">Contact Number</th>
         <th class="text-center">Status</th>
         <th class="text-center">Date Recorded</th>
-        <th class="text-center">Action</th>
+        <th class="text-center">Visited Places</th>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
@@ -26,13 +26,14 @@
           <td v-else-if="((item.status === 'pui' || item.status === 'pum'))" class="text-warning text-center text-uppercase"><strong>{{item.status}}</strong></td>
           <td class="text-center">{{item.created_at_human}}</td>
           <td class = "text-center">
-            <button type="button" class="btn btn-danger" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
-              <i class="fas fa-map-marker-alt pl-2"></i>
+            <button type="button" class="btn btn-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
+              <i class="fa fa-eye px-2"></i>
             </button>
           </td>
         </tr>
       </tbody>
     </table>
+    </div>
     
     <!--MODAL FOR VISITED PATIENTS-->
     <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -40,14 +41,14 @@
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content text-center">
           <div class="modal-header">
-            <p class="heading">Visited Places of the Patient</p>
+            <h5 class="heading pt-2">Visited Places</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
           </div>
-          <div class="modal-body" v-if="selectedItem !== null">
+          <div class="modal-body p-4" v-if="selectedItem !== null">
             <table class="table table-responsive table-bordered">
-              <thead>
+              <thead class="custom-header-color">
                 <th class="text-center">Date</th>
                 <th class="text-center">Time</th>
                 <th class="text-center">Establishment</th>
@@ -113,14 +114,6 @@ export default {
         }, {
           title: 'Status descending',
           payload: 'status',
-          payload_value: 'desc'
-        }, {
-          title: 'Created ascending',
-          payload: 'created_at',
-          payload_value: 'asc'
-        }, {
-          title: 'Created descending',
-          payload: 'created_at',
           payload_value: 'desc'
         }]
       }],
