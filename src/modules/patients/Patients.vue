@@ -14,10 +14,10 @@
           <td>{{item.account.information.contact_number}}</td>
           <td class="text-warning text-center">{{item.status}}</td>
           <td class="text-info text-center">{{item.created_at_human}}</td>
-          <td>
+          <td class="text-center"> 
             <button type="button" class="btn btn-danger" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
               <i class="fas fa-map-marker-alt pl-2"></i>
-            </button></i>
+            </button>
           </td>
         </tr>
       </tbody>
@@ -25,7 +25,7 @@
     
     <!--MODAL FOR VISITED PATIENTS-->
     <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true" data-backdrop="false">
+     aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content text-center">
           <div class="modal-header">
