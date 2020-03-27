@@ -47,5 +47,24 @@ export default {
     notifications: 'Notifications',
     messages: 'Message',
     validation: 'Validation'
-  }
+  },
+  vehicleTypes: [{
+    label: 'Bus',
+    value: 'Bus'
+  }, {
+    label: 'Plane',
+    value: 'Plane'
+  }, {
+    label: 'Jeep',
+    value: 'Jeep'
+  }, {
+    label: 'Private Car',
+    value: 'Private Car'
+  }, {
+    label: 'Van',
+    value: 'Van'
+  }, {
+    label: 'Motorcycle',
+    value: 'Motorcycle'
+  }]
 }
