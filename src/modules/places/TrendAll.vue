@@ -1,40 +1,43 @@
 <template>
-  <div v-if="data !== null" class="holder">
+  <div v-if="data !== null" class="holder w-100">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
-    <div class="number-input md-number-input " id="inputNumber">
-        <nav>
-          <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-        </nav>
-</div>
-    <div class="card" v-for="(item, index) in result" :key="index" style="margin-bottom: 10px;" >
-      <div>
-        <div class="card-block px-3">
-          <h6 class="card-title" style="margin-top:15px">
-            {{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}}
-          </h6>
-          <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
-          <span class="card-title">
-            <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
-              POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
-              PUI<b-badge class="badge" variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
-              PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="info" style="margin-bottom: 25px; margin-bottom: 5px;">
-             NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-          </span>
-        </div> 
-      </div> 
+      <div class="row justify-content-end m-0 mr-5 align-items-center">
+        <button class="btn btn-primary mr-3 mb-3">
+          <i class="fas fa-map-marker-alt mr-2"></i>
+          View Locations on Map
+        </button>
+        <Pager
+          :pages="numPages"
+          :active="activePage"
+          :limit="perPage"
+          :includesDropDown="false"
+          />
+      </div>
+    <div class="row w-100 m-0">
+      <div class="card card-half" v-for="(item, index) in lists" :key="index" style="margin-bottom: 10px;" >
+        <div>
+          <div class="card-block px-3">
+            <h6 class="card-title" style="margin-top:15px">
+              {{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}}
+            </h6>
+            <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
+            <span class="card-title">
+              <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
+                POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+              <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
+                PUI<b-badge class="badge" variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+              <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
+                PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+              <b-button variant="info" style="margin-bottom: 25px; margin-bottom: 5px;">
+               NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+            </span>
+          </div> 
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -52,7 +55,6 @@
 }
 
 .holder{
-  width: 60%;
   float: left;
   margin-top: 25px;
 }
@@ -134,6 +136,19 @@ input[type=number]::-webkit-outer-spin-button {
   font-weight: bold;
   outline: none;
 }
+
+.card.card-half {
+  width: 49%;
+  margin: .5%;
+}
+
+@media (max-width: 767px) {
+  .card.card-half {
+    width: 100%;
+    margin: 0;
+  }
+}
+
 @media not all and (min-resolution:.001dpcm)
 { @supports (-webkit-appearance:none) and (stroke-color:transparent) {
   .number-input.md-number-input.safari_only button:before, 
@@ -146,9 +161,11 @@ input[type=number]::-webkit-outer-spin-button {
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     this.retrieve()
+    // this.rows()
   },
   data(){
     return {
@@ -156,7 +173,10 @@ export default {
       user: AUTH.user,
       data: null,
       searchValue: null,
-      result: null
+      result: null,
+      perPage: 10,
+      rows: null,
+      activePage: 1
     }
   },
   methods: {
@@ -182,7 +202,33 @@ export default {
       this.result = this.data.filter(item => {
         return item.route.toLowerCase().indexOf(this.searchValue) > -1
       })
+    },
+    linkGen (pageNum){
+      return '#page=' + pageNum
     }
+  },
+  computed: {
+    rows(){
+      return this.data.length
+    },
+    lists(){
+      let item = this.data
+      return item.slice(
+        (this.activePage - 1) * this.perPage,
+        this.activePage * this.perPage)
+    },
+    numPages(){
+      let item = this.data
+      let pages = this.data.length / this.perPage
+      let remaining = this.data.length - (this.perPage * pages)
+      if(remaining > 0){
+        pages++
+      }
+      return pages
+    }
+  },
+  components: {
+    Pager
   }
 }
 </script>
