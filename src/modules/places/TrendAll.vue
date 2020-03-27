@@ -1,18 +1,12 @@
 <template>
   <div v-if="data !== null" class="holder">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
-    <div class="number-input md-number-input " id="inputNumber">
-        <nav>
-          <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-        </nav>
-</div>
-    <div class="card" v-for="(item, index) in result" :key="index" style="margin-bottom: 10px;" >
+      <Pager
+        :pages="numPages"
+        :active="activePage"
+        :limit="perPage"/>
+      <p>Current Page: {{ activePage }}</p>
+    <div class="card" v-for="(item, index) in lists" :key="index" style="margin-bottom: 10px;" >
       <div>
         <div class="card-block px-3">
           <h6 class="card-title" style="margin-top:15px">
@@ -34,8 +28,8 @@
             </b-button>
           </span>
         </div> 
-      </div> 
-    </div>
+      </div>
+        </div>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -146,9 +140,11 @@ input[type=number]::-webkit-outer-spin-button {
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     this.retrieve()
+    // this.rows()
   },
   data(){
     return {
@@ -156,7 +152,10 @@ export default {
       user: AUTH.user,
       data: null,
       searchValue: null,
-      result: null
+      result: null,
+      perPage: 5,
+      rows: null,
+      activePage: 1
     }
   },
   methods: {
@@ -172,6 +171,8 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          console.log('Performing API request: ')
+          console.log(this.data)
         }else{
           this.data = null
         }
@@ -182,7 +183,33 @@ export default {
       this.result = this.data.filter(item => {
         return item.route.toLowerCase().indexOf(this.searchValue) > -1
       })
+    },
+    linkGen (pageNum){
+      return '#page=' + pageNum
     }
+  },
+  computed: {
+    rows(){
+      return this.data.length
+    },
+    lists(){
+      let item = this.data
+      return item.slice(
+        (this.activePage - 1) * this.perPage,
+        this.activePage * this.perPage)
+    },
+    numPages(){
+      let item = this.data
+      let pages = this.data.length / this.perPage
+      let remaining = this.data.length - (this.perPage * pages)
+      if(remaining > 0){
+        pages++
+      }
+      return pages
+    }
+  },
+  components: {
+    Pager
   }
 }
 </script>
