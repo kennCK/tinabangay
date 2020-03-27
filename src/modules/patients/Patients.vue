@@ -115,6 +115,14 @@ export default {
           title: 'Status descending',
           payload: 'status',
           payload_value: 'desc'
+        }, {
+          title: 'Date Recorded ascending',
+          payload: 'created_at',
+          payload_value: 'asc'
+        }, {
+          title: 'Date Recorded descending',
+          payload: 'created_at',
+          payload_value: 'desc'
         }]
       }],
       filter: null,
