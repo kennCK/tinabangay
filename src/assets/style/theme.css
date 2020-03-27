@@ -2,3 +2,16 @@
   background-color: #006600!important;
   color: white
 }
+
+.active-menu {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.menu-holder label {
+  margin-bottom: 0;
+}
+
+.menu-holder {
+  padding: 5px 0 ;
+}
