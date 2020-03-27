@@ -132,7 +132,8 @@ export default {
         {name: 'Brant Francis Uy', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/brant.jpg')},
         {name: 'Monica Claire M. Apor', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/monica.jpg')},
         {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.png')},
-        {name: 'Allan Jericho', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')}
+        {name: 'Allan Jericho', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
+        {name: 'John Patrick Ciba-an', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/john.jpg')}
       ]
     }
   },

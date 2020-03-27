@@ -1,72 +1,50 @@
 <template>
   <div class="mx-3">
-    <div class="alert alert-info mt-3 p-3" role="alert">
-      <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically you have contracted the virus. It just means the location matches the reportedly affected location.
+    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Place</button>
+    <div class="row w-100 m-0">
+      <div class="alert alert-danger mt-2 p-3 col-12" role="alert">
+        <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically you have contracted the virus. It just means the location matches an reportedly affected location.
+        <p class="mt-3">
+          Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
+        </p>
+      </div>
     </div>
-    <div class="alert alert-success bg-transparent border-success mt-3 p-3" role="alert">
-      Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
+    <div class="position-relative w-100 m-0 row justify-content-between mt-2 pt-0" v-if="data !== null">
+      <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;">
+        <div class="card-block px-3">
+          <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
+            <i class="fas fa-edit"></i>
+          </button>
+          <h6 class="card-title" style="margin-top: 15px;">{{item.route}}, {{item.locality}}, {{item.country}}</h6>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date+' '+item.time | formatDateTime}}</div>
+          <div class="m-0 pb-2">
+            <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
+            <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
+            <b-button variant="warning" class="not-btn" v-if="item.status === 'pum'">There was a PUM in this area.</b-button>
+            <b-button variant="danger" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person in this area.</b-button>
+            <b-button variant="dark" class="not-btn" v-if="item.status === 'death'">There's been a death in this area.</b-button>
+          </div>
+        </div>
+      </div>
     </div>
-    <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <table class="mt-5 legend-table">
-      <thead>
-        <th scope="col" class="font-weight-bold alert-success legend">COVID Negative</th>
-        <th scope="col" class="font-weight-bold alert-info legend">Person Under Investigation</th>
-        <th scope="col" class="font-weight-bold alert-warning legend">Person Under Monitoring</th>
-        <th scope="col" class="font-weight-bold alert-danger legend">COVID Positive</th>
-      </thead>
-    </table>
-   <table class="table table-responsive table-bordered" v-if="data.length > 0">
-      <thead>
-        <th scope="col">Country</th>
-        <th scope="col">Region</th>
-        <th scope="col">Locality</th>
-        <th scope="col">Establishment</th>
-        <th scope="col">Date</th>
-        <th scope="col">Time</th>
-        <th scope="col">Action</th>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in data" :key="index" :class="item.status === 'negative' ? 'alert-success' : item.status === 'positive' ? 'alert-danger' : item.status === 'pui' ? 'alert-info' : 'alert-warning'">
-          <td>{{item.country}}</td>
-          <td>{{item.region}}</td>
-          <td>{{item.locality}}</td>
-          <td>{{item.route}}</td>
-          <td>{{item.date | formatDate}}</td>
-          <td>{{item.date+' '+item.time | formatTime}}</td>
-          <td>
-            <button class="btn btn-primary" @click="showModal('update', item)">
-              <i class="fas fa-edit"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
     <empty v-else :title="'You have not visited any places yet.'" :action="'Your data will show up here once you have added places you\'ve visited. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
-
-.legend {
-  background-color: transparent !important;
-
-  &::before {
-    content: 'x';
-    height: 5px;
-    padding: 0 4px;
-    font-size: 10px;
-    background: currentColor;
-    border-radius: 50px;
-    margin-right: .5rem;
-  }
-
-  &-table thead th {
-    border: none;
-    padding: 2rem;
-  }
+.bg-primary {
+  background-color: $primary !important;
 }
 
+.not-btn {
+  pointer-events: none;
+}
+
+.card.card-half {
+  width: 49%;
+  margin: .5%;
+}
 
 </style>
 <script>
@@ -77,15 +55,9 @@ import ModalProperty from './CreatePlaces.js'
 import moment from 'moment'
 import Vue from 'vue'
 
-Vue.filter('formatDate', function(value) {
+Vue.filter('formatDateTime', function(value) {
   if (value) {
-    return moment(String(value)).format('MM/DD/YYYY')
-  }
-})
-
-Vue.filter('formatTime', function(value){
-  if(value) {
-    return moment(String(value)).format('hh:mm A')
+    return moment(String(value)).format('MM/DD/YYYY h:m A')
   }
 })
 
@@ -135,8 +107,9 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('visited_places/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.data = response.data
-        console.log(this.data)
+        if(response.data.length > 0) {
+          this.data = response.data
+        }
       })
     },
     showModal(action, item = null){
