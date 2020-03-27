@@ -130,7 +130,9 @@ export default {
         {name: 'Jeanille Abayon', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/jeanille.jpg')},
         {name: 'Nicole Amber Mariscal', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/nicole.jpg')},
         {name: 'Brant Francis Uy', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/brant.jpg')},
-        {name: 'Monica Claire Apor', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/monica.jpg')}
+        {name: 'Monica Claire M. Apor', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/monica.jpg')},
+        {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.png')},
+        {name: 'Allan Jericho', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')}
       ]
     }
   },
