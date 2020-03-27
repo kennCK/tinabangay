@@ -1,35 +1,40 @@
 <template>
-  <div v-if="data !== null" class="holder">
+  <div v-if="data !== null" class="holder w-100">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
-      <Pager
-        :pages="numPages"
-        :active="activePage"
-        :limit="perPage"/>
-      <p>Current Page: {{ activePage }}</p>
-    <div class="card" v-for="(item, index) in lists" :key="index" style="margin-bottom: 10px;" >
-      <div>
-        <div class="card-block px-3">
-          <h6 class="card-title" style="margin-top:15px">
-            {{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}}
-          </h6>
-          <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
-          <span class="card-title">
-            <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
-              POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
-              PUI<b-badge class="badge" variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
-              PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-            <b-button variant="info" style="margin-bottom: 25px; margin-bottom: 5px;">
-             NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
-            </b-button>
-          </span>
-        </div> 
+      <div class="row justify-content-center m-0">
+        <Pager
+          :pages="numPages"
+          :active="activePage"
+          :limit="perPage"
+          :includesDropDown="false"
+          />
       </div>
+    <div class="row w-100 m-0">
+      <div class="card card-half" v-for="(item, index) in lists" :key="index" style="margin-bottom: 10px;" >
+        <div>
+          <div class="card-block px-3">
+            <h6 class="card-title" style="margin-top:15px">
+              {{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}}
+            </h6>
+            <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
+            <span class="card-title">
+              <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
+                POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+              <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
+                PUI<b-badge class="badge" variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+              <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
+                PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+              <b-button variant="info" style="margin-bottom: 25px; margin-bottom: 5px;">
+               NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+            </span>
+          </div> 
         </div>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -46,7 +51,6 @@
 }
 
 .holder{
-  width: 60%;
   float: left;
   margin-top: 25px;
 }
@@ -128,6 +132,19 @@ input[type=number]::-webkit-outer-spin-button {
   font-weight: bold;
   outline: none;
 }
+
+.card.card-half {
+  width: 49%;
+  margin: .5%;
+}
+
+@media (max-width: 767px) {
+  .card.card-half {
+    width: 100%;
+    margin: 0;
+  }
+}
+
 @media not all and (min-resolution:.001dpcm)
 { @supports (-webkit-appearance:none) and (stroke-color:transparent) {
   .number-input.md-number-input.safari_only button:before, 
@@ -153,7 +170,7 @@ export default {
       data: null,
       searchValue: null,
       result: null,
-      perPage: 5,
+      perPage: 10,
       rows: null,
       activePage: 1
     }
