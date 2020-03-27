@@ -67,7 +67,7 @@
             </table>
         </div>
       </div>
-  </div>
+    </div>
 </div>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
