@@ -9,7 +9,7 @@
       </span>
     </div>
     <div class="holder d-flex flex-row justify-content-center align-items-center my-4 row w-100 mx-0 p-0">
-      <div class="border-0 m-3" style="max-width: 18rem;" v-for="(item, index) in data" :key="index">
+      <div class="border-0 m-3" style="max-width: 25rem;" v-for="(item, index) in data" :key="index">
         <div class="p-3 bg-dark text-light text-capitalize">
           <h6 v-if="!item.img">{{item.name}}</h6>
           <img v-else :src="item.img" :alt="item.name" class="img-fluid">
@@ -80,7 +80,7 @@ export default {
   },
   data(){
     return {
-      data: [{name: 'Jet Mariscal'}, {name: 'Hiacynth Mariscal'}, {img: require('assets/img/contributors/usc.png'), name: 'University of San Carlos'}]
+      data: [{name: 'Jet Mariscal'}, {name: 'Hiacynth Mariscal'}, {img: require('assets/img/contributors/usc.png'), name: 'University of San Carlos'}, {img: require('assets/img/contributors/increment-tech.png'), name: 'Increment Technologies'}]
     }
   },
   methods: {
