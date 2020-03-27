@@ -10,12 +10,12 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']"></basic-filter>
     <table class="table table-responsive table-bordered">
-      <thead class="custom-header-color">
-        <th class="text-center">Patient's Username</th>
-        <th class="text-center">Contact Number</th>
-        <th class="text-center">Status</th>
-        <th class="text-center">Date Recorded</th>
-        <th class="text-center">Visited Places</th>
+      <thead class="bg-primary">
+        <td class="text-center">Patient's Username</td>
+        <td class="text-center">Contact Number</td>
+        <td class="text-center">Status</td>
+        <td class="text-center">Date Recorded</td>
+        <td class="text-center">Visited Places</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
@@ -77,6 +77,11 @@
 .custom-header-color{
   color: $primary;
 }
+
+.bg-primary{
+  background: $primary !important;
+}
+
 </style>
 <script>
 import ROUTER from 'src/router'

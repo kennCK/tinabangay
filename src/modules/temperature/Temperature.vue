@@ -1,22 +1,27 @@
 <template>
   <div style="margin-top: 25px;">
-    <table class="table table-responsive table-bordered" >
-      <thead>
+    <table class="table table-responsive table-bordered" v-if="data !== null">
+      <thead class="bg-primary">
         <td>Read By</td>
         <td>Temperature</td>
         <td>Remarks</td>
         <td>Location</td>
+        <td>Date</td>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.added_by}}</td>
+        <tr v-for="(item, index) in data" :key="index.id">
+          <td>{{item.added_by_account.username}}</td>
           <td>{{item.value}} Degree Celsius</td>
-          <td>{{item.remarks}}</td>
+          <td>{{item.remarks === null ? 'none' : item.remarks}}</td>
           <td>
-            <label v-if="item.route !== null">
-              {{item.route + ',' + item.locality + ', ' + item.country}}
+            <label v-if="item.temperature_location !== null">
+              {{item.temperature_location.route + ',' + item.temperature_location.locality + ', ' + item.temperature_location.country}}
+            </label>
+            <label v-else>
+              Not Specified
             </label>
           </td>
+          <td>{{item.created_at_human}}</td>
         </tr>
       </tbody>
     </table>
@@ -25,15 +30,17 @@
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
+.bg-primary{
+  background: $primary !important;
+}
 </style>
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
-import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
-    this.retrieveLocations()
+    this.retrieve()
   },
   data(){
     return {
@@ -49,8 +56,7 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieveLocations(){
-      console.log('retrieving locations...')
+    retrieve(){
       let parameter = {
         condition: [{
           clause: '=',
@@ -59,39 +65,16 @@ export default {
         }]
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('temperature_locations/retrieve', parameter).then(response => {
+      this.APIRequest('temperatures/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          this.retrieveValue()
         }else{
           this.data = null
-          console.log('Nope. There\'s nothing here')
         }
-      })
-    },
-    retrieveValue(){
-      this.data.forEach((tempLoc, index) => {
-        let parameter = {
-          condition: [{
-            clause: '=',
-            column: 'id',
-            value: tempLoc.temperature_id
-          }]
-        }
-        $('#loading').css({display: 'block'})
-        this.APIRequest('temperatures/retrieve', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          if(response.data.length > 0){
-            this.data[index].value = response.data[0].value
-            console.log(this.data)
-          }else{
-            this.data = null
-            // these are just test values this.data = [{route: 'asdf', locality: 'hatdog', country: 'Germany', added_by: 'Ice cream', value: '35', remarks: 'bugnaw keyo'}, {route: 'fdsa', locality: 'cornedbeef', country: 'Japan', added_by: 'Sisig', value: '39', remarks: 'init keyo'}]
-          }
-        })
       })
     }
   }
 }
 </script>
+

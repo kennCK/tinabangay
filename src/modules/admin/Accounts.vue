@@ -9,7 +9,7 @@
       :grid="['list', 'th-large']"></basic-filter>
     
     <table class="table table-bordered table-responsive" v-if="data !== null">
-      <thead>
+      <thead class="bg-primary">
         <tr>
           <td>Date</td>
           <td>Username</td>
@@ -47,7 +47,12 @@
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
   </div>
 </template>
-<style scoped>
+<style lang="scss" scoped> 
+@import "~assets/style/colors.scss";
+.bg-primary{
+  background: $primary !important;
+}
+
 .ledger-summary-container{
   width: 100%;
   float: left;

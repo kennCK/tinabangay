@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-3" style="float: initial;">
+  <div class="mx-3">
     <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Place</button>
     <div class="row w-100 m-0">
       <div class="alert alert-danger mt-2 p-3 col-12" role="alert">
