@@ -37,7 +37,7 @@
   position: absolute;
   width: 100%;
   bottom: 0;
-  height: 40%;
+  min-height: 40%;
   background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8) 50%);
   border-radius: 0 0 10px 10px;
 }
@@ -128,7 +128,12 @@ export default {
         {name: 'Kent Yohann Bacatan', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/kent.png')},
         {name: 'Ismael Francisco', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/ismael.jpg')},
         {name: 'Jeanille Abayon', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/jeanille.jpg')},
-        {name: 'Nicole Amber Mariscal', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/nicole.jpg')}
+        {name: 'Nicole Amber Mariscal', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/nicole.jpg')},
+        {name: 'Brant Francis Uy', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/brant.jpg')},
+        {name: 'Monica Claire M. Apor', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/monica.jpg')},
+        {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.png')},
+        {name: 'Allan Jericho', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
+        {name: 'John Patrick Ciba-an', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/john.jpg')}
       ]
     }
   },
