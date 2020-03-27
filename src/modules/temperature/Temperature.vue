@@ -63,11 +63,11 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          this.retrieveValue()
+          // this.retrieveValue()
         }else{
           this.data = null
           console.log('Nope. There\'s nothing here')
-          this.retrieveValue()
+          // this.retrieveValue()
         }
       })
     },
@@ -84,11 +84,9 @@ export default {
         this.APIRequest('temperatures/retrieve', parameter).then(response => {
           $('#loading').css({display: 'none'})
           if(response.data.length > 0){
-            this.data[index].value = response.data[0].value
-            console.log(this.data)
+            this.data = response.data
           }else{
             this.data = null
-            // these are just test values this.data = [{route: 'asdf', locality: 'hatdog', country: 'Germany', added_by: 'Ice cream', value: '35', remarks: 'bugnaw keyo'}, {route: 'fdsa', locality: 'cornedbeef', country: 'Japan', added_by: 'Sisig', value: '39', remarks: 'init keyo'}]
           }
         })
       })
