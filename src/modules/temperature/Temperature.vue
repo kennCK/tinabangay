@@ -7,7 +7,7 @@
         <td>Remarks</td>
         <td>Location</td>
       </thead>
-      <tbody>
+      <tbody v-if="data !== null">
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.added_by}}</td>
           <td>{{item.value}} Degree Celsius</td>
@@ -33,7 +33,7 @@ import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
-    this.retrieveLocations()
+    this.retrieveValue()
   },
   data(){
     return {
@@ -71,23 +71,21 @@ export default {
       })
     },
     retrieveValue(){
-      this.data.forEach((tempLoc, index) => {
-        let parameter = {
-          condition: [{
-            clause: '=',
-            column: 'id',
-            value: tempLoc.temperature_id
-          }]
+      let parameter = {
+        condition: [{
+          clause: '=',
+          column: 'id',
+          value: this.user.userID
+        }]
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('temperatures/retrieve', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        if(response.data.length > 0){
+          this.data = response.data
+        }else{
+          this.data = null
         }
-        $('#loading').css({display: 'block'})
-        this.APIRequest('temperatures/retrieve', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          if(response.data.length > 0){
-            this.data = response.data
-          }else{
-            this.data = null
-          }
-        })
       })
     }
   }
