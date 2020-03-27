@@ -161,8 +161,9 @@ td i:hover{
   color: $primary !important; 
 }
 
-tbody tr{
+.table tbody td{
   height: 35px !important;
+  padding: .50rem !important;
 }
 
 </style>

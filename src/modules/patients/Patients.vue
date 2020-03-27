@@ -1,7 +1,5 @@
 <template>
   <div style="margin-top: 25px;">
-    <h1 class="my-1">Patients</h1>
-    <div class="card-body" style='overflow-y: auto; height: auto;'>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -11,57 +9,48 @@
       :grid="['list', 'th-large']"></basic-filter>
     <table class="table table-responsive table-bordered">
       <thead class="bg-primary">
-        <td class="text-center">Patient's Username</td>
-        <td class="text-center">Contact Number</td>
-        <td class="text-center">Status</td>
-        <td class="text-center">Date Recorded</td>
-        <td class="text-center">Visited Places</td>
+        <td>Status</td>
+        <td>Patient's Username</td>
+        <td>Contact Number</td>
+        <td>Date Recorded</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-center">{{item.account.username}}</td>
-          <td class="text-center">{{item.account.information.contact_number}}</td>
-          <td v-if="(item.status === 'positive')" class="text-danger text-center text-uppercase"><strong>{{item.status}}</strong></td>
-          <td v-if="(item.status === 'negative')" class="text-success text-center text-uppercase"><strong>{{item.status}}</strong></td>
-          <td v-else-if="((item.status === 'pui' || item.status === 'pum'))" class="text-warning text-center text-uppercase"><strong>{{item.status}}</strong></td>
-          <td class="text-center">{{item.created_at_human}}</td>
-          <td class = "text-center">
-            <button type="button" class="btn btn-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places">
-              <i class="fa fa-eye px-2"></i>
-            </button>
-          </td>
+          <td class="text-uppercase" :class="{'bg-black': item.status === 'death', 'bg-danger': item.status === 'positive', 'bg-warning': item.status === 'pum', 'bg-primary': item.status === 'pui', 'bg-success': item.status === 'negative'}">{{item.status}}</td>
+          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places"></i> {{item.account.username}}</td>
+          <td>{{item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
+          <td>{{item.created_at_human}}</td>
         </tr>
       </tbody>
     </table>
-    </div>
     
     <!--MODAL FOR VISITED PATIENTS-->
     <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
-        <div class="modal-content text-center">
+        <div class="modal-content">
           <div class="modal-header">
-            <h5 class="heading pt-2">Visited Places</h5>
+            <h5 class="modal-title">Visited Places</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
           </div>
           <div class="modal-body p-4" v-if="selectedItem !== null">
             <table class="table table-responsive table-bordered">
-              <thead class="custom-header-color">
-                <th class="text-center">Date</th>
-                <th class="text-center">Time</th>
-                <th class="text-center">Establishment</th>
-                <th class="text-center">Locality</th>
-                <th class="text-center">Region</th>
+              <thead class="bg-primary">
+                <td>Date</td>
+                <td>Time</td>
+                <td>Establishment</td>
+                <td>City</td>
+                <td>Country</td>
               </thead>
              <tbody>
               <tr v-for="(item, index) in selectedItem.places" :key="index">
-                <td class="text-center">{{item.date_human}}</td>
-                <td class="text-center">{{item.time}}</td>
+                <td>{{item.date_human}}</td>
+                <td>{{item.time}}</td>
                 <td>{{item.route}}</td>
                 <td>{{item.locality}}</td>
-                <td>{{item.region}}</td>
+                <td>{{item.country}}</td>
               </tr>
              </tbody>
             </table>
@@ -74,12 +63,17 @@
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
-.custom-header-color{
-  color: $primary;
-}
-
 .bg-primary{
   background: $primary !important;
+}
+
+.bg-black{
+  color: $white !important;
+  background: #000000 !important;
+}
+
+.bg-warning, .bg-danger{
+  color: $white !important;
 }
 
 </style>
