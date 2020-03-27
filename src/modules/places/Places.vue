@@ -21,7 +21,7 @@
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
             <b-button variant="warning" class="not-btn" v-if="item.status === 'pum'">There was a PUM in this area.</b-button>
-            <b-button variant="danger" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person in this area.</b-button>
+            <b-button variant="danger" style="max-width: 100%; white-space: normal; height: initial !important" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person in this area.</b-button>
             <b-button variant="dark" class="not-btn" v-if="item.status === 'death'">There's been a death in this area.</b-button>
           </div>
         </div>
