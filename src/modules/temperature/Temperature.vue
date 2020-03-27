@@ -17,6 +17,9 @@
             <label v-if="item.temperature_location !== null">
               {{item.temperature_location.route + ',' + item.temperature_location.locality + ', ' + item.temperature_location.country}}
             </label>
+            <label v-else>
+              Not Specified
+            </label>
           </td>
           <td>{{item.created_at_human}}</td>
         </tr>

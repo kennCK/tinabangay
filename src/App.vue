@@ -161,6 +161,10 @@ td i:hover{
   color: $primary !important; 
 }
 
+tbody tr{
+  height: 35px !important;
+}
+
 </style>
 <script>
 import ROUTER from './router'
