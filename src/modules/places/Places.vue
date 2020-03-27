@@ -1,20 +1,26 @@
 <template>
   <div class="mx-3">
+    <div class="alert alert-info mt-3 p-3" role="alert">
+      <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically you have contracted the virus. It just means the location matches an reportedly affected location.
+    </div>
+    <div class="alert alert-success bg-transparent border-success mt-3 p-3" role="alert">
+      Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
+    </div>
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <table class="table table-responsive table-bordered">
+    <table class="mt-5 legend-table">
       <thead>
-        <th scope="col" class="font-weight-bold alert-success">COVID Negative</th>
-        <th scope="col" class="font-weight-bold alert-info">Person Under Investigation</th>
-        <th scope="col" class="font-weight-bold alert-warning">Person Under Monitoring</th>
-        <th scope="col" class="font-weight-bold alert-danger">COVID Positive</th>
+        <th scope="col" class="font-weight-bold alert-success legend">COVID Negative</th>
+        <th scope="col" class="font-weight-bold alert-info legend">Person Under Investigation</th>
+        <th scope="col" class="font-weight-bold alert-warning legend">Person Under Monitoring</th>
+        <th scope="col" class="font-weight-bold alert-danger legend">COVID Positive</th>
       </thead>
     </table>
-   <table class="table table-responsive table-bordered">
-      <thead class="custom-header-color">
+   <table class="table table-responsive table-bordered" v-if="data.length > 0">
+      <thead>
         <th scope="col">Country</th>
         <th scope="col">Region</th>
         <th scope="col">Locality</th>
-        <th scope="col">Route</th>
+        <th scope="col">Establishment</th>
         <th scope="col">Date</th>
         <th scope="col">Time</th>
         <th scope="col">Action</th>
@@ -35,14 +41,32 @@
         </tr>
       </tbody>
     </table>
+    <empty v-else :title="'You have not visited any places yet.'" :action="'Your data will show up here once you have added places you\'ve visited. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
-.custom-header-color{
-  color: $primary;
+
+.legend {
+  background-color: transparent !important;
+
+  &::before {
+    content: 'x';
+    height: 5px;
+    padding: 0 4px;
+    font-size: 10px;
+    background: currentColor;
+    border-radius: 50px;
+    margin-right: .5rem;
+  }
+
+  &-table thead th {
+    border: none;
+    padding: 2rem;
+  }
 }
+
 
 </style>
 <script>
@@ -67,7 +91,6 @@ Vue.filter('formatTime', function(value){
 
 export default {
   mounted(){
-
     this.retrieve()
   },
   data(){
@@ -91,7 +114,8 @@ export default {
     }
   },
   components: {
-    'increment-modal': require('components/increment/generic/modal/Modal.vue')
+    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
     redirect(parameter){
@@ -105,13 +129,14 @@ export default {
           value: this.user.userID
         }],
         sort: {
-          locality: 'desc'
+          date: 'asc'
         }
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('visited_places/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
+        console.log(this.data)
       })
     },
     showModal(action, item = null){
