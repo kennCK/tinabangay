@@ -7,7 +7,7 @@
       Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
     </div>
     <button class="btn btn-primary pull-right" style="margin-bottom: 25px; margin-top: 25px;" @click="showModal('create', null)">New Place</button>
-    <table class="table w-50 mt-5 legend-table">
+    <table class="mt-5 legend-table">
       <thead>
         <th scope="col" class="font-weight-bold alert-success legend">COVID Negative</th>
         <th scope="col" class="font-weight-bold alert-info legend">Person Under Investigation</th>
@@ -15,7 +15,7 @@
         <th scope="col" class="font-weight-bold alert-danger legend">COVID Positive</th>
       </thead>
     </table>
-   <table class="table table-responsive table-bordered">
+   <table class="table table-responsive table-bordered" v-if="data.length > 0">
       <thead>
         <th scope="col">Country</th>
         <th scope="col">Region</th>
@@ -41,6 +41,7 @@
         </tr>
       </tbody>
     </table>
+    <empty v-else :title="'You have not visited any places yet.'" :action="'Your data will show up here once you have added places you\'ve visited. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
@@ -62,6 +63,7 @@
 
   &-table thead th {
     border: none;
+    padding: 2rem;
   }
 }
 
@@ -112,7 +114,8 @@ export default {
     }
   },
   components: {
-    'increment-modal': require('components/increment/generic/modal/Modal.vue')
+    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
     redirect(parameter){
@@ -133,6 +136,7 @@ export default {
       this.APIRequest('visited_places/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
+        console.log(this.data)
       })
     },
     showModal(action, item = null){

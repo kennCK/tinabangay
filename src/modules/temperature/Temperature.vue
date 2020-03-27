@@ -59,7 +59,7 @@ export default {
         }]
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('visited_places/retrieve', parameter).then(response => {
+      this.APIRequest('temperature_locations/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
@@ -67,7 +67,6 @@ export default {
         }else{
           this.data = null
           console.log('Nope. There\'s nothing here')
-          this.retrieveValue()
         }
       })
     },
