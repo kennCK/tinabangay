@@ -42,8 +42,7 @@ export default {
     return {
       common: COMMON,
       user: AUTH.user,
-      data: [
-        {'id': 1, 'account_id': 1, 'added_by_account': {'username': 'test'}, 'value': 30, 'remarks': null, 'created_at': '2020-03-25 00:00:00', 'updated_at': null, 'deleted_at': null, 'temperature_location': {'route': 'route', 'locality': 'locality', 'country': 'country'}}]
+      data: []
     }
   },
   components: {
