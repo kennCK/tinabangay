@@ -1,7 +1,11 @@
 <template>
   <div v-if="data !== null" class="holder w-100">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
-      <div class="row justify-content-center m-0">
+      <div class="row justify-content-end m-0 mr-5 align-items-center">
+        <button class="btn btn-primary mr-3 mb-3">
+          <i class="fas fa-map-marker-alt mr-2"></i>
+          View Locations on Map
+        </button>
         <Pager
           :pages="numPages"
           :active="activePage"
@@ -188,8 +192,6 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          console.log('Performing API request: ')
-          console.log(this.data)
         }else{
           this.data = null
         }
