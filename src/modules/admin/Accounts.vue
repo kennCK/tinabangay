@@ -189,10 +189,12 @@ export default{
         account_type: this.newAccountType
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('accounts/update_verification', parameter).then(response => {
+      this.APIRequest('accounts/update_account_type', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.setEditTypeIndex(index, item)
-        this.retrieve(null, null)
+        // this.retrieve(null, null)
+        $('#loading').css({display: 'block'})
+        this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
       })
     },
     redirect(params){
