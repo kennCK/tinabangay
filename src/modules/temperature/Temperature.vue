@@ -1,22 +1,24 @@
 <template>
   <div style="margin-top: 25px;">
-    <table class="table table-responsive table-bordered" >
-      <thead>
+    <table class="table table-responsive table-bordered" v-if="data !== null">
+      <thead class="bg-primary">
         <td>Read By</td>
         <td>Temperature</td>
         <td>Remarks</td>
         <td>Location</td>
+        <td>Date</td>
       </thead>
-      <tbody v-if="data !== null">
-        <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.added_by}}</td>
+      <tbody>
+        <tr v-for="(item, index) in data" :key="index.id">
+          <td>{{item.added_by_account.username}}</td>
           <td>{{item.value}} Degree Celsius</td>
-          <td>{{item.remarks}}</td>
+          <td>{{item.remarks === null ? 'none' : item.remarks}}</td>
           <td>
-            <label v-if="item.route !== null">
-              {{item.route + ',' + item.locality + ', ' + item.country}}
+            <label v-if="item.temperature_location !== null">
+              {{item.temperature_location.route + ',' + item.temperature_location.locality + ', ' + item.temperature_location.country}}
             </label>
           </td>
+          <td>{{item.created_at_human}}</td>
         </tr>
       </tbody>
     </table>
@@ -25,15 +27,17 @@
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
+.bg-primary{
+  background: $primary !important;
+}
 </style>
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
-import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
   mounted(){
-    this.retrieveValue()
+    this.retrieve()
   },
   data(){
     return {
@@ -49,32 +53,11 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieveLocations(){
-      console.log('retrieving locations...')
+    retrieve(){
       let parameter = {
         condition: [{
           clause: '=',
           column: 'account_id',
-          value: this.user.userID
-        }]
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('temperature_locations/retrieve', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        if(response.data.length > 0){
-          this.data = response.data
-          // this.retrieveValue()
-        }else{
-          this.data = null
-          console.log('Nope. There\'s nothing here')
-        }
-      })
-    },
-    retrieveValue(){
-      let parameter = {
-        condition: [{
-          clause: '=',
-          column: 'id',
           value: this.user.userID
         }]
       }
@@ -91,3 +74,4 @@ export default {
   }
 }
 </script>
+
