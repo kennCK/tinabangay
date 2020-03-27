@@ -6,11 +6,17 @@
         <td>Temperature</td>
         <td>Remarks</td>
         <td>Location</td>
+        <td>Date</td>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.added_by}}</td>
+        <tr v-for="(item, index) in data" :key="index.id">
+          <td>{{item.added_by_account.username}}</td>
           <td>{{item.value}} Degree Celsius</td>
+          <td>{{item.remarks==null?'none':item.remarks}}</td>
+          <td>{{item.temperature_location != null?item.temperature_location.route + ',' + item.temperature_location.locality + ', ' + item.temperature_location.country:''}}</td>
+          <td>{{item.created_at}}</td>
+            <label v-if="item.temperature_location !== null">
+              {{item.temperature_location.route + ',' + item.temperature_location.locality + ', ' + item.temperature_location.country}}
           <td>{{item.remarks}}</td>
           <td>
             <label v-if="item.route !== null">
@@ -39,7 +45,8 @@ export default {
     return {
       common: COMMON,
       user: AUTH.user,
-      data: null
+      data: [
+        {'id': 1, 'account_id': 1, 'added_by_account': {'username': 'test'}, 'value': 30, 'remarks': null, 'created_at': '2020-03-25 00:00:00', 'updated_at': null, 'deleted_at': null, 'temperature_location': {'route': 'route', 'locality': 'locality', 'country': 'country'}}]
     }
   },
   components: {
@@ -49,8 +56,8 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieveLocations(){
-      console.log('retrieving locations...')
+    retrieve(){
+      console.log('connecting...')
       let parameter = {
         condition: [{
           clause: '=',
@@ -66,8 +73,10 @@ export default {
           this.retrieveValue()
         }else{
           this.data = null
-          console.log('Nope. There\'s nothing here')
         }
+      }).catch(err => {
+        alert(err.ToString())
+        console.log(err)
       })
     },
     retrieveValue(){
@@ -95,3 +104,4 @@ export default {
   }
 }
 </script>
+
