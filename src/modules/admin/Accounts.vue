@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :ke="index">
+        <tr v-for="(item, index) in data" :key="index">
           <td>{{item.created_at}}</td>
           <td>
             <label class="action-link text-primary">{{item.username}}</label>
