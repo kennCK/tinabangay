@@ -46,6 +46,13 @@
   margin: .5%;
 }
 
+@media (max-width: 767px) {
+  .card.card-half {
+    width: 100%;
+    margin: 0;
+  }
+}
+
 </style>
 <script>
 import ROUTER from 'src/router'
