@@ -46,6 +46,13 @@
   margin: .5%;
 }
 
+@media (max-width: 767px) {
+  .card.card-half {
+    width: 100%;
+    margin: 0;
+  }
+}
+
 </style>
 <script>
 import ROUTER from 'src/router'
@@ -119,6 +126,9 @@ export default {
           let inputs = this.modalProperty.inputs
           inputs.map(input => {
             input.value = null
+            if(input.inputType === 'location') {
+              $(`#${input.id} input`).val('')
+            }
           })
           this.modalProperty.params[0].value = this.user.userID
           break
@@ -144,7 +154,91 @@ export default {
           let object = Object.keys(item)
           modalData.inputs.map(data => {
             if(data.variable === 'location') {
-              data.value = item.route + ', ' + item.locality + ', ' + item.country
+              $(`#${data.id} input`).val(item.route + ', ' + item.locality + ', ' + item.country)
+              modalData.inputs.push({
+                row: 'full',
+                label: 'Route',
+                variable: 'route',
+                placeholder: 'Enter route',
+                value: item.route,
+                required: true,
+                id: 'route',
+                type: 'input',
+                inputType: 'hidden',
+                validation: {
+                  size: 1,
+                  type: 'text'
+                }})
+              modalData.inputs.push({
+                row: 'full',
+                label: 'Locality',
+                variable: 'locality',
+                placeholder: 'Enter locality',
+                value: item.locality,
+                required: true,
+                id: 'locality',
+                type: 'input',
+                inputType: 'hidden',
+                validation: {
+                  size: 1,
+                  type: 'text'
+                }})
+              modalData.inputs.push({
+                row: 'full',
+                label: 'Region',
+                variable: 'region',
+                placeholder: 'Enter region',
+                value: item.region,
+                required: true,
+                id: 'region',
+                type: 'input',
+                inputType: 'hidden',
+                validation: {
+                  size: 1,
+                  type: 'text'
+                }})
+              modalData.inputs.push({
+                row: 'full',
+                label: 'Country',
+                variable: 'country',
+                placeholder: 'Enter country',
+                value: item.country,
+                required: true,
+                id: 'country',
+                type: 'input',
+                inputType: 'hidden',
+                validation: {
+                  size: 1,
+                  type: 'text'
+                }})
+              modalData.inputs.push({
+                row: 'full',
+                label: 'Latitude',
+                variable: 'latitude',
+                placeholder: 'Enter latitude',
+                value: item.latitude,
+                required: true,
+                id: 'latitude',
+                type: 'input',
+                inputType: 'hidden',
+                validation: {
+                  size: 1,
+                  type: 'text'
+                }})
+              modalData.inputs.push({
+                row: 'full',
+                label: 'Longitude',
+                variable: 'longitude',
+                placeholder: 'Enter longitude',
+                value: item.longitude,
+                required: true,
+                id: 'longitude',
+                type: 'input',
+                inputType: 'hidden',
+                validation: {
+                  size: 1,
+                  type: 'text'
+                }})
             }
             if(data.variable === 'date'){
               data.value = item.date
