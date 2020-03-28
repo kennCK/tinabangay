@@ -7,17 +7,18 @@
       @changeSortEvent="retrieve($event.sort, $event.filter)"
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']"></basic-filter>
-    <table class="table table-responsive table-bordered">
-      <thead class="bg-primary">
+
+    <table class="table table-responsive table-bordered" id="myTable">
+      <tr class="bg-primary">
         <td>Status</td>
-        <td>Patient's Username</td>
+        <td>Patient's Username <i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></td>
         <td>Contact Number</td>
         <td>Date Recorded</td>
-      </thead>
+      </tr>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td class="text-uppercase" :class="{'bg-black': item.status === 'death', 'bg-danger': item.status === 'positive', 'bg-warning': item.status === 'pum', 'bg-primary': item.status === 'pui', 'bg-success': item.status === 'negative'}">{{item.status}}</td>
-          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places"></i> {{item.account.username}}</td>
+          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</td>
           <td>{{item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
         </tr>
@@ -36,10 +37,10 @@
             </button>
           </div>
           <div class="modal-body p-4" v-if="selectedItem !== null">
-            <table class="table table-responsive table-bordered">
+            <table class="table table-responsive table-bordered"  id="myTable2">
               <thead class="bg-primary">
                 <td>Date</td>
-                <td>Time</td>
+                <td> <i class=" fa fa-caret-down float-right" @click="sortTable2(1)"></i>Time</td>
                 <td>Establishment</td>
                 <td>City</td>
                 <td>Country</td>
@@ -92,6 +93,7 @@ export default {
     return {
       common: COMMON,
       user: AUTH.user,
+      auth: AUTH,
       modalProperty: ModalProperty,
       selectedItem: null,
       data: null,
@@ -99,14 +101,6 @@ export default {
       category: [{
         title: 'Sort by',
         sorting: [{
-          title: 'Patient Username ascending',
-          payload: 'username',
-          payload_value: 'asc'
-        }, {
-          title: 'Patient Username descending',
-          payload: 'username',
-          payload_value: 'desc'
-        }, {
           title: 'Status ascending',
           payload: 'status',
           payload_value: 'asc'
@@ -154,8 +148,81 @@ export default {
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
-        console.log(response)
       })
+    },
+    sortTable(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir
+      var switchcount = 0
+      table = document.getElementById('myTable')
+      switching = true
+      dir = 'asc'
+      while (switching) {
+        switching = false
+        rows = table.rows
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false
+          x = rows[i].getElementsByTagName('TD')[n]
+          y = rows[i + 1].getElementsByTagName('TD')[n]
+          if (dir === 'asc') {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              shouldSwitch = true
+              break
+            }
+          } else if (dir === 'desc') {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              shouldSwitch = true
+              break
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i])
+          switching = true
+          switchcount++
+        } else {
+          if (switchcount === 0 && dir === 'asc') {
+            dir = 'desc'
+            switching = true
+          }
+        }
+      }
+    },
+    sortTable2(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir
+      var switchcount = 0
+      table = document.getElementById('myTable2')
+      switching = true
+      dir = 'asc'
+      while (switching) {
+        switching = false
+        rows = table.rows
+        for (i = 0; i < (rows.length - 1); i++) {
+          shouldSwitch = false
+          x = rows[i].getElementsByTagName('TD')[n]
+          y = rows[i + 1].getElementsByTagName('TD')[n]
+          if (dir === 'asc') {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              shouldSwitch = true
+              break
+            }
+          } else if (dir === 'desc') {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              shouldSwitch = true
+              break
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i])
+          switching = true
+          switchcount++
+        } else {
+          if (switchcount === 0 && dir === 'asc') {
+            dir = 'desc'
+            switching = true
+          }
+        }
+      }
     }
   }
 }

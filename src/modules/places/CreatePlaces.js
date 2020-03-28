@@ -7,7 +7,7 @@ export default {
     row: 'full',
     label: 'Location',
     variable: 'location',
-    placeholder: 'Set location',
+    placeholder: 'Add Location',
     value: null,
     required: true,
     id: 'location',

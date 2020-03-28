@@ -58,13 +58,11 @@ import CONFIG from 'src/config.js'
 import ModalProperty from './CreateRides.js'
 import moment from 'moment'
 import Vue from 'vue'
-
 Vue.filter('formatDateTime', function(value) {
   if (value) {
     return moment(String(value)).format('MM/DD/YYYY h:m A')
   }
 })
-
 export default {
   mounted(){
     this.retrieve()
