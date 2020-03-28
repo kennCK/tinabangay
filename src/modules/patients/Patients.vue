@@ -39,9 +39,9 @@
           <div class="modal-body p-4" v-if="selectedItem !== null">
             <table class="table table-responsive table-bordered"  id="myTable2">
               <thead class="bg-primary">
-                <td>Date</td>
-                <td> <i class=" fa fa-caret-down float-right" @click="sortTable2(1)"></i>Time</td>
-                <td>Establishment</td>
+                <td colspan="2"> <i class=" fa fa-caret-down float-right" @click="sortTable2(0)"></i>Date Visited</td>
+                <!-- <td> <i class=" fa fa-caret-down float-right" @click="sortTable2(1)"></i>Time</td> -->
+                <td> <i class=" fa fa-caret-down float-right" @click="sortTable2(2)"></i>Establishment</td>
                 <td>City</td>
                 <td>Country</td>
               </thead>
@@ -79,6 +79,7 @@
 
 </style>
 <script>
+
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
