@@ -16,7 +16,7 @@
             <i class="fas fa-edit"></i>
           </button>
           <h6 class="card-title" style="margin-top: 15px;">{{item.route}}, {{item.locality}}, {{item.country}}</h6>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date+' '+item.time | formatDateTime}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date | formatDate}} {{item.time | formatTime}}</div>
           <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
@@ -62,9 +62,16 @@ import ModalProperty from './CreatePlaces.js'
 import moment from 'moment'
 import Vue from 'vue'
 
-Vue.filter('formatDateTime', function(value) {
+Vue.filter('formatDate', function(value) {
   if (value) {
-    return moment(String(value)).format('MM/DD/YYYY hh:mm A')
+    return moment(String(value)).format('MMM DD, YYYY')
+  }
+})
+
+Vue.filter('formatTime', function(value){
+  if(value) {
+    let stamp = moment(String(value), [moment.HTML5_FMT.TIME_SECONDS])
+    return moment(String(stamp)).format('hh:mm A')
   }
 })
 
