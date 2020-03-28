@@ -3,51 +3,64 @@
     
     <h1>Temperature Summary</h1>
     <br>
-    <div class="input-group">
-      <input type="text" class="form-control" v-model="search" placeholder="Search Location">
-      <div class="input-group-append">
-      <select class="form-control select-range" v-model="range">
-        <option value="all">--Choose Temperature Range--</option>
-        <option value="all">All</option>
-        <option value="hypotermia">Below 36.5</option>
-        <option value="normal">36.5 - 37.5</option>
-        <option value="fever">37.6 - 40.0</option>
-        <option value="hyperpyrexia">Above 40.0</option>
-      </select>
+
+    
+    <div class="card-body" >
+      <div class='row'>
+        <div class='col-lg-8 col-sm-12 col-xs-12'>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <button class='btn btn-warning' style='pointer-events: none;'>Search Location</button>
+              </div>
+              <input type="text" class="form-control " v-model="search" placeholder='e.g. Mandaue' >
+              <div class="input-group-prepend ml-2">
+                <button class='btn btn-warning' style='pointer-events: none;'>Sort by Temperature</button>
+              </div>
+              <select class="form-control custom-select" v-model="range">
+                <option value="all">All</option>
+                <option value="hypotermia">Below 36.5</option>
+                <option value="normal">36.5 - 37.5</option>
+                <option value="fever">37.6 - 40.0</option>
+                <option value="hyperpyrexia">Above 40.0</option>
+            </select>
+            </div>
+        </div>
       </div>
-    </div>
+    
 
-
-    <div class="card-body" style=' overflow-y: auto; height: auto;'>
       <table class="table table-responsive table-bordered">
-        <thead class="custom-header-color">
-          <th style='text-align: center;'>Name</th>
-          <th style='text-align: center;'>Address</th>
+        <thead>
+          <th style='text-align: center;'>Username</th>
           <th style='text-align: center;'>Contact Number</th>
           <th style='text-align: center;'>Temperature</th>
+          <th style='text-align: center;'>Route</th>
           <th style='text-align: center;'>Location</th>
+          <th style='text-align: center;'>Taken by</th>
           <th style='text-align: center;'>Date Taken</th>
-          <th style='text-align: center;'>Action</th>
+          <!-- <th style='text-align: center;'>Action</th> -->
         </thead>
-        <tbody>
-          <tr v-for="(u, index) in filteredLocation" v-bind:key="index">
-            <td>{{u.last_name}}, {{u.first_name}}</td>
-            <td>{{u.address}}</td>
-            <td>{{u.contact_number}}</td>
-            <td>{{u.temperature.value}}°</td>
-            <td>{{u.temperature.location}}</td>
-            <td>{{u.temperature.date_taken}}</td>
-            <td style='text-align: center;'>
-              <button class='btn btn-primary' data-toggle="modal" @click="selected_user = u" data-target="#visitedPlaces">
-                <i style='padding: 2px;' class="fa fa-eye"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
+        
+            <tbody>
+            <tr v-for="user in filteredLocation" v-bind:key="user">
+              <td>{{user.account.username}}</td>
+              <td>{{user.account.information.cellular_number}}</td>
+              <td>{{user.value}}</td>
+              <td>{{user.route}}</td>
+              <td>{{user.locality}}</td>
+              <td>{{user.added_by_account.username}}</td>
+              <td>{{user.created_at}}</td>
+              <!-- <td style='text-align: center;'>
+                <button class='btn btn-primary' data-toggle="modal" @click="selected_user = u" data-target="#visitedPlaces">
+                  <i style='padding: 2px;' class="fa fa-eye"></i>
+                </button>
+              </td> -->
+            </tr>
+            </tbody>
+        
       </table>
 
     <!-- VISITED PLACES MODAL -->
-      <div class="modal fade" id='visitedPlaces' tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+      <!-- <div class="modal fade" id='visitedPlaces' tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -61,10 +74,10 @@
               <table class="table">
                 <thead class="custom-header-color">
                   <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Time</th>
-                    <th scope="col">Locality</th>
-                    <th scope="col">Country</th>
+                    <th >Date</th>
+                    <th >Time</th>
+                    <th >Locality</th>
+                    <th >Country</th>
                   </tr>
                 </thead>
                 <tbody style='height: 300px; overflow-y:auto;'>
@@ -83,7 +96,7 @@
           </div>
         </div>
        </div>
-      </div>
+      </div> -->
       
     </div>
     <increment-modal :property="modalProperty"></increment-modal>
@@ -96,17 +109,25 @@
 .custom-header-color{
   color: $primary;
 }
-// JER CHANGES
-.form-control{
-  width: 30%!important;
+
+.btn, .btn-primary, .select-btn, .dropdown{
+  border-radius: 0;
 }
 
-.select-range{
-  width: 100%!important;
+table{
+  margin-top: 2%;
+  width: 100%;
 }
 
-.input-group{
-  width: 50%;
+table thead{
+  color: white;
+  background-color:  rgb(0, 91, 150);
+  
+}
+
+table thead th{
+  font-weight: normal;
+  padding: 10px;
 }
 </style>
 <script>
@@ -115,94 +136,20 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/places/CreatePlaces.js'
 export default {
-  // JER CHANGES
-  // mounted(){
-  //   this.retrieve()
-  // },
+  mounted(){
+    this.retrieve()
+  },
   data(){
     return {
       common: COMMON,
       user: AUTH.user,
       modalProperty: ModalProperty,
-      // JER CHANGES
       selected_user: null,
-      users: [
-        {
-          id: 1,
-          first_name: 'Allan',
-          last_name: 'Bargamento',
-          contact_number: '+639205024633',
-          address: 'Consolacion',
-          visited_places: [
-            {
-              locality: 'Babag 2',
-              region: 'Lapulapu City, Cebu',
-              country: 'Philippines',
-              date: '2020-3-25',
-              time: '9:30AM'
-            },
-            {
-              locality: 'Timpolok',
-              region: 'Lapulapu City, Cebu',
-              country: 'Philippines',
-              date: '2020-3-25',
-              time: '12:30AM'
-            }
-          ],
-          temperature: {
-            value: 37,
-            date_taken: '2020-3-26',
-            location: 'Opon'
-          }
-        },
-        {
-          id: 2,
-          first_name: 'Jeanille',
-          last_name: 'Abayon',
-          contact_number: '+639999024633',
-          address: 'La Aldea Buena Mactan',
-          visited_places: [
-            {
-              locality: 'Timpolok',
-              region: 'Lapulapu City, Cebu',
-              country: 'Philippines',
-              date: '2020-3-25',
-              time: '9:30AM'
-            }
-          ],
-          temperature: {
-            value: 36,
-            date_taken: '2020-3-26',
-            location: 'Opon'
-          }
-        }
-      ],
-      // data: null,
+      data: null,
       message: 'Test message',
       messageFlag: true,
       search: '',
       range: 'all'
-    }
-  },
-  // JER CHANGES
-  computed: {
-    filteredLocation: function(){
-      var range = this.range
-      return this.users.filter((users) => {
-        var search = this.search.toLowerCase()
-        var loc = users.temperature.location.toLowerCase()
-        if(range === 'hypotermia'){
-          return (loc.match(search) && users.temperature.value < 36.5)
-        }else if(range === 'normal'){
-          return (loc.match(search) && (users.temperature.value >= 36.5 && users.temperature.value <= 37.5))
-        }else if(range === 'fever'){
-          return (loc.match(search) && (users.temperature.value >= 37.6 && users.temperature.value <= 40.0))
-        }else if(range === 'hyperpyrexia'){
-          return (loc.match(search) && users.temperature.value > 40.0)
-        }else{
-          return loc.match(search)
-        }
-      })
     }
   },
   components: {
@@ -227,8 +174,9 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
-      // JER CHANGES
-      this.APIRequest('tracing_temperatures/retrieve', parameter).then(response => {
+      this.APIRequest('temperatures/summary?locality=Cebu City&temperature=35', parameter).then(response => {
+        console.log('THESE ARE THE DATA!!')
+        console.log(response.data)
         $('#loading').css({display: 'none'})
         this.data = response.data
       })
@@ -238,7 +186,6 @@ export default {
         id: id
       }
       $('#loading').css({display: 'block'})
-      // JER CHANGES
       this.APIRequest('tracing_temperatures/delete', parameter).then(response => {
         this.retrieve()
       })
@@ -301,6 +248,26 @@ export default {
           break
       }
       $('#createPlacesModal').modal('show')
+    }
+  },
+  computed: {
+    filteredLocation: function(){
+      var range = this.range
+      return this.data.filter(data => {
+        var search = this.search.toLowerCase()
+        var loc = data.route.toLowerCase()
+        if(range === 'hypotermia'){
+          return (loc.match(search) && data.value < 36.5)
+        }else if(range === 'normal'){
+          return (loc.match(search) && (data.value >= 36.5 && data.value <= 37.5))
+        }else if(range === 'fever'){
+          return (loc.match(search) && (data.value >= 37.6 && data.value <= 40.0))
+        }else if(range === 'hyperpyrexia'){
+          return (loc.match(search) && data.value > 40.0)
+        }else{
+          return loc.match(search)
+        }
+      })
     }
   }
 }
