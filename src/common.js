@@ -50,21 +50,21 @@ export default {
   },
   vehicleTypes: [{
     label: 'Bus',
-    value: 'Bus'
+    value: 'bus'
   }, {
     label: 'Plane',
-    value: 'Plane'
+    value: 'plane'
   }, {
-    label: 'Jeep',
-    value: 'Jeep'
+    label: 'Jeepney',
+    value: 'jeep'
   }, {
     label: 'Private Car',
-    value: 'Private Car'
+    value: 'private_car'
   }, {
     label: 'Van',
-    value: 'Van'
+    value: 'van'
   }, {
     label: 'Motorcycle',
-    value: 'Motorcycle'
+    value: 'motorcycle'
   }]
 }
