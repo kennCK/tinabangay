@@ -80,7 +80,7 @@ export default {
   },
   data(){
     return {
-      data: [{img: require('assets/img/contributors/increment-tech.png'), name: 'Increment Technologies'}, {img: require('assets/img/contributors/usc.png'), name: 'University of San Carlos'}, {name: 'Jet Mariscal'}, {name: 'Hiacynth Mariscal'}]
+      data: [{img: require('assets/img/contributors/increment-tech.png'), name: 'Increment Technologies'}, {img: require('assets/img/contributors/usc.png'), name: 'University of San Carlos'}]
     }
   },
   methods: {
