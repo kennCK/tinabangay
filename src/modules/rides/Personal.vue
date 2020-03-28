@@ -14,13 +14,13 @@
           </button>
           <h6 class="card-title text-uppercase text-primary" style="margin-top: 15px;">{{item.type + (item.code !== null ? ' : ' + item.code : '')}}</h6>
 
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fas fa-map-marker" style="margin-right: 10px"></i>{{item.from + ' - ' + item.to}}</div>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fas fa-calendar" style="margin-right: 10px"></i>{{item.from_date_human + ' - ' + item.to_date_human}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-map-marker" style="margin-right: 10px"></i>{{item.from + ' - ' + item.to}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_human + ' - ' + item.to_date_human}}</div>
           <div class="m-0 pb-2">
-            <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This vehicle is clear.</b-button>
-            <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI onboard this vehicle.</b-button>
-            <b-button variant="warning" class="not-btn" v-if="item.status === 'pum'">There was a PUM onboard this vehicle.</b-button>
-            <b-button variant="danger" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person onboard this vehicle.</b-button>
+            <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This route is clear.</b-button>
+            <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI on this route.</b-button>
+            <b-button variant="warning" class="not-btn" v-if="item.status === 'pum'">There was a PUM on this route.</b-button>
+            <b-button variant="danger" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person on this route.</b-button>
           </div>
         </div>
       </div>
