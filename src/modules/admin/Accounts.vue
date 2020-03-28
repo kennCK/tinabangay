@@ -31,7 +31,7 @@
             <i class="fa fa-pencil text-primary" style="margin-left: 10px;" @click="setEditTypeIndex(index, item)" v-if="editTypeIndex !== index"></i>
             <span v-if="editTypeIndex === index">
               <select class="form-control" v-model="newAccountType" style="float: left; width: 70%;">
-                <option v-for="(typeItem, typeIndex) in ['USER', 'AGENCY', 'ADMIN']" :key="typeIndex">{{typeItem}}</option>
+                <option v-for="(typeItem, typeIndex) in ['USER', 'AGENCY', 'AGENCY_LEVEL_1', 'ADMIN']" :key="typeIndex">{{typeItem}}</option>
               </select>
               <i class="fa fa-check text-primary" style="margin-left: 5px; float: left;" @click="updateType(item, index)"></i>
               <i class="fa fa-times text-danger" style="margin-left: 5px; float: left;" @click="setEditTypeIndex(index, item)"></i>

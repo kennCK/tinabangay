@@ -4,10 +4,10 @@ export default {
     {accountType: 'ALL', accountStatus: 'ALL', description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', description: 'My Temperature', icon: 'fa fa-chart-line', path: 'temperature/p', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
-    {accountType: 'ADMIN', accountStatus: 'ALL', description: 'Accounts', icon: 'fa fa-users', path: 'admin/accounts', flag: false, subMenu: null},
-    {accountType: 'AGENCY', accountStatus: 'ALL', description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
-    {accountType: 'AGENCY', accountStatus: 'ALL', description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
-    {accountType: 'AGENCY', accountStatus: 'ALL', description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null}
+    {accountType: 'AGENCY_LEVEL_1', accountStatus: 'ALL', description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
+    {accountType: 'AGENCY_LEVEL_1', accountStatus: 'ALL', description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
+    {accountType: 'AGENCY_LEVEL_1', accountStatus: 'ALL', description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
+    {accountType: 'ADMIN', accountStatus: 'ALL', description: 'Accounts', icon: 'fa fa-users', path: 'admin/accounts', flag: false, subMenu: null}
   ],
   profileMenu: [{
     title: 'My Profile',
@@ -50,21 +50,21 @@ export default {
   },
   vehicleTypes: [{
     label: 'Bus',
-    value: 'Bus'
+    value: 'bus'
   }, {
     label: 'Plane',
-    value: 'Plane'
+    value: 'plane'
   }, {
-    label: 'Jeep',
-    value: 'Jeep'
+    label: 'Jeepney',
+    value: 'jeep'
   }, {
     label: 'Private Car',
-    value: 'Private Car'
+    value: 'private_car'
   }, {
     label: 'Van',
-    value: 'Van'
+    value: 'van'
   }, {
     label: 'Motorcycle',
-    value: 'Motorcycle'
+    value: 'motorcycle'
   }]
 }
