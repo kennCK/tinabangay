@@ -20,16 +20,16 @@ export default {
   }, {
     row: 'full',
     label: 'Plate Number',
-    variable: 'number',
-    placeholder: 'Enter Plate Number',
+    variable: 'code',
+    placeholder: 'Jeep Code, Flight Number, Plate Number',
     value: null,
-    required: true,
-    id: 'number',
+    required: false,
+    id: 'code',
     type: 'input',
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'number'
+      type: 'text'
     }
   }, {
     row: 'full',
