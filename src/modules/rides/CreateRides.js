@@ -38,11 +38,11 @@ export default {
     placeholder: 'Set location',
     value: null,
     id: 'from',
-    type: 'location',
+    type: 'location_concatenated',
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'location'
+      type: 'location_concatenated'
     }
   }, {
     row: 'full',
@@ -51,11 +51,10 @@ export default {
     placeholder: 'Enter date and time of departure',
     value: null,
     id: 'from_date_time',
-    type: 'input',
-    inputType: 'datetime-local',
+    type: 'datetime',
     validation: {
       size: 1,
-      type: 'date'
+      type: 'datetime'
     }
   }, {
     row: 'full',
@@ -64,11 +63,11 @@ export default {
     placeholder: 'Set location',
     value: null,
     id: 'to',
-    type: 'location',
+    type: 'location_concatenated',
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'location'
+      type: 'location_concatenated'
     }
   }, {
     row: 'full',
@@ -77,11 +76,10 @@ export default {
     placeholder: 'Enter date of arrival',
     value: null,
     id: 'to_date_time',
-    type: 'input',
-    inputType: 'datetime-local',
+    type: 'datetime',
     validation: {
       size: 1,
-      type: 'date'
+      type: 'datetime'
     }
   }],
   route: 'rides/create',

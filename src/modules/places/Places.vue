@@ -16,7 +16,7 @@
             <i class="fas fa-edit"></i>
           </button>
           <h6 class="card-title" style="margin-top: 15px;">{{item.route}}, {{item.locality}}, {{item.country}}</h6>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date+' '+item.time | formatDateTime}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date | formatDate}} {{item.time | formatTime}}</div>
           <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
@@ -62,9 +62,16 @@ import ModalProperty from './CreatePlaces.js'
 import moment from 'moment'
 import Vue from 'vue'
 
-Vue.filter('formatDateTime', function(value) {
+Vue.filter('formatDate', function(value) {
   if (value) {
-    return moment(String(value)).format('MM/DD/YYYY h:m A')
+    return moment(String(value)).format('MMM DD, YYYY')
+  }
+})
+
+Vue.filter('formatTime', function(value){
+  if(value) {
+    let stamp = moment(String(value), [moment.HTML5_FMT.TIME_SECONDS])
+    return moment(String(stamp)).format('hh:mm A')
   }
 })
 
@@ -126,7 +133,7 @@ export default {
           let inputs = this.modalProperty.inputs
           inputs.map(input => {
             input.value = null
-            if(input.inputType === 'location') {
+            if(input.type === 'location') {
               $(`#${input.id} input`).val('')
             }
           })
@@ -155,96 +162,107 @@ export default {
           modalData.inputs.map(data => {
             if(data.variable === 'location') {
               $(`#${data.id} input`).val(item.route + ', ' + item.locality + ', ' + item.country)
-              modalData.inputs.push({
-                row: 'full',
-                label: 'Route',
-                variable: 'route',
-                placeholder: 'Enter route',
-                value: item.route,
-                required: true,
-                id: 'route',
-                type: 'input',
-                inputType: 'hidden',
-                validation: {
-                  size: 1,
-                  type: 'text'
-                }})
-              modalData.inputs.push({
-                row: 'full',
-                label: 'Locality',
-                variable: 'locality',
-                placeholder: 'Enter locality',
-                value: item.locality,
-                required: true,
-                id: 'locality',
-                type: 'input',
-                inputType: 'hidden',
-                validation: {
-                  size: 1,
-                  type: 'text'
-                }})
-              modalData.inputs.push({
-                row: 'full',
-                label: 'Region',
-                variable: 'region',
-                placeholder: 'Enter region',
-                value: item.region,
-                required: true,
-                id: 'region',
-                type: 'input',
-                inputType: 'hidden',
-                validation: {
-                  size: 1,
-                  type: 'text'
-                }})
-              modalData.inputs.push({
-                row: 'full',
-                label: 'Country',
-                variable: 'country',
-                placeholder: 'Enter country',
-                value: item.country,
-                required: true,
-                id: 'country',
-                type: 'input',
-                inputType: 'hidden',
-                validation: {
-                  size: 1,
-                  type: 'text'
-                }})
-              modalData.inputs.push({
-                row: 'full',
-                label: 'Latitude',
-                variable: 'latitude',
-                placeholder: 'Enter latitude',
-                value: item.latitude,
-                required: true,
-                id: 'latitude',
-                type: 'input',
-                inputType: 'hidden',
-                validation: {
-                  size: 1,
-                  type: 'text'
-                }})
-              modalData.inputs.push({
-                row: 'full',
-                label: 'Longitude',
-                variable: 'longitude',
-                placeholder: 'Enter longitude',
-                value: item.longitude,
-                required: true,
-                id: 'longitude',
-                type: 'input',
-                inputType: 'hidden',
-                validation: {
-                  size: 1,
-                  type: 'text'
-                }})
-            }
-            if(data.variable === 'date'){
-              data.value = item.date
-            }
-            if(data.variable === 'time'){
-              data.value = item.time
+              let flag = false
+              for (var i = 0; i < this.property.inputs.length; i++) {
+                let check = this.property.inputs[i]
+                if(check.variable === 'route'){
+                  flag = true
+                  break
+                }
+              }
+              if(flag) {
+                modalData.inputs.push({
+                  row: 'full',
+                  label: 'Route',
+                  variable: 'route',
+                  placeholder: 'Enter route',
+                  value: item.route,
+                  required: true,
+                  id: 'route',
+                  type: 'input',
+                  inputType: 'hidden',
+                  validation: {
+                    size: 1,
+                    type: 'text'
+                  }})
+                modalData.inputs.push({
+                  row: 'full',
+                  label: 'Locality',
+                  variable: 'locality',
+                  placeholder: 'Enter locality',
+                  value: item.locality,
+                  required: true,
+                  id: 'locality',
+                  type: 'input',
+                  inputType: 'hidden',
+                  validation: {
+                    size: 1,
+                    type: 'text'
+                  }})
+                modalData.inputs.push({
+                  row: 'full',
+                  label: 'Region',
+                  variable: 'region',
+                  placeholder: 'Enter region',
+                  value: item.region,
+                  required: true,
+                  id: 'region',
+                  type: 'input',
+                  inputType: 'hidden',
+                  validation: {
+                    size: 1,
+                    type: 'text'
+                  }})
+                modalData.inputs.push({
+                  row: 'full',
+                  label: 'Country',
+                  variable: 'country',
+                  placeholder: 'Enter country',
+                  value: item.country,
+                  required: true,
+                  id: 'country',
+                  type: 'input',
+                  inputType: 'hidden',
+                  validation: {
+                    size: 1,
+                    type: 'text'
+                  }})
+                modalData.inputs.push({
+                  row: 'full',
+                  label: 'Latitude',
+                  variable: 'latitude',
+                  placeholder: 'Enter latitude',
+                  value: item.latitude,
+                  required: true,
+                  id: 'latitude',
+                  type: 'input',
+                  inputType: 'hidden',
+                  validation: {
+                    size: 1,
+                    type: 'text'
+                  }})
+                modalData.inputs.push({
+                  row: 'full',
+                  label: 'Longitude',
+                  variable: 'longitude',
+                  placeholder: 'Enter longitude',
+                  value: item.longitude,
+                  required: true,
+                  id: 'longitude',
+                  type: 'input',
+                  inputType: 'hidden',
+                  validation: {
+                    size: 1,
+                    type: 'text'
+                  }})
+              } else {
+                modalData.inputs.map(existingInput => {
+                  existingInput.value = location[`${existingInput.variable}`]
+                  return item
+                })
+              }
+            } else {
+              data.value === item[`${data.variable}`]
             }
           })
           this.modalProperty = {...modalData}

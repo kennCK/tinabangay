@@ -11,20 +11,21 @@ export default {
     value: null,
     required: true,
     id: 'location',
-    type: 'location',
+    type: 'location_non_concatenated',
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'location'
+      type: 'location_non_concatenated'
     }
   }, {
     row: 'full',
     label: 'Date',
     variable: 'date',
     placeholder: 'Enter Date',
+    disable: 'after',
     value: null,
     id: 'date',
-    type: 'input',
+    type: 'date',
     inputType: 'date',
     validation: {
       size: 1,
@@ -37,7 +38,7 @@ export default {
     placeholder: 'Enter Time',
     value: null,
     id: 'time',
-    type: 'input',
+    type: 'time',
     inputType: 'time',
     validation: {
       size: 1,

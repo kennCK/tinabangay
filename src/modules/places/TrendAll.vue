@@ -14,7 +14,7 @@
           />
       </div>
     <div class="row w-100 m-0">
-      <div class="card card-half" v-for="(item, index) in lists" :key="index" style="margin-bottom: 10px;" >
+      <div class="card card-half" v-for="(item, index) in result" :key="index" style="margin-bottom: 10px;" >
         <div>
           <div class="card-block px-3">
             <h6 class="card-title" style="margin-top:15px">
@@ -173,7 +173,6 @@ import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     this.retrieve()
-    // this.rows()
   },
   data(){
     return {
@@ -182,9 +181,9 @@ export default {
       data: null,
       searchValue: null,
       result: null,
-      perPage: 10,
-      rows: null,
-      activePage: 1
+      perPage: 3,
+      activePage: 1,
+      numPages: null
     }
   },
   components: {
@@ -207,36 +206,29 @@ export default {
         }else{
           this.data = null
         }
-        this.result = this.data
+        this.result = this.lists(this.data)
       })
     },
     filterLocation(){
-      this.result = this.data.filter(item => {
-        return item.route.toLowerCase().indexOf(this.searchValue) > -1
+      let filter = this.data.filter(item => {
+        return item.route.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1
       })
+      this.result = this.lists(filter)
     },
     linkGen (pageNum){
       return '#page=' + pageNum
-    }
-  },
-  computed: {
-    rows(){
-      return this.data.length
     },
-    lists(){
-      let item = this.data
+    lists(toFilter){
+      let item = toFilter
+      let pages = toFilter.length / this.perPage
+      let remaining = toFilter.length - (this.perPage * pages)
+      if (remaining > 0) {
+        pages++
+      }
+      this.numPages = pages
       return item.slice(
         (this.activePage - 1) * this.perPage,
         this.activePage * this.perPage)
-    },
-    numPages(){
-      let item = this.data
-      let pages = this.data.length / this.perPage
-      let remaining = this.data.length - (this.perPage * pages)
-      if(remaining > 0){
-        pages++
-      }
-      return pages
     }
   }
 }
