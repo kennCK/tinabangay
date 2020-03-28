@@ -12,8 +12,10 @@
           <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
             <i class="fas fa-edit"></i>
           </button>
-          <h6 class="card-title" style="margin-top: 15px;">{{item.type+' ('+item.number+') from '+item.from_location+' to '+item.to_location}}</h6>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;">From {{item.from_date+' '+item.from_time+' to '+item.to_date+' '+item.to_time}}</div>
+          <h6 class="card-title text-uppercase text-primary" style="margin-top: 15px;">{{item.type + (item.code !== null ? ' : ' + item.code : '')}}</h6>
+
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fas fa-map-marker" style="margin-right: 10px"></i>{{item.from + ' - ' + item.to}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fas fa-calendar" style="margin-right: 10px"></i>{{item.from_date_human + ' - ' + item.to_date_human}}</div>
           <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This vehicle is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI onboard this vehicle.</b-button>
@@ -103,7 +105,7 @@ export default {
           value: this.user.userID
         }],
         sort: {
-          date: 'asc'
+          created_at: 'asc'
         }
       }
       $('#loading').css({display: 'block'})

@@ -52,7 +52,7 @@ export default {
     value: null,
     id: 'from_date_time',
     type: 'input',
-    inputType: 'datetime',
+    inputType: 'datetime-local',
     validation: {
       size: 1,
       type: 'date'
@@ -78,7 +78,7 @@ export default {
     value: null,
     id: 'to_date_time',
     type: 'input',
-    inputType: 'datetime',
+    inputType: 'datetime-local',
     validation: {
       size: 1,
       type: 'date'
@@ -95,9 +95,6 @@ export default {
     value: null
   }, {
     variable: 'payload',
-    value: 'manual'
-  }, {
-    variable: 'owner_id',
     value: 'manual'
   }]
 }
