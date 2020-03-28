@@ -2,7 +2,7 @@
   <div v-if="data !== null" class="holder w-100">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
       <div class="row justify-content-end m-0 mr-5 align-items-center">
-        <button class="btn btn-primary mr-3 mb-3">
+        <button class="btn btn-primary mr-3 mb-3" @click="$refs.mapModal.showModal()">
           <i class="fas fa-map-marker-alt mr-2"></i>
           View Locations on Map
         </button>
@@ -22,6 +22,9 @@
             </h6>
             <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
             <span class="card-title">
+              <b-button class="bg-black" style="margin-bottom: 25px; margin-bottom: 5px; ">
+                DEATH<b-badge class="badge" variant="light">{{data[index].death_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
               <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
                 POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
@@ -31,7 +34,7 @@
               <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
                 PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="info" style="margin-bottom: 25px; margin-bottom: 5px;">
+              <b-button variant="success" style="margin-bottom: 25px; margin-bottom: 5px;">
                NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
             </span>
@@ -39,6 +42,7 @@
         </div>
       </div>
     </div>
+    <google-map-modal ref="mapModal" :place_data="data"></google-map-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -64,7 +68,11 @@
   margin-bottom: 25px;
 }
 
-
+.bg-black{
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 0px;
+}
 input[type="number"] {
   -webkit-appearance: textfield;
     -moz-appearance: textfield;
@@ -179,6 +187,10 @@ export default {
       activePage: 1
     }
   },
+  components: {
+    Pager,
+    'google-map-modal': require('components/increment/generic/map/ModalMap.vue')
+  },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
@@ -226,9 +238,6 @@ export default {
       }
       return pages
     }
-  },
-  components: {
-    Pager
   }
 }
 </script>
