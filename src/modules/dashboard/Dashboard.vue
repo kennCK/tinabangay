@@ -27,6 +27,8 @@
         <temperature-summary></temperature-summary>
       </div>
     </div> -->
+    
+
   </div>
 </template>
 <style lang="scss" scoped> 
