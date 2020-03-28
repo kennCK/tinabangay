@@ -146,17 +146,15 @@ export default {
           }
           modalData = {...modalData, ...parameter} // updated data without
           let object = Object.keys(item)
-          // modalData.inputs.map(data => {
-          //   if(data.variable === 'location') {
-          //     data.value = item.route + ', ' + item.locality + ', ' + item.country
-          //   }
-          //   if(data.variable === 'date'){
-          //     data.value = item.date
-          //   }
-          //   if(data.variable === 'time'){
-          //     data.value = item.time
-          //   }
-          // })
+          modalData.inputs.map(data => {
+            if(data.variable === 'from' || data.variable === 'to') {
+              $(`#${data.id} input`).val(data.value)
+            }
+            data.value = item[`${data.variable}`]
+            if(data.variable === 'number') {
+              data.value = item.number
+            }
+          })
           this.modalProperty = {...modalData}
           break
       }

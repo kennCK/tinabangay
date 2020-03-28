@@ -257,33 +257,12 @@ export default {
                   }})
               } else {
                 modalData.inputs.map(existingInput => {
-                  if(existingInput.variable === 'route'){
-                    existingInput.value = location.route
-                  }
-                  if(existingInput.variable === 'locality'){
-                    existingInput.value = location.locality
-                  }
-                  if(existingInput.variable === 'latitude'){
-                    existingInput.value = location.latitude
-                  }
-                  if(existingInput.variable === 'longitude'){
-                    existingInput.value = location.longitude
-                  }
-                  if(existingInput.variable === 'region'){
-                    existingInput.value = location.region
-                  }
-                  if(existingInput.variable === 'country'){
-                    existingInput.value = location.country
-                  }
+                  existingInput.value = location[`${existingInput.variable}`]
                   return item
                 })
               }
-            }
-            if(data.variable === 'date'){
-              data.value = item.date
-            }
-            if(data.variable === 'time'){
-              data.value = item.time
+            } else {
+              data.value === item[`${data.variable}`]
             }
           })
           this.modalProperty = {...modalData}
