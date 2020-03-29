@@ -3,21 +3,22 @@
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <!-- <google-places-auto-complete :property="property" @onFinish="manageInput($event)"></google-places-auto-complete> -->
-        <p>
-          Current data on the system. [Not updated as other users are not registered yet]
-        </p>
+        <div class="row m-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
+          Current Data
+        </div>
+        <div class="alert alert-info">This information is not updated as some users are not registered yet</div>
         <data-summary></data-summary>
+        <div class="row m-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
+          QR Code
+        </div>
         <p>
-          Hi {{user.username}}! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
+          Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
         </p>
-        <qr-code></qr-code>
+        <div class="row justify-content-center pt-5">
+          <qr-code></qr-code>
+        </div>
       </div>
-      <div class="col-lg-6" style="margin-bottom: 25px;">
-        <p>
-          List of places visited by affected individual(Hot Places)
-        </p>
-        <trend></trend>
-      </div>
+      <trend></trend>
     </div>
     <!-- <div class="row" style="margin-bottom: 25px;">
       <div class="col-lg-6">
@@ -33,18 +34,14 @@
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
+.bg-primary{
+  background: $primary !important;
+}
+
 .half-rule {
   margin-left: 0;
   text-align: left;
   width: 50%;
-}
-
-p{
-  padding: 10px;
-  background: $primary;
-  color: $white;
-  width: 100%;
-  float: left;
 }
 </style>
 <script>
