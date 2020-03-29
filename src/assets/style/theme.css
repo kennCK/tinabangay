@@ -17,6 +17,7 @@
 }
 
 .header-navbar,
-.main-sidebar {
+.main-sidebar,
+.system-header {
   z-index: 99 !important;
 }
