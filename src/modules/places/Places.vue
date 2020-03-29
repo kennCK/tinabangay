@@ -3,7 +3,7 @@
     <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Place</button>
     <div class="row w-100 m-0">
       <div class="alert alert-danger mt-2 p-3 col-12" role="alert">
-        <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically you have contracted the virus. It just means the location matches an reportedly affected location.
+        <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically mean you have contracted the virus. It just means the location matches an reportedly affected location.
         <p class="mt-3">
           Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
         </p>
@@ -64,7 +64,7 @@ import Vue from 'vue'
 
 Vue.filter('formatDate', function(value) {
   if (value) {
-    return moment(String(value)).format('MMM DD, YYYY')
+    return moment(String(value)).format('MMM D, YYYY')
   }
 })
 
@@ -135,6 +135,10 @@ export default {
             input.value = null
             if(input.type === 'location') {
               $(`#${input.id} input`).val('')
+            } else if (input.type === 'date') {
+              input.placeholder = 'Enter Date'
+            } else if (input.type === 'time') {
+              input.placeholder = 'Enter Time'
             }
           })
           this.modalProperty.params[0].value = this.user.userID
@@ -163,8 +167,8 @@ export default {
             if(data.variable === 'location') {
               $(`#${data.id} input`).val(item.route + ', ' + item.locality + ', ' + item.country)
               let flag = false
-              for (var i = 0; i < this.property.inputs.length; i++) {
-                let check = this.property.inputs[i]
+              for (var i = 0; i < modalData.inputs.length; i++) {
+                let check = modalData.inputs[i]
                 if(check.variable === 'route'){
                   flag = true
                   break
@@ -261,6 +265,12 @@ export default {
                   return item
                 })
               }
+            } else if(data.type === 'date'){
+              data.placeholder = moment(String(item[`${data.variable}`])).format('MMM D, YYYY')
+              data.value = item.value
+            } else if(data.type === 'time') {
+              let stamp = moment(String(item[`${data.variable}`]), [moment.HTML5_FMT.TIME_SECONDS])
+              data.placeholder = moment(String(stamp)).format('hh:mm A')
             } else {
               data.value === item[`${data.variable}`]
             }

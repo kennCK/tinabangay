@@ -23,6 +23,7 @@ export default {
     variable: 'date',
     placeholder: 'Enter Date',
     disable: 'after',
+    required: true,
     value: null,
     id: 'date',
     type: 'date',
