@@ -131,18 +131,12 @@ export default {
         {name: 'Nicole Amber Mariscal', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/nicole.jpg')},
         {name: 'Brant Francis Uy', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/brant.jpg')},
         {name: 'Monica Claire M. Apor', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/monica.jpg')},
-<<<<<<< HEAD
-<<<<<<< HEAD
         {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.jpg')},
         {name: 'Allan Jericho', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
-=======
         {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.png')},
         {name: 'Allan Jericho Bargamento', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
->>>>>>> 66826c41b900e2d81ec54f6af4a2a16190b057ec
-=======
         {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.png')},
         {name: 'Allan Jericho Bargamento', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
->>>>>>> 66826c41b900e2d81ec54f6af4a2a16190b057ec
         {name: 'John Patrick Ciba-an', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/john.jpg')},
         {name: 'Justin Raz', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/raz.jpg')},
         {name: 'Fletcher Lance Chua', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/fletcher.jpg')}
