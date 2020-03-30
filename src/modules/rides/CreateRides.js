@@ -1,7 +1,5 @@
 import COMMON from 'src/common.js'
 
-console.log(COMMON.vehicleTypes)
-
 export default {
   id: 'createRidesModal',
   size: 'modal-md',

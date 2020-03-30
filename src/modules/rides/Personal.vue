@@ -15,7 +15,7 @@
           <h6 class="card-title text-uppercase text-primary" style="margin-top: 15px;">{{item.type + (item.code !== null ? ' : ' + item.code : '')}}</h6>
 
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-map-marker" style="margin-right: 10px"></i>{{item.from + ' - ' + item.to}}</div>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_human + ' - ' + item.to_date_human}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_time | formatDateTime }} - {{item.to_date_time | formatDateTime}}</div>
           <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This route is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI on this route.</b-button>
@@ -60,11 +60,13 @@ import CONFIG from 'src/config.js'
 import ModalProperty from './CreateRides.js'
 import moment from 'moment'
 import Vue from 'vue'
+
 Vue.filter('formatDateTime', function(value) {
   if (value) {
-    return moment(String(value)).format('MM/DD/YYYY h:m A')
+    return moment(String(value)).format('MMM DD, YYYY hh:mm A')
   }
 })
+
 export default {
   mounted(){
     this.retrieve()
@@ -123,6 +125,9 @@ export default {
           let inputs = this.modalProperty.inputs
           inputs.map(input => {
             input.value = null
+            if(input.type === 'location_concatenated' || input.type === 'datetime') {
+              $(`#${input.id} input`).val('')
+            }
           })
           this.modalProperty.params[0].value = this.user.userID
           break
@@ -147,7 +152,7 @@ export default {
           modalData = {...modalData, ...parameter} // updated data without
           let object = Object.keys(item)
           modalData.inputs.map(data => {
-            if(data.variable === 'from' || data.variable === 'to') {
+            if(data.type === 'location_concatenated' || data.type === 'location_non_concatenated') {
               $(`#${data.id} input`).val(data.value)
             }
             data.value = item[`${data.variable}`]

@@ -181,7 +181,7 @@ export default {
       data: null,
       searchValue: null,
       result: null,
-      perPage: 3,
+      perPage: 10,
       activePage: 1,
       numPages: null
     }
