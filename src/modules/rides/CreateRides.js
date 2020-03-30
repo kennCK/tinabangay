@@ -1,7 +1,5 @@
 import COMMON from 'src/common.js'
 
-console.log(COMMON.vehicleTypes)
-
 export default {
   id: 'createRidesModal',
   size: 'modal-md',
@@ -20,16 +18,16 @@ export default {
   }, {
     row: 'full',
     label: 'Plate Number',
-    variable: 'number',
-    placeholder: 'Enter Plate Number',
+    variable: 'code',
+    placeholder: 'Jeep Code, Flight Number, Plate Number',
     value: null,
-    required: true,
-    id: 'number',
+    required: false,
+    id: 'code',
     type: 'input',
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'number'
+      type: 'text'
     }
   }, {
     row: 'full',
@@ -38,11 +36,11 @@ export default {
     placeholder: 'Set location',
     value: null,
     id: 'from',
-    type: 'location',
+    type: 'location_concatenated',
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'location'
+      type: 'location_concatenated'
     }
   }, {
     row: 'full',
@@ -51,11 +49,10 @@ export default {
     placeholder: 'Enter date and time of departure',
     value: null,
     id: 'from_date_time',
-    type: 'input',
-    inputType: 'datetime-local',
+    type: 'datetime',
     validation: {
       size: 1,
-      type: 'date'
+      type: 'datetime'
     }
   }, {
     row: 'full',
@@ -64,11 +61,11 @@ export default {
     placeholder: 'Set location',
     value: null,
     id: 'to',
-    type: 'location',
+    type: 'location_concatenated',
     inputType: 'text',
     validation: {
       size: 1,
-      type: 'location'
+      type: 'location_concatenated'
     }
   }, {
     row: 'full',
@@ -77,11 +74,10 @@ export default {
     placeholder: 'Enter date of arrival',
     value: null,
     id: 'to_date_time',
-    type: 'input',
-    inputType: 'datetime-local',
+    type: 'datetime',
     validation: {
       size: 1,
-      type: 'date'
+      type: 'datetime'
     }
   }],
   route: 'rides/create',

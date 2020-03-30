@@ -3,7 +3,7 @@
     <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Place</button>
     <div class="row w-100 m-0">
       <div class="alert alert-danger mt-2 p-3 col-12" role="alert">
-        <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically you have contracted the virus. It just means the location matches an reportedly affected location.
+        <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically mean you have contracted the virus. It just means the location matches an reportedly affected location.
         <p class="mt-3">
           Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
         </p>
@@ -16,7 +16,7 @@
             <i class="fas fa-edit"></i>
           </button>
           <h6 class="card-title" style="margin-top: 15px;">{{item.route}}, {{item.locality}}, {{item.country}}</h6>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date+' '+item.time | formatDateTime}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date | formatDate}} {{item.time | formatTime}}</div>
           <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
@@ -62,9 +62,16 @@ import ModalProperty from './CreatePlaces.js'
 import moment from 'moment'
 import Vue from 'vue'
 
-Vue.filter('formatDateTime', function(value) {
+Vue.filter('formatDate', function(value) {
   if (value) {
-    return moment(String(value)).format('MM/DD/YYYY hh:mm A')
+    return moment(String(value)).format('MMM D, YYYY')
+  }
+})
+
+Vue.filter('formatTime', function(value){
+  if(value) {
+    let stamp = moment(String(value), [moment.HTML5_FMT.TIME_SECONDS])
+    return moment(String(stamp)).format('hh:mm A')
   }
 })
 
@@ -128,6 +135,10 @@ export default {
             input.value = null
             if(input.type === 'location') {
               $(`#${input.id} input`).val('')
+            } else if (input.type === 'date') {
+              input.placeholder = 'Enter Date'
+            } else if (input.type === 'time') {
+              input.placeholder = 'Enter Time'
             }
           })
           this.modalProperty.params[0].value = this.user.userID
@@ -156,8 +167,8 @@ export default {
             if(data.variable === 'location') {
               $(`#${data.id} input`).val(item.route + ', ' + item.locality + ', ' + item.country)
               let flag = false
-              for (var i = 0; i < this.property.inputs.length; i++) {
-                let check = this.property.inputs[i]
+              for (var i = 0; i < modalData.inputs.length; i++) {
+                let check = modalData.inputs[i]
                 if(check.variable === 'route'){
                   flag = true
                   break
@@ -250,33 +261,18 @@ export default {
                   }})
               } else {
                 modalData.inputs.map(existingInput => {
-                  if(existingInput.variable === 'route'){
-                    existingInput.value = location.route
-                  }
-                  if(existingInput.variable === 'locality'){
-                    existingInput.value = location.locality
-                  }
-                  if(existingInput.variable === 'latitude'){
-                    existingInput.value = location.latitude
-                  }
-                  if(existingInput.variable === 'longitude'){
-                    existingInput.value = location.longitude
-                  }
-                  if(existingInput.variable === 'region'){
-                    existingInput.value = location.region
-                  }
-                  if(existingInput.variable === 'country'){
-                    existingInput.value = location.country
-                  }
+                  existingInput.value = location[`${existingInput.variable}`]
                   return item
                 })
               }
-            }
-            if(data.variable === 'date'){
-              data.value = item.date
-            }
-            if(data.variable === 'time'){
-              data.value = item.time
+            } else if(data.type === 'date'){
+              data.placeholder = moment(String(item[`${data.variable}`])).format('MMM D, YYYY')
+              data.value = item.value
+            } else if(data.type === 'time') {
+              let stamp = moment(String(item[`${data.variable}`]), [moment.HTML5_FMT.TIME_SECONDS])
+              data.placeholder = moment(String(stamp)).format('hh:mm A')
+            } else {
+              data.value === item[`${data.variable}`]
             }
           })
           this.modalProperty = {...modalData}

@@ -125,16 +125,22 @@ export default {
         {name: 'Patrick Elalto', org: 'University of San Carlos', position: 'Faculty', img: require('assets/img/contributors/patrick.jpg')},
         {name: 'Yol Torres', org: 'University of San Carlos | Passerelles Numeriques Philippines', position: 'Student', img: require('assets/img/contributors/yol.jpg')},
         {name: 'Elsie Kathryn Tagupa', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/elle.jpg')},
-        {name: 'Kent Yohann Bacatan', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/kent.png')},
+        {name: 'Kent Yohann Bacatan', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/kent.jpg')},
         {name: 'Ismael Francisco', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/ismael.jpg')},
         {name: 'Jeanille Abayon', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/jeanille.jpg')},
         {name: 'Nicole Amber Mariscal', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/nicole.jpg')},
         {name: 'Brant Francis Uy', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/brant.jpg')},
         {name: 'Monica Claire M. Apor', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/monica.jpg')},
-        {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.png')},
+<<<<<<< HEAD
+        {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.jpg')},
         {name: 'Allan Jericho', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
+=======
+        {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.png')},
+        {name: 'Allan Jericho Bargamento', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
+>>>>>>> 66826c41b900e2d81ec54f6af4a2a16190b057ec
         {name: 'John Patrick Ciba-an', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/john.jpg')},
-        {name: 'Justin Raz', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/raz.jpg')}
+        {name: 'Justin Raz', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/raz.jpg')},
+        {name: 'Fletcher Lance Chua', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/fletcher.jpg')}
       ]
     }
   },
