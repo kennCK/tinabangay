@@ -9,8 +9,7 @@
         <Pager
           :pages="numPages"
           :active="activePage"
-          :limit="perPage"
-          :includesDropDown="false"
+          :limit="limit"
           />
       </div>
     <div class="row w-100 m-0">
@@ -181,7 +180,7 @@ export default {
       data: null,
       searchValue: null,
       result: null,
-      perPage: 10,
+      limit: 10,
       activePage: 1,
       numPages: null
     }
@@ -196,7 +195,9 @@ export default {
     },
     retrieve(){
       let parameter = {
-        status: 'positive'
+        status: 'positive',
+        limitnumber: this.limit,
+        pagenumber: this.activePage
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('tracing_places/places', parameter).then(response => {
@@ -206,7 +207,9 @@ export default {
         }else{
           this.data = null
         }
-        this.result = this.lists(this.data)
+        console.log('This is your data')
+        console.log(this.data)
+        this.result = this.data
       })
     },
     filterLocation(){
@@ -220,15 +223,15 @@ export default {
     },
     lists(toFilter){
       let item = toFilter
-      let pages = toFilter.length / this.perPage
-      let remaining = toFilter.length - (this.perPage * pages)
+      let pages = toFilter.length / this.limit
+      let remaining = toFilter.length - (this.limit * pages)
       if (remaining > 0) {
         pages++
       }
       this.numPages = pages
       return item.slice(
-        (this.activePage - 1) * this.perPage,
-        this.activePage * this.perPage)
+        (this.activePage - 1) * this.limit,
+        this.activePage * this.limit)
     }
   }
 }
