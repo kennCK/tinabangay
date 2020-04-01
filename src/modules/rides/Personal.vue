@@ -16,8 +16,12 @@
 
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-map-marker" style="margin-right: 10px"></i>{{item.from ? item.from : 'Not Specified'}} - {{item.to ? item.to : 'Not Specified'}}</div>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_time | formatDateTime }} - {{item.to_date_time | formatDateTime}}</div>
-          <div class="m-0 pb-2">
-            <b><u>Status:</u></b> <b :class="getColor(item.from_status)">{{getData(item.from_status)}}</b> <span v-if="item.from_status !== item.to_status">to <b :class="getColor(item.to_status)">{{getData(item.to_status)}}</b></span>
+          <div class="m-0 pb-2" v-if="(calcStatus = getStatus(item.from_status, item.to_status))">
+            <b-button variant="success" class="not-btn" v-if="calcStatus === 'negative'">This route is clear.</b-button>
+            <b-button variant="primary" class="not-btn" v-if="calcStatus === 'pui'">There was a PUI in this route.</b-button>
+            <b-button variant="warning" class="not-btn" v-if="calcStatus === 'pum'">There was a PUM in this route.</b-button>
+            <b-button variant="danger" style="max-width: 100%; white-space: normal; height: initial !important" class="not-btn" v-if="calcStatus === 'positive'">There was a COVID Positive person in this route.</b-button>
+            <b-button variant="dark" class="not-btn" v-if="calcStatus === 'death'">There's been a death in this route.</b-button>
           </div>
         </div>
       </div>
@@ -93,44 +97,14 @@ export default {
     'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
-    getColor(data){
-      let color = ''
-      switch(data) {
-        case 'negative':
-          color = 'text-success'
-          break
-        case 'pui':
-          color = 'text-primary'
-          break
-        case 'pum':
-          color = 'text-warning'
-          break
-        case 'positive':
-          color = 'text-danger'
-          break
-        case 'death':
-          color = 'text-dark'
-      }
-
-      return color
-    },
-    getData(data) {
-      let status = ''
-      switch(data) {
-        case 'negative':
-          status = 'Negative'
-          break
-        case 'pui':
-          status = 'PUI'
-          break
-        case 'pum':
-          status = 'PUM'
-          break
-        case 'positive':
-          status = 'Positive'
-          break
-        case 'death':
-          status = 'Deceased'
+    getStatus(from, to){
+      let status
+      let heirarchy = ['negative', 'pui', 'pum', 'positive', 'death']
+      if(from === to) {
+        status = from
+      } else {
+        let cmp = heirarchy.indexOf(from) > heirarchy.indexOf(to) ? heirarchy.indexOf(from) : heirarchy.indexOf(to)
+        status = heirarchy[cmp]
       }
 
       return status
