@@ -196,8 +196,13 @@ export default {
     retrieve(){
       let parameter = {
         status: 'positive',
-        limitnumber: this.limit,
-        pagenumber: this.activePage
+        limit: this.limit,
+        offset: this.activePage,
+        condition: [{
+          value: this.searchValue + '%',
+          column: 'locality',
+          clause: 'like'
+        }]
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('tracing_places/places', parameter).then(response => {
@@ -207,9 +212,7 @@ export default {
         }else{
           this.data = null
         }
-        console.log('This is your data')
-        console.log(this.data)
-        this.result = this.data
+        this.result = this.lists(this.data)
       })
     },
     filterLocation(){

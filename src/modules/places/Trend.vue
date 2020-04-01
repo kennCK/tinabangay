@@ -33,6 +33,7 @@
         </div> 
       </div>
     </div>
+    <empty v-else :title="'There\'s currently no hot spots logged.'" :action="'Stay Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -62,6 +63,9 @@ export default {
       user: AUTH.user,
       data: null
     }
+  },
+  components: {
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
     redirect(parameter){
