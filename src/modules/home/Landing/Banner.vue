@@ -16,7 +16,7 @@
             {{item.description}}
           </h4>
         </span>
-          <a class="" href='#'>
+          <a class="" href='https://l.facebook.com/l.php?u=https%3A%2F%2Fdrive.google.com%2Ffile%2Fd%2F1JrfU5DYjTZrqglKuYpKMO_Lg17vYQvFw%2Fview%3Fusp%3Ddrivesdk%26fbclid%3DIwAR264s9mBWEoICV4w3s-PrOCQJ0CgDbGeB9kEhAKXQ3opsYxlJ7ByMEfApc&h=AT2UDYGqoTmRRSx1wgAuku7HE6-ke-k69Uzi3JgF2J6XIsdXtw0-CkhJBLvvpDVC-I6tQyXEw7xaUHAdP6Cjg4-n_Y0sErCV9OutLOaEerTlml7jMETYQsnMqc8JIP3CXTc'>
           <img class="button img-fluid float-left mt-3" alt='Get it on Google Play' :src="require('assets/img/playstore.png')"/></a>
       </div>
       <div class="image" v-if="item.template === 'right'">
