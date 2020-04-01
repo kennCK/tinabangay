@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-md" role="document">
       <div class="modal-content">
         <div class="modal-header bg-primary">
-          <h5 class="modal-title" id="exampleModalLabel">Privacy Policy</h5>
+          <h5 class="modal-title text-light" id="exampleModalLabel">Privacy Policy</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true" class="text-white">&times;</span>
           </button>
@@ -24,17 +24,17 @@
                 We may ask you to provide your personal information, demographic information or information about your preferences or interests when you:
                 <ul class="second-ul">
                   <li>
-                       Register for an account on the Program
+                      Register for an account on the Program
                   </li>
                 </ul>
               </li>
               <li><strong>Non-Personal Information Collected Using Technology:</strong></li>
               <li>
-                n addition to any information you provide directly to us, we and our third party service providers may use a variety of technologies that automatically collect certain tracking information when you interact with the Program or emails sent to you. By using our Program, you consent to our use of tracking technologies as described below:
+                In addition to any information you provide directly to us, we and our third party service providers may use a variety of technologies that automatically collect certain tracking information when you interact with the Program or emails sent to you. By using our Program, you consent to our use of tracking technologies as described below:
                 <ul class="second-ul">
                   <li><strong>Device Information</strong></li>
                   <li>
-                    We may collect certain information about your computer or other device that you use to access the Program, including IP address, type, browser language, and other transactional information.
+                    We may collect certain information about your computer or other device that you use to access the Program, including IP address, type, browser language, and location.
                   </li>
                   <li><strong>Usage Information</strong></li>
                   <li>
@@ -42,7 +42,7 @@
                   </li>
                   <li><strong>Cookies</strong></li>
                   <li>
-                    {{common.COMPANY}} may place, view, and/or use cookies, web beacons, local storage objects or similar technologies to collect information about your use of the Program and other websites. This information may include information about the web pages you view, the links you click and other actions you take on our Program and in response to our advertising or email newsletters. {{common.COMPANY}} uses the information collected for various reasons, including to remember you and your preferences, track your use of our Program, facilitate your payment transactions, manage access to and use of the Program, and provide a personalized experience.
+                    {{common.COMPANY}} may place, view, and/or use cookies, web beacons, local storage objects or similar technologies to collect information about your use of the Program and other websites. This information may include information about the web pages you view, the links you click and other actions you take on our Program and in response to our advertising or email newsletters. {{common.COMPANY}} uses the information collected for various reasons, including to remember you and your preferences, track your use of our Program, manage access to and use of the Program, and provide a personalized experience.
                   </li>
                   <li>
                     A “cookie” is a small text file stored on your computer or other device when you visit certain web pages that record your preferences and actions. Most web browsers automatically accept cookies, but, if you prefer, you can usually modify your browser setting to decline cookies. However, please note that refusing a cookie may limit your access to or use of the Sites.
@@ -70,7 +70,7 @@
                   <ul>
                     <li><strong>DATA SUBJECT RIGHTS AND DATA RETENTION</strong></li>
                     <li>
-                      You can manage your account settings at by clicking here (insert hyperlink) to update, amend, and correct your information.
+                      You can manage your account settings at by clicking <a href="#" @click="redirect('/profile')">here</a> to update, amend, and correct your information.
                     </li>
                     <li>
                       You also have the following rights in relation to the personal data we hold about you, unless provided otherwise by local law:
