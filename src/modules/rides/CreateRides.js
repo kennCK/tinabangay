@@ -10,23 +10,27 @@ export default {
     label: 'Vehicle Type',
     variable: 'type',
     placeholder: 'Select Vehicle Type',
-    value: null,
+    value: 'bus',
     required: true,
     id: 'type',
     type: 'select_specified',
-    options: COMMON.vehicleTypes
+    options: COMMON.vehicleTypes,
+    validation: {
+      size: 1,
+      type: 'text'
+    }
   }, {
     row: 'full',
-    label: 'Plate Number',
+    label: 'Code',
     variable: 'code',
-    placeholder: 'Jeep Code, Flight Number, Plate Number',
+    placeholder: 'Name, Jeep Code, Flight Number, Plate Number and so on.',
     value: null,
-    required: false,
+    required: true,
     id: 'code',
     type: 'input',
     inputType: 'text',
     validation: {
-      size: 1,
+      size: 0,
       type: 'text'
     }
   }, {
@@ -37,6 +41,7 @@ export default {
     value: null,
     id: 'from',
     type: 'location_concatenated',
+    required: true,
     inputType: 'text',
     validation: {
       size: 1,
@@ -50,6 +55,7 @@ export default {
     value: null,
     id: 'from_date_time',
     type: 'datetime',
+    required: true,
     validation: {
       size: 1,
       type: 'datetime'
@@ -63,6 +69,7 @@ export default {
     id: 'to',
     type: 'location_concatenated',
     inputType: 'text',
+    required: true,
     validation: {
       size: 1,
       type: 'location_concatenated'
@@ -74,6 +81,7 @@ export default {
     placeholder: 'Enter date of arrival',
     value: null,
     id: 'to_date_time',
+    required: true,
     type: 'datetime',
     validation: {
       size: 1,

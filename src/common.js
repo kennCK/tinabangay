@@ -61,10 +61,19 @@ export default {
     label: 'Private Car',
     value: 'private_car'
   }, {
+    label: 'Motorcycle',
+    value: 'motorcycle'
+  }, {
+    label: 'Shippings',
+    value: 'shppings'
+  }, {
+    label: 'Train',
+    value: 'train'
+  }, {
     label: 'Van',
     value: 'van'
   }, {
-    label: 'Motorcycle',
-    value: 'motorcycle'
+    label: 'Others',
+    value: 'others'
   }]
 }
