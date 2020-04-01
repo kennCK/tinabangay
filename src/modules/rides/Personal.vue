@@ -14,13 +14,10 @@
           </button>
           <h6 class="card-title text-uppercase text-primary" style="margin-top: 15px;">{{item.type + (item.code !== null ? ' : ' + item.code : '')}}</h6>
 
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-map-marker" style="margin-right: 10px"></i>{{item.from + ' - ' + item.to}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-map-marker" style="margin-right: 10px"></i>{{item.from ? item.from : 'Not Specified'}} - {{item.to ? item.to : 'Not Specified'}}</div>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_time | formatDateTime }} - {{item.to_date_time | formatDateTime}}</div>
           <div class="m-0 pb-2">
-            <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This route is clear.</b-button>
-            <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI on this route.</b-button>
-            <b-button variant="warning" class="not-btn" v-if="item.status === 'pum'">There was a PUM on this route.</b-button>
-            <b-button variant="danger" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person on this route.</b-button>
+            <b><u>Status:</u></b> <b :class="getColor(item.from_status)">{{getData(item.from_status)}}</b> <span v-if="item.from_status !== item.to_status">to <b :class="getColor(item.to_status)">{{getData(item.to_status)}}</b></span>
           </div>
         </div>
       </div>
@@ -96,6 +93,48 @@ export default {
     'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
+    getColor(data){
+      let color = ''
+      switch(data) {
+        case 'negative':
+          color = 'text-success'
+          break
+        case 'pui':
+          color = 'text-primary'
+          break
+        case 'pum':
+          color = 'text-warning'
+          break
+        case 'positive':
+          color = 'text-danger'
+          break
+        case 'death':
+          color = 'text-dark'
+      }
+
+      return color
+    },
+    getData(data) {
+      let status = ''
+      switch(data) {
+        case 'negative':
+          status = 'Negative'
+          break
+        case 'pui':
+          status = 'PUI'
+          break
+        case 'pum':
+          status = 'PUM'
+          break
+        case 'positive':
+          status = 'Positive'
+          break
+        case 'death':
+          status = 'Deceased'
+      }
+
+      return status
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
@@ -152,7 +191,7 @@ export default {
           modalData = {...modalData, ...parameter} // updated data without
           let object = Object.keys(item)
           modalData.inputs.map(data => {
-            if(data.type === 'location_concatenated' || data.type === 'location_non_concatenated') {
+            if(data.type === 'location_concatenated') {
               $(`#${data.id} input`).val(data.value)
             }
             data.value = item[`${data.variable}`]
