@@ -8,7 +8,7 @@
     </div>
     <div class="position-relative w-100 m-0 row justify-content-between mt-2 pt-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;">
-        <div class="card-block px-3">
+        <div class="card-block px-3" v-if="item.payload === 'manual'">
           <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
             <i class="fas fa-edit"></i>
           </button>
@@ -23,6 +23,15 @@
             <b-button variant="danger" style="max-width: 100%; white-space: normal; height: initial !important" class="not-btn" v-if="calcStatus === 'positive'">There was a COVID Positive person in this route.</b-button>
             <b-button variant="dark" class="not-btn" v-if="calcStatus === 'death'">There's been a death in this route.</b-button>
           </div>
+        </div>
+        <div class="card-block px-3" v-else>
+          <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
+            <i class="fas fa-edit"></i>
+          </button>
+          <h6 class="card-title text-capitalize" style="margin-top: 15px;"><b>Type: </b>{{item.transportation.type}}</h6>
+          <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Model: </b>{{item.transportation.model}}</div>
+          <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Code: </b>{{item.transportation.number}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.transportation.created_at | formatDateTime }}</div>
         </div>
       </div>
     </div>
