@@ -17,7 +17,7 @@
               </li>
               <li><strong>WHAT INFORMATION DO WE COLLECT ABOUT YOU?</strong></li>
               <li>
-                The information collected when you interact with our Program falls into two categories: (1) Personal information you voluntarily provide such as your name, address, email address and birthday; and (2) non-personal information collected through technology, which includes tracking information collected by us as well as third parties.
+                The information collected when you interact with our Program falls into two categories: (1) Personal information you voluntarily provide such as your name, address, email address and birthday; and (2) Non-Personal information collected through technology, which includes tracking information collected by us as well as third parties.
               </li>
               <li><strong>Personal Information You Provide Directly To Us:</strong></li>
               <li>
@@ -30,7 +30,7 @@
               </li>
               <li><strong>Non-Personal Information Collected Using Technology:</strong></li>
               <li>
-                n addition to any information you provide directly to us, we and our third party service providers may use a variety of technologies that automatically collect certain tracking information when you interact with the Program or emails sent to you. By using our Program, you consent to our use of tracking technologies as described below:
+                In addition to any information you provide directly to us, we and our third party service providers may use a variety of technologies that automatically collect certain tracking information when you interact with the Program or emails sent to you. By using our Program, you consent to our use of tracking technologies as described below:
                 <ul class="second-ul">
                   <li><strong>Device Information</strong></li>
                   <li>
@@ -70,7 +70,7 @@
                   <ul>
                     <li><strong>DATA SUBJECT RIGHTS AND DATA RETENTION</strong></li>
                     <li>
-                      You can manage your account settings at by clicking here (insert hyperlink) to update, amend, and correct your information.
+                      You can manage your account settings by clicking <a href="#" @click="redirect('/profile')">here</a> to update, amend, and correct your information.
                     </li>
                     <li>
                       You also have the following rights in relation to the personal data we hold about you, unless provided otherwise by local law:
