@@ -2,13 +2,19 @@
   <div style="margin-bottom: 200px;">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
-        <!-- <google-places-auto-complete :property="property" @onFinish="manageInput($event)"></google-places-auto-complete> -->
-        <div class="row m-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
+        <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
+          Your Status (Placeholder Information)
+        </div>
+        <label class="text-primary">
+          <i class="fas fa-square" style="margin-right: 5px;"></i>
+          Person Under Investigation(PUI)
+        </label>
+        <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
           Current Data
         </div>
         <div class="alert alert-info">This information is not updated as some users are not registered yet</div>
         <data-summary></data-summary>
-        <div class="row m-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
+        <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           QR Code
         </div>
         <p>
@@ -20,22 +26,16 @@
       </div>
       <trend></trend>
     </div>
-    <!-- <div class="row" style="margin-bottom: 25px;">
-      <div class="col-lg-6">
-        <p>
-          <b>Summary of temperature within Locality</b>
-        </p>
-        <temperature-summary></temperature-summary>
-      </div>
-    </div> -->
-    
-
   </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
 .bg-primary{
   background: $primary !important;
+}
+
+.text-primary {
+  color: $primary !important;
 }
 
 .half-rule {
