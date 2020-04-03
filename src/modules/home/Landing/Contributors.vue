@@ -1,5 +1,5 @@
 <template>
-  <div class="cw-snetwork bg-light">
+  <div class="cw-snetwork bg-light pb-5">
     <div class="text text-green text-center">
       <h1>Contributors</h1>
     </div>
