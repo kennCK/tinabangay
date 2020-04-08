@@ -26,6 +26,7 @@ export default {
   APP_EMAIL: 'support@increment.ltd',
   COMPANY: 'Increment Technologies',
   COMPANY_URL: 'http://www.increment.ltd',
+  APP_URL: 'https://birds-eye-org',
   COPYRIGHT: 'BirdsEye ' + new Date().getFullYear(),
   USER_TYPE: [{
     title: 'USER'
