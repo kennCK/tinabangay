@@ -13,7 +13,8 @@ export default {
     value: '',
     required: true,
     id: 'account_id',
-    type: 'textarea',
+    type: 'input',
+    inputType: 'text',
     // options: COMMON.vehicleTypes,
     validation: {
       size: 1,

@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 25px;">
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal(null)">New Patient</button>
+    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal()">New Patient</button>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -227,9 +227,12 @@ export default {
         }
       }
     },
-    showModal(item){
+    showModal(){
       this.modalProperty = {...ModalProperty}
       let inputs = this.modalProperty.inputs
+      inputs.map(input => {
+        input.value = null
+      })
       $('#createPatientsModal').modal('show')
     }
   }
