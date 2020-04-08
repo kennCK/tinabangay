@@ -66,6 +66,7 @@
 @import "~assets/style/colors.scss";
 .bg-primary{
   background: $primary !important;
+  color: $white !important;
 }
 
 .bg-black{

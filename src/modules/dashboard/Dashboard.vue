@@ -3,11 +3,12 @@
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
-          Your Status (Placeholder Information)
+          Your Status
         </div>
         <label class="text-primary">
           <i class="fas fa-square" style="margin-right: 5px;"></i>
-          Person Under Investigation(PUI)
+          <!-- Person Under Investigation(PUI) -->
+          COMING SOON!
         </label>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
           Current Data
