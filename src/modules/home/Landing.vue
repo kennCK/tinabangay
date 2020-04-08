@@ -5,7 +5,7 @@
     <landing-features></landing-features>
     <landing-contributors></landing-contributors>
     <landing-donations></landing-donations>
-    <landing-sponsors></landing-sponsors>
+    <landing-partners></landing-partners>
 	</div>
 </template>
 <script>
@@ -18,7 +18,7 @@ export default {
     'landing-features': require('modules/home/Landing/Features.vue'),
     'landing-donations': require('modules/home/Landing/Donations.vue'),
     'landing-contributors': require('modules/home/Landing/Contributors.vue'),
-    'landing-sponsors': require('modules/home/Landing/Sponsors.vue'),
+    'landing-partners': require('modules/home/Landing/Partners.vue'),
     'google-places-auto-complete': require('components/increment/generic/location/GooglePlacesAutoComplete.vue')
   },
   mounted(){

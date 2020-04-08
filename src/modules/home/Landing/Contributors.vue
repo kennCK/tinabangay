@@ -115,33 +115,36 @@
 <script>
 import ROUTER from '../../../router'
 import AUTH from '../../../services/auth'
+import COMMON from 'src/common.js'
 export default {
   mounted(){
+    this.getData()
   },
   data(){
     return {
-      data: [
-        {name: 'Kennette Canales', org: 'Increment Technologies | University of San Carlos', position: 'Owner | Faculty', img: require('assets/img/contributors/kennette.jpg')},
-        {name: 'Patrick Elalto', org: 'University of San Carlos', position: 'Faculty', img: require('assets/img/contributors/patrick.jpg')},
-        {name: 'Yol Torres', org: 'University of San Carlos | Passerelles Numeriques Philippines', position: 'Student', img: require('assets/img/contributors/yol.jpg')},
-        {name: 'Elsie Kathryn Tagupa', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/elle.jpg')},
-        {name: 'Kent Yohann Bacatan', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/kent.jpg')},
-        {name: 'Ismael Francisco', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/ismael.jpg')},
-        {name: 'Jeanille Abayon', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/jeanille.jpg')},
-        {name: 'Nicole Amber Mariscal', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/nicole.jpg')},
-        {name: 'Brant Francis Uy', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/brant.jpg')},
-        {name: 'Monica Claire M. Apor', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/monica.jpg')},
-        {name: 'RJ Fajardo', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/rj.jpg')},
-        {name: 'Allan Jericho Bargamento', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/allan.jpg')},
-        {name: 'John Patrick Cabia-an', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/john.jpg')},
-        {name: 'Justin Raz', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/raz.jpg')},
-        {name: 'Fletcher Lance Chua', org: 'University of San Carlos', position: 'Student', img: require('assets/img/contributors/fletcher.jpg')}
-      ]
+      data: []
     }
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    getData() {
+      $.get('https://spreadsheets.google.com/feeds/cells/1di9gJrHSrzCJ61XitNlNV5zga8v2LHas0VdNVNfNO3I/1/public/values?alt=json', response => {
+        let entries = response.feed.entry
+        console.log(entries)
+        for (var i = 0; i < entries.length; i += 4) {
+          if(i > 3){
+            let object = {
+              img: COMMON.APP_URL + '/static/img/' + entries[i].content.$t,
+              name: entries[i + 1].content.$t,
+              org: entries[i + 2].content.$t,
+              position: entries[i + 3].content.$t
+            }
+            this.data.push(object)
+          }
+        }
+      })
     }
   }
 }
