@@ -17,3 +17,5 @@ src/assets/img/messy/banner.png
 src/assets/img/messy/forelle.pdn
 src/assets/img/messy/forelle.png
 src/modules/temperature/Temperature.vue.old
+src/modules/patients/oldPatients.vue
+src/modules/patients/oldPatients.js
