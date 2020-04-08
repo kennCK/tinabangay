@@ -1,5 +1,6 @@
 <template>
   <div style="margin-top: 25px;">
+    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal(null)">New Patient</button>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -85,7 +86,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
-import ModalProperty from 'src/modules/places/CreatePlaces.js'
+import ModalProperty from 'src/modules/patients/CreatePatients.js'
 export default {
   mounted(){
    // this.retrieve()
@@ -225,6 +226,11 @@ export default {
           }
         }
       }
+    },
+    showModal(item){
+      this.modalProperty = {...ModalProperty}
+      let inputs = this.modalProperty.inputs
+      $('#createPatientsModal').modal('show')
     }
   }
 }
