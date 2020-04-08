@@ -2,7 +2,7 @@
 	<div class="cw-features bg-light">
     <div class="header">
       <span class="title text-green text-center">
-        <h1>Many Thanks to Our Sponsors!</h1>
+        <h1>Many Thanks to Our Partners!</h1>
       </span>
       <span class="description">
         <h6></h6>
@@ -75,20 +75,34 @@
 <script>
 import ROUTER from '../../../router'
 import AUTH from '../../../services/auth'
+import COMMON from 'src/common.js'
 export default {
   mounted(){
+    this.getData()
   },
   data(){
     return {
-      data: [
-        {img: require('assets/img/contributors/increment-tech.png'), name: 'Increment Technologies'},
-        {img: require('assets/img/contributors/usc.png'), name: 'University of San Carlos'}
-      ]
+      data: []
     }
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    getData() {
+      $.get('https://spreadsheets.google.com/feeds/cells/1di9gJrHSrzCJ61XitNlNV5zga8v2LHas0VdNVNfNO3I/2/public/values?alt=json', response => {
+        let entries = response.feed.entry
+        console.log(entries)
+        for (var i = 0; i < entries.length; i += 2) {
+          if(i > 1){
+            let object = {
+              img: COMMON.APP_URL + '/static/img/' + entries[i].content.$t,
+              name: entries[i + 1].content.$t
+            }
+            this.data.push(object)
+          }
+        }
+      })
     }
   }
 }
