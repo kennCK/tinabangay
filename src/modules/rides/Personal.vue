@@ -25,9 +25,6 @@
           </div>
         </div>
         <div class="card-block px-3" v-else>
-          <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
-            <i class="fas fa-edit"></i>
-          </button>
           <h6 class="card-title text-capitalize" style="margin-top: 15px;"><b>Type: </b>{{item.transportation.type}}</h6>
           <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Model: </b>{{item.transportation.model}}</div>
           <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Code: </b>{{item.transportation.number}}</div>
