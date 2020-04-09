@@ -93,7 +93,7 @@ export default{
   },
   methods: {
     manageInput(data){
-      console.log(data)
+      // console.log(data)
     },
     retrieve(){
       let parameter = {
