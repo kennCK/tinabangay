@@ -5,10 +5,10 @@
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           Your Status
         </div>
-        <label class="text-primary">
+        <label class="text-uppercase" :class="{'text-black': status === 'death', 'text-danger': status === 'positive', 'text-warning': status === 'pum', 'text-primary': status === 'pui', 'text-success': status === 'negative'}">
           <i class="fas fa-square" style="margin-right: 5px;"></i>
           <!-- Person Under Investigation(PUI) -->
-          COMING SOON!
+          {{status}}
         </label>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
           Current Data
@@ -39,6 +39,17 @@
   color: $primary !important;
 }
 
+.text-warning {
+  color: $warning !important;
+}
+
+.text-black {
+  color: #000 !important;
+}
+.text-success {
+  color: $success !important;
+}
+
 .half-rule {
   margin-left: 0;
   text-align: left;
@@ -51,6 +62,9 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
 export default{
+  mounted(){
+    this.retrieve()
+  },
   data(){
     return {
       user: AUTH.user,
@@ -64,7 +78,8 @@ export default{
           }
         },
         placeholder: 'Type places'
-      }
+      },
+      status: null
     }
   },
   props: {
@@ -79,6 +94,16 @@ export default{
   methods: {
     manageInput(data){
       console.log(data)
+    },
+    retrieve(){
+      let parameter = {
+        id: this.user.userID
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('tracings/status', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.status = response.data.status
+      })
     }
   }
 }

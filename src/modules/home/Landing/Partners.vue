@@ -10,7 +10,7 @@
     </div>
     <div class="holder d-flex flex-row justify-content-center align-items-center my-4 row w-100 mx-0 p-0">
       <div class="border-0 m-3" style="max-width: 25rem;" v-for="(item, index) in data" :key="index">
-        <div class="p-3 bg-dark text-light text-capitalize">
+        <div class="p-3 text-capitalize">
           <h6 v-if="!item.img">{{item.name}}</h6>
           <img v-else :src="item.img" :alt="item.name" class="img-fluid">
         </div>
