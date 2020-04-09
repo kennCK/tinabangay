@@ -101,6 +101,7 @@ export default {
       selectedItem: null,
       data: null,
       config: CONFIG,
+      accounts: [],
       category: [{
         title: 'Sort by',
         sorting: [{
@@ -151,6 +152,10 @@ export default {
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
+      })
+      this.APIRequest('accounts/retrieve_accounts', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.accounts = response.data
       })
     },
     sortTable(n) {
@@ -229,11 +234,75 @@ export default {
     },
     showModal(){
       this.modalProperty = {...ModalProperty}
+      this.modalProperty.params.map(par => {
+        if(par.variable === 'added_by') {
+          par.value = this.user.userID
+        }
+      })
       let inputs = this.modalProperty.inputs
       inputs.map(input => {
         input.value = null
       })
       $('#createPatientsModal').modal('show')
+
+      $('#createPatientsModal input[type=text]').attr('autocomplete', 'off')
+
+      $('#username').on('input', () => {
+        let filtered = null
+        if($('#username').val() !== '') {
+          filtered = this.accounts.filter(account => account.username.toLowerCase().indexOf($('#username').val().toLowerCase()) > -1)
+        } else {
+          filtered = null
+        }
+        let offset = $('#username').offset()
+        let content = []
+        if(filtered) {
+          filtered.forEach(account => {
+            let item = $('<div>', {
+              class: 'px-3 py-2 border bg-white username-option',
+              html: account.username,
+              click: () => {
+                this.modalProperty.params.map(par => {
+                  if(par.variable === 'account_id') {
+                    par.value = account.id
+                  }
+                })
+
+                inputs.map(input => {
+                  if(input.variable === 'username') {
+                    input.value = account.username
+                  }
+                })
+                $('.username-dropdown').remove()
+              }
+            })
+            content.push(item)
+          })
+        } else {
+          content = null
+        }
+        if(content !== null) {
+          if($('.username-dropdown').length === 0) {
+            $('<div>', {
+              class: 'username-dropdown border shadow',
+              style: `width: ${$('#username').outerWidth()}px; top: ${offset.top + 50}px; left: 50%; transform: translateX(-50%); position: absolute; z-index: 1060; display: flex; flex-flow: column wrap;`,
+              html: content.length === 0 ? '<div class="px-3 py-2 text-danger border bg-white">There are no usernames that match that</div>' : content
+            }).appendTo('#createPatientsModal')
+          } else {
+            $('.username-dropdown').html('')
+            $('.username-dropdown').html(content.length === 0 ? '<div class="px-3 py-2 text-danger border bg-white">There are no usernames that match that</div>' : content)
+          }
+        } else {
+          $('.username-dropdown').remove()
+          if($(this).val() === null || $(this).val() === '') {
+            this.modalProperty.params.map(par => {
+              if(par.variable === 'account_id') {
+                par.value = null
+              }
+            })
+          }
+        }
+      })
     }
   }
 }

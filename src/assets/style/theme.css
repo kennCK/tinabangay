@@ -32,6 +32,11 @@
   padding-bottom: 60px;
 }
 
+.username-option:hover {
+  background: #ddd !important;
+  cursor: pointer;
+}
+
 @media (max-width: 991px) {
   .main-sidebar {
     min-height: unset;
