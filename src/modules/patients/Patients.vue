@@ -153,7 +153,7 @@ export default {
         $('#loading').css({display: 'none'})
         this.data = response.data
       })
-      this.APIRequest('accounts/retrieve_accounts', parameter).then(response => {
+      this.APIRequest('accounts/retrieve_accounts').then(response => {
         $('#loading').css({display: 'none'})
         this.accounts = response.data
       })
@@ -262,6 +262,46 @@ export default {
               class: 'px-3 py-2 border bg-white username-option',
               html: account.username,
               click: () => {
+                let par = {
+                  condition: [{
+                    value: account.id,
+                    column: 'account_id',
+                    clause: '='
+                  }]
+                }
+                let data = null
+
+                $('#loading').css({display: 'block'})
+                this.APIRequest('account_informations/retrieve', par).then(response => {
+                  $('#loading').css({display: 'none'})
+                  data = response.data[0]
+                  if($('#user-info').length === 0) {
+                    $('<div>', {
+                      class: 'card mb-3',
+                      id: 'user-info'
+                    }).insertBefore('#createPatientsModal .modal-body .form-group:nth-child(2)')
+                    $('<div>', {
+                      class: 'card-body alert-info',
+                      html: `<h5 class="card-title">User Information</h5>
+                            <div class="row">
+                              <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name} ${data.last_name}` : 'Not Specified'}</div>
+                              <div class="col-5 text-capitalize"><b>Sex:</b> ${data.sex ? data.sex : 'Not Specified'}</div>
+                            </div>
+                            <div class="row mt-2">
+                              <div class="col-10"><b>Address:</b> ${data.address ? data.address : 'Not Specified'}</div>
+                            </div>`
+                    }).appendTo('#user-info')
+                  } else {
+                    $('#user-info .card-body').html(`<h5 class="card-title">User Information</h5>
+                            <div class="row">
+                              <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name} ${data.last_name}` : 'Not Specified'}</div>
+                              <div class="col-5 text-capitalize"><b>Sex:</b> ${data.sex ? data.sex : 'Not Specified'}</div>
+                            </div>
+                            <div class="row mt-2">
+                              <div class="col-10"><b>Address:</b> ${data.address ? data.address : 'Not Specified'}</div>
+                            </div>`)
+                  }
+                })
                 this.modalProperty.params.map(par => {
                   if(par.variable === 'account_id') {
                     par.value = account.id
