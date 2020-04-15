@@ -115,7 +115,7 @@ export default {
           value: this.user.userID
         }],
         sort: {
-          date: 'asc'
+          date: 'desc'
         }
       }
       $('#loading').css({display: 'block'})

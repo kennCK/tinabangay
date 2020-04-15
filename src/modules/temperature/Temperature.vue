@@ -86,7 +86,10 @@ export default {
           clause: '=',
           column: 'account_id',
           value: this.user.userID
-        }]
+        }],
+        sort: {
+          created_at: 'desc'
+        }
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('temperatures/retrieve', parameter).then(response => {

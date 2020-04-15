@@ -133,7 +133,7 @@ export default {
           value: this.user.userID
         }],
         sort: {
-          created_at: 'asc'
+          created_at: 'desc'
         }
       }
       $('#loading').css({display: 'block'})
