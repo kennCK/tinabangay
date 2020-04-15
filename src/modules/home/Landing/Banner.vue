@@ -16,7 +16,7 @@
             {{item.description}}
           </h4>
         </span>
-          <a class="" href=' https://dl.dropbox.com/s/kvakbdh9vmsvzae/BirdsEye.apk'>
+          <a class="" :href="downloads.android.link">
           <img class="button img-fluid float-left mt-3" alt='Get it on Google Play' :src="require('assets/img/playstore.png')"/></a>
       </div>
       <div class="image" v-if="item.template === 'right'">
@@ -86,15 +86,34 @@ import AUTH from 'src/services/auth'
 import SETTINGS from 'src/modules/home/settings.js'
 export default {
   mounted(){
+    this.getData()
   },
   data(){
     return {
-      settings: SETTINGS
+      settings: SETTINGS,
+      downloads: {
+        android: null,
+        ios: null
+      }
     }
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    getData() {
+      $.get('https://spreadsheets.google.com/feeds/cells/1di9gJrHSrzCJ61XitNlNV5zga8v2LHas0VdNVNfNO3I/4/public/values?alt=json', response => {
+        let entries = response.feed.entry
+        // console.log(entries)
+        for (var i = 0; i < entries.length; i += 3) {
+          if(i > 2){
+            this.downloads[entries[i].content.$t] = {
+              version: entries[i + 1].content.$t,
+              link: entries[i + 2].content.$t
+            }
+          }
+        }
+      })
     }
   }
 }
