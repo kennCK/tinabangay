@@ -294,7 +294,7 @@ export default {
                   } else {
                     $('#user-info .card-body').html(`<h5 class="card-title">User Information</h5>
                             <div class="row">
-                              <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name} ${data.last_name}` : 'Not Specified'}</div>
+                              <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name ? data.middle_name : ''} ${data.last_name}` : 'Not Specified'}</div>
                               <div class="col-5 text-capitalize"><b>Sex:</b> ${data.sex ? data.sex : 'Not Specified'}</div>
                             </div>
                             <div class="row mt-2">
