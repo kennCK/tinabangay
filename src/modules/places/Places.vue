@@ -15,7 +15,7 @@
           <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
             <i class="fas fa-edit"></i>
           </button>
-          <h6 class="card-title" style="margin-top: 15px;">{{item.route}}, {{item.locality}}, {{item.country}}</h6>
+          <h6 class="card-title" style="margin-top: 15px;">{{item.route == 'xx' ? `Custom Location` : `${item.route}, ${item.locality}, ${item.country}`}}</h6>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date | formatDate}} {{item.time | formatTime}}</div>
           <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
