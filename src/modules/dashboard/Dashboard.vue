@@ -92,9 +92,6 @@ export default{
     'google-places-auto-complete': require('components/increment/generic/location/GooglePlacesAutoComplete.vue')
   },
   methods: {
-    manageInput(data){
-      // console.log(data)
-    },
     retrieve(){
       let parameter = {
         id: this.user.userID

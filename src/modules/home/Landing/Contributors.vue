@@ -132,7 +132,6 @@ export default {
     getData() {
       $.get('https://spreadsheets.google.com/feeds/cells/1di9gJrHSrzCJ61XitNlNV5zga8v2LHas0VdNVNfNO3I/1/public/values?alt=json', response => {
         let entries = response.feed.entry
-        // console.log(entries)
         for (var i = 0; i < entries.length; i += 4) {
           if(i > 3){
             let object = {

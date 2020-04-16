@@ -93,7 +93,6 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          console.log(response.data)
         }else{
           this.data = null
         }
