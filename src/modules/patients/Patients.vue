@@ -142,7 +142,7 @@ export default {
       }
       let parameter = {
         condition: [{
-          value: filter.value + '%',
+          value: filter.value + ' %',
           column: filter.column,
           clause: 'like'
         }],
