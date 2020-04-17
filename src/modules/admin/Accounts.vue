@@ -1,5 +1,6 @@
 <template>
   <div class="ledger-summary-container">
+    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal()">New Patient Account</button>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -45,6 +46,7 @@
       </tbody>
     </table>
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
+    <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -109,6 +111,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
+import ModalProperty from 'src/modules/admin/CreatePatientAccount.js'
 export default{
   mounted(){
     $('#loading').css({display: 'block'})
@@ -120,6 +123,7 @@ export default{
       data: null,
       auth: AUTH,
       selecteditem: null,
+      modalProperty: ModalProperty,
       config: CONFIG,
       category: [{
         title: 'Sort by',
@@ -245,6 +249,14 @@ export default{
       }else{
         alert('Not Allowed!')
       }
+    },
+    showModal() {
+      this.modalProperty = {...ModalProperty}
+      let inputs = this.modalProperty.inputs
+      inputs.map(input => {
+        input.value = null
+      })
+      $('#createAccountModal').modal('show')
     }
   }
 }
