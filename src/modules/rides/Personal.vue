@@ -15,7 +15,7 @@
           <h6 class="card-title text-uppercase text-primary" style="margin-top: 15px;">{{item.type + (item.code !== null ? ' : ' + item.code : '')}}</h6>
 
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-map-marker" style="margin-right: 10px"></i>{{item.from ? item.from : 'Not Specified'}} - {{item.to ? item.to : 'Not Specified'}}</div>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_time | formatDateTime }} - {{item.to_date_time | formatDateTime}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_human}} - {{item.to_date_human}}</div>
           <div class="m-0 pb-2" v-if="(calcStatus = getStatus(item.from_status, item.to_status))">
             <b-button variant="success" class="not-btn" v-if="calcStatus === 'negative'">This route is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="calcStatus === 'pui'">There was a PUI in this route.</b-button>
@@ -28,7 +28,7 @@
           <h6 class="card-title text-capitalize" style="margin-top: 15px;"><b>Type: </b>{{item.transportation.type}}</h6>
           <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Model: </b>{{item.transportation.model}}</div>
           <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Code: </b>{{item.transportation.number}}</div>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.created_at_human | formatDateTime }}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.created_at_human}}</div>
           <div class="m-0 pb-2" v-if="(calcStatus = getStatus(item.from_status, item.to_status))">
             <b-button variant="success" class="not-btn" v-if="calcStatus === 'negative'">This route is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="calcStatus === 'pui'">There was a PUI in this route.</b-button>
