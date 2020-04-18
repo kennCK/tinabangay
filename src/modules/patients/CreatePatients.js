@@ -31,7 +31,7 @@ export default {
     type: 'input',
     inputType: 'text',
     validation: {
-      size: null,
+      size: 0,
       type: 'text'
     }
   },
@@ -72,22 +72,22 @@ export default {
       size: 1,
       type: 'text'
     }
+  },
+  {
+    row: 'full',
+    label: 'Source',
+    variable: 'source',
+    placeholder: 'Enter Patient Information Source',
+    value: null,
+    required: false,
+    id: 'source',
+    type: 'input',
+    inputType: 'text',
+    validation: {
+      size: 0,
+      type: 'text'
+    }
   }
-  // {
-  //   row: 'full',
-  //   label: 'Source',
-  //   variable: 'source',
-  //   placeholder: 'Enter Patient Information Source',
-  //   value: null,
-  //   required: false,
-  //   id: 'source',
-  //   type: 'input',
-  //   inputType: 'text',
-  //   validation: {
-  //     size: 0,
-  //     type: 'text'
-  //   }
-  // }
   ],
   route: 'patients/create',
   button: {
