@@ -435,6 +435,9 @@ export default {
         let inputs = this.placeProperty.inputs
         inputs.map(input => {
           input.value = null
+          if(input.variable === 'location') {
+            $('#location input').val('')
+          }
         })
         this.placeProperty.params.map(par => {
           if (par.variable === 'patient_id') {

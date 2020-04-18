@@ -125,8 +125,8 @@ export default {
           let inputs = this.modalProperty.inputs
           inputs.map(input => {
             input.value = null
-            if(input.type === 'location') {
-              $(`#${input.id} input`).val('')
+            if(input.variable === 'location') {
+              $('#location input').val('')
             } else if (input.type === 'date') {
               input.placeholder = 'Enter Date'
             } else if (input.type === 'time') {
