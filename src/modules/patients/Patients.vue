@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 25px;">
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal()">New Patient</button>
+    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -12,16 +12,18 @@
     <table class="table table-responsive table-bordered" id="myTable">
       <tr class="bg-primary">
         <td>Status</td>
-        <td>Patient's Username <i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></td>
+        <td>Patient's Username / Patient Code<i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></td>
         <td>Contact Number</td>
         <td>Date Recorded</td>
+        <td>Visited Places</td>
       </tr>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td class="text-uppercase" :class="{'bg-black': item.status === 'death', 'bg-danger': item.status === 'positive', 'bg-warning': item.status === 'pum', 'bg-primary': item.status === 'pui', 'bg-success': item.status === 'negative'}">{{item.status}}</td>
-          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</td>
-          <td>{{item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
+          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
+          <td>{{ item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
+          <td><button class="btn btn-primary" style="margin: .5% 0;" @click="showModal('place', item.account_id, (item.account_id === null ? item.id : null))">Add Visited Place</button></td>
         </tr>
       </tbody>
     </table>
@@ -60,7 +62,8 @@
       </div>
     </div>
 </div>
-    <increment-modal :property="modalProperty"></increment-modal>
+    <increment-modal :property="patientProperty"></increment-modal>
+    <increment-modal :property="placeProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -86,7 +89,8 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
-import ModalProperty from 'src/modules/patients/CreatePatients.js'
+import PatientModalProperty from 'src/modules/patients/CreatePatients.js'
+import PlaceModalProperty from 'src/modules/patients/AddPlace.js'
 export default {
   mounted(){
    // this.retrieve()
@@ -97,7 +101,8 @@ export default {
       common: COMMON,
       user: AUTH.user,
       auth: AUTH,
-      modalProperty: ModalProperty,
+      patientProperty: PatientModalProperty,
+      placeProperty: PlaceModalProperty,
       selectedItem: null,
       data: null,
       config: CONFIG,
@@ -232,120 +237,146 @@ export default {
         }
       }
     },
-    showModal(){
-      this.modalProperty = {...ModalProperty}
-      this.modalProperty.params.map(par => {
-        if(par.variable === 'added_by') {
-          par.value = this.user.userID
+    showModal(modal, account = null, patientID = null){
+      if(modal === 'patient') {
+        this.patientProperty = {...PatientModalProperty}
+        let inputs = this.patientProperty.inputs
+        inputs.map(input => {
+          input.value = null
+        })
+        if(inputs[inputs.length - 1].variable === 'account_id') {
+          inputs.pop()
         }
-      })
-      let inputs = this.modalProperty.inputs
-      inputs.map(input => {
-        input.value = null
-      })
-      $('#createPatientsModal #user-info').remove()
-      $('#createPatientsModal').modal('show')
-
-      $('#createPatientsModal input[type=text]').attr('autocomplete', 'off')
-
-      $('#username').on('input', () => {
-        let filtered = null
-        if($('#username').val() !== '') {
-          filtered = this.accounts.filter(account => account.username.toLowerCase().indexOf($('#username').val().toLowerCase()) > -1)
-        } else {
-          filtered = null
-        }
-        let offset = $('#username').offset()
-        let content = []
-        if(filtered) {
-          filtered.forEach(account => {
-            let item = $('<div>', {
-              class: 'px-3 py-2 border bg-white username-option',
-              html: account.username,
-              click: () => {
-                let par = {
-                  condition: [{
-                    value: account.id,
-                    column: 'account_id',
-                    clause: '='
-                  }]
-                }
-                let data = null
-
-                $('#loading').css({display: 'block'})
-                this.APIRequest('account_informations/retrieve', par).then(response => {
-                  $('#loading').css({display: 'none'})
-                  data = response.data[0]
-                  if($('#user-info').length === 0) {
-                    $('<div>', {
-                      class: 'card mb-3',
-                      id: 'user-info'
-                    }).insertBefore('#createPatientsModal .modal-body .form-group:nth-child(2)')
-                    $('<div>', {
-                      class: 'card-body alert-info',
-                      html: `<h5 class="card-title">User Information</h5>
-                            <div class="row">
-                              <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name} ${data.last_name}` : 'Not Specified'}</div>
-                              <div class="col-5 text-capitalize"><b>Sex:</b> ${data.sex ? data.sex : 'Not Specified'}</div>
-                            </div>
-                            <div class="row mt-2">
-                              <div class="col-10"><b>Address:</b> ${data.address ? data.address : 'Not Specified'}</div>
-                            </div>`
-                    }).appendTo('#user-info')
-                  } else {
-                    $('#user-info .card-body').html(`<h5 class="card-title">User Information</h5>
-                            <div class="row">
-                              <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name ? data.middle_name : ''} ${data.last_name}` : 'Not Specified'}</div>
-                              <div class="col-5 text-capitalize"><b>Sex:</b> ${data.sex ? data.sex : 'Not Specified'}</div>
-                            </div>
-                            <div class="row mt-2">
-                              <div class="col-10"><b>Address:</b> ${data.address ? data.address : 'Not Specified'}</div>
-                            </div>`)
-                  }
-                })
-                this.modalProperty.params.map(par => {
-                  if(par.variable === 'account_id') {
-                    par.value = account.id
-                  }
-                })
-
-                inputs.map(input => {
-                  if(input.variable === 'username') {
-                    input.value = account.username
-                  }
-                })
-
-                $('#username').val(account.username)
-                $('.username-dropdown').remove()
-              }
-            })
-            content.push(item)
-          })
-        } else {
-          content = null
-        }
-        if(content !== null) {
-          if($('.username-dropdown').length === 0) {
-            $('<div>', {
-              class: 'username-dropdown border shadow',
-              style: `width: ${$('#username').outerWidth()}px; top: ${offset.top + 50}px; left: 50%; transform: translateX(-50%); position: absolute; z-index: 1060; display: flex; flex-flow: column wrap;`,
-              html: content.length === 0 ? '<div class="px-3 py-2 text-danger border bg-white">There are no usernames that match that</div>' : content
-            }).appendTo('#createPatientsModal')
+        this.patientProperty.params.map(par => {
+          if(par.variable === 'added_by') {
+            par.value = this.user.userID
+          }
+        })
+        $('#createPatientsModal #user-info').remove()
+        $('#createPatientsModal').modal('show')
+        $('#createPatientsModal input[type=text]').attr('autocomplete', 'off')
+        $('#username').on('input', () => {
+          let filtered = null
+          if($('#username').val() !== '') {
+            filtered = this.accounts.filter(account => account.username.toLowerCase().indexOf($('#username').val().toLowerCase()) > -1)
           } else {
-            $('.username-dropdown').html('')
-            $('.username-dropdown').html(content.length === 0 ? '<div class="px-3 py-2 text-danger border bg-white">There are no usernames that match that</div>' : content)
+            filtered = null
           }
-        } else {
-          $('.username-dropdown').remove()
-          if($(this).val() === null || $(this).val() === '') {
-            this.modalProperty.params.map(par => {
-              if(par.variable === 'account_id') {
-                par.value = null
-              }
+          let offset = $('#username').offset()
+          let content = []
+          if(filtered) {
+            filtered.forEach(account => {
+              let item = $('<div>', {
+                class: 'px-3 py-2 border bg-white username-option',
+                html: account.username,
+                click: () => {
+                  let par = {
+                    condition: [{
+                      value: account.id,
+                      column: 'account_id',
+                      clause: '='
+                    }]
+                  }
+                  let data = null
+                  $('#loading').css({display: 'block'})
+                  this.APIRequest('account_informations/retrieve', par).then(response => {
+                    $('#loading').css({display: 'none'})
+                    data = response.data[0]
+                    if($('#user-info').length === 0) {
+                      $('<div>', {
+                        class: 'card mb-3',
+                        id: 'user-info'
+                      }).insertBefore('#createPatientsModal .modal-body .form-group:nth-child(2)')
+                      $('<div>', {
+                        class: 'card-body alert-info',
+                        html: `<h5 class="card-title">User Information</h5>
+                              <div class="row">
+                                <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name} ${data.last_name}` : 'Not Specified'}</div>
+                                <div class="col-5 text-capitalize"><b>Sex:</b> ${data.sex ? data.sex : 'Not Specified'}</div>
+                              </div>
+                              <div class="row mt-2">
+                                <div class="col-10"><b>Address:</b> ${data.address ? data.address : 'Not Specified'}</div>
+                              </div>`
+                      }).appendTo('#user-info')
+                    } else {
+                      $('#user-info .card-body').html(`<h5 class="card-title">User Information</h5>
+                              <div class="row">
+                                <div class="col-5"><b>Full Name:</b> ${data.first_name ? `${data.first_name} ${data.middle_name ? data.middle_name : ''} ${data.last_name}` : 'Not Specified'}</div>
+                                <div class="col-5 text-capitalize"><b>Sex:</b> ${data.sex ? data.sex : 'Not Specified'}</div>
+                              </div>
+                              <div class="row mt-2">
+                                <div class="col-10"><b>Address:</b> ${data.address ? data.address : 'Not Specified'}</div>
+                              </div>`)
+                    }
+                  })
+                  inputs.push({
+                    row: 'full',
+                    variable: 'account_id',
+                    placeholder: 'Account ID',
+                    value: account.id,
+                    required: false,
+                    id: 'account_id',
+                    type: 'hidden',
+                    inputType: 'hidden',
+                    validation: {
+                      size: 0,
+                      type: 'number'
+                    }
+                  })
+                  inputs.map(par => {
+                    if(par.variable === 'username') {
+                      par.value = account.username
+                    }
+                  })
+                  $('#username').val(account.username)
+                  $('.username-dropdown').remove()
+                }
+              })
+              content.push(item)
             })
+          } else {
+            content = null
           }
+          if(content !== null) {
+            if($('.username-dropdown').length === 0) {
+              $('<div>', {
+                class: 'username-dropdown border shadow',
+                style: `width: ${$('#username').outerWidth()}px; top: ${offset.top + 50}px; left: 50%; transform: translateX(-50%); position: absolute; z-index: 1060; display: flex; flex-flow: column wrap;`,
+                html: content.length === 0 ? '<div class="px-3 py-2 text-danger border bg-white">There are no usernames that match that</div>' : content
+              }).appendTo('#createPatientsModal')
+            } else {
+              $('.username-dropdown').html('')
+              $('.username-dropdown').html(content.length === 0 ? '<div class="px-3 py-2 text-danger border bg-white">There are no usernames that match that</div>' : content)
+            }
+          } else {
+            $('.username-dropdown').remove()
+            if($(this).val() === null || $(this).val() === '') {
+              if(inputs[inputs.length - 1].variable === 'account_id') {
+                inputs.pop()
+              }
+            }
+          }
+        })
+      } else {
+        this.placeProperty = {...PlaceModalProperty}
+        if(this.placeProperty.params[this.placeProperty.params.length - 1].variable === 'account_id') {
+          this.placeProperty.params.pop()
         }
-      })
+        let inputs = this.placeProperty.inputs
+        inputs.map(input => {
+          input.value = null
+        })
+        this.placeProperty.params.map(par => {
+          if (par.variable === 'patient_id') {
+            par.value = patientID
+          }
+        })
+        if(account !== null) {
+          this.placeProperty.params.push({variable: 'account_id', value: account})
+        }
+        $('#createPlacesModal').modal('show')
+        console.log('dead end for now')
+      }
     }
   }
 }

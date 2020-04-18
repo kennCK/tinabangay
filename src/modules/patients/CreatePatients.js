@@ -96,9 +96,6 @@ export default {
   },
   sort: null,
   params: [{
-    variable: 'account_id',
-    value: null
-  }, {
     variable: 'payload',
     value: 'manual'
   },
