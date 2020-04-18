@@ -9,6 +9,11 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']"></basic-filter>
     
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+      />
     <table class="table table-bordered table-responsive" v-if="data !== null">
       <thead class="bg-primary">
         <tr>
@@ -112,6 +117,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/admin/CreatePatientAccount.js'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default{
   mounted(){
     $('#loading').css({display: 'block'})
@@ -165,13 +171,17 @@ export default{
       sort: null,
       editTypeIndex: null,
       newAccountType: null,
-      selectedAccount: null
+      selectedAccount: null,
+      limit: 10,
+      activePage: 1,
+      numPages: null
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
-    'increment-modal': require('components/increment/generic/modal/Modal.vue')
+    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
+    Pager
   },
   methods: {
     setEditTypeIndex(index, item){
@@ -224,14 +234,18 @@ export default{
           column: filter.column,
           clause: 'like'
         }],
-        sort: sort
+        sort: sort,
+        limit: this.limit,
+        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
       this.APIRequest('accounts/retrieve_accounts', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          this.numPages = 1
         }else{
           this.data = null
+          this.numPages = null
         }
       })
     },
