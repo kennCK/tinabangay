@@ -16,7 +16,7 @@
             <i class="fas fa-edit"></i>
           </button>
           <h6 class="card-title" style="margin-top: 15px;">{{item.route == 'xx' ? `Custom Location` : `${item.route}, ${item.locality}, ${item.country}`}}</h6>
-          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date | formatDate}} {{item.time | formatTime}}</div>
+          <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date_human}}</div>
           <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
