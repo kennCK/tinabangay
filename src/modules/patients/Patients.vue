@@ -243,6 +243,7 @@ export default {
       inputs.map(input => {
         input.value = null
       })
+      $('#createPatientsModal #user-info').remove()
       $('#createPatientsModal').modal('show')
 
       $('#createPatientsModal input[type=text]').attr('autocomplete', 'off')
@@ -313,6 +314,8 @@ export default {
                     input.value = account.username
                   }
                 })
+
+                $('#username').val(account.username)
                 $('.username-dropdown').remove()
               }
             })

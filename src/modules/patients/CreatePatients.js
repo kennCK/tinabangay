@@ -11,12 +11,27 @@ export default {
     variable: 'username',
     placeholder: 'Enter username',
     value: null,
-    required: true,
+    required: false,
     id: 'username',
     type: 'input',
     inputType: 'text',
     validation: {
-      size: 1,
+      size: 0,
+      type: 'text'
+    }
+  },
+  {
+    row: 'full',
+    label: 'Patient Code',
+    variable: 'code',
+    placeholder: 'Enter Patient Code',
+    value: null,
+    required: false,
+    id: 'code',
+    type: 'input',
+    inputType: 'text',
+    validation: {
+      size: null,
       type: 'text'
     }
   },
@@ -58,6 +73,21 @@ export default {
       type: 'text'
     }
   }
+  // {
+  //   row: 'full',
+  //   label: 'Source',
+  //   variable: 'source',
+  //   placeholder: 'Enter Patient Information Source',
+  //   value: null,
+  //   required: false,
+  //   id: 'source',
+  //   type: 'input',
+  //   inputType: 'text',
+  //   validation: {
+  //     size: 0,
+  //     type: 'text'
+  //   }
+  // }
   ],
   route: 'patients/create',
   button: {
