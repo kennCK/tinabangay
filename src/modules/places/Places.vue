@@ -28,7 +28,7 @@
       </div>
     </div>
     <empty v-else :title="'You have not visited any places yet.'" :action="'Your data will show up here once you have added places you\'ve visited. Stay at Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
-    <increment-modal :property="modalProperty"></increment-modal>
+    <increment-modal :property="modalProperty" ref="modal"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -121,13 +121,12 @@ export default {
     showModal(action, item = null){
       switch(action){
         case 'create':
+          this.$refs.modal.$refs.location[0].onCancel()
           this.modalProperty = {...ModalProperty}
           let inputs = this.modalProperty.inputs
           inputs.map(input => {
             input.value = null
-            if(input.variable === 'location') {
-              $('#location input').val('')
-            } else if (input.type === 'date') {
+            if (input.type === 'date') {
               input.placeholder = 'Enter Date'
             } else if (input.type === 'time') {
               input.placeholder = 'Enter Time'

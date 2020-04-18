@@ -67,7 +67,7 @@
     </div>
 </div>
     <increment-modal :property="patientProperty"></increment-modal>
-    <increment-modal :property="placeProperty"></increment-modal>
+    <increment-modal ref="modal" :property="placeProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -433,11 +433,9 @@ export default {
           this.placeProperty.params.pop()
         }
         let inputs = this.placeProperty.inputs
+        this.$refs.modal.$refs.location[0].onCancel()
         inputs.map(input => {
           input.value = null
-          if(input.variable === 'location') {
-            $('#location input').val('')
-          }
         })
         this.placeProperty.params.map(par => {
           if (par.variable === 'patient_id') {
