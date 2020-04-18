@@ -67,14 +67,6 @@ Vue.filter('formatDate', function(value) {
     return moment(String(value)).format('MMM D, YYYY')
   }
 })
-
-Vue.filter('formatTime', function(value){
-  if(value) {
-    let stamp = moment(String(value), [moment.HTML5_FMT.TIME_SECONDS])
-    return moment(String(stamp)).format('hh:mm A')
-  }
-})
-
 export default {
   mounted(){
     this.retrieve()

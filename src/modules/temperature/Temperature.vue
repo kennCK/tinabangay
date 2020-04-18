@@ -21,7 +21,7 @@
                 </div>
               </td>
               <td>
-                {{item.created_at | formatDateTime}}
+                {{item.created_at_human}}
               </td>
             </tr>
           </table>
@@ -55,12 +55,6 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import moment from 'moment'
 import Vue from 'vue'
-
-Vue.filter('formatDateTime', function(value) {
-  if (value) {
-    return moment(String(value)).format('MMM DD, YYYY hh:mm A')
-  }
-})
 
 export default {
   mounted(){
