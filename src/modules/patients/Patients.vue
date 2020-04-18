@@ -15,7 +15,7 @@
         <td>Patient's Username / Patient Code<i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></td>
         <td>Contact Number</td>
         <td>Date Recorded</td>
-        <td>Visited Places</td>
+        <td>Actions</td>
       </tr>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
@@ -23,7 +23,11 @@
           <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
           <td>{{ item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
-          <td><button class="btn btn-primary" style="margin: .5% 0;" @click="showModal('place', item.account_id, (item.account_id === null ? item.id : null))">Add Visited Place</button></td>
+          <td>
+            <button class="btn btn-success" style="margin: .5% 0;" @click="showModal('place', item.account_id, (item.account_id === null ? item.id : null))">Add Visited Place</button>
+            <button class="btn btn-primary" style="margin: .5% 0;" @click="showModal('patient', null, null, item)"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger" style="margin: .5% 0;" @click="removeItem(item.id)"><i class="fas fa-trash"></i></button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -237,21 +241,85 @@ export default {
         }
       }
     },
-    showModal(modal, account = null, patientID = null){
+    removeItem(id){
+      let parameter = {
+        id: id
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('patients/delete', parameter).then(response => {
+        this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+      })
+    },
+    showModal(modal, account = null, patientID = null, update = false){
       if(modal === 'patient') {
         this.patientProperty = {...PatientModalProperty}
         let inputs = this.patientProperty.inputs
-        inputs.map(input => {
-          input.value = null
-        })
-        if(inputs[inputs.length - 1].variable === 'account_id') {
-          inputs.pop()
-        }
-        this.patientProperty.params.map(par => {
-          if(par.variable === 'added_by') {
-            par.value = this.user.userID
+        let freshInput = inputs.filter(input => input.variable !== 'account_id')
+        this.patientProperty.inputs = freshInput
+        if(!update) {
+          inputs.map(input => {
+            input.value = null
+          })
+          this.patientProperty.params.map(par => {
+            if(par.variable === 'added_by') {
+              par.value = this.user.userID
+            }
+          })
+        } else {
+          let modalData = {...this.patientProperty}
+          let parameter = {
+            title: 'Update Patient Entry',
+            route: 'patients/update',
+            button: {
+              left: 'Cancel',
+              right: 'Update'
+            },
+            sort: {
+              column: 'created_at',
+              value: 'desc'
+            },
+            params: [{
+              variable: 'id',
+              value: update.id
+            }]
           }
-        })
+          modalData = {...modalData, ...parameter}
+          if(modalData.inputs[modalData.inputs.length - 1].variable === 'account_id') {
+            modalData.inputs.pop()
+          }
+          modalData.inputs.map(input => {
+            if(update.account_id && input.variable === 'username') {
+              input.value = update.account.username
+              modalData.inputs.push({
+                row: 'full',
+                variable: 'account_id',
+                placeholder: 'Account ID',
+                value: update.account_id,
+                required: false,
+                id: 'account_id',
+                type: 'hidden',
+                inputType: 'hidden',
+                validation: {
+                  size: 0,
+                  type: 'number'
+                }
+              })
+            }
+
+            if(input.variable === 'code') {
+              input.value = update.code
+            }
+
+            if(input.variable === 'status') {
+              input.value = update.status
+            }
+
+            if(input.variable === 'source') {
+              input.value = update.source
+            }
+            this.patientProperty = {...modalData}
+          })
+        }
         $('#createPatientsModal #user-info').remove()
         $('#createPatientsModal').modal('show')
         $('#createPatientsModal input[type=text]').attr('autocomplete', 'off')
@@ -261,6 +329,8 @@ export default {
             filtered = this.accounts.filter(account => account.username.toLowerCase().indexOf($('#username').val().toLowerCase()) > -1)
           } else {
             filtered = null
+            let freshInput = inputs.filter(input => input.variable !== 'account_id')
+            this.patientProperty.inputs = freshInput
           }
           let offset = $('#username').offset()
           let content = []
