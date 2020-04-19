@@ -132,6 +132,14 @@ export default {
           title: 'Status descending',
           payload: 'status',
           payload_value: 'desc'
+        }, {
+          title: 'Code ascending',
+          payload: 'code',
+          payload_value: 'asc'
+        }, {
+          title: 'Code descending',
+          payload: 'code',
+          payload_value: 'desc'
         }]
       }],
       filter: null,
@@ -166,7 +174,7 @@ export default {
       }
       let parameter = {
         condition: [{
-          value: filter.value + ' %',
+          value: filter.value + '%',
           column: filter.column,
           clause: 'like'
         }],
