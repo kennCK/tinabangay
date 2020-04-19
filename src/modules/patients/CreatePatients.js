@@ -57,6 +57,10 @@ export default {
       label: 'Negative'
     },
     {
+      value: 'recovered',
+      label: 'Recovered'
+    },
+    {
       value: 'pui',
       label: 'Person Under Investigation'
     },
@@ -70,6 +74,21 @@ export default {
     }],
     validation: {
       size: 1,
+      type: 'text'
+    }
+  },
+  {
+    row: 'full',
+    label: 'Remarks',
+    variable: 'remarks',
+    placeholder: 'Enter remarks',
+    value: null,
+    required: false,
+    id: 'remarks',
+    type: 'input',
+    inputType: 'text',
+    validation: {
+      size: 0,
       type: 'text'
     }
   },

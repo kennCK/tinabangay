@@ -234,9 +234,9 @@ export default{
           column: filter.column,
           clause: 'like'
         }],
-        sort: sort,
-        limit: this.limit,
-        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        sort: sort
+        // limit: this.limit,
+        // offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
       this.APIRequest('accounts/retrieve_accounts', parameter).then(response => {
         $('#loading').css({display: 'none'})
