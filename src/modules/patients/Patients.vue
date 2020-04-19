@@ -1,6 +1,13 @@
 <template>
   <div style="margin-top: 25px;">
+    <div class="row m-0 justify-content-end">
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+      />
     <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
+    </div>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -95,6 +102,7 @@ import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
 import PatientModalProperty from 'src/modules/patients/CreatePatients.js'
 import PlaceModalProperty from 'src/modules/patients/AddPlace.js'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
    // this.retrieve()
@@ -102,6 +110,9 @@ export default {
   },
   data(){
     return {
+      numPages: null,
+      activePage: 1,
+      limit: 5,
       common: COMMON,
       user: AUTH.user,
       auth: AUTH,
@@ -130,13 +141,17 @@ export default {
   components: {
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
-    'empty': require('components/increment/generic/empty/Empty.vue')
+    'empty': require('components/increment/generic/empty/Empty.vue'),
+    Pager
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(sort, filter){
+    linkGen (pageNum){
+      return '#page=' + pageNum
+    },
+    retrieve(sort, filter, limit, offset){
       if(sort !== null){
         this.sort = sort
       }
@@ -155,7 +170,9 @@ export default {
           column: filter.column,
           clause: 'like'
         }],
-        sort: sort
+        sort: sort,
+        limit: this.limit,
+        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('patients/retrieve', parameter).then(response => {
