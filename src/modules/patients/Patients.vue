@@ -162,10 +162,10 @@ export default {
         $('#loading').css({display: 'none'})
         this.data = response.data
       })
-      this.APIRequest('accounts/retrieve_accounts').then(response => {
-        $('#loading').css({display: 'none'})
-        this.accounts = response.data
-      })
+      // this.APIRequest('accounts/retrieve_accounts').then(response => {
+      //   $('#loading').css({display: 'none'})
+      //   this.accounts = response.data
+      // })
     },
     sortTable(n) {
       var table, rows, switching, i, x, y, shouldSwitch, dir
@@ -312,6 +312,10 @@ export default {
 
             if(input.variable === 'status') {
               input.value = update.status
+            }
+
+            if(input.variable === 'remarks'){
+              input.value = update.remarks
             }
 
             if(input.variable === 'source') {
