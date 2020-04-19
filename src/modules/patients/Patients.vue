@@ -151,7 +151,7 @@ export default {
     linkGen (pageNum){
       return '#page=' + pageNum
     },
-    retrieve(sort, filter, limit, offset){
+    retrieve(sort, filter){
       if(sort !== null){
         this.sort = sort
       }
