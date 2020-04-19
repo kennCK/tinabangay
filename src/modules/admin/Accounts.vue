@@ -234,15 +234,15 @@ export default{
           column: filter.column,
           clause: 'like'
         }],
-        sort: sort
-        // limit: this.limit,
-        // offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        sort: sort,
+        limit: this.limit,
+        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
       this.APIRequest('accounts/retrieve_accounts', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          this.numPages = 1
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
         }else{
           this.data = null
           this.numPages = null
