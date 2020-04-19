@@ -132,6 +132,14 @@ export default {
           title: 'Status descending',
           payload: 'status',
           payload_value: 'desc'
+        }, {
+          title: 'Code ascending',
+          payload: 'code',
+          payload_value: 'asc'
+        }, {
+          title: 'Code descending',
+          payload: 'code',
+          payload_value: 'desc'
         }]
       }],
       filter: null,
@@ -178,6 +186,11 @@ export default {
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
+        if(response.data.length > 0){
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+        }else{
+          this.numPages = null
+        }
       })
       // this.APIRequest('accounts/retrieve_accounts').then(response => {
       //   $('#loading').css({display: 'none'})
