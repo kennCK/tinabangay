@@ -29,7 +29,7 @@ export default {
     required: false,
     id: 'code',
     type: 'input',
-    inputType: 'hidden',
+    inputType: 'text',
     validation: {
       size: 0,
       type: 'text'
@@ -43,8 +43,7 @@ export default {
     value: 'tested',
     required: true,
     id: 'status',
-    type: 'hidden',
-    inputType: 'hidden',
+    type: 'select_specified',
     options: [{
       value: 'tested',
       label: 'Tested'
@@ -87,7 +86,7 @@ export default {
     required: false,
     id: 'remarks',
     type: 'input',
-    inputType: 'hidden',
+    inputType: 'text',
     validation: {
       size: 0,
       type: 'text'
@@ -102,7 +101,7 @@ export default {
     required: false,
     id: 'source',
     type: 'input',
-    inputType: 'hidden',
+    inputType: 'text',
     validation: {
       size: 0,
       type: 'text'
