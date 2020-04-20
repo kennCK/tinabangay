@@ -7,6 +7,13 @@
       :limit="limit"
       />
     <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
+    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
+    </div>
+    <div class="form-group" v-if="importFlag === true">
+      <label style="width: 100%;">Using google sheet</label>
+      <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
+      <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
+      <button class="btn btn-primary" @click="syncing()">Start syncing</button>
     </div>
     <basic-filter 
       v-bind:category="category" 
@@ -143,7 +150,10 @@ export default {
         }]
       }],
       filter: null,
-      sort: null
+      sort: null,
+      importFlag: false,
+      googleId: null,
+      googleSheetNumber: null
     }
   },
   components: {
@@ -155,6 +165,51 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    syncing(){
+      // syncing here
+      if(this.googleId !== null && this.googleSheetNumber !== null){
+        $.get('https://spreadsheets.google.com/feeds/cells/' + this.googleId + '/' + this.googleSheetNumber + '/public/values?alt=json', response => {
+          let entries = response.feed.entry
+          let counter = counter
+          for (var i = 0; i < entries.length; i += 12) {
+            if(i > 11){
+              counter++
+              let object = {
+                code: entries[i].content.$t,
+                status: entries[i + 1].content.$t,
+                remarks: entries[i + 2].content.$t,
+                source: entries[i + 3].content.$t,
+                route: entries[i + 4].content.$t,
+                locality: entries[i + 5].content.$t,
+                region: entries[i + 6].content.$t,
+                country: entries[i + 7].content.$t,
+                longitude: entries[i + 8].content.$t,
+                latitude: entries[i + 9].content.$t,
+                date: entries[i + 10].content.$t,
+                time: entries[i + 11].content.$t
+              }
+              if(object.code === '' || object.status === '' || object.remarks === '' || object.source === '' || object.route === '' || object.locality === '' || object.region === '' || object.country === '' || object.longitude === '' || object.latitude === '' || object.date === '' || object.time === ''){
+                alert('Error on line ' + counter)
+                break
+              }else{
+                // add to backend
+                let entries = []
+                entries.push(object)
+                console.log(entries)
+                let parameter = {
+                  entries: entries
+                }
+                $('#loading').css({display: 'block'})
+                this.APIRequest('patients/linking', parameter).then(response => {
+                  $('#loading').css({display: 'none'})
+                  console.log(response)
+                })
+              }
+            }
+          }
+        })
+      }
     },
     linkGen (pageNum){
       return '#page=' + pageNum
