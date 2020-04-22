@@ -140,6 +140,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/all-places',
+    name: 'hotspots',
+    component: resolve => require(['modules/admin/Hotspots.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }

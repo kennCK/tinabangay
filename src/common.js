@@ -2,8 +2,9 @@ export default {
   sidebarMenu: [
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Temperature', icon: 'fa fa-chart-line', path: 'temperature/p', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Temperature', icon: 'fa fa-thermometer-half', path: 'temperature/p', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
+    {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Places', icon: 'fa fa-map', path: 'all-places', flag: false, subMenu: null},
     {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
     {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
     {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
