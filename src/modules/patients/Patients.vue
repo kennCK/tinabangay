@@ -7,13 +7,19 @@
       :limit="limit"
       />
     <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
+    <button class="btn btn-warning pull-right" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
+    <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button>
     </div>
     <div class="form-group" v-if="importFlag === true">
       <label style="width: 100%;">Using google sheet</label>
       <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button class="btn btn-primary" @click="syncing()">Start syncing</button>
+    </div>
+    <div class="form-group" v-if="exportFlag === true">
+      <label style="width: 100%;">Using google sheet</label>
+      <input type="text" class="form-control" style="width: 50% !important; float: left;" v-model="offset" placeholder="Offset">
+      <button class="btn btn-primary" @click="exportPatients()">Start export</button>
     </div>
     <basic-filter 
       v-bind:category="category" 
@@ -110,6 +116,7 @@ import CONFIG from 'src/config.js'
 import PatientModalProperty from 'src/modules/patients/CreatePatients.js'
 import PlaceModalProperty from 'src/modules/patients/AddPlace.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
+import { ExportToCsv } from 'export-to-csv'
 export default {
   mounted(){
    // this.retrieve()
@@ -153,7 +160,11 @@ export default {
       sort: null,
       importFlag: false,
       googleId: null,
-      googleSheetNumber: null
+      googleSheetNumber: null,
+      totalSize: null,
+      activeExportPage: 0,
+      exportFlag: false,
+      offset: 0
     }
   },
   components: {
@@ -165,6 +176,67 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    exportPatients(){
+      let parameter = {
+        condition: [{
+          value: 'positive',
+          column: 'status',
+          clause: '='
+        }],
+        sort: {
+          created_at: 'desc'
+        }
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('patients/retrieve', parameter).then(response => {
+        this.exportData(response.data)
+      })
+    },
+    exportData(data){
+      let options = {
+        fieldSeparator: ',',
+        quoteStrings: '"',
+        decimalSeparator: '.',
+        showLabels: true,
+        showTitle: true,
+        title: 'Covid19 - BirdsEye',
+        useTextFile: false,
+        useBom: true,
+        // useKeysAsHeaders: true,
+        filename: COMMON.APP_NAME + ' - ' + this.date,
+        headers: ['Code', 'Status', 'Remarks', 'Source', 'Route', 'Locality', 'Region', 'Country', 'Longitude', 'Latitude', 'Date', 'Time']
+      }
+      var exportData = []
+      if(data !== null){
+        for (var i = 0; i < data.length; i++) {
+          let item = data[i]
+            // this is an export hehe
+          let place = item.places.length > 0 ? item.places[0] : null
+          if(item.status === 'inactive'){
+            var object = {
+              code: item.code,
+              status: item.status,
+              remarks: item.remarks,
+              source: item.source,
+              route: place ? place.route : null,
+              locality: place ? place.locality : null,
+              region: place ? place.region : null,
+              country: place ? place.country : null,
+              longitude: place ? place.longitude : null,
+              latitude: place ? place.latitude : null,
+              date: place ? place.date : null,
+              time: place ? place.time : null
+            }
+            exportData.push(object)
+          }
+        }
+      }
+      if(exportData.length > 0){
+        var csvExporter = new ExportToCsv(options)
+        csvExporter.generateCsv(exportData)
+      }
+      $('#loading').css({'display': 'none'})
     },
     syncing(){
       // syncing here
@@ -243,8 +315,12 @@ export default {
         this.data = response.data
         if(response.data.length > 0){
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+          this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
+          this.totalSize = response.size
         }else{
           this.numPages = null
+          this.totalSize = null
+          this.numPagesExport = null
         }
       })
     },
