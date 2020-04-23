@@ -6,8 +6,8 @@
       :active="activePage"
       :limit="limit"
       />
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
-    <button class="btn btn-warning pull-right" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
+    <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
+    <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
     <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button>
     </div>
     <div class="form-group" v-if="importFlag === true">
@@ -117,10 +117,12 @@ import PatientModalProperty from 'src/modules/patients/CreatePatients.js'
 import PlaceModalProperty from 'src/modules/patients/AddPlace.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import { ExportToCsv } from 'export-to-csv'
+import moment from 'moment'
 export default {
   mounted(){
    // this.retrieve()
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+    this.date = moment().format('MM-DD-YYYY-HH-mm-ss')
   },
   data(){
     return {
@@ -134,6 +136,7 @@ export default {
       placeProperty: PlaceModalProperty,
       selectedItem: null,
       data: null,
+      date: null,
       config: CONFIG,
       accounts: [],
       category: [{
@@ -213,7 +216,7 @@ export default {
           let item = data[i]
             // this is an export hehe
           let place = item.places.length > 0 ? item.places[0] : null
-          if(item.status === 'inactive'){
+          if(item.status === 'positive'){
             var object = {
               code: item.code,
               status: item.status,
@@ -235,6 +238,7 @@ export default {
       if(exportData.length > 0){
         var csvExporter = new ExportToCsv(options)
         csvExporter.generateCsv(exportData)
+        console.log('exported?')
       }
       $('#loading').css({'display': 'none'})
     },
