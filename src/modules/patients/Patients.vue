@@ -238,7 +238,6 @@ export default {
       if(exportData.length > 0){
         var csvExporter = new ExportToCsv(options)
         csvExporter.generateCsv(exportData)
-        console.log('exported?')
       }
       $('#loading').css({'display': 'none'})
     },
@@ -272,14 +271,14 @@ export default {
                 // add to backend
                 let entries = []
                 entries.push(object)
-                console.log(entries)
+                // console.log(entries)
                 let parameter = {
                   entries: entries
                 }
                 $('#loading').css({display: 'block'})
                 this.APIRequest('patients/linking', parameter).then(response => {
                   $('#loading').css({display: 'none'})
-                  console.log(response)
+                  // console.log(response)
                 })
               }
             }
@@ -444,7 +443,6 @@ export default {
                 let offset = $('#username').offset()
                 let content = []
                 if(filtered) {
-                  console.log('filter exists')
                   filtered.forEach(account => {
                     let item = $('<div>', {
                       class: 'px-3 py-2 border bg-white username-option',
@@ -624,7 +622,7 @@ export default {
           this.placeProperty.params.push({variable: 'account_id', value: account})
         }
         $('#createPlacesModal').modal('show')
-        console.log('dead end for now')
+        // console.log('dead end for now')
       }
     }
   }
