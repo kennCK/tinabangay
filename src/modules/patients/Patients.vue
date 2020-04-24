@@ -6,7 +6,7 @@
       :active="activePage"
       :limit="limit"
       />
-    <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
+    <button class="btn btn-primary pull-right mr-3 ml-3" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
     <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
     <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button>
     </div>
@@ -226,8 +226,8 @@ export default {
               locality: place ? place.locality : null,
               region: place ? place.region : null,
               country: place ? place.country : null,
-              longitude: place ? place.longitude : null,
-              latitude: place ? place.latitude : null,
+              longitude: place ? `${place.longitude} °` : null,
+              latitude: place ? `${place.latitude} °` : null,
               date: place ? place.date : null,
               time: place ? place.time : null
             }
