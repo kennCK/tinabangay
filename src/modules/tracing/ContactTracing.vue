@@ -4,34 +4,29 @@
       <select class="form-control" v-model="selectedOption">
         <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
       </select>
-      <select class="form-control">
+      <select class="form-control" v-model="selectedCountry">
         <option v-for="(item, index) in country" :key="index">{{item.title}}</option>
       </select>
-      <select class="form-control">
-        <option>Region</option>
-      </select>
-      <select class="form-control">
-        <option>Locality</option>
-      </select>
+      <input type="text" v-model="selectedRegion" class="form-control" placeholder="Region">
+      <input type="text" v-model="selectedLocality" class="form-control" placeholder="Town or City">
       <select class="form-control" v-if="selectedOption === 'visited_places'">
         <option v-for="(item, index) in 10" :key="index">{{100 * item}} Meters radius</option>
       </select>
-      <button class="btn btn-primary">Search</button>
+      <button class="btn btn-primary" @click="retrieve()">Search</button>
     </div>
     <div class="form-group">
       <button class="btn btn-primary">VIEW ON MAP</button>
     </div>
     <table v-if="data.length > 0" class="table table-bordered table-responsive">
       <thead class="bg-primary">
-        <td>Username <i class="fa fa-chevron-down pull-right"></i><i class="fa fa-chevron-up pull-right"></i></td>
-        <td>Contact Information <i class="fa fa-chevron-down pull-right"></i><i class="fa fa-chevron-up pull-right"></i></td>
+        <td>Location <i class="fa fa-chevron-down pull-right"></i><i class="fa fa-chevron-up pull-right"></i></td>
         <td>Status <i class="fa fa-chevron-down pull-right"></i><i class="fa fa-chevron-up pull-right"></i></td>
         <td>Actions</td>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td></td>
-          <td>
+          <td><i class="fa fa-user"></i> 
+            {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
             <span class="badge badge-primary text-uppercase">IN CONTACT WITH POSITIVE</span>
@@ -54,10 +49,14 @@
 
 .form-control{
   float: left !important;
-  width: 10% !important;
+  width: 15% !important;
   margin-right: 5px;
+  height: 45px !important;
 }
 
+.btn{
+  height: 45px !important;
+}
 .bg-primary{
   background: $primary !important;
   color: $white !important;
@@ -69,7 +68,6 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    this.retrieve()
   },
   data(){
     return {
@@ -77,7 +75,7 @@ export default {
       user: AUTH.user,
       country: [{
         title: 'Philippines',
-        code: 'PH'
+        code: 'Philippines'
       }],
       locality: null,
       region: null,
@@ -89,7 +87,10 @@ export default {
         value: 'transportation_used'
       }],
       selectedOption: 'visited_places',
-      data: []
+      data: [],
+      selectedCountry: 'Philippines',
+      selectedRegion: '',
+      selectedLocality: ''
     }
   },
   components: {
@@ -100,14 +101,25 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(){
+      if(this.selectedRegion === '' && this.selectedLocality === ''){
+        return
+      }
       let parameter = {
         condition: [{
           clause: '=',
-          column: 'account_id',
-          value: this.user.userID
+          column: 'country',
+          value: this.selectedCountry
+        }, {
+          clause: 'like',
+          column: 'region',
+          value: this.selectedRegion + '%'
+        }, {
+          clause: 'like',
+          column: 'locality',
+          value: this.selectedLocality + '%'
         }],
         sort: {
-          locality: 'desc'
+          route: 'asc'
         }
       }
       $('#loading').css({display: 'block'})
