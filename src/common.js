@@ -8,7 +8,6 @@ export default {
     {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Rides', icon: 'fa fa-truck', path: 'all-rides', flag: false, subMenu: null},
     {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
     {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
-    {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
