@@ -101,7 +101,7 @@ export default{
   }, {
     path: '/tracing/',
     name: 'tracing',
-    component: resolve => require(['modules/tracing/Places.vue'], resolve),
+    component: resolve => require(['modules/tracing/ContactTracing.vue'], resolve),
     meta: {
       tokenRequired: true
     }
