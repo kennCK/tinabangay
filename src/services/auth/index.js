@@ -10,6 +10,7 @@ export default {
   user: {
     userID: 0,
     username: '',
+    code: null,
     email: null,
     type: null,
     status: null,
@@ -61,7 +62,7 @@ export default {
   },
   echo: null,
   currentPath: false,
-  setUser(userID, username, email, type, status, profile, notifSetting, subAccount){
+  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code){
     if(userID === null){
       username = null
       email = null
@@ -70,6 +71,7 @@ export default {
       profile = null
       notifSetting = null
       subAccount = null
+      code = null
     }
     this.user.userID = userID * 1
     this.user.username = username
@@ -79,6 +81,7 @@ export default {
     this.user.profile = profile
     this.user.notifSetting = notifSetting
     this.user.subAccount = subAccount
+    this.user.code = code
     localStorage.setItem('account_id', this.user.userID)
   },
   setToken(token){
@@ -149,7 +152,7 @@ export default {
           let profile = response.data[0].account_profile
           let notifSetting = response.data[0].notification_settings
           let subAccount = response.data[0].sub_account
-          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount)
+          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code)
         }).done(response => {
           this.tokenData.verifyingToken = false
           let location = window.location.href
@@ -306,7 +309,7 @@ export default {
     let profile = data[0].account_profile
     let notifSetting = data[0].notification_settings
     let subAccount = data[0].sub_account
-    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount)
+    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code)
     ROUTER.push('/dashboard')
   },
   setGoogleCode(code, scope){

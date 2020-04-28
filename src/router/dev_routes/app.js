@@ -148,6 +148,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/linked_accounts',
+    name: 'linkedAccounts',
+    component: resolve => require(['modules/linkedAccounts/LinkedAccounts.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
