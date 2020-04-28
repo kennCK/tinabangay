@@ -1,5 +1,6 @@
 <template>
   <div class="ledger-summary-container">
+    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal()">New Patient Account</button>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -19,9 +20,7 @@
           <td>Date</td>
           <td>Username</td>
           <td>Email</td>
-          <td>Type</td>
           <td>Status</td>
-          <td>Actions</td>
         </tr>
       </thead>
       <tbody>
@@ -31,25 +30,12 @@
             <label class="action-link text-primary">{{item.username}}</label>
           </td>
           <td>{{item.email}}</td>
-          <td>
-            <label v-if="editTypeIndex !== index">{{item.account_type}}</label>
-            <i class="fa fa-pencil text-primary" style="margin-left: 10px;" @click="setEditTypeIndex(index, item)" v-if="editTypeIndex !== index"></i>
-            <span v-if="editTypeIndex === index">
-              <select class="form-control" v-model="newAccountType" style="float: left; width: 70%;">
-                <option v-for="(typeItem, typeIndex) in ['USER', 'AGENCY_TEST_MNGT', 'AGENCY_TEMP_MNGT', 'AGENCY_BRGY', 'AGENCY_GOV', 'AGENCY_DOH', 'ADMIN']" :key="typeIndex">{{typeItem}}</option>
-              </select>
-              <i class="fa fa-check text-primary" style="margin-left: 5px; float: left;" @click="updateType(item, index)"></i>
-              <i class="fa fa-times text-danger" style="margin-left: 5px; float: left;" @click="setEditTypeIndex(index, item)"></i>
-            </span>
-          </td>
           <td>{{item.status}}</td>
-          <td>
-            <button class="btn btn-primary" @click="update(item)">Grant</button>
-          </td>
         </tr>
       </tbody>
     </table>
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
+    <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -114,6 +100,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
+import ModalProperty from 'src/modules/barangay/CreatePatientAccount.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default{
   mounted(){
@@ -126,6 +113,7 @@ export default{
       data: null,
       auth: AUTH,
       selecteditem: null,
+      modalProperty: ModalProperty,
       config: CONFIG,
       category: [{
         title: 'Sort by',
@@ -170,43 +158,45 @@ export default{
       selectedAccount: null,
       limit: 10,
       activePage: 1,
-      numPages: null
+      numPages: null,
+      Password: {
+        _pattern: /[a-zA-Z0-9_]/,
+        _getRandomByte: function() {
+          if(window.crypto && window.crypto.getRandomValues) {
+            let result = new Uint8Array(1)
+            window.crypto.getRandomValues(result)
+            return result[0]
+          } else if (window.msCrypto && window.msCrypto.getRandomValues) {
+            let result = new Uint8Array(1)
+            window.msCrypto.getRandomValues(result)
+            return result[0]
+          } else {
+            return Math.floor(Math.random() * 256)
+          }
+        },
+        generate: function(length) {
+          return Array.apply(null, {'length': length})
+            .map(function(){
+              let result
+              while(true) {
+                result = String.fromCharCode(this._getRandomByte())
+                if(this._pattern.test(result)) {
+                  return result
+                }
+              }
+            }, this)
+            .join('')
+        }
+      }
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
+    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
     Pager
   },
   methods: {
-    setEditTypeIndex(index, item){
-      if(index === this.editTypeIndex){
-        this.editTypeIndex = null
-        this.newAccountType = null
-      }else{
-        this.selectedAccount = item
-        this.editTypeIndex = index
-        this.newAccountType = item.account_type
-      }
-    },
-    updateType(item, index){
-      if(this.newAccountType === null || this.newAccountType === item.account_type){
-        this.setEditTypeIndex(index, item)
-        return
-      }
-      let parameter = {
-        id: item.id,
-        account_type: this.newAccountType
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('accounts/update_account_type', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        this.setEditTypeIndex(index, item)
-        // this.retrieve(null, null)
-        $('#loading').css({display: 'block'})
-        this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
-      })
-    },
     redirect(params){
       ROUTER.push(params)
     },
@@ -258,6 +248,20 @@ export default{
       }else{
         alert('Not Allowed!')
       }
+    },
+    showModal() {
+      this.modalProperty = {...ModalProperty}
+      this.modalProperty.params.push({variable: 'account_id', value: this.user.userID})
+      let inputs = this.modalProperty.inputs
+      $('#createAccountModal label[for=password]+input').attr('readonly', '')
+      inputs.map(input => {
+        if(input.variable !== 'password') {
+          input.value = null
+        } else {
+          input.value = this.Password.generate(8)
+        }
+      })
+      $('#createAccountModal').modal('show')
     }
   }
 }

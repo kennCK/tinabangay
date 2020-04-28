@@ -156,6 +156,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/accounts',
+    name: 'subAccounts',
+    component: resolve => require(['modules/barangay/Accounts.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }

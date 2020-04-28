@@ -3,7 +3,7 @@ import CONFIG from 'src/config.js'
 export default {
   id: 'createAccountModal',
   size: 'modal-md',
-  title: 'Add New Patient',
+  title: 'Add New Account',
   background: null,
   inputs: [{
     row: 'full',
@@ -69,6 +69,6 @@ export default {
   },
   {
     variable: 'status',
-    value: 'ADMIN'
+    value: 'ADDED'
   }]
 }
