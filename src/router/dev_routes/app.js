@@ -148,6 +148,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/all-rides',
+    name: 'allRides',
+    component: resolve => require(['modules/admin/Rides.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
