@@ -79,5 +79,6 @@ export default {
     label: 'Others',
     value: 'others'
   }],
-  broadcastingFlag: false
+  broadcastingFlag: false,
+  passwordLimit: 8
 }

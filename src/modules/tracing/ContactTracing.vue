@@ -46,7 +46,7 @@
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
-            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered'}">{{item.status_label}}</span>
+            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative'}">{{item.status_label}}</span>
           </td>
           <td>
             <i class="fa fa-envelope text-primary action-link"></i>
