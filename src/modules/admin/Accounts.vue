@@ -1,6 +1,5 @@
 <template>
   <div class="ledger-summary-container">
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal()">New Patient Account</button>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -37,7 +36,7 @@
             <i class="fa fa-pencil text-primary" style="margin-left: 10px;" @click="setEditTypeIndex(index, item)" v-if="editTypeIndex !== index"></i>
             <span v-if="editTypeIndex === index">
               <select class="form-control" v-model="newAccountType" style="float: left; width: 70%;">
-                <option v-for="(typeItem, typeIndex) in ['USER', 'AGENCY_TEST_MNGT', 'AGENCY_TEMP_MNGT', 'AGENCY_GOV', 'AGENCY_DOH', 'ADMIN']" :key="typeIndex">{{typeItem}}</option>
+                <option v-for="(typeItem, typeIndex) in ['USER', 'AGENCY_TEST_MNGT', 'AGENCY_TEMP_MNGT', 'AGENCY_BRGY', 'AGENCY_GOV', 'AGENCY_DOH', 'ADMIN']" :key="typeIndex">{{typeItem}}</option>
               </select>
               <i class="fa fa-check text-primary" style="margin-left: 5px; float: left;" @click="updateType(item, index)"></i>
               <i class="fa fa-times text-danger" style="margin-left: 5px; float: left;" @click="setEditTypeIndex(index, item)"></i>
@@ -51,7 +50,6 @@
       </tbody>
     </table>
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
-    <increment-modal :property="modalProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -116,7 +114,6 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
-import ModalProperty from 'src/modules/admin/CreatePatientAccount.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default{
   mounted(){
@@ -129,7 +126,6 @@ export default{
       data: null,
       auth: AUTH,
       selecteditem: null,
-      modalProperty: ModalProperty,
       config: CONFIG,
       category: [{
         title: 'Sort by',
@@ -180,7 +176,6 @@ export default{
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
-    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
     Pager
   },
   methods: {
@@ -263,14 +258,6 @@ export default{
       }else{
         alert('Not Allowed!')
       }
-    },
-    showModal() {
-      this.modalProperty = {...ModalProperty}
-      let inputs = this.modalProperty.inputs
-      inputs.map(input => {
-        input.value = null
-      })
-      $('#createAccountModal').modal('show')
     }
   }
 }

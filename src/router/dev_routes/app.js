@@ -150,6 +150,22 @@ export default{
     }
   },
   {
+    path: '/all-rides',
+    name: 'allRides',
+    component: resolve => require(['modules/admin/Rides.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/accounts',
+    name: 'subAccounts',
+    component: resolve => require(['modules/barangay/Accounts.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
     path: '/linked_accounts',
     name: 'linkedAccounts',
     component: resolve => require(['modules/linkedAccounts/LinkedAccounts.vue'], resolve),
