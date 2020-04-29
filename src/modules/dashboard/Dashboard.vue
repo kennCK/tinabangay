@@ -2,6 +2,9 @@
   <div style="margin-bottom: 200px;">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
+        <pin-location @onSelect="managedLocation" :property="{
+          height: '100px'
+        }"></pin-location>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           Your Status
         </div>
@@ -89,9 +92,13 @@ export default{
     'qr-code': require('modules/dashboard/QrCode.vue'),
     'temperature-summary': require('modules/temperature/Summary.vue'),
     'data-summary': require('modules/dashboard/Summary.vue'),
-    'google-places-auto-complete': require('components/increment/generic/location/GooglePlacesAutoComplete.vue')
+    'google-places-auto-complete': require('components/increment/generic/location/GooglePlacesAutoComplete.vue'),
+    'pin-location': require('components/increment/generic/map/PinLocation.vue')
   },
   methods: {
+    managedLocation(evt){
+      console.log(evt)
+    },
     retrieve(){
       let parameter = {
         id: this.user.userID

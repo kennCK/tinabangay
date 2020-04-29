@@ -42,7 +42,7 @@
           <td>
             {{item.date_human}}
           </td>
-          <td><i class="fa fa-user"></i> 
+          <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i> 
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
@@ -78,7 +78,7 @@
           <td>
             {{item.created_at_human}}
           </td>
-          <td><i class="fa fa-user"></i> 
+          <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i> 
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
@@ -114,7 +114,7 @@
           <td>
             {{item.created_at_human}}
           </td>
-          <td><i class="fa fa-user"></i> 
+          <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i> 
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
