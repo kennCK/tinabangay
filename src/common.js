@@ -19,6 +19,10 @@ export default {
     icon: 'fa fa-cog',
     route: '/profile'
   }, {
+    title: 'Linked Accounts',
+    icon: 'fa fa-users',
+    route: '/linked_accounts'
+  }, {
     title: 'Invite Friends',
     icon: 'fa fa-users',
     route: '/referrals'
@@ -82,5 +86,6 @@ export default {
     label: 'Others',
     value: 'others'
   }],
-  broadcastingFlag: false
+  broadcastingFlag: false,
+  passwordLimit: 8
 }

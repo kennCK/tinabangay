@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <qrcode-vue :value="user.username" :size="300"></qrcode-vue>
+  <div v-if="auth.user.code !== null">
+    <qrcode-vue :value="auth.user.code" :size="300"></qrcode-vue>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -19,8 +19,7 @@ export default {
   },
   data(){
     return {
-      common: COMMON,
-      user: AUTH.user
+      auth: AUTH
     }
   },
   components: {
