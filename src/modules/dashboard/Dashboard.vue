@@ -3,7 +3,11 @@
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <!-- <pin-location @onSelect="managedLocation" :property="{
+<<<<<<< HEAD
           height: '300px'
+=======
+          height: '400px'
+>>>>>>> 0c9a1812e7194512fef3a2412b807d5fd7c623dd
         }"></pin-location> -->
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           Your Status
