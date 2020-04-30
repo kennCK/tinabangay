@@ -89,11 +89,13 @@ export default {
   data(){
     return {
       data: [
-        {title: 'Visited Places', description: 'List visited places for affected indviduals. You can view also if your visited places matches with affected visited places for COVID19.', icon: 'fas fa-map-marker'},
-        {title: 'Connect with the Government', description: 'Government Agencies can register into this platform that will allow them to help disburse important tracking information to other agencies.', icon: 'fas fa-balance-scale'},
-        {title: 'Temperature Reading', description: 'Analyze temperature within the area. Government Agencies can check the history of temperature of indviduals living within its area.', icon: 'fas fa-chart-line'},
-        {title: 'Tracings', description: 'Government Agencies can trace indviduals based on the visited places listed and visited places listed from affected indviduals', icon: 'fas fa-sitemap'},
-        {title: 'Patient Monitoring', description: 'Government Agencies can manage patients information and trace indviduals that might have contact with.', icon: 'fas fa-sitemap'}
+        {title: 'LOCATION MATCHING AND MAPPING', description: 'MATCH AND MAP SPECIFIC VISITED PLACES OF INDIVIDUAL TO THE VISITED PLACES OF AFFECTED ONES. EXAMPLES ARE VISITED MARKETS, MALLS, COFFEE SHOP AND MORE.', icon: 'fas fa-map-marker'},
+        {title: 'TRANSPORTATION MATCHING AND MAPPING', description: 'MATCH AND MAP PREVIOUSLY USED TRANSPORTATION  BY INDIVIDUAL TO THE AFFECTED ONES. EXAMPLES ARE PLANE FIGHT #123, BUSES, SHIPPINGS, PRIVATE CARS, CARPOOLS, AND MORE.', icon: 'fas fa-bus'},
+        {title: 'TEMPERATURE MANAGEMENT', description: 'MONITOR AND MANAGE THE TEMPERATURE OF INDIVIDUAL EVERY AFTER READING USING ANY THERMAL SCANNERS.', icon: 'fas fa-thermometer-half'},
+        {title: 'PATIENTS RECORDING', description: 'RECORD PATIENTS CONSIDERED AS PUI, PUM, POSITIVE, OR NEGATIVE, AS WELL AS THE DECEASED. ONCE A PATIENT’S IS UPDATED, THEN ALL PLACES HE VISITED, AND TRANSPORTATION HE RODE WILL ALSO BE UPDATED.', icon: 'fas fa-sitemap'},
+        {title: 'MASS TESTING RECORDING', description: 'ALLOW AUTHORIZED USERS TO MANAGE AND MONITOR THE IMPLEMENTATION OF THE MASS TESTING, RECORD AND UPDATE THE RESULTS OF THE TESTS. IF A USER’S RESULTS ARE STILL PENDING, THEY ARE TO SELF-QUARANTINE UNTIL THEIR RESULTS ARE AVAILABLE.', icon: 'fas fa-users'},
+        {title: 'CONTACT TRACING', description: 'ALLOW DOH AND GOVERNMENT AGENCIES TO HAVE A BIRDSEYE VIEW OF ALL LOCATIONS, NUMBER OF INDIVIDUALS AND MODES OF TRANSPORTATION.', icon: 'fas fa-users'},
+        {title: 'QR CODE', description: 'THIS IS AUTO GENERATED ONCE A USER IS REGISTERED. THIS WILL ALLOW THE EASIER SCANNING AND RECORDING OF USER  INFORMATION SUCH AS TRANSPORTATION USED,  VISITED PLACES, PATIENT DETAILS AND TEMPERATURE HISTORY.', icon: 'fas fa-qrcode'}
       ]
     }
   },

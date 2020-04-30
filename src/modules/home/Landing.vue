@@ -3,7 +3,7 @@
     <!-- <google-places-auto-complete :property="property"></google-places-auto-complete> -->
 		<landing-banner></landing-banner>
     <landing-features></landing-features>
-    <landing-contributors></landing-contributors>
+    <!-- <landing-contributors></landing-contributors> -->
     <landing-donations></landing-donations>
     <landing-partners></landing-partners>
 	</div>

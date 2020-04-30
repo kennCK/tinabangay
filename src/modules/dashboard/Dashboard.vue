@@ -2,9 +2,9 @@
   <div style="margin-bottom: 200px;">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
-        <pin-location @onSelect="managedLocation" :property="{
-          height: '100px'
-        }"></pin-location>
+        <!-- <pin-location @onSelect="managedLocation" :property="{
+          height: '300px'
+        }"></pin-location> -->
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           Your Status
         </div>
@@ -103,9 +103,9 @@ export default{
       let parameter = {
         id: this.user.userID
       }
-      $('#loading').css({display: 'block'})
+      // $('#loading').css({display: 'block'})
       this.APIRequest('tracings/status', parameter).then(response => {
-        $('#loading').css({display: 'none'})
+        // $('#loading').css({display: 'none'})
         this.status = response.data.status
       })
     }
