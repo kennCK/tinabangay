@@ -21,18 +21,22 @@
           <td>Username</td>
           <td>Email</td>
           <td>Export</td>
-          <td>Add Place</td>
+          <td>Actions</td>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.account.created_at}}</td>
           <td>
-            <label class="action-link text-primary"><i class="fa fa-map-marker text-primary" @click="getVisited(item.account.id)" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</label>
+            <label class="text-primary"><i class="fa fa-map-marker text-primary" @click="getVisited(item.account.id)" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</label>
           </td>
           <td>{{item.account.email}}</td>
           <td><button class="btn btn-primary" @click="exportUser(item.account)">Export User</button></td>
-          <td><button class="btn btn-success" @click="showModal('place', item.account.id)">Add Visited Place</button></td>
+          <td>
+            <button class="btn btn-success" @click="showModal('place', item.account.id)">Add Visited Place</button>
+            <button class="btn btn-warning" @click="showModal('user', item.account.id)">Edit User</button>
+            <button class="btn btn-dark" @click="showModal('address', item.account.id)">Add Address</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -44,7 +48,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Visited Places</h5>
-            <button type="button" class="close" aria-label="Close" @click="hideVisit()">
+            <button type="button" class="close" aria-label="Close" @click="hideModal('visited_places')">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
           </div>
@@ -72,9 +76,69 @@
       </div>
     </div>
 
+    <!--MODAL FOR ADDING ADDRESS-->
+    <div class="modal fade right" id="add_location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Address</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('add_location')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div v-if="currentAdd !== null">
+              <div class="row mb-3 mx-0">
+                <div class="col">
+                  <b>Current Address: </b> {{currentAdd}}
+                </div>
+              </div>
+            </div>
+            <div v-if="customLocation === false">
+              <div class="row mb-3 justify-content-end mx-0">
+                <button class="btn btn-primary" @click="customLocation = true">Use Custom Location</button>
+              </div>
+              <div class="form-group">
+                <label for="location">Set Address</label>
+                <google-autocomplete-location
+                  :property="googleProperty"
+                  :id="'location'"
+                  ref="location"
+                  @onFinish="getLocation($event)"
+                >
+                </google-autocomplete-location>
+              </div>
+            </div>
+            <div v-if="customLocation === true">
+              <div class="row mb-3 justify-content-end mx-0">
+                <button class="btn btn-primary" @click="customLocation = false">Use Google Autocomplete</button>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <span class="text-danger font-weight-bold">Pin Location</span> uses your current geolocation.
+                </div>
+                <div class="col">
+                  <span class="text-primary font-weight-bold">Use Location</span> uses the location of the pin on the map.
+                </div>
+              </div>
+              <pin-location @onSelect="getLocation" :property="{
+                height: '400px'
+              }"></pin-location>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('add_location')">Cancel</button>
+            <button class="btn btn-primary" @click="addLoc()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
     <increment-modal ref="modal" :property="placeProperty"></increment-modal>
+    <increment-modal ref="profile" :property="profileProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -82,6 +146,14 @@
 .bg-primary{
   background: $primary !important;
   color: $white !important;
+}
+
+.text-danger {
+  color: $danger !important;
+}
+
+.text-primary {
+  color: $primary !important;
 }
 
 .ledger-summary-container{
@@ -141,6 +213,7 @@ import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/barangay/CreatePatientAccount.js'
 import PlacesProperty from 'src/modules/barangay/AddPlace.js'
+import ProfilesProperty from 'src/modules/barangay/Profile.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import PdfPrinter from 'pdfmake'
 import vfsFonts from 'pdfmake/build/vfs_fonts'
@@ -158,10 +231,25 @@ export default{
       data: null,
       auth: AUTH,
       selecteditem: null,
+      currentAdd: null,
       modalProperty: ModalProperty,
       placeProperty: PlacesProperty,
+      profileProperty: ProfilesProperty,
       config: CONFIG,
+      location: null,
+      customLocation: false,
       places: null,
+      googleProperty: {
+        style: {
+          height: '45px !important'
+        },
+        GOOGLE_API_KEY: CONFIG.GOOGLE_API_KEY,
+        results: {
+          style: {
+          }
+        },
+        placeholder: 'Type Location'
+      },
       category: [{
         title: 'Sort by',
         sorting: [{
@@ -241,6 +329,8 @@ export default{
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
+    'google-autocomplete-location': require('src/components/increment/generic/location/GooglePlacesAutoComplete.vue'),
+    'pin-location': require('components/increment/generic/map/PinLocation.vue'),
     Pager
   },
   methods: {
@@ -333,7 +423,78 @@ export default{
           input.value = null
         })
         $('#createPlacesModal').modal('show')
+      } else if (type === 'user') {
+        let parameter = {
+          condition: [{
+            value: id,
+            column: 'account_id',
+            clause: '='
+          }]
+        }
+        let inputs = this.profileProperty.inputs
+        this.profileProperty.params.map(par => {
+          par.value = id
+        })
+        $('#loading').css({'display': 'block'})
+        this.APIRequest('account_informations/retrieve', parameter).then(response => {
+          $('#loading').css({'display': 'none'})
+          if(response.data.length > 0){
+            let user = response.data[0]
+            inputs.map(input => {
+              input.value = user[input.variable]
+            })
+          }else{
+            inputs.map(input => {
+              input.value = null
+            })
+          }
+          $('#updateUser').modal('show')
+        })
+      } else if (type === 'address') {
+        this.selecteditem = id
+        let params = {
+          condition: [{
+            value: id,
+            column: 'account_id',
+            clause: '='
+          }]
+        }
+        $('#add_location #error').remove()
+        $('#loading').css({display: 'block'})
+        this.APIRequest('locations/retrieve', params).then(response => {
+          if(response.data.length > 0) {
+            let add = response.data[response.data.length - 1]
+            console.log(add)
+            if(add.locality === null) {
+              if(add.longitude !== null) {
+                this.currentAdd = `Custom Location (${add.longitude}, ${add.latitude})`
+              } else {
+                this.currentAdd = null
+              }
+            } else if (add.route === null){
+              this.currentAdd = add.locality
+            } else {
+              this.currentAdd = `${add.route}, ${add.locality}`
+            }
+          } else {
+            this.currentAdd = null
+          }
+          $('#loading').css({display: 'none'})
+          $('#add_location').modal('show')
+          console.log(this.currentAdd)
+        })
       }
+    },
+    getLocation(event) {
+      let location = {
+        route: event.route,
+        locality: event.locality,
+        region: event.region,
+        country: event.country,
+        latitude: event.latitude,
+        longitude: event.longitude
+      }
+      this.location = location
     },
     exportUser(user){
       let newPassword = this.Password.generate(16)
@@ -394,9 +555,29 @@ export default{
         $('#visited_places').modal('show')
       })
     },
-    hideVisit() {
-      console.log('clicked to close')
-      $('#visited_places').modal('hide')
+    hideModal(id) {
+      $(`#${id}`).modal('hide')
+      if(id === 'add_location') {
+        this.$refs.location.onCancel()
+        this.location = null
+        this.selecteditem = null
+      }
+    },
+    addLoc() {
+      console.log('clickity')
+      if(this.location === null) {
+        if($('#add_location .modal-body #error').length === 0) {
+          $('#add_location').prepend('<span id="error font-weight-bold">Oops! Please set a location first.</span>')
+        }
+      } else {
+        let par = this.location
+        par.account_id = this.selecteditem
+        $('#loading').css({display: 'block'})
+        this.APIRequest('locations/create', par).then(response => {
+          $('#loading').css({display: 'none'})
+          this.hideModal('add_location')
+        })
+      }
     }
   }
 }
