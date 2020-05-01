@@ -8,10 +8,10 @@
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           Your Status
         </div>
-        <label class="text-uppercase" :class="{'text-black': status === 'death', 'text-danger': status === 'positive', 'text-warning': status === 'pum', 'text-primary': status === 'pui', 'text-success': status === 'negative'}">
+        <label class="text-uppercase" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null">
           <i class="fas fa-square" style="margin-right: 5px;"></i>
           <!-- Person Under Investigation(PUI) -->
-          {{status}}
+          {{status.status_label}}
         </label>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
           Current Data
@@ -106,7 +106,7 @@ export default{
       // $('#loading').css({display: 'block'})
       this.APIRequest('tracings/status', parameter).then(response => {
         // $('#loading').css({display: 'none'})
-        this.status = response.data.status
+        this.status = response.data
       })
     }
   }

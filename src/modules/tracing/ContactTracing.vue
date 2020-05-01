@@ -34,7 +34,8 @@
         </td>
         <td>Status 
           <i class="fa fa-chevron-down pull-right" v-if="statusFlag === false" @click="manageSort('status_label', 'desc', true)"></i>
-          <i class="fa fa-chevron-up pull-right" v-if="statusFlag === true" @click="manageSort('status_label', 'asc', false)"></i></td>
+          <i class="fa fa-chevron-up pull-right" v-if="statusFlag === true" @click="manageSort('status_label', 'asc', false)"></i>
+        </td>
         <td>Actions</td>
       </thead>
       <tbody>
@@ -46,7 +47,9 @@
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
-            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative'}">{{item.status_label}}</span>
+            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
+
+            <span class="badge text-uppercase" :class="{'badge-danger': item.remarks.toLowerCase().includes('admitted') === true || item.remarks.toLowerCase().includes('not admitted') === true, 'badge-black': item.remarks.toLowerCase().includes('death') === true, 'badge-success': item.remarks.toLowerCase().includes('negative') === true || item.remarks.toLowerCase().includes('recovered') === true}" v-if="item.remarks !== null">{{item.remarks}}</span>
           </td>
           <td>
             <i class="fa fa-envelope text-primary action-link"></i>
@@ -159,6 +162,10 @@
 
 .text-primary{
   color: $primary !important;
+}
+
+.badge-gray{
+  background: $gray !important;
 }
 </style>
 <script>
