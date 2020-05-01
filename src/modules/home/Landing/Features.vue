@@ -89,13 +89,13 @@ export default {
   data(){
     return {
       data: [
-        {title: 'LOCATION MATCHING AND MAPPING', description: 'MATCH AND MAP SPECIFIC VISITED PLACES OF INDIVIDUAL TO THE VISITED PLACES OF AFFECTED ONES. EXAMPLES ARE VISITED MARKETS, MALLS, COFFEE SHOP AND MORE.', icon: 'fas fa-map-marker'},
-        {title: 'TRANSPORTATION MATCHING AND MAPPING', description: 'MATCH AND MAP PREVIOUSLY USED TRANSPORTATION  BY INDIVIDUAL TO THE AFFECTED ONES. EXAMPLES ARE PLANE FIGHT #123, BUSES, SHIPPINGS, PRIVATE CARS, CARPOOLS, AND MORE.', icon: 'fas fa-bus'},
-        {title: 'TEMPERATURE MANAGEMENT', description: 'MONITOR AND MANAGE THE TEMPERATURE OF INDIVIDUAL EVERY AFTER READING USING ANY THERMAL SCANNERS.', icon: 'fas fa-thermometer-half'},
-        {title: 'PATIENTS RECORDING', description: 'RECORD PATIENTS CONSIDERED AS PUI, PUM, POSITIVE, OR NEGATIVE, AS WELL AS THE DECEASED. ONCE A PATIENT’S IS UPDATED, THEN ALL PLACES HE VISITED, AND TRANSPORTATION HE RODE WILL ALSO BE UPDATED.', icon: 'fas fa-sitemap'},
-        {title: 'MASS TESTING RECORDING', description: 'ALLOW AUTHORIZED USERS TO MANAGE AND MONITOR THE IMPLEMENTATION OF THE MASS TESTING, RECORD AND UPDATE THE RESULTS OF THE TESTS. IF A USER’S RESULTS ARE STILL PENDING, THEY ARE TO SELF-QUARANTINE UNTIL THEIR RESULTS ARE AVAILABLE.', icon: 'fas fa-users'},
-        {title: 'CONTACT TRACING', description: 'ALLOW DOH AND GOVERNMENT AGENCIES TO HAVE A BIRDSEYE VIEW OF ALL LOCATIONS, NUMBER OF INDIVIDUALS AND MODES OF TRANSPORTATION.', icon: 'fas fa-users'},
-        {title: 'QR CODE', description: 'THIS IS AUTO GENERATED ONCE A USER IS REGISTERED. THIS WILL ALLOW THE EASIER SCANNING AND RECORDING OF USER  INFORMATION SUCH AS TRANSPORTATION USED,  VISITED PLACES, PATIENT DETAILS AND TEMPERATURE HISTORY.', icon: 'fas fa-qrcode'}
+        {title: 'LOCATION MATCHING AND MAPPING', description: 'Match and map specific visited places of individuals to the visited places of affected ones. Exampls are visited markets, malls, coffee shops and more.', icon: 'fas fa-map-marker'},
+        {title: 'TRANSPORTATION MATCHING AND MAPPING', description: 'Match and map previously used transportation by individuals to the affected ones. Examples are plane flight #123, buses, ships, private cars, carpools, and more.', icon: 'fas fa-bus'},
+        {title: 'TEMPERATURE MANAGEMENT', description: 'Monitor and manage the temperature of individuals every after reading using any thermal scanner.', icon: 'fas fa-thermometer-half'},
+        {title: 'PATIENTS RECORDING', description: 'Record patients considered as PUI, PUM, POSITIVE, or NEGATIVE, as well as the deceased. Once a patient\'s status is updated, then all places he visited, and transportation he used will also be updated.', icon: 'fas fa-sitemap'},
+        {title: 'MASS TESTING RECORDING', description: 'Allow authorized users to manage and monitor the implementation of the mass testing, record and update the test results. If a user\'s results are still pending, they are to self-quarantine until their results are available.', icon: 'fas fa-users'},
+        {title: 'CONTACT TRACING', description: 'Allow DOH and Government Agencies to have a birdseye of all locations, number of individuals, and modes of transportation.', icon: 'fas fa-users'},
+        {title: 'QR CODE', description: 'A unique auto generated QR code for each registered user will allow for easier scanning and reocrding of the user\'s information such as transportation used, visited places, patient details, and temperature history.', icon: 'fas fa-qrcode'}
       ]
     }
   },
