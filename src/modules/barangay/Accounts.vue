@@ -235,6 +235,7 @@ export default{
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
+    console.log({ AUTH })
   },
   data(){
     return {
@@ -640,6 +641,7 @@ export default{
                         password: this.Password.generate(16),
                         account_type: 'USER',
                         status: 'AGENCY_BRGY',
+                        member: this.user.userID,
                         uacs_brgy_code: entries[i + 2].content.$t.trim(),
                         first_name: entries[i + 3].content.$t.trim(),
                         middle_name: entries[i + 4].content.$t.trim(),
