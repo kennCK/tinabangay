@@ -235,7 +235,6 @@ export default{
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
-    console.log({ AUTH })
   },
   data(){
     return {
@@ -367,23 +366,20 @@ export default{
       }
       let parameter = {
         condition: [{
-          value: filter.value + '%',
-          column: filter.column,
-          clause: 'like'
-        }, {
-          value: this.user.userID,
-          column: 'account_id',
-          clause: '='
-        }, {
           value: this.user.userID,
           column: 'member',
-          clause: '<>'
+          clause: '='
+        },
+        {
+          value: this.user.userID,
+          column: 'account_id',
+          clause: '!='
         }],
         sort: sort,
         limit: this.limit,
         offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
-      await this.APIRequest('sub_accounts/retrieve', parameter).then(async response => {
+      await this.APIRequest('import/retrieve', parameter).then(async response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
