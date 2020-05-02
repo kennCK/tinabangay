@@ -1,6 +1,6 @@
 <template>
   <div class="mx-3">
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Ride</button>
+    <!-- <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Ride</button> -->
     <div class="row w-100 m-0">
       <div class="alert alert-danger mt-2 p-3 col-12" role="alert">
         <b>Note:</b> COVID Positive rows <b><u>do not</u></b> automatically mean you have contracted the virus. It just means that the vehicle matches a reportedly affected passenger.
