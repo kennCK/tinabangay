@@ -43,7 +43,8 @@
           <td>
             {{item.date_human}}
           </td>
-          <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i> 
+          <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i>
+            <b class="text-danger">{{item.account && item.account.location ? '(' + item.account.location.code + ')': ''}}</b>
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
@@ -81,7 +82,8 @@
           <td>
             {{item.created_at_human}}
           </td>
-          <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i> 
+          <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i>
+            <b class="text-danger">{{item.account.location ? '(' + item.account.location.code + ')' : ''}}</b>
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
@@ -118,10 +120,53 @@
             {{item.created_at_human}}
           </td>
           <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i> 
+            <b class="text-danger">{{item.account.location ? '(' + item.account.location.code + ')' : ''}}</b>
             {{item.route + ', ' + item.locality + ', ' + item.country}}
           </td>
           <td>
             {{item.value + ' Degree Celsius'}}
+          </td>
+          <td>
+            <i class="fa fa-envelope text-primary action-link"></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <!-- Results for temperature used -->
+    <table v-if="data.length > 0 && selectedOption === 'symptoms'" class="table table-bordered table-responsive">
+      <thead class="bg-primary">
+        <td>Date</td>
+        <td>
+          Location
+          <i class="fa fa-chevron-down pull-right" v-if="placesLocationFlag === false" @click="manageSort('location', 'desc', true)"></i>
+          <i class="fa fa-chevron-up pull-right" v-if="placesLocationFlag === true" @click="manageSort('location', 'asc', false)"></i>
+        </td>
+        <td>
+          Type
+
+          <i class="fa fa-chevron-down pull-right" v-if="typeFlag === false" @click="manageSort('type', 'desc', true)"></i>
+          <i class="fa fa-chevron-up pull-right" v-if="typeFlag === true" @click="manageSort('type', 'asc', false)"></i></td>
+        </td>
+        <td>Remarks</td>
+        <td>Actions</td>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in sortedData" :key="index">
+          <td>
+            {{item.date_human}}
+          </td>
+          <td>
+            <i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i>
+            <b class="text-danger">{{item.account.location ? '(' + item.account.location.code + ')' : ''}}</b>
+            {{item.route + ', ' + item.locality + ', ' + item.country}}
+          </td>
+          <td class="text-uppercase">
+            {{item.type}}
+          </td>
+          <td>
+            {{item.remarks}}
           </td>
           <td>
             <i class="fa fa-envelope text-primary action-link"></i>
@@ -195,6 +240,9 @@ export default {
       }, {
         title: 'Temperature',
         value: 'temperature'
+      }, {
+        title: 'Symptoms',
+        value: 'symptoms'
       }],
       selectedOption: 'visited_places',
       data: [],
@@ -206,7 +254,8 @@ export default {
       placesLocationFlag: false,
       statusFlag: false,
       sortedData: [],
-      selectedRadius: 0.1
+      selectedRadius: 0.1,
+      typeFlag: false
     }
   },
   components: {
@@ -303,6 +352,22 @@ export default {
         }
         $('#loading').css({display: 'block'})
         this.APIRequest('temperatures/retrieve_tracing', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          this.data = response.data
+          this.sortedData = response.data
+        })
+      }else if(this.selectedOption === 'symptoms'){
+        let parameter = {
+          country: '%' + this.selectedCountry + '%',
+          region: '%' + this.selectedRegion + '%',
+          locality: '%' + this.selectedLocality + '%',
+          sort: {
+            column: 'date',
+            value: 'asc'
+          }
+        }
+        $('#loading').css({display: 'block'})
+        this.APIRequest('symptoms/retrieve_tracing', parameter).then(response => {
           $('#loading').css({display: 'none'})
           this.data = response.data
           this.sortedData = response.data
