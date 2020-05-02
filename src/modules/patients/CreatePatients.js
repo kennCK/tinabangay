@@ -49,16 +49,12 @@ export default {
       label: 'Tested'
     },
     {
+      value: 'symptoms',
+      label: 'Symptoms'
+    },
+    {
       value: 'positive',
       label: 'Positive'
-    },
-    {
-      value: 'negative',
-      label: 'Negative'
-    },
-    {
-      value: 'recovered',
-      label: 'Recovered'
     },
     {
       value: 'pui',
@@ -67,10 +63,6 @@ export default {
     {
       value: 'pum',
       label: 'Person Under Monitoring'
-    },
-    {
-      value: 'death',
-      label: 'Deceased'
     }],
     validation: {
       size: 1,
@@ -79,9 +71,9 @@ export default {
   },
   {
     row: 'full',
-    label: 'Remarks',
+    label: 'Remarks / Symptoms',
     variable: 'remarks',
-    placeholder: 'Enter remarks',
+    placeholder: 'Enter remarks or symptoms',
     value: null,
     required: false,
     id: 'remarks',
