@@ -179,6 +179,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/symptoms_reporting',
+    name: 'symptomsReporting',
+    component: resolve => require(['modules/symptoms/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }

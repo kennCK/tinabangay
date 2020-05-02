@@ -49,10 +49,11 @@
   border: 0px !important;
   color: #212529;
 }
-.first-ul{
-  padding: 0px;
-  list-style: none;
+
+ul{
+  list-style: circle;
 }
+
 ul li{
   text-align: justify;
   font-size: 15px;
@@ -88,7 +89,6 @@ ul li{
       getData(){
         $.get('https://spreadsheets.google.com/feeds/cells/1di9gJrHSrzCJ61XitNlNV5zga8v2LHas0VdNVNfNO3I/7/public/values?alt=json', response => {
           let entries = response.feed.entry
-          console.log(entries)
           for (var i = 0; i < entries.length; i += 2) {
             if(i > 1){
               let accountType = entries[i].content.$t
