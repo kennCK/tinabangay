@@ -1,6 +1,17 @@
 <template>
   <div class="ledger-summary-container">
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('account')">New Account</button>
+    <!-- <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 3">Import Visited Places</button>
+    <button class="btn btn-danger pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 2">Import Symptoms</button> -->
+    <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 1">Import Accounts</button>
+    <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="showModal('account')">New Account</button>
+    <div class="form-group" v-if="importFlag !== 0">
+      <label style="width: 100%;">Using google sheet</label>
+      <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
+      <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
+      <button v-if="importFlag === 1" class="btn btn-primary" @click="importData('accounts')">Import Accounts</button>
+      <!-- <button v-if="importFlag === 2" class="btn btn-primary" @click="importData()">Import Symptoms</button>
+      <button v-if="importFlag === 3" class="btn btn-primary" @click="importData()">Import Visited Places</button> -->
+    </div>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -288,6 +299,9 @@ export default{
       }],
       filter: null,
       sort: null,
+      importFlag: 0,
+      googleId: null,
+      googleSheetNumber: null,
       editTypeIndex: null,
       newAccountType: null,
       selectedAccount: null,
@@ -576,6 +590,98 @@ export default{
         this.APIRequest('locations/create', par).then(response => {
           $('#loading').css({display: 'none'})
           this.hideModal('add_location')
+        })
+      }
+    },
+    validateSpreadSheet(template = null, headers = []){
+      switch(template) {
+        case 'accounts':
+          if (headers.length > 5) {
+            return (
+              headers[0].content.$t.trim() === 'Username' &&
+              headers[1].content.$t.trim() === 'Email' &&
+              headers[2].content.$t.trim() === 'UACS Brgy Code' &&
+              headers[3].content.$t.trim() === 'First Name' &&
+              headers[4].content.$t.trim() === 'Middle Name' &&
+              headers[5].content.$t.trim() === 'Last Name'
+            )
+          } else {
+            return false
+          }
+        default:
+          return false
+      }
+    },
+    importData(type = null){
+      // syncing here
+      if(this.googleId !== null && this.googleSheetNumber !== null){
+        $.get('https://spreadsheets.google.com/feeds/cells/' + this.googleId + '/' + this.googleSheetNumber + '/public/values?alt=json', response => {
+          let { entry } = response.feed
+          // console.log({ response })
+          // console.log({ entry })
+          if (entry) {
+            let parameter = {
+              entries: []
+            }
+            console.log({ parameter })
+            switch (type) {
+              case 'accounts':
+                if (this.validateSpreadSheet('accounts', entry)) {
+                  const columnCount = 6
+                  entry.splice(0, columnCount)
+                  const entries = [...entry]
+                  if (entries.length % columnCount === 0) {
+                    let counter = 0
+                    for (let i = 0; i < entries.length; i += columnCount) {
+                      counter++
+                      let account = {
+                        username: entries[i].content.$t.trim(),
+                        email: entries[i + 1].content.$t.trim(),
+                        password: this.Password.generate(16),
+                        account_type: 'USER',
+                        status: 'AGENCY_BRGY',
+                        uacs_brgy_code: entries[i + 2].content.$t.trim(),
+                        first_name: entries[i + 3].content.$t.trim(),
+                        middle_name: entries[i + 4].content.$t.trim(),
+                        last_name: entries[i + 5].content.$t.trim()
+                      }
+                      if (AUTH.validateEmail(account.email) === false) {
+                        alert('Invalid email on line ' + counter)
+                        return
+                      }
+                      if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
+                        alert('Error on line ' + counter)
+                        return
+                      } else {
+                        parameter.entries.push(account)
+                      }
+                    }
+                  } else {
+                    alert('There is an empty cell.')
+                    return
+                  }
+                } else {
+                  alert('Please use the import accounts template for the spreadsheet')
+                  return
+                }
+                break
+              case 'symptoms':
+                break
+              default:
+                return
+            }
+            $('#loading').css({display: 'block'})
+            this.APIRequest('import/accounts', parameter).then(response => {
+              $('#loading').css({display: 'none'})
+              const { errorMessage } = response
+              if(errorMessage){
+                alert(errorMessage)
+              }
+              console.log({ response })
+            })
+          } else {
+            alert('Empty spreadsheet.')
+          }
         })
       }
     }
