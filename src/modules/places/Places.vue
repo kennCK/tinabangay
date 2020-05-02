@@ -12,9 +12,9 @@
     <div class="position-relative w-100 m-0 row justify-content-between mt-2 pt-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;">
         <div class="card-block px-3">
-          <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
+          <!-- <button class="btn btn-primary pull-right mt-3" @click="showModal('update', item)">
             <i class="fas fa-edit"></i>
-          </button>
+          </button> -->
           <h6 class="card-title" style="margin-top: 15px;">{{item.route == 'xx' ? `Custom Location` : `${item.route}, ${item.locality}, ${item.country}`}}</h6>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date_human}}</div>
           <div class="m-0 pb-2">
