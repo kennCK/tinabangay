@@ -6,6 +6,7 @@
        <system-sidebar></system-sidebar>
        <!-- <support-messenger></support-messenger> -->
        <system-footer></system-footer>
+       <guide></guide>
        <!-- <tutorial></tutorial> -->
       </div>
       <div v-else>
@@ -18,7 +19,6 @@
     <system-loading></system-loading>
     <privacy-policy></privacy-policy>
     <terms-and-conditions></terms-and-conditions>
-    <guide></guide>
   </div>
 </template>
 <style lang="scss">
