@@ -140,6 +140,13 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/admin/barangays',
+    name: 'barangays',
+    component: resolve => require(['modules/admin/Barangays.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   },
   {
     path: '/all-places',
