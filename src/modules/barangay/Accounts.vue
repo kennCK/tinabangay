@@ -379,7 +379,7 @@ export default{
         limit: this.limit,
         offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
-      await this.APIRequest('import/retrieve', parameter).then(async response => {
+      await this.APIRequest('custom/retrieve', parameter).then(async response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
@@ -625,6 +625,7 @@ export default{
               case 'accounts':
                 if (this.validateSpreadSheet('accounts', entry)) {
                   const columnCount = 6
+                  // removing headers
                   entry.splice(0, columnCount)
                   const entries = [...entry]
                   if (entries.length % columnCount === 0) {
@@ -644,13 +645,14 @@ export default{
                         last_name: entries[i + 5].content.$t.trim()
                       }
                       if (AUTH.validateEmail(account.email) === false) {
-                        alert('Invalid email on line ' + counter)
+                        alert(`Invalid email on line ${counter}`)
                         return
                       }
                       if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
-                        alert('Error on line ' + counter)
+                        alert(`Error on line ${counter}`)
                         return
                       } else {
+                        // push valid data
                         parameter.entries.push(account)
                       }
                     }
@@ -662,21 +664,27 @@ export default{
                   alert('Please use the import accounts template for the spreadsheet')
                   return
                 }
+                // insert entries to db
+                $('#loading').css({display: 'block'})
+                this.APIRequest('custom/import_accounts', parameter).then(response => {
+                  $('#loading').css({display: 'none'})
+                  const { errorMessage } = response
+                  if(errorMessage){
+                    alert(errorMessage)
+                  } else {
+                    alert('Successful')
+                  }
+                  this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+                  console.log({ response })
+                })
                 break
               case 'symptoms':
+                break
+              case 'visited_place':
                 break
               default:
                 return
             }
-            $('#loading').css({display: 'block'})
-            this.APIRequest('import/accounts', parameter).then(response => {
-              $('#loading').css({display: 'none'})
-              const { errorMessage } = response
-              if(errorMessage){
-                alert(errorMessage)
-              }
-              console.log({ response })
-            })
           } else {
             alert('Empty spreadsheet.')
           }
