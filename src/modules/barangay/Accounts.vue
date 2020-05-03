@@ -367,19 +367,19 @@ export default{
       let parameter = {
         condition: [{
           value: this.user.userID,
-          column: 'member',
+          column: 'account_id',
           clause: '='
         },
         {
           value: this.user.userID,
-          column: 'account_id',
+          column: 'member',
           clause: '!='
         }],
-        sort: sort,
-        limit: this.limit,
-        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        sort: sort
+        // limit: this.limit,
+        // offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
-      await this.APIRequest('custom/retrieve', parameter).then(async response => {
+      await this.APIRequest('sub_accounts/retrieve', parameter).then(async response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
@@ -638,18 +638,18 @@ export default{
                         password: this.Password.generate(16),
                         account_type: 'USER',
                         status: 'AGENCY_BRGY',
-                        member: this.user.userID,
+                        creator: this.user.userID,
                         uacs_brgy_code: entries[i + 2].content.$t.trim(),
                         first_name: entries[i + 3].content.$t.trim(),
                         middle_name: entries[i + 4].content.$t.trim(),
                         last_name: entries[i + 5].content.$t.trim()
                       }
                       if (AUTH.validateEmail(account.email) === false) {
-                        alert(`Invalid email on line ${counter}`)
+                        alert(`Invalid email on row ${counter + 1}`)
                         return
                       }
                       if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
-                        alert(`Error on line ${counter}`)
+                        alert(`Error on row ${counter + 1}`)
                         return
                       } else {
                         // push valid data
