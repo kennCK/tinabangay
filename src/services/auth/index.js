@@ -313,7 +313,8 @@ export default {
     let profile = data[0].account_profile
     let notifSetting = data[0].notification_settings
     let subAccount = data[0].sub_account
-    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code)
+    let location = data[0].location
+    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location)
     ROUTER.push('/dashboard')
   },
   setGoogleCode(code, scope){
