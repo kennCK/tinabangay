@@ -1,16 +1,19 @@
 <template>
   <div class="ledger-summary-container">
-    <!-- <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 3">Import Visited Places</button>
-    <button class="btn btn-danger pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 2">Import Symptoms</button> -->
+    <!-- <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 3">Import Visited Places</button> -->
+    <button class="btn btn-danger pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 2">Import Symptoms</button>
     <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 1">Import Accounts</button>
     <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="showModal('account')">New Account</button>
     <div class="form-group" v-if="importFlag !== 0">
       <label style="width: 100%;">Using google sheet</label>
       <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
-      <button v-if="importFlag === 1" class="btn btn-primary" @click="importData('accounts')">Import Accounts</button>
-      <!-- <button v-if="importFlag === 2" class="btn btn-primary" @click="importData()">Import Symptoms</button>
-      <button v-if="importFlag === 3" class="btn btn-primary" @click="importData()">Import Visited Places</button> -->
+      <button v-if="importFlag === 1" class="btn btn-success" @click="importData('accounts')">Import Accounts</button>
+      <button v-if="importFlag === 2" class="btn btn-success" @click="importData('symptoms')">Import Symptoms</button>
+      <!-- <button v-if="importFlag === 3" class="btn btn-primary" @click="importData()">Import Visited Places</button> -->
+    </div>
+    <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
+      {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
     <basic-filter 
       v-bind:category="category" 
@@ -39,7 +42,7 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.account.created_at}}</td>
-          <td>{{item.account.location.code}}</td>
+          <td>{{item.account.location ? item.account.location.code : 'No code'}}</td>
           <td>
             <label class="text-primary"><i class="fa fa-map-marker text-primary" @click="getVisited(item.account.id)" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</label>
           </td>
@@ -304,6 +307,7 @@ export default{
       importFlag: 0,
       googleId: null,
       googleSheetNumber: null,
+      errorMessage: null,
       editTypeIndex: null,
       newAccountType: null,
       selectedAccount: null,
@@ -595,7 +599,7 @@ export default{
     validateSpreadSheet(template = null, headers = []){
       switch(template) {
         case 'accounts':
-          if (headers.length > 5) {
+          if (headers.length >= 5) {
             return (
               headers[0].content.$t.trim() === 'Username' &&
               headers[1].content.$t.trim() === 'Email' &&
@@ -606,84 +610,167 @@ export default{
             )
           }
           return false
+        case 'symptoms':
+          if (headers.length >= 4) {
+            return (
+              headers[0].content.$t.trim() === 'Username' &&
+              headers[1].content.$t.trim() === 'Type' &&
+              headers[2].content.$t.trim() === 'Remarks' &&
+              headers[3].content.$t.trim() === 'Date'
+            )
+          }
+          return false
         default:
           return false
       }
     },
     importData(type = null){
+      this.errorMessage = null
       if(this.googleId !== null && this.googleSheetNumber !== null){
-        $.get('https://spreadsheets.google.com/feeds/cells/' + this.googleId + '/' + this.googleSheetNumber + '/public/values?alt=json', response => {
-          let { entry } = response.feed
-          if (entry) {
-            let parameter = {
-              entries: []
-            }
-            switch (type) {
-              case 'accounts':
-                if (this.validateSpreadSheet('accounts', entry)) {
+        $('#loading').css({display: 'block'})
+        $.ajax({
+          url: `https://spreadsheets.google.com/feeds/cells/${this.googleId}/${this.googleSheetNumber}/public/values?alt=json`,
+          type: 'GET',
+          success: (data) => {
+            $('#loading').css({display: 'none'})
+            let { entry } = data.feed
+            if (entry) {
+              let parameter = {
+                entries: []
+              }
+              let columnCount = 0
+              let headers = []
+              switch (type) {
+                case 'accounts':
                   // column count for the template
-                  const columnCount = 6
-                  // removing headers
-                  entry.splice(0, columnCount)
-                  const entries = [...entry]
-                  if (entries.length % columnCount === 0) {
-                    let counter = 0
-                    for (let i = 0; i < entries.length; i += columnCount) {
-                      counter++
-                      let account = {
-                        username: entries[i].content.$t.trim(),
-                        email: entries[i + 1].content.$t.trim(),
-                        password: this.Password.generate(16),
-                        account_type: 'USER',
-                        status: 'AGENCY_BRGY',
-                        creator: this.user.userID,
-                        uacs_brgy_code: entries[i + 2].content.$t.trim(),
-                        first_name: entries[i + 3].content.$t.trim(),
-                        middle_name: entries[i + 4].content.$t.trim(),
-                        last_name: entries[i + 5].content.$t.trim()
+                  columnCount = 6
+                  headers = entry.splice(0, columnCount)
+                  if (this.validateSpreadSheet('accounts', headers)) {
+                    // get remaining data
+                    const entries = [...entry]
+                    if (entries.length % columnCount === 0) {
+                      let rowCounter = 1
+                      for (let i = 0; i < entries.length; i += columnCount) {
+                        rowCounter++
+                        let account = {
+                          username: entries[i].content.$t.trim(),
+                          email: entries[i + 1].content.$t.trim(),
+                          password: this.Password.generate(16),
+                          account_type: 'USER',
+                          status: 'AGENCY_BRGY',
+                          creator: this.user.userID,
+                          uacs_brgy_code: entries[i + 2].content.$t.trim(),
+                          first_name: entries[i + 3].content.$t.trim(),
+                          middle_name: entries[i + 4].content.$t.trim(),
+                          last_name: entries[i + 5].content.$t.trim()
+                        }
+                        if (AUTH.validateEmail(account.email) === false) {
+                          this.errorMessage = `Invalid email on row ${rowCounter}`
+                          return
+                        }
+                        if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
+                          this.errorMessage = `Error on row ${rowCounter}`
+                          return
+                        }
+                        // push valid data
+                        parameter.entries.push(account)
                       }
-                      if (AUTH.validateEmail(account.email) === false) {
-                        alert(`Invalid email on row ${counter + 1}`)
-                        return
-                      }
-                      if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
-                        alert(`Error on row ${counter + 1}`)
-                        return
-                      }
-                      // push valid data
-                      parameter.entries.push(account)
+                    } else {
+                      this.errorMessage = 'There is an empty cell'
+                      return
                     }
                   } else {
-                    alert('There is an empty cell.')
+                    this.errorMessage = 'Please use the import accounts template for the spreadsheet'
                     return
                   }
-                } else {
-                  alert('Please use the import accounts template for the spreadsheet')
-                  return
-                }
-                // insert entries to db
-                $('#loading').css({display: 'block'})
-                this.APIRequest('custom/import_accounts', parameter).then(response => {
-                  $('#loading').css({display: 'none'})
-                  const { errorMessage } = response
-                  if(errorMessage){
-                    alert(errorMessage)
+                  // insert entries to db
+                  $('#loading').css({display: 'block'})
+                  this.APIRequest('customs/import_accounts', parameter).then(response => {
+                    $('#loading').css({display: 'none'})
+                    const { errorMessage } = response
+                    if (errorMessage) {
+                      this.errorMessage = errorMessage
+                    } else {
+                      this.errorMessage = 'success'
+                    }
+                    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+                    console.log({ response })
+                  })
+                  break
+                case 'symptoms':
+                  // column count for the template
+                  columnCount = 4
+                  headers = entry.splice(0, columnCount)
+                  const symptomsArr = [...COMMON.symptoms]
+                  if (this.validateSpreadSheet('symptoms', headers)) {
+                    // get remaining data
+                    const entries = [...entry]
+                    if (entries.length % columnCount === 0) {
+                      let rowCounter = 1
+                      for (let i = 0; i < entries.length; i += columnCount) {
+                        rowCounter++
+
+                        const date = entries[i + 3].content.$t.trim()
+                        if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
+                          this.errorMessage = `Please input valid date in row ${rowCounter} with format YYYY-MM-DD`
+                          return
+                        }
+
+                        let symptoms = {
+                          username: entries[i].content.$t.trim(),
+                          type: entries[i + 1].content.$t.trim(),
+                          remarks: entries[i + 2].content.$t.trim(),
+                          date
+                        }
+                        if (symptoms.username === '' || symptoms.type === '' || symptoms.remarks === '' || symptoms.date === '') {
+                          this.errorMessage = `Error on row ${rowCounter}`
+                          return
+                        }
+                        if (!symptomsArr.some(d => d.value === symptoms.type)) {
+                          this.errorMessage = `Invalid symptom type '${symptoms.type}' at row ${rowCounter}`
+                          return
+                        }
+                        // push valid data
+                        parameter.entries.push(symptoms)
+                      }
+                    } else {
+                      this.errorMessage = 'There is an empty cell'
+                      return
+                    }
                   } else {
-                    alert('Successful')
+                    this.errorMessage = 'Please use the import symptoms template for the spreadsheet'
+                    return
                   }
-                  this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
-                  console.log({ response })
-                })
-                break
-              case 'symptoms':
-                break
-              case 'visited_place':
-                break
-              default:
-                return
+                  // insert entries to db
+                  $('#loading').css({display: 'block'})
+                  this.APIRequest('customs/import_symptoms', parameter).then(response => {
+                    $('#loading').css({display: 'none'})
+                    const { errorMessage } = response
+                    if(errorMessage){
+                      this.errorMessage = errorMessage
+                    } else {
+                      this.errorMessage = 'success'
+                    }
+                    console.log({ response })
+                  })
+                  break
+                case 'visited_place':
+                  break
+                default:
+                  return
+              }
+            } else {
+              this.errorMessage = 'Empty spreadsheet'
             }
-          } else {
-            alert('Empty spreadsheet.')
+          },
+          error: (err) => {
+            $('#loading').css({display: 'none'})
+            const { responseText } = err
+            if (responseText) {
+              this.errorMessage = 'Error sheet number'
+            } else {
+              this.errorMessage = 'Error google sheet id'
+            }
           }
         })
       }
