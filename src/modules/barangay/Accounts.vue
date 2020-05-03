@@ -602,28 +602,24 @@ export default{
               headers[4].content.$t.trim() === 'Middle Name' &&
               headers[5].content.$t.trim() === 'Last Name'
             )
-          } else {
-            return false
           }
+          return false
         default:
           return false
       }
     },
     importData(type = null){
-      // syncing here
       if(this.googleId !== null && this.googleSheetNumber !== null){
         $.get('https://spreadsheets.google.com/feeds/cells/' + this.googleId + '/' + this.googleSheetNumber + '/public/values?alt=json', response => {
           let { entry } = response.feed
-          // console.log({ response })
-          // console.log({ entry })
           if (entry) {
             let parameter = {
               entries: []
             }
-            console.log({ parameter })
             switch (type) {
               case 'accounts':
                 if (this.validateSpreadSheet('accounts', entry)) {
+                  // column count for the template
                   const columnCount = 6
                   // removing headers
                   entry.splice(0, columnCount)
