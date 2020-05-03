@@ -647,10 +647,9 @@ export default{
                       if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
                         alert(`Error on row ${counter + 1}`)
                         return
-                      } else {
-                        // push valid data
-                        parameter.entries.push(account)
                       }
+                      // push valid data
+                      parameter.entries.push(account)
                     }
                   } else {
                     alert('There is an empty cell.')
