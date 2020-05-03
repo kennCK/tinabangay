@@ -31,7 +31,10 @@
             <label class="text-primary"><i class="fa fa-map-marker text-primary" @click="getVisited(item.account.id)" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</label>
           </td>
           <td>{{item.account.email}}</td>
-          <td><button class="btn btn-primary" @click="exportUser(item.account)">Export User</button></td>
+          <td>
+            <button class="btn btn-primary" @click="exportUser(item.account)">Export User</button>
+            <button class="btn btn-info" @click="showModal('clearance', item.account.id)">Export Clearance</button>
+          </td>
           <td>
             <button class="btn btn-success" @click="showModal('place', item.account.id)">Add Visited Place</button>
             <button class="btn btn-warning" @click="showModal('user', item.account.id)">Edit User</button>
@@ -122,7 +125,7 @@
                   <span class="text-primary font-weight-bold">Use Location</span> uses the location of the pin on the map.
                 </div>
               </div>
-              <pin-location @onSelect="getLocation" :property="{
+              <pin-location @onSelect="getLocation($event)" :property="{
                 height: '400px'
               }"></pin-location>
             </div>
@@ -135,10 +138,41 @@
       </div>
     </div>
 
+    <!--MODAL FOR ADDING ADDRESS-->
+    <div class="modal fade right" id="clearance" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Address</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('clearance')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="form-group">
+              <label for="worker">Worker Name</label>
+              <input type="text" class="form-control" name="worker" id="worker" required="true">
+            </div>
+            <div class="form-group">
+              <label for="position">Position</label>
+              <input type="text" class="form-control" name="position" id="position" required="true">
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('clearance')">Cancel</button>
+            <button class="btn btn-primary" @click="addLoc()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
     <increment-modal ref="modal" :property="placeProperty"></increment-modal>
     <increment-modal ref="profile" :property="profileProperty"></increment-modal>
+    <increment-modal ref="clearance" :property="clearanceProperty"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -214,6 +248,7 @@ import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/barangay/CreatePatientAccount.js'
 import PlacesProperty from 'src/modules/barangay/AddPlace.js'
 import ProfilesProperty from 'src/modules/barangay/Profile.js'
+import ClearanceProp from './Clearance.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import PdfPrinter from 'pdfmake'
 import vfsFonts from 'pdfmake/build/vfs_fonts'
@@ -224,6 +259,8 @@ export default{
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
+
+    $('#exportClearance .modal-footer button:nth-child(2)').hide()
   },
   data(){
     return {
@@ -232,9 +269,11 @@ export default{
       auth: AUTH,
       selecteditem: null,
       currentAdd: null,
+      brgy: null,
       modalProperty: ModalProperty,
       placeProperty: PlacesProperty,
       profileProperty: ProfilesProperty,
+      clearanceProperty: ClearanceProp,
       config: CONFIG,
       location: null,
       customLocation: false,
@@ -464,7 +503,6 @@ export default{
         this.APIRequest('locations/retrieve', params).then(response => {
           if(response.data.length > 0) {
             let add = response.data[response.data.length - 1]
-            console.log(add)
             if(add.locality === null) {
               if(add.longitude !== null) {
                 this.currentAdd = `Custom Location (${add.longitude}, ${add.latitude})`
@@ -481,8 +519,76 @@ export default{
           }
           $('#loading').css({display: 'none'})
           $('#add_location').modal('show')
-          console.log(this.currentAdd)
         })
+      } else if (type === 'clearance') {
+        this.clearanceProperty = {...ClearanceProp}
+        let inputs = this.clearanceProperty.inputs
+
+        if($('#exportClearance #search').length === 0) {
+          $('<button>', {
+            id: 'search',
+            class: 'mt-4 btn btn-primary',
+            html: 'Select Barangay',
+            click: () => {
+              let code
+              inputs.map(input => {
+                if(input.variable === 'code') {
+                  code = input.value
+                }
+              })
+              if(code === null || code === undefined || code === '') {
+                if($('#exportClearance #error').length === 0) {
+                  $('<span>', {
+                    id: 'error',
+                    class: 'text-danger mt-3',
+                    html: '<b>Oops!</b> You need to give a Barangay Code.'
+                  }).appendTo('#exportClearance .modal-body')
+                } else {
+                  $('#exportClearance #error').html('<b>Oops!</b> You need to give a Barangay Code.')
+                }
+              } else {
+                $('#loading').css({display: 'block'})
+                let par = {
+                  condition: [{
+                    value: code + '%',
+                    column: 'code',
+                    clause: 'like'
+                  }]
+                }
+                this.APIRequest('brgy_codes/retrieve', par).then(response => {
+                  $('#loading').css({display: 'none'})
+                  if(response.data.length === 0) {
+                    if($('#exportClearance #error').length === 0) {
+                      $('<span>', {
+                        id: 'error',
+                        class: 'text-danger mt-3',
+                        html: '<b>Oops!</b> There was no barangay registered with that code.'
+                      }).appendTo('#exportClearance .modal-body')
+                    } else {
+                      $('#exportClearance #error').html('<b>Oops!</b> There was no barangay registered with that code.')
+                    }
+                  } else if (response.data.length === 1) {
+                    this.brgy = response.data[0]
+                    $('#exportClearance #error').remove()
+                    $('<div>', {
+                      class: 'alert alert-success mt-3',
+                      id: 'brgy-info',
+                      html: `<b>Barangay Found!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region}`
+                    }).appendTo('#exportClearance .modal-body')
+
+                    $('#exportClearance .modal-footer button:nth-child(2)').show()
+                  } else if (response.data.length > 1) {
+                    $('<div>', {
+                      class: 'card mb-3',
+                      id: 'brgy-info'
+                    })
+                  }
+                })
+              }
+            }
+          }).appendTo('#exportClearance .modal-body')
+        }
+        $('#exportClearance').modal('show')
       }
     },
     getLocation(event) {
@@ -564,10 +670,9 @@ export default{
       }
     },
     addLoc() {
-      console.log('clickity')
       if(this.location === null) {
         if($('#add_location .modal-body #error').length === 0) {
-          $('#add_location').prepend('<span id="error font-weight-bold">Oops! Please set a location first.</span>')
+          $('#add_location .modal-body').append('<span id="error" class="text-danger"><b>Oops!</b> Please set a location first.</span>')
         }
       } else {
         let par = this.location
@@ -578,6 +683,102 @@ export default{
           this.hideModal('add_location')
         })
       }
+    },
+    exportClearance(user) {
+      let image = require('assets/img/logo.png')
+      let xhr = new XMLHttpRequest()
+      xhr.open('GET', image)
+      xhr.responseType = 'blob'
+      xhr.onload = function() {
+        let reader = new FileReader()
+        reader.onloadend = function() {
+          let pdf = {
+            content: [
+              {
+                alignment: 'left',
+                columns: [
+                  {
+                    image: 'logo',
+                    width: 50
+                  },
+                  [
+                    {
+                      text: 'BIRDSEYE',
+                      bold: true,
+                      style: 'header'
+                    },
+                    {
+                      text: 'www.birds-eye.org',
+                      style: 'header',
+                      decoration: 'underline'
+                    },
+                    {
+                      text: [
+                        {
+                          text: 'FB: ',
+                          bold: true
+                        },
+                        ' @birdseyeph'
+                      ],
+                      style: 'header'
+                    }
+                  ]
+                ]
+              },
+              ' ',
+              ' ',
+              {
+                text: 'CLEARANCE REPORT',
+                bold: true,
+                fontSize: 20,
+                alignment: 'center'
+              },
+              ' ',
+              {
+                text: 'To whom it may concern:',
+                fontSize: 14
+              },
+              ' ',
+              'This is to certify that the following individual is clear from any contact. Please see the given details below',
+              ' ',
+              {
+                text: user.username,
+                fontSize: 15,
+                bold: true,
+                alignment: 'center'
+              },
+              ' ',
+              {
+                qr: user.code,
+                alignment: 'center'
+              },
+              ' ',
+              ' ',
+              {
+                text: 'MR. JUAN P. DELA CRUZ',
+                italics: true,
+                bold: true,
+                decoration: 'underline'
+              },
+              'HEALTH WORKER',
+              'BRGY ADDRESS'
+            ],
+            images: {
+              logo: `${reader.result}`
+            },
+            styles: {
+              header: {
+                marginLeft: 10,
+                color: 'blue',
+                fontSize: 12
+              }
+            }
+          }
+          PdfPrinter.createPdf(pdf).download(`${user.username}_clearance.pdf`)
+        }
+        reader.readAsDataURL(xhr.response)
+      }
+      xhr.send()
     }
   }
 }
