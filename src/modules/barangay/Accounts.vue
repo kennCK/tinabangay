@@ -639,9 +639,10 @@ export default{
             value: this.user.location.locality,
             column: 'locality',
             clause: '='
-          }]
+          }],
+          sort: {code: 'asc'}
         }
-        this.APIRequest('locations/retrieve', parameter).then(response => {
+        this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
           if(response.data.length > 0){
             this.brgy_codes = response.data
           }else{
