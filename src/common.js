@@ -4,6 +4,7 @@ export default {
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Temperature', icon: 'fa fa-thermometer-half', path: 'temperature/p', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Symptoms Reporting', icon: 'fas fa-diagnoses', path: 'symptoms_reporting', flag: false, subMenu: null},
     {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Places', icon: 'fa fa-map', path: 'all-places', flag: false, subMenu: null},
     {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Rides', icon: 'fa fa-truck', path: 'all-rides', flag: false, subMenu: null},
     {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
@@ -12,7 +13,8 @@ export default {
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
-    {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'admin/accounts', flag: false, subMenu: null}
+    {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'admin/accounts', flag: false, subMenu: null},
+    {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Barangays', icon: 'fa fa-building', path: 'admin/barangays', flag: false, subMenu: null}
   ],
   profileMenu: [{
     title: 'My Profile',
@@ -82,6 +84,22 @@ export default {
   }, {
     label: 'Van',
     value: 'van'
+  }, {
+    label: 'Others',
+    value: 'others'
+  }],
+  symptoms: [{
+    label: 'Fever',
+    value: 'fever'
+  }, {
+    label: 'LBM',
+    value: 'lbm'
+  }, {
+    label: 'Cough and Colds',
+    value: 'cough and colds'
+  }, {
+    label: 'Sore Throat',
+    value: 'sore throat'
   }, {
     label: 'Others',
     value: 'others'

@@ -140,6 +140,13 @@ export default{
     meta: {
       tokenRequired: true
     }
+  }, {
+    path: '/admin/barangays',
+    name: 'barangays',
+    component: resolve => require(['modules/admin/Barangays.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   },
   {
     path: '/all-places',
@@ -169,6 +176,14 @@ export default{
     path: '/linked_accounts',
     name: 'linkedAccounts',
     component: resolve => require(['modules/linkedAccounts/LinkedAccounts.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/symptoms_reporting',
+    name: 'symptomsReporting',
+    component: resolve => require(['modules/symptoms/List.vue'], resolve),
     meta: {
       tokenRequired: true
     }
