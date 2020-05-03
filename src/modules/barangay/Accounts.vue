@@ -12,6 +12,9 @@
       <button v-if="importFlag === 2" class="btn btn-success" @click="importData('symptoms')">Import Symptoms</button>
       <!-- <button v-if="importFlag === 3" class="btn btn-primary" @click="importData()">Import Visited Places</button> -->
     </div>
+    <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
+      {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
+    </div>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -304,6 +307,7 @@ export default{
       importFlag: 0,
       googleId: null,
       googleSheetNumber: null,
+      errorMessage: null,
       editTypeIndex: null,
       newAccountType: null,
       selectedAccount: null,
@@ -593,7 +597,6 @@ export default{
       }
     },
     validateSpreadSheet(template = null, headers = []){
-      console.log({ headers })
       switch(template) {
         case 'accounts':
           if (headers.length >= 5) {
@@ -622,11 +625,14 @@ export default{
       }
     },
     importData(type = null){
+      this.errorMessage = null
       if(this.googleId !== null && this.googleSheetNumber !== null){
+        $('#loading').css({display: 'block'})
         $.ajax({
           url: `https://spreadsheets.google.com/feeds/cells/${this.googleId}/${this.googleSheetNumber}/public/values?alt=json`,
           type: 'GET',
           success: (data) => {
+            $('#loading').css({display: 'none'})
             let { entry } = data.feed
             if (entry) {
               let parameter = {
@@ -659,23 +665,22 @@ export default{
                           last_name: entries[i + 5].content.$t.trim()
                         }
                         if (AUTH.validateEmail(account.email) === false) {
-                          alert(`Invalid email on row ${rowCounter}`)
+                          this.errorMessage = `Invalid email on row ${rowCounter}`
                           return
                         }
                         if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
-                          alert(`Error on row ${rowCounter}`)
+                          this.errorMessage = `Error on row ${rowCounter}`
                           return
                         }
                         // push valid data
-                        console.log({ account })
                         parameter.entries.push(account)
                       }
                     } else {
-                      alert('There is an empty cell.')
+                      this.errorMessage = 'There is an empty cell.'
                       return
                     }
                   } else {
-                    alert('Please use the import accounts template for the spreadsheet')
+                    this.errorMessage = 'Please use the import accounts template for the spreadsheet'
                     return
                   }
                   // insert entries to db
@@ -683,10 +688,10 @@ export default{
                   this.APIRequest('customs/import_accounts', parameter).then(response => {
                     $('#loading').css({display: 'none'})
                     const { errorMessage } = response
-                    if(errorMessage){
-                      alert(errorMessage)
+                    if (errorMessage) {
+                      this.errorMessage = errorMessage
                     } else {
-                      alert('Successful')
+                      this.errorMessage = 'success'
                     }
                     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
                     console.log({ response })
@@ -697,7 +702,6 @@ export default{
                   columnCount = 4
                   headers = entry.splice(0, columnCount)
                   const symptomsArr = [...COMMON.symptoms]
-                  console.log({ symptomsArr })
                   if (this.validateSpreadSheet('symptoms', headers)) {
                     // get remaining data
                     const entries = [...entry]
@@ -708,7 +712,7 @@ export default{
 
                         const date = entries[i + 3].content.$t.trim()
                         if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
-                          alert(`please input valid date in row ${rowCounter} with format YYYY-MM-DD`)
+                          this.errorMessage = `please input valid date in row ${rowCounter} with format YYYY-MM-DD`
                           return
                         }
 
@@ -719,22 +723,22 @@ export default{
                           date
                         }
                         if (symptoms.username === '' || symptoms.type === '' || symptoms.remarks === '' || symptoms.date === '') {
-                          alert(`Error on row ${rowCounter}`)
+                          this.errorMessage = `Error on row ${rowCounter}`
                           return
                         }
                         if (!symptomsArr.some(d => d.value === symptoms.type)) {
-                          alert(`Invalid symptom type '${symptoms.type}' at row ${rowCounter}`)
+                          this.errorMessage = `Invalid symptom type '${symptoms.type}' at row ${rowCounter}`
                           return
                         }
                         // push valid data
                         parameter.entries.push(symptoms)
                       }
                     } else {
-                      alert('There is an empty cell.')
+                      this.errorMessage = 'There is an empty cell.'
                       return
                     }
                   } else {
-                    alert('Please use the import symptoms template for the spreadsheet')
+                    this.errorMessage = 'Please use the import symptoms template for the spreadsheet'
                     return
                   }
                   // insert entries to db
@@ -743,11 +747,10 @@ export default{
                     $('#loading').css({display: 'none'})
                     const { errorMessage } = response
                     if(errorMessage){
-                      alert(errorMessage)
+                      this.errorMessage = errorMessage
                     } else {
-                      alert('Successful')
+                      this.errorMessage = 'success'
                     }
-                    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
                     console.log({ response })
                   })
                   break
@@ -757,15 +760,16 @@ export default{
                   return
               }
             } else {
-              alert('Empty spreadsheet.')
+              this.errorMessage = 'Empty spreadsheet.'
             }
           },
           error: (err) => {
+            $('#loading').css({display: 'none'})
             const { responseText } = err
             if (responseText) {
-              alert('Error sheet number.')
+              this.errorMessage = 'Error sheet number.'
             } else {
-              alert('Error google sheet id')
+              this.errorMessage = 'Error google sheet id'
             }
           }
         })
