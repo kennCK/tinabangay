@@ -29,6 +29,7 @@
       <thead class="bg-primary">
         <tr>
           <td>Date</td>
+          <td>Code</td>
           <td>Username</td>
           <td>Email</td>
           <td>Export</td>
@@ -38,6 +39,7 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.account.created_at}}</td>
+          <td>{{item.account.location.code}}</td>
           <td>
             <label class="text-primary"><i class="fa fa-map-marker text-primary" @click="getVisited(item.account.id)" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</label>
           </td>
