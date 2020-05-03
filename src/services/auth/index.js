@@ -14,6 +14,7 @@ export default {
     email: null,
     type: null,
     status: null,
+    location: null,
     profile: null,
     amount: null,
     subAccount: null,
@@ -62,7 +63,7 @@ export default {
   },
   echo: null,
   currentPath: false,
-  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code){
+  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code, location){
     if(userID === null){
       username = null
       email = null
@@ -72,6 +73,7 @@ export default {
       notifSetting = null
       subAccount = null
       code = null
+      location = null
     }
     this.user.userID = userID * 1
     this.user.username = username
@@ -82,6 +84,7 @@ export default {
     this.user.notifSetting = notifSetting
     this.user.subAccount = subAccount
     this.user.code = code
+    this.user.location = location
     localStorage.setItem('account_id', this.user.userID)
   },
   setToken(token){
@@ -152,7 +155,8 @@ export default {
           let profile = response.data[0].account_profile
           let notifSetting = response.data[0].notification_settings
           let subAccount = response.data[0].sub_account
-          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code)
+          let location = response.data[0].location
+          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location)
         }).done(response => {
           this.tokenData.verifyingToken = false
           let location = window.location.href
