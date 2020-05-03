@@ -676,7 +676,7 @@ export default{
                         parameter.entries.push(account)
                       }
                     } else {
-                      this.errorMessage = 'There is an empty cell.'
+                      this.errorMessage = 'There is an empty cell'
                       return
                     }
                   } else {
@@ -712,7 +712,7 @@ export default{
 
                         const date = entries[i + 3].content.$t.trim()
                         if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
-                          this.errorMessage = `please input valid date in row ${rowCounter} with format YYYY-MM-DD`
+                          this.errorMessage = `Please input valid date in row ${rowCounter} with format YYYY-MM-DD`
                           return
                         }
 
@@ -734,7 +734,7 @@ export default{
                         parameter.entries.push(symptoms)
                       }
                     } else {
-                      this.errorMessage = 'There is an empty cell.'
+                      this.errorMessage = 'There is an empty cell'
                       return
                     }
                   } else {
@@ -760,14 +760,14 @@ export default{
                   return
               }
             } else {
-              this.errorMessage = 'Empty spreadsheet.'
+              this.errorMessage = 'Empty spreadsheet'
             }
           },
           error: (err) => {
             $('#loading').css({display: 'none'})
             const { responseText } = err
             if (responseText) {
-              this.errorMessage = 'Error sheet number.'
+              this.errorMessage = 'Error sheet number'
             } else {
               this.errorMessage = 'Error google sheet id'
             }
