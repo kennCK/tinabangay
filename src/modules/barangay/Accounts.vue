@@ -1,6 +1,17 @@
 <template>
   <div class="ledger-summary-container">
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('account')">New Account</button>
+    <!-- <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 3">Import Visited Places</button>
+    <button class="btn btn-danger pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 2">Import Symptoms</button> -->
+    <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 1">Import Accounts</button>
+    <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="showModal('account')">New Account</button>
+    <div class="form-group" v-if="importFlag !== 0">
+      <label style="width: 100%;">Using google sheet</label>
+      <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
+      <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
+      <button v-if="importFlag === 1" class="btn btn-primary" @click="importData('accounts')">Import Accounts</button>
+      <!-- <button v-if="importFlag === 2" class="btn btn-primary" @click="importData()">Import Symptoms</button>
+      <button v-if="importFlag === 3" class="btn btn-primary" @click="importData()">Import Visited Places</button> -->
+    </div>
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -18,6 +29,7 @@
       <thead class="bg-primary">
         <tr>
           <td>Date</td>
+          <td>Code</td>
           <td>Username</td>
           <td>Email</td>
           <td>Export</td>
@@ -27,6 +39,7 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.account.created_at}}</td>
+          <td>{{item.account.location.code}}</td>
           <td>
             <label class="text-primary"><i class="fa fa-map-marker text-primary" @click="getVisited(item.account.id)" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</label>
           </td>
@@ -327,6 +340,9 @@ export default{
       }],
       filter: null,
       sort: null,
+      importFlag: 0,
+      googleId: null,
+      googleSheetNumber: null,
       editTypeIndex: null,
       newAccountType: null,
       selectedAccount: null,
@@ -391,21 +407,18 @@ export default{
       }
       let parameter = {
         condition: [{
-          value: filter.value + '%',
-          column: filter.column,
-          clause: 'like'
-        }, {
           value: this.user.userID,
           column: 'account_id',
           clause: '='
-        }, {
+        },
+        {
           value: this.user.userID,
           column: 'member',
-          clause: '<>'
+          clause: '!='
         }],
-        sort: sort,
-        limit: this.limit,
-        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        sort: sort
+        // limit: this.limit,
+        // offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
       await this.APIRequest('sub_accounts/retrieve', parameter).then(async response => {
         $('#loading').css({display: 'none'})
@@ -570,6 +583,7 @@ export default{
                   } else if (response.data.length === 1) {
                     this.brgy = response.data[0]
                     $('#exportClearance #error').remove()
+                    $('#brgy-info').remove()
                     $('<div>', {
                       class: 'alert alert-success mt-3',
                       id: 'brgy-info',
@@ -578,9 +592,37 @@ export default{
 
                     $('#exportClearance .modal-footer button:nth-child(2)').show()
                   } else if (response.data.length > 1) {
+                    let content = []
+                    response.data.map(brgy => {
+                      let item = $('<div>', {
+                        class: 'col-12 py-2 option display-flex justify-content-between',
+                        html: `<span>${brgy.route}, ${brgy.locality}, ${brgy.region}</span> <span class="font-weight-bold">${brgy.code}</span>`,
+                        click: () => {
+                          this.brgy = brgy
+                          $('#brgy-info').remove()
+                          $('<div>', {
+                            class: 'alert alert-success mt-3',
+                            id: 'brgy-info',
+                            html: `<b>Barangay Selected!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region}`
+                          }).appendTo('#exportClearance .modal-body')
+
+                          $('#exportClearance .modal-footer button:nth-child(2)').show()
+                        }
+                      })
+
+                      content.push(item)
+                    })
+                    $('#brgy-info').remove()
                     $('<div>', {
                       class: 'card mb-3',
                       id: 'brgy-info'
+                    }).appendTo('#exportClearance .modal-body')
+                    $('<div>', {
+                      class: 'card-body alert-info',
+                      html: `<h5 class="card-title">Select a Barangay</h5>
+                      <div class="row">
+                      ${content}
+                      </div>`
                     })
                   }
                 })
@@ -779,6 +821,102 @@ export default{
         reader.readAsDataURL(xhr.response)
       }
       xhr.send()
+    },
+    validateSpreadSheet(template = null, headers = []){
+      switch(template) {
+        case 'accounts':
+          if (headers.length > 5) {
+            return (
+              headers[0].content.$t.trim() === 'Username' &&
+              headers[1].content.$t.trim() === 'Email' &&
+              headers[2].content.$t.trim() === 'UACS Brgy Code' &&
+              headers[3].content.$t.trim() === 'First Name' &&
+              headers[4].content.$t.trim() === 'Middle Name' &&
+              headers[5].content.$t.trim() === 'Last Name'
+            )
+          }
+          return false
+        default:
+          return false
+      }
+    },
+    importData(type = null){
+      if(this.googleId !== null && this.googleSheetNumber !== null){
+        $.get('https://spreadsheets.google.com/feeds/cells/' + this.googleId + '/' + this.googleSheetNumber + '/public/values?alt=json', response => {
+          let { entry } = response.feed
+          if (entry) {
+            let parameter = {
+              entries: []
+            }
+            switch (type) {
+              case 'accounts':
+                if (this.validateSpreadSheet('accounts', entry)) {
+                  // column count for the template
+                  const columnCount = 6
+                  // removing headers
+                  entry.splice(0, columnCount)
+                  const entries = [...entry]
+                  if (entries.length % columnCount === 0) {
+                    let counter = 0
+                    for (let i = 0; i < entries.length; i += columnCount) {
+                      counter++
+                      let account = {
+                        username: entries[i].content.$t.trim(),
+                        email: entries[i + 1].content.$t.trim(),
+                        password: this.Password.generate(16),
+                        account_type: 'USER',
+                        status: 'AGENCY_BRGY',
+                        creator: this.user.userID,
+                        uacs_brgy_code: entries[i + 2].content.$t.trim(),
+                        first_name: entries[i + 3].content.$t.trim(),
+                        middle_name: entries[i + 4].content.$t.trim(),
+                        last_name: entries[i + 5].content.$t.trim()
+                      }
+                      if (AUTH.validateEmail(account.email) === false) {
+                        alert(`Invalid email on row ${counter + 1}`)
+                        return
+                      }
+                      if (account.username === '' || account.uacs_brgy_code === '' || account.first_name === '' || account.middle_name === '' || account.last_name === '') {
+                        alert(`Error on row ${counter + 1}`)
+                        return
+                      }
+                      // push valid data
+                      parameter.entries.push(account)
+                    }
+                  } else {
+                    alert('There is an empty cell.')
+                    return
+                  }
+                } else {
+                  alert('Please use the import accounts template for the spreadsheet')
+                  return
+                }
+                // insert entries to db
+                $('#loading').css({display: 'block'})
+                this.APIRequest('custom/import_accounts', parameter).then(response => {
+                  $('#loading').css({display: 'none'})
+                  const { errorMessage } = response
+                  if(errorMessage){
+                    alert(errorMessage)
+                  } else {
+                    alert('Successful')
+                  }
+                  this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+                  console.log({ response })
+                })
+                break
+              case 'symptoms':
+                break
+              case 'visited_place':
+                break
+              default:
+                return
+            }
+          } else {
+            alert('Empty spreadsheet.')
+          }
+        })
+      }
     }
   }
 }
