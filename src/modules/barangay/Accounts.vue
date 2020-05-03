@@ -152,7 +152,7 @@
     </div>
 
     <!--MODAL FOR ADDING ADDRESS-->
-    <div class="modal fade right" id="clearance" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <!-- <div class="modal fade right" id="clearance" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content">
@@ -179,7 +179,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
@@ -269,11 +269,9 @@ import moment from 'moment'
 export default{
   mounted(){
     $('#loading').css({display: 'block'})
-    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
-
-    $('#exportClearance .modal-footer button:nth-child(2)').hide()
+    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
   },
   data(){
     return {
@@ -392,7 +390,7 @@ export default{
     redirect(params){
       ROUTER.push(params)
     },
-    async retrieve(sort, filter){
+    retrieve(sort, filter){
       if(sort !== null){
         this.sort = sort
       }
@@ -420,7 +418,8 @@ export default{
         // limit: this.limit,
         // offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
-      await this.APIRequest('sub_accounts/retrieve', parameter).then(async response => {
+
+      this.APIRequest('sub_accounts/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
@@ -432,23 +431,9 @@ export default{
       })
 
     },
-    update(item){
-      if(item.status !== 'NOT_VERIFIED'){
-        let parameter = {
-          id: item.id,
-          status: 'GRANTED'
-        }
-        $('#loading').css({display: 'block'})
-        this.APIRequest('accounts/update_verification', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          this.retrieve(null, null)
-        })
-      }else{
-        alert('Not Allowed!')
-      }
-    },
     showModal(type, id = null) {
       if(type === 'account') {
+        console.log(this.data)
         this.modalProperty = {...ModalProperty}
         this.modalProperty.params.push({variable: 'account_id', value: this.user.userID})
         let inputs = this.modalProperty.inputs
@@ -537,6 +522,7 @@ export default{
         this.clearanceProperty = {...ClearanceProp}
         let inputs = this.clearanceProperty.inputs
 
+        $('#exportClearance .modal-footer button:nth-child(2)').hide()
         if($('#exportClearance #search').length === 0) {
           $('<button>', {
             id: 'search',
@@ -865,7 +851,7 @@ export default{
                         email: entries[i + 1].content.$t.trim(),
                         password: this.Password.generate(16),
                         account_type: 'USER',
-                        status: 'AGENCY_BRGY',
+                        status: 'ADDED',
                         creator: this.user.userID,
                         uacs_brgy_code: entries[i + 2].content.$t.trim(),
                         first_name: entries[i + 3].content.$t.trim(),
