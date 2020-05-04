@@ -272,32 +272,18 @@ export default{
   mounted(){
     $('#loading').css({display: 'block'})
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+    if (AUTH.user.location) {
+      this.retrieveBrgyCodes({locality: 'asc'})
+    }
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
-    if (AUTH.user.location) {
-      let parameter = {
-        condition: [{
-          value: this.user.location.locality,
-          column: 'locality',
-          clause: '='
-        }],
-        sort: {code: 'asc'}
-      }
-      this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
-        if(response.data.length > 0){
-          this.brgy_codes = response.data
-        }else{
-          this.brgy_codes = null
-        }
-      })
-    }
   },
   data(){
     return {
       user: AUTH.user,
       data: null,
-      auth: AUTH,
       brgy_codes: null,
+      auth: AUTH,
       selecteditem: null,
       currentAdd: null,
       modalProperty: ModalProperty,
@@ -433,18 +419,30 @@ export default{
           column: 'member',
           clause: '!='
         }],
-        sort: sort
-        // limit: this.limit,
-        // offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        sort: sort,
+        limit: this.limit,
+        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
       await this.APIRequest('sub_accounts/retrieve', parameter).then(async response => {
-        $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
         }else{
           this.data = null
           this.numPages = null
+        }
+      })
+      $('#loading').css({display: 'none'})
+    },
+    async retrieveBrgyCodes(sort){
+      let parameter = {
+        sort
+      }
+      await this.APIRequest('brgy_codes/retrieve', parameter).then(async response => {
+        if(response.data.length > 0){
+          this.brgy_codes = response.data
+        }else{
+          this.brgy_codes = null
         }
       })
 
