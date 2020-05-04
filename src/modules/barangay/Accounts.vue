@@ -882,7 +882,10 @@ export default{
                   decoration: 'underline'
                 },
                 obj.position.toUpperCase(),
-                `${brgy.route}, ${brgy.locality}, ${brgy.region}`
+                `${brgy.route}, ${brgy.locality}, ${brgy.region}`,
+                ' ',
+                ' ',
+                `EXPORTED ON: ${moment().format('MMMM DD, YYYY :: hh:mm:ss A')}`
               ],
               images: {
                 logo: `${reader.result}`
