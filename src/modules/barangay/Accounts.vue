@@ -39,14 +39,14 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.account.created_at}}</td>
-          <td>{{item.account.location.code}}</td>
+          <td>{{item.account.location ? item.account.location.code : 'No Code'}}</td>
           <td>
             <label class="text-primary"><i class="fa fa-map-marker text-primary" @click="getVisited(item.account.id)" title="Visited Places" alt="Visited Places" ></i> {{item.account.username}}</label>
           </td>
           <td>{{item.account.email}}</td>
           <td>
             <button class="btn btn-primary" @click="exportUser(item.account)">Export User</button>
-            <button class="btn btn-info" @click="showModal('clearance', item.account.id)">Export Clearance</button>
+            <button class="btn btn-info" @click="showModal('clearance', item)">Export Clearance</button>
           </td>
           <td>
             <button class="btn btn-success" @click="showModal('place', item.account.id)">Add Visited Place</button>
@@ -188,6 +188,15 @@
     <increment-modal ref="clearance" :property="clearanceProperty"></increment-modal>
   </div>
 </template>
+<style>
+.option {
+  cursor: pointer;
+}
+
+.option:hover {
+  background: rgba(0,0,0,0.2)
+}
+</style>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
 .bg-primary{
@@ -272,6 +281,7 @@ export default{
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+    this.$refs.clearance.submit = this.exportClearance
   },
   data(){
     return {
@@ -433,7 +443,6 @@ export default{
     },
     showModal(type, id = null) {
       if(type === 'account') {
-        console.log(this.data)
         this.modalProperty = {...ModalProperty}
         this.modalProperty.params.push({variable: 'account_id', value: this.user.userID})
         let inputs = this.modalProperty.inputs
@@ -521,7 +530,10 @@ export default{
       } else if (type === 'clearance') {
         this.clearanceProperty = {...ClearanceProp}
         let inputs = this.clearanceProperty.inputs
+        this.brgy = null
+        this.selecteditem = id
 
+        $('#exportClearance #error, #brgy-info').remove()
         $('#exportClearance .modal-footer button:nth-child(2)').hide()
         if($('#exportClearance #search').length === 0) {
           $('<button>', {
@@ -536,10 +548,12 @@ export default{
                 }
               })
               if(code === null || code === undefined || code === '') {
+                $('#brgy-info').remove()
+                this.brgy = null
                 if($('#exportClearance #error').length === 0) {
-                  $('<span>', {
+                  $('<div>', {
                     id: 'error',
-                    class: 'text-danger mt-3',
+                    class: 'alert alert-danger mt-3',
                     html: '<b>Oops!</b> You need to give a Barangay Code.'
                   }).appendTo('#exportClearance .modal-body')
                 } else {
@@ -557,6 +571,8 @@ export default{
                 this.APIRequest('brgy_codes/retrieve', par).then(response => {
                   $('#loading').css({display: 'none'})
                   if(response.data.length === 0) {
+                    $('#brgy-info').remove()
+                    this.brgy = null
                     if($('#exportClearance #error').length === 0) {
                       $('<span>', {
                         id: 'error',
@@ -573,15 +589,16 @@ export default{
                     $('<div>', {
                       class: 'alert alert-success mt-3',
                       id: 'brgy-info',
-                      html: `<b>Barangay Found!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region}`
+                      html: `<b>Barangay Found!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region} (${this.brgy.code})`
                     }).appendTo('#exportClearance .modal-body')
 
                     $('#exportClearance .modal-footer button:nth-child(2)').show()
                   } else if (response.data.length > 1) {
                     let content = []
+                    $('#exportClearance #error').remove()
                     response.data.map(brgy => {
                       let item = $('<div>', {
-                        class: 'col-12 py-2 option display-flex justify-content-between',
+                        class: 'col-11 p-2 rounded my-1 mx-3 option display-flex justify-content-between border-light border',
                         html: `<span>${brgy.route}, ${brgy.locality}, ${brgy.region}</span> <span class="font-weight-bold">${brgy.code}</span>`,
                         click: () => {
                           this.brgy = brgy
@@ -589,7 +606,7 @@ export default{
                           $('<div>', {
                             class: 'alert alert-success mt-3',
                             id: 'brgy-info',
-                            html: `<b>Barangay Selected!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region}`
+                            html: `<b>Barangay Selected!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region} (${this.brgy.code})`
                           }).appendTo('#exportClearance .modal-body')
 
                           $('#exportClearance .modal-footer button:nth-child(2)').show()
@@ -600,16 +617,17 @@ export default{
                     })
                     $('#brgy-info').remove()
                     $('<div>', {
-                      class: 'card mb-3',
+                      class: 'card mt-3',
                       id: 'brgy-info'
                     }).appendTo('#exportClearance .modal-body')
                     $('<div>', {
                       class: 'card-body alert-info',
-                      html: `<h5 class="card-title">Select a Barangay</h5>
-                      <div class="row">
-                      ${content}
-                      </div>`
-                    })
+                      html: `<h5 class="card-title">Select a Barangay</h5>`
+                    }).appendTo('#brgy-info')
+                    $('<div>', {
+                      class: 'row align-items-center justify-content-center',
+                      html: content
+                    }).appendTo('#brgy-info .card-body')
                   }
                 })
               }
@@ -712,8 +730,15 @@ export default{
         })
       }
     },
-    exportClearance(user) {
+    exportClearance() {
+      let user = this.selecteditem
       let image = require('assets/img/logo.png')
+      let brgy = this.$parent.brgy
+      let inputs = this.property.inputs
+      let obj = {}
+      inputs.map(input => {
+        obj[input.variable] = input.value
+      })
       let xhr = new XMLHttpRequest()
       xhr.open('GET', image)
       xhr.responseType = 'blob'
@@ -783,13 +808,13 @@ export default{
               ' ',
               ' ',
               {
-                text: 'MR. JUAN P. DELA CRUZ',
+                text: obj.name.toUpperCase(),
                 italics: true,
                 bold: true,
                 decoration: 'underline'
               },
-              'HEALTH WORKER',
-              'BRGY ADDRESS'
+              obj.position.toUpperCase(),
+              `${brgy.route}, ${brgy.locality}, ${brgy.region}`
             ],
             images: {
               logo: `${reader.result}`
