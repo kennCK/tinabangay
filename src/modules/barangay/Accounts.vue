@@ -1,16 +1,17 @@
 <template>
   <div class="ledger-summary-container">
-    <!-- <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 3">Import Visited Places</button> -->
+    <button class="btn btn-warning pull-right" style="margin: .5% 0;" @click="importFlag = 3">Import Visited Places</button>
     <button class="btn btn-danger pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 2">Import Symptoms</button>
     <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="importFlag = 1">Import Accounts</button>
     <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="showModal('account')">New Account</button>
+    <button class="btn btn-primary pull-left mr-3" style="margin: .5% 0;" @click="showBrgyCodes()">Barangay Codes</button>
     <div class="form-group" v-if="importFlag !== 0">
       <label style="width: 100%;">Using google sheet</label>
       <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button v-if="importFlag === 1" class="btn btn-success" @click="importData('accounts')">Import Accounts</button>
       <button v-if="importFlag === 2" class="btn btn-success" @click="importData('symptoms')">Import Symptoms</button>
-      <!-- <button v-if="importFlag === 3" class="btn btn-primary" @click="importData()">Import Visited Places</button> -->
+      <button v-if="importFlag === 3" class="btn btn-success">Import Visited Places</button>
     </div>
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
@@ -56,6 +57,39 @@
         </tr>
       </tbody>
     </table>
+    
+    <!--MODAL FOR BRGY CODES-->
+    <div class="modal fade right" id="brgy_codes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ !brgy_codes ? 'No' : ''}} Available Barangay Codes</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('brgy_codes')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4" v-if="brgy_codes !== null">
+            <table class="table table-responsive table-bordered"  id="myTable2">
+              <thead class="bg-primary">
+                <td>Code</td>
+                <td>Locality</td>
+                <td>Country</td>
+                <td>Region</td>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in brgy_codes" :key="index">
+                  <td>{{item.code}}</td>
+                  <td>{{item.locality}}</td>
+                  <td>{{item.country}}</td>
+                  <td>{{item.region}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!--MODAL FOR VISITED PATIENTS-->
     <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -240,12 +274,30 @@ export default{
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
+    if (AUTH.user.location) {
+      let parameter = {
+        condition: [{
+          value: this.user.location.locality,
+          column: 'locality',
+          clause: '='
+        }],
+        sort: {code: 'asc'}
+      }
+      this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
+        if(response.data.length > 0){
+          this.brgy_codes = response.data
+        }else{
+          this.brgy_codes = null
+        }
+      })
+    }
   },
   data(){
     return {
       user: AUTH.user,
       data: null,
       auth: AUTH,
+      brgy_codes: null,
       selecteditem: null,
       currentAdd: null,
       modalProperty: ModalProperty,
@@ -595,6 +647,9 @@ export default{
           this.hideModal('add_location')
         })
       }
+    },
+    showBrgyCodes(){
+      $('#brgy_codes').modal('show')
     },
     validateSpreadSheet(template = null, headers = []){
       switch(template) {
