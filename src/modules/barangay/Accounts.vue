@@ -274,6 +274,23 @@ export default{
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
+    if (AUTH.user.location) {
+      let parameter = {
+        condition: [{
+          value: this.user.location.locality,
+          column: 'locality',
+          clause: '='
+        }],
+        sort: {code: 'asc'}
+      }
+      this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
+        if(response.data.length > 0){
+          this.brgy_codes = response.data
+        }else{
+          this.brgy_codes = null
+        }
+      })
+    }
   },
   data(){
     return {
@@ -632,29 +649,7 @@ export default{
       }
     },
     showBrgyCodes(){
-      $('#loading').css({display: 'block'})
-      if (this.user.location) {
-        let parameter = {
-          condition: [{
-            value: this.user.location.locality,
-            column: 'locality',
-            clause: '='
-          }],
-          sort: {code: 'asc'}
-        }
-        this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
-          if(response.data.length > 0){
-            this.brgy_codes = response.data
-          }else{
-            this.brgy_codes = null
-          }
-          $('#loading').css({display: 'none'})
-          $('#brgy_codes').modal('show')
-        })
-      } else {
-        $('#loading').css({display: 'none'})
-        $('#brgy_codes').modal('show')
-      }
+      $('#brgy_codes').modal('show')
     },
     validateSpreadSheet(template = null, headers = []){
       switch(template) {
