@@ -32,7 +32,7 @@ export default {
     options: [
       {
         label: 'Health Worker',
-        value: 'health Worker'
+        value: 'Health Worker'
       },
       {
         label: 'Barangay Official',

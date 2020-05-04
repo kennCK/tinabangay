@@ -484,11 +484,11 @@ export default{
       })
       $('#loading').css({display: 'none'})
     },
-    async retrieveBrgyCodes(sort){
+    retrieveBrgyCodes(sort){
       let parameter = {
         sort
       }
-      await this.APIRequest('brgy_codes/retrieve', parameter).then(async response => {
+      this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
         if(response.data.length > 0){
           this.brgy_codes = response.data
         }else{
@@ -586,6 +586,9 @@ export default{
       } else if (type === 'clearance') {
         this.clearanceProperty = {...ClearanceProp}
         let inputs = this.clearanceProperty.inputs
+        inputs.map(input => {
+          input.value = null
+        })
         this.brgy = null
         this.selecteditem = id
 
@@ -647,7 +650,11 @@ export default{
                       id: 'brgy-info',
                       html: `<b>Barangay Found!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region} (${this.brgy.code})`
                     }).appendTo('#exportClearance .modal-body')
-
+                    inputs.map(input => {
+                      if(input.variable === 'code') {
+                        input.value = this.brgy.code
+                      }
+                    })
                     $('#exportClearance .modal-footer button:nth-child(2)').show()
                   } else if (response.data.length > 1) {
                     let content = []
@@ -664,7 +671,11 @@ export default{
                             id: 'brgy-info',
                             html: `<b>Barangay Selected!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region} (${this.brgy.code})`
                           }).appendTo('#exportClearance .modal-body')
-
+                          inputs.map(input => {
+                            if(input.variable === 'code') {
+                              input.value = this.brgy.code
+                            }
+                          })
                           $('#exportClearance .modal-footer button:nth-child(2)').show()
                         }
                       })
@@ -787,107 +798,111 @@ export default{
       }
     },
     exportClearance() {
-      let user = this.selecteditem
-      let image = require('assets/img/logo.png')
-      let brgy = this.$parent.brgy
-      let inputs = this.property.inputs
-      let obj = {}
-      inputs.map(input => {
-        obj[input.variable] = input.value
-      })
-      let xhr = new XMLHttpRequest()
-      xhr.open('GET', image)
-      xhr.responseType = 'blob'
-      xhr.onload = function() {
-        let reader = new FileReader()
-        reader.onloadend = function() {
-          let pdf = {
-            content: [
-              {
-                alignment: 'left',
-                columns: [
-                  {
-                    image: 'logo',
-                    width: 50
-                  },
-                  [
+      $('#loading').css({display: 'block'})
+      if(this.$refs.clearance.validate()) {
+        let user = this.selecteditem.account
+        let image = require('assets/img/logo.png')
+        let brgy = this.brgy
+        let inputs = this.clearanceProperty.inputs
+        let obj = {}
+        inputs.map(input => {
+          obj[input.variable] = input.value
+        })
+        let xhr = new XMLHttpRequest()
+        xhr.open('GET', image)
+        xhr.responseType = 'blob'
+        xhr.onload = function() {
+          let reader = new FileReader()
+          reader.onloadend = function() {
+            let pdf = {
+              content: [
+                {
+                  alignment: 'left',
+                  columns: [
                     {
-                      text: 'BIRDSEYE',
-                      bold: true,
-                      style: 'header'
+                      image: 'logo',
+                      width: 50
                     },
-                    {
-                      text: 'www.birds-eye.org',
-                      style: 'header',
-                      decoration: 'underline'
-                    },
-                    {
-                      text: [
-                        {
-                          text: 'FB: ',
-                          bold: true
-                        },
-                        ' @birdseyeph'
-                      ],
-                      style: 'header'
-                    }
+                    [
+                      {
+                        text: 'BIRDSEYE',
+                        bold: true,
+                        style: 'header'
+                      },
+                      {
+                        text: 'www.birds-eye.org',
+                        style: 'header',
+                        decoration: 'underline'
+                      },
+                      {
+                        text: [
+                          {
+                            text: 'FB: ',
+                            bold: true
+                          },
+                          ' @birdseyeph'
+                        ],
+                        style: 'header'
+                      }
+                    ]
                   ]
-                ]
+                },
+                ' ',
+                ' ',
+                {
+                  text: 'CLEARANCE REPORT',
+                  bold: true,
+                  fontSize: 20,
+                  alignment: 'center'
+                },
+                ' ',
+                {
+                  text: 'To whom it may concern:',
+                  fontSize: 14
+                },
+                ' ',
+                'This is to certify that the following individual is clear from any contact. Please see the given details below',
+                ' ',
+                {
+                  text: user.username,
+                  fontSize: 15,
+                  bold: true,
+                  alignment: 'center'
+                },
+                {
+                  qr: user.code,
+                  alignment: 'center'
+                },
+                ' ',
+                ' ',
+                {
+                  text: obj.name.toUpperCase(),
+                  italics: true,
+                  bold: true,
+                  decoration: 'underline'
+                },
+                obj.position.toUpperCase(),
+                `${brgy.route}, ${brgy.locality}, ${brgy.region}`
+              ],
+              images: {
+                logo: `${reader.result}`
               },
-              ' ',
-              ' ',
-              {
-                text: 'CLEARANCE REPORT',
-                bold: true,
-                fontSize: 20,
-                alignment: 'center'
-              },
-              ' ',
-              {
-                text: 'To whom it may concern:',
-                fontSize: 14
-              },
-              ' ',
-              'This is to certify that the following individual is clear from any contact. Please see the given details below',
-              ' ',
-              {
-                text: user.username,
-                fontSize: 15,
-                bold: true,
-                alignment: 'center'
-              },
-              ' ',
-              {
-                qr: user.code,
-                alignment: 'center'
-              },
-              ' ',
-              ' ',
-              {
-                text: obj.name.toUpperCase(),
-                italics: true,
-                bold: true,
-                decoration: 'underline'
-              },
-              obj.position.toUpperCase(),
-              `${brgy.route}, ${brgy.locality}, ${brgy.region}`
-            ],
-            images: {
-              logo: `${reader.result}`
-            },
-            styles: {
-              header: {
-                marginLeft: 10,
-                color: 'blue',
-                fontSize: 12
+              styles: {
+                header: {
+                  marginLeft: 10,
+                  color: 'blue',
+                  fontSize: 12
+                }
               }
             }
+            PdfPrinter.createPdf(pdf).download(`${user.username}_clearance.pdf`)
           }
-          PdfPrinter.createPdf(pdf).download(`${user.username}_clearance.pdf`)
+          reader.readAsDataURL(xhr.response)
         }
-        reader.readAsDataURL(xhr.response)
+        xhr.send()
+        this.hideModal('exportClearance')
       }
-      xhr.send()
+      $('#loading').css({display: 'none'})
     },
     showBrgyCodes(){
       $('#brgy_codes').modal('show')
