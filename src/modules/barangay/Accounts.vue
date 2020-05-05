@@ -1039,6 +1039,7 @@ export default{
                         }
 
                         let symptoms = {
+                          creator_id: this.user.userID,
                           username: entries[i].content.$t.trim(),
                           type: entries[i + 1].content.$t.trim(),
                           remarks: entries[i + 2].content.$t.trim(),
@@ -1101,6 +1102,7 @@ export default{
                         }
 
                         let data = {
+                          creator_id: this.user.userID,
                           username: entries[i].content.$t.trim(),
                           brgy_code: entries[i + 1].content.$t.trim(),
                           date,
