@@ -11,7 +11,7 @@
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button v-if="importFlag === 1" class="btn btn-success" @click="importData('accounts')">Import Accounts</button>
       <button v-if="importFlag === 2" class="btn btn-success" @click="importData('symptoms')">Import Symptoms</button>
-      <button v-if="importFlag === 3" class="btn btn-success">Import Visited Places</button>
+      <button v-if="importFlag === 3" class="btn btn-success" @click="importData('visited_places')">Import Visited Places</button>
     </div>
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
@@ -321,7 +321,6 @@ export default{
     }
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
-    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     this.$refs.clearance.submit = this.exportClearance
   },
   data(){
@@ -473,7 +472,6 @@ export default{
       }
 
       this.APIRequest('sub_accounts/retrieve', parameter).then(response => {
-        $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
@@ -481,8 +479,8 @@ export default{
           this.data = null
           this.numPages = null
         }
+        $('#loading').css({display: 'none'})
       })
-      $('#loading').css({display: 'none'})
     },
     retrieveBrgyCodes(sort){
       let parameter = {
@@ -934,6 +932,16 @@ export default{
             )
           }
           return false
+        case 'visited_places':
+          if (headers.length >= 4) {
+            return (
+              headers[0].content.$t.trim() === 'Username' &&
+              headers[1].content.$t.trim() === 'Brgy Code' &&
+              headers[2].content.$t.trim() === 'Date' &&
+              headers[3].content.$t.trim() === 'Time'
+            )
+          }
+          return false
         default:
           return false
       }
@@ -1026,11 +1034,12 @@ export default{
 
                         const date = entries[i + 3].content.$t.trim()
                         if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
-                          this.errorMessage = `Please input valid date in row ${rowCounter} with format YYYY-MM-DD`
+                          this.errorMessage = `Please input a valid date in row ${rowCounter} and use YYYY-MM-DD format. E.g. 2020-12-31`
                           return
                         }
 
                         let symptoms = {
+                          creator_id: this.user.userID,
                           username: entries[i].content.$t.trim(),
                           type: entries[i + 1].content.$t.trim(),
                           remarks: entries[i + 2].content.$t.trim(),
@@ -1068,7 +1077,65 @@ export default{
                     console.log({ response })
                   })
                   break
-                case 'visited_place':
+                case 'visited_places':
+                  // column count for the template
+                  columnCount = 4
+                  headers = entry.splice(0, columnCount)
+                  if (this.validateSpreadSheet('visited_places', headers)) {
+                    // get remaining data
+                    const entries = [...entry]
+                    if (entries.length % columnCount === 0) {
+                      let rowCounter = 1
+                      for (let i = 0; i < entries.length; i += columnCount) {
+                        rowCounter++
+
+                        const date = entries[i + 2].content.$t.trim()
+                        if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
+                          this.errorMessage = `Please input a valid date in row ${rowCounter} and use YYYY-MM-DD format. E.g. 2020-12-31`
+                          return
+                        }
+
+                        const time = entries[i + 3].content.$t.trim()
+                        if (!moment(time, 'HH:mm', true).isValid()) {
+                          this.errorMessage = `Please input a valid time in row ${rowCounter} and use 24 hour format. E.g. 19:30`
+                          return
+                        }
+
+                        let data = {
+                          creator_id: this.user.userID,
+                          username: entries[i].content.$t.trim(),
+                          brgy_code: entries[i + 1].content.$t.trim(),
+                          date,
+                          time
+                        }
+
+                        if (data.username === '' || data.brgy_code === '' || data.date === '' || data.time === '') {
+                          this.errorMessage = `Error on row ${rowCounter}`
+                          return
+                        }
+                        // push valid data
+                        parameter.entries.push(data)
+                      }
+                    } else {
+                      this.errorMessage = 'There is an empty cell'
+                      return
+                    }
+                  } else {
+                    this.errorMessage = 'Please use the import visited places template for the spreadsheet'
+                    return
+                  }
+                  // insert entries to db
+                  $('#loading').css({display: 'block'})
+                  this.APIRequest('customs/import_visited_places', parameter).then(response => {
+                    $('#loading').css({display: 'none'})
+                    const { errorMessage } = response
+                    if(errorMessage){
+                      this.errorMessage = errorMessage
+                    } else {
+                      this.errorMessage = 'success'
+                    }
+                    console.log({ response })
+                  })
                   break
                 default:
                   return
