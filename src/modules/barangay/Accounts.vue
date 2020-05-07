@@ -53,9 +53,9 @@
             <button class="btn btn-info" @click="showModal('clearance', item)">Export Clearance</button>
           </td>
           <td>
+            <button class="btn btn-dark" @click="showModal('address', item.account.id)">Add Address</button>
             <button class="btn btn-success" @click="showModal('place', item.account.id)">Add Visited Place</button>
             <button class="btn btn-warning" @click="showModal('user', item.account.id)">Edit User</button>
-            <button class="btn btn-dark" @click="showModal('address', item.account.id)">Add Address</button>
           </td>
         </tr>
       </tbody>
@@ -141,43 +141,16 @@
             </button>
           </div>
           <div class="modal-body p-4">
-            <div v-if="currentAdd !== null">
-              <div class="row mb-3 mx-0">
-                <div class="col">
-                  <b>Current Address: </b> {{currentAdd}}
-                </div>
+            <div class="row mb-3 mx-0">
+              <div class="col">
+                <b>Current Address: </b> {{brgyCodeParams.currentAdd ? brgyCodeParams.currentAdd : 'No address'}}
               </div>
             </div>
-            <div v-if="customLocation === false">
-              <div class="row mb-3 justify-content-end mx-0">
-                <button class="btn btn-primary" @click="customLocation = true">Use Custom Location</button>
-              </div>
-              <div class="form-group">
-                <label for="location">Set Address</label>
-                <google-autocomplete-location
-                  :property="googleProperty"
-                  :id="'location'"
-                  ref="location"
-                  @onFinish="getLocation($event)"
-                >
-                </google-autocomplete-location>
-              </div>
-            </div>
-            <div v-if="customLocation === true">
-              <div class="row mb-3 justify-content-end mx-0">
-                <button class="btn btn-primary" @click="customLocation = false">Use Google Autocomplete</button>
-              </div>
-              <div class="row mb-3">
-                <div class="col">
-                  <span class="text-danger font-weight-bold">Pin Location</span> uses your current geolocation.
-                </div>
-                <div class="col">
-                  <span class="text-primary font-weight-bold">Use Location</span> uses the location of the pin on the map.
-                </div>
-              </div>
-              <pin-location @onSelect="getLocation($event)" :property="{
-                height: '400px'
-              }"></pin-location>
+            <div class="form-group mt-2">
+              <div id="err" />
+              <label for="location">Set Address</label>
+              <input v-model="brgyCodeParams.brgyCode" type="text" class="form-control" placeholder="Enter barangay code" required>
+              <small class="form-text text-muted">Please refer to the available barangay codes shown above</small>
             </div>
           </div>
           <div class="modal-footer">
@@ -330,7 +303,6 @@ export default{
       brgy_codes: null,
       auth: AUTH,
       selecteditem: null,
-      currentAdd: null,
       brgy: null,
       modalProperty: ModalProperty,
       placeProperty: PlacesProperty,
@@ -338,19 +310,7 @@ export default{
       clearanceProperty: ClearanceProp,
       config: CONFIG,
       location: null,
-      customLocation: false,
       places: null,
-      googleProperty: {
-        style: {
-          height: '45px !important'
-        },
-        GOOGLE_API_KEY: CONFIG.GOOGLE_API_KEY,
-        results: {
-          style: {
-          }
-        },
-        placeholder: 'Type Location'
-      },
       category: [{
         title: 'Sort by',
         sorting: [{
@@ -392,7 +352,12 @@ export default{
       importFlag: 0,
       googleId: null,
       googleSheetNumber: null,
-      errorMessage: null,
+      errorMessage: null, // error message for all import module
+      brgyCodeParams: {
+        brgyCode: null,
+        currentAdd: null,
+        currentCode: null
+      },
       editTypeIndex: null,
       newAccountType: null,
       selectedAccount: null,
@@ -434,8 +399,6 @@ export default{
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
-    'google-autocomplete-location': require('src/components/increment/generic/location/GooglePlacesAutoComplete.vue'),
-    'pin-location': require('components/increment/generic/map/PinLocation.vue'),
     Pager
   },
   methods: {
@@ -563,20 +526,18 @@ export default{
         $('#loading').css({display: 'block'})
         this.APIRequest('locations/retrieve', params).then(response => {
           if(response.data.length > 0) {
-            let add = response.data[response.data.length - 1]
-            if(add.locality === null) {
-              if(add.longitude !== null) {
-                this.currentAdd = `Custom Location (${add.longitude}, ${add.latitude})`
-              } else {
-                this.currentAdd = null
-              }
-            } else if (add.route === null){
-              this.currentAdd = add.locality
-            } else {
-              this.currentAdd = `${add.route}, ${add.locality}`
-            }
+            const {
+              code,
+              route,
+              locality,
+              region,
+              country
+            } = response.data[0]
+            this.brgyCodeParams.currentCode = code
+            this.brgyCodeParams.currentAdd = `${code}, ${route}, ${locality}, ${region}, ${country}`
           } else {
-            this.currentAdd = null
+            this.brgyCodeParams.currentCode = null
+            this.brgyCodeParams.currentAdd = null
           }
           $('#loading').css({display: 'none'})
           $('#add_location').modal('show')
@@ -702,17 +663,6 @@ export default{
         $('#exportClearance').modal('show')
       }
     },
-    getLocation(event) {
-      let location = {
-        route: event.route,
-        locality: event.locality,
-        region: event.region,
-        country: event.country,
-        latitude: event.latitude,
-        longitude: event.longitude
-      }
-      this.location = location
-    },
     exportUser(user){
       let newPassword = this.Password.generate(16)
       let parameter = {
@@ -775,25 +725,47 @@ export default{
     hideModal(id) {
       $(`#${id}`).modal('hide')
       if(id === 'add_location') {
-        this.$refs.location.onCancel()
         this.location = null
         this.selecteditem = null
       }
     },
     addLoc() {
-      if(this.location === null) {
-        if($('#add_location .modal-body #error').length === 0) {
-          $('#add_location .modal-body').append('<span id="error" class="text-danger"><b>Oops!</b> Please set a location first.</span>')
-        }
-      } else {
-        let par = this.location
-        par.account_id = this.selecteditem
-        $('#loading').css({display: 'block'})
-        this.APIRequest('locations/create', par).then(response => {
-          $('#loading').css({display: 'none'})
-          this.hideModal('add_location')
-        })
+      $('#loading').css({display: 'block'})
+      if (this.brgyCodeParams.brgyCode === null || this.brgyCodeParams.brgyCode.trim() === '') {
+        $('#add_location #err #error').remove()
+        $('#add_location #err').append(
+          '<div id="error" class="alert alert-danger"><b>Oops!</b> Please set a barangay code first.</div>'
+        )
+        this.brgyCodeParams.brgyCode = null
+        $('#loading').css({display: 'none'})
+        return
       }
+      if (this.brgyCodeParams.brgyCode === this.brgyCodeParams.currentCode) {
+        $('#add_location #err #error').remove()
+        $('#add_location #err').append(
+          `<div id="error" class="alert alert-warning">The code: ${this.brgyCodeParams.brgyCode} is already set to this user.</div>`
+        )
+        this.brgyCodeParams.brgyCode = null
+        $('#loading').css({display: 'none'})
+        return
+      }
+      this.APIRequest('customs/set_address', {params: this.brgyCodeParams, accountId: this.selecteditem}).then(response => {
+        const { invalidCode } = response
+        if (invalidCode) {
+          $('#loading').css({display: 'none'})
+          $('#add_location #err #error').remove()
+          $('#add_location #err').append(
+            `<div id="error" class="alert alert-danger">
+              Invalid barangay code: <b>${this.brgyCodeParams.brgyCode}</b>.
+              Please refer to the available barangay codes.
+            </div>`
+          )
+        } else {
+          this.brgyCodeParams.brgyCode = null
+          this.hideModal('add_location')
+          this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+        }
+      })
     },
     exportClearance() {
       $('#loading').css({display: 'block'})
@@ -1016,7 +988,6 @@ export default{
                       this.errorMessage = 'success'
                     }
                     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
-                    console.log({ response })
                   })
                   break
                 case 'symptoms':
@@ -1074,7 +1045,6 @@ export default{
                     } else {
                       this.errorMessage = 'success'
                     }
-                    console.log({ response })
                   })
                   break
                 case 'visited_places':
@@ -1134,7 +1104,6 @@ export default{
                     } else {
                       this.errorMessage = 'success'
                     }
-                    console.log({ response })
                   })
                   break
                 default:
