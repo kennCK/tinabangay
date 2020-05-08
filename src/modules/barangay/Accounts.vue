@@ -50,7 +50,7 @@
           <td>{{item.account.email}}</td>
           <td>
             <button class="btn btn-primary" @click="exportUser(item.account)">Export User</button>
-            <button class="btn btn-info" @click="showModal('clearance', item)">Export Clearance</button>
+            <button class="btn btn-info" @click="exportClearance(item.account)">Export Clearance</button>
           </td>
           <td>
             <button class="btn btn-dark" @click="showModal('address', item.account.id)">Add Address</button>
@@ -161,41 +161,31 @@
       </div>
     </div>
 
-    <!--MODAL FOR ADDING ADDRESS-->
-    <!-- <div class="modal fade right" id="clearance" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <!--MODAL FOR BRGY CLEARANCE ERROR-->
+    <div class="modal fade right" id="no_code_clearance" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Add Address</h5>
-            <button type="button" class="close" aria-label="Close" @click="hideModal('clearance')">
+            <h5 class="modal-title text-danger">Oops!</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('no_code_clearance')">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
           </div>
           <div class="modal-body p-4">
-            <div class="form-group">
-              <label for="worker">Worker Name</label>
-              <input type="text" class="form-control" name="worker" id="worker" required="true">
-            </div>
-            <div class="form-group">
-              <label for="position">Position</label>
-              <input type="text" class="form-control" name="position" id="position" required="true">
-            </div>
-
+            That user is not assigned to a barangay yet. Please assign a barangay before exporting a clearance.
           </div>
           <div class="modal-footer">
-            <button class="btn btn-danger" @click="hideModal('clearance')">Cancel</button>
-            <button class="btn btn-primary" @click="addLoc()">Submit</button>
+            <button class="btn btn-primary" @click="hideModal('no_code_clearance')">Okay</button>
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
 
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
     <increment-modal :property="modalProperty"></increment-modal>
     <increment-modal ref="modal" :property="placeProperty"></increment-modal>
     <increment-modal ref="profile" :property="profileProperty"></increment-modal>
-    <increment-modal ref="clearance" :property="clearanceProperty"></increment-modal>
   </div>
 </template>
 <style>
@@ -280,7 +270,6 @@ import COMMON from 'src/common.js'
 import ModalProperty from 'src/modules/barangay/CreatePatientAccount.js'
 import PlacesProperty from 'src/modules/barangay/AddPlace.js'
 import ProfilesProperty from 'src/modules/barangay/Profile.js'
-import ClearanceProp from './Clearance.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import PdfPrinter from 'pdfmake'
 import vfsFonts from 'pdfmake/build/vfs_fonts'
@@ -294,7 +283,6 @@ export default{
     }
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
-    this.$refs.clearance.submit = this.exportClearance
   },
   data(){
     return {
@@ -307,7 +295,6 @@ export default{
       modalProperty: ModalProperty,
       placeProperty: PlacesProperty,
       profileProperty: ProfilesProperty,
-      clearanceProperty: ClearanceProp,
       config: CONFIG,
       location: null,
       places: null,
@@ -542,125 +529,8 @@ export default{
           $('#loading').css({display: 'none'})
           $('#add_location').modal('show')
         })
-      } else if (type === 'clearance') {
-        this.clearanceProperty = {...ClearanceProp}
-        let inputs = this.clearanceProperty.inputs
-        inputs.map(input => {
-          input.value = null
-        })
-        this.brgy = null
-        this.selecteditem = id
-
-        $('#exportClearance #error, #brgy-info').remove()
-        $('#exportClearance .modal-footer button:nth-child(2)').hide()
-        if($('#exportClearance #search').length === 0) {
-          $('<button>', {
-            id: 'search',
-            class: 'mt-4 btn btn-primary',
-            html: 'Select Barangay',
-            click: () => {
-              let code
-              inputs.map(input => {
-                if(input.variable === 'code') {
-                  code = input.value
-                }
-              })
-              if(code === null || code === undefined || code === '') {
-                $('#brgy-info').remove()
-                this.brgy = null
-                if($('#exportClearance #error').length === 0) {
-                  $('<div>', {
-                    id: 'error',
-                    class: 'alert alert-danger mt-3',
-                    html: '<b>Oops!</b> You need to give a Barangay Code.'
-                  }).appendTo('#exportClearance .modal-body')
-                } else {
-                  $('#exportClearance #error').html('<b>Oops!</b> You need to give a Barangay Code.')
-                }
-              } else {
-                $('#loading').css({display: 'block'})
-                let par = {
-                  condition: [{
-                    value: code + '%',
-                    column: 'code',
-                    clause: 'like'
-                  }]
-                }
-                this.APIRequest('brgy_codes/retrieve', par).then(response => {
-                  $('#loading').css({display: 'none'})
-                  if(response.data.length === 0) {
-                    $('#brgy-info').remove()
-                    this.brgy = null
-                    if($('#exportClearance #error').length === 0) {
-                      $('<span>', {
-                        id: 'error',
-                        class: 'text-danger mt-3',
-                        html: '<b>Oops!</b> There was no barangay registered with that code.'
-                      }).appendTo('#exportClearance .modal-body')
-                    } else {
-                      $('#exportClearance #error').html('<b>Oops!</b> There was no barangay registered with that code.')
-                    }
-                  } else if (response.data.length === 1) {
-                    this.brgy = response.data[0]
-                    $('#exportClearance #error').remove()
-                    $('#brgy-info').remove()
-                    $('<div>', {
-                      class: 'alert alert-success mt-3',
-                      id: 'brgy-info',
-                      html: `<b>Barangay Found!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region} (${this.brgy.code})`
-                    }).appendTo('#exportClearance .modal-body')
-                    inputs.map(input => {
-                      if(input.variable === 'code') {
-                        input.value = this.brgy.code
-                      }
-                    })
-                    $('#exportClearance .modal-footer button:nth-child(2)').show()
-                  } else if (response.data.length > 1) {
-                    let content = []
-                    $('#exportClearance #error').remove()
-                    response.data.map(brgy => {
-                      let item = $('<div>', {
-                        class: 'col-11 p-2 rounded my-1 mx-3 option display-flex justify-content-between border-light border',
-                        html: `<span>${brgy.route}, ${brgy.locality}, ${brgy.region}</span> <span class="font-weight-bold">${brgy.code}</span>`,
-                        click: () => {
-                          this.brgy = brgy
-                          $('#brgy-info').remove()
-                          $('<div>', {
-                            class: 'alert alert-success mt-3',
-                            id: 'brgy-info',
-                            html: `<b>Barangay Selected!</b> ${this.brgy.route}, ${this.brgy.locality}, ${this.brgy.region} (${this.brgy.code})`
-                          }).appendTo('#exportClearance .modal-body')
-                          inputs.map(input => {
-                            if(input.variable === 'code') {
-                              input.value = this.brgy.code
-                            }
-                          })
-                          $('#exportClearance .modal-footer button:nth-child(2)').show()
-                        }
-                      })
-
-                      content.push(item)
-                    })
-                    $('#brgy-info').remove()
-                    $('<div>', {
-                      class: 'card mt-3',
-                      id: 'brgy-info'
-                    }).appendTo('#exportClearance .modal-body')
-                    $('<div>', {
-                      class: 'card-body alert-info',
-                      html: `<h5 class="card-title">Select a Barangay</h5>`
-                    }).appendTo('#brgy-info')
-                    $('<div>', {
-                      class: 'row align-items-center justify-content-center',
-                      html: content
-                    }).appendTo('#brgy-info .card-body')
-                  }
-                })
-              }
-            }
-          }).appendTo('#exportClearance .modal-body')
-        }
-        $('#exportClearance').modal('show')
+      } else {
+        $(`#${type}`).modal('show')
       }
     },
     exportUser(user){
@@ -767,115 +637,126 @@ export default{
         }
       })
     },
-    exportClearance() {
+    exportClearance(user) {
       $('#loading').css({display: 'block'})
-      if(this.$refs.clearance.validate()) {
-        let user = this.selecteditem.account
-        let image = require('assets/img/logo.png')
-        let brgy = this.brgy
-        let inputs = this.clearanceProperty.inputs
-        let obj = {}
-        inputs.map(input => {
-          obj[input.variable] = input.value
-        })
-        let xhr = new XMLHttpRequest()
-        xhr.open('GET', image)
-        xhr.responseType = 'blob'
-        xhr.onload = function() {
-          let reader = new FileReader()
-          reader.onloadend = function() {
-            let pdf = {
-              content: [
-                {
-                  alignment: 'left',
-                  columns: [
-                    {
-                      image: 'logo',
-                      width: 50
-                    },
-                    [
-                      {
-                        text: 'BIRDSEYE',
-                        bold: true,
-                        style: 'header'
-                      },
-                      {
-                        text: 'www.birds-eye.org',
-                        style: 'header',
-                        decoration: 'underline'
-                      },
-                      {
-                        text: [
-                          {
-                            text: 'FB: ',
-                            bold: true
-                          },
-                          ' @birdseyeph'
-                        ],
-                        style: 'header'
-                      }
-                    ]
-                  ]
-                },
-                ' ',
-                ' ',
-                {
-                  text: 'CLEARANCE REPORT',
-                  bold: true,
-                  fontSize: 20,
-                  alignment: 'center'
-                },
-                ' ',
-                {
-                  text: 'To whom it may concern:',
-                  fontSize: 14
-                },
-                ' ',
-                'This is to certify that the following individual is clear from any contact. Please see the given details below',
-                ' ',
-                {
-                  text: user.username,
-                  fontSize: 15,
-                  bold: true,
-                  alignment: 'center'
-                },
-                {
-                  qr: user.code,
-                  alignment: 'center'
-                },
-                ' ',
-                ' ',
-                {
-                  text: obj.name.toUpperCase(),
-                  italics: true,
-                  bold: true,
-                  decoration: 'underline'
-                },
-                obj.position.toUpperCase(),
-                `${brgy.route}, ${brgy.locality}, ${brgy.region}`,
-                ' ',
-                ' ',
-                `EXPORTED ON: ${moment().format('MMMM DD, YYYY :: hh:mm:ss A')}`
-              ],
-              images: {
-                logo: `${reader.result}`
-              },
-              styles: {
-                header: {
-                  marginLeft: 10,
-                  color: 'blue',
-                  fontSize: 12
-                }
-              }
-            }
-            PdfPrinter.createPdf(pdf).download(`${user.username}_clearance.pdf`)
-          }
-          reader.readAsDataURL(xhr.response)
+      if(user.location === null) {
+        $('#loading').css({display: 'none'})
+        this.showModal('no_code_clearance')
+      } else {
+        let par = {
+          condition: [{
+            value: this.user.userID,
+            column: 'account_id',
+            clause: '='
+          }]
         }
-        xhr.send()
-        this.hideModal('exportClearance')
+        this.APIRequest('account_informations/retrieve', par).then(response => {
+          $('#loading').css({display: 'none'})
+          if(response.data.length > 0) {
+            let data = response.data[0]
+            let image = require('assets/img/logo.png')
+            let brgy = user.location
+            let xhr = new XMLHttpRequest()
+            xhr.open('GET', image)
+            xhr.responseType = 'blob'
+            xhr.onload = function() {
+              let reader = new FileReader()
+              reader.onloadend = function() {
+                let pdf = {
+                  content: [
+                    {
+                      alignment: 'left',
+                      columns: [
+                        {
+                          image: 'logo',
+                          width: 50
+                        },
+                        [
+                          {
+                            text: 'BIRDSEYE',
+                            bold: true,
+                            style: 'header'
+                          },
+                          {
+                            text: 'www.birds-eye.org',
+                            style: 'header',
+                            decoration: 'underline'
+                          },
+                          {
+                            text: [
+                              {
+                                text: 'FB: ',
+                                bold: true
+                              },
+                              ' @birdseyeph'
+                            ],
+                            style: 'header'
+                          }
+                        ]
+                      ]
+                    },
+                    ' ',
+                    ' ',
+                    {
+                      text: 'CLEARANCE REPORT',
+                      bold: true,
+                      fontSize: 20,
+                      alignment: 'center'
+                    },
+                    ' ',
+                    {
+                      text: 'To whom it may concern:',
+                      fontSize: 14
+                    },
+                    ' ',
+                    'This is to certify that the following individual is clear from any contact. Please see the given details below',
+                    ' ',
+                    {
+                      text: user.username,
+                      fontSize: 15,
+                      bold: true,
+                      alignment: 'center'
+                    },
+                    ' ',
+                    {
+                      qr: user.code,
+                      alignment: 'center'
+                    },
+                    ' ',
+                    ' ',
+                    {
+                      text: `${data.first_name !== null && data.last_name !== null ? `${data.first_name.toUpperCase()} ${data.last_name.toUpperCase()}` : ''}`,
+                      italics: true,
+                      bold: true,
+                      decoration: 'underline'
+                    },
+                    'BARANGAY OFFICIAL',
+                    `${brgy.route}, ${brgy.locality}, ${brgy.region}`,
+                    ' ',
+                    ' ',
+                    `EXPORTED ON: ${moment().format('MMMM DD, YYYY :: hh:mm:ss A')}`
+                  ],
+                  images: {
+                    logo: `${reader.result}`
+                  },
+                  styles: {
+                    header: {
+                      marginLeft: 10,
+                      color: 'blue',
+                      fontSize: 12
+                    }
+                  }
+                }
+                PdfPrinter.createPdf(pdf).download(`${user.username}_clearance.pdf`)
+              }
+              reader.readAsDataURL(xhr.response)
+            }
+            xhr.send()
+          } else {
+            console.error('big error boi')
+          }
+        })
       }
-      $('#loading').css({display: 'none'})
     },
     showBrgyCodes(){
       $('#brgy_codes').modal('show')
