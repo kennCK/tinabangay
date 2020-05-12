@@ -187,6 +187,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/feedback',
+    name: 'feedback',
+    component: resolve => require(['modules/barangay/Feedback.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
