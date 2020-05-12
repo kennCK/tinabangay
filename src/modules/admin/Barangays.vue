@@ -283,7 +283,6 @@ export default{
       this.location = null
     },
     getLocation(event) {
-      console.log('getting location')
       let location = {
         route: event.route,
         locality: event.locality,
@@ -293,12 +292,9 @@ export default{
         longitude: event.longitude
       }
       this.location = location
-      console.log(location)
     },
     addNew() {
       let code = $('#add_location #code').val()
-      console.log('code: ' + code)
-      console.log(this.location)
       if(code === null || code === undefined || code === '') {
         if($('#add_location #error').length === 0) {
           $('<span>', {
