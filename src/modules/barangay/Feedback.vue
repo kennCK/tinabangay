@@ -86,6 +86,10 @@ export default {
       ROUTER.push(params)
     },
     retrieve(){
+      if(this.user.location === null){
+        $('#loading').css({display: 'none'})
+        return
+      }
       let param = {
         condition: [{
           value: this.user.location.code,
