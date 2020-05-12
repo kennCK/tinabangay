@@ -53,7 +53,7 @@
             <button class="btn btn-info" @click="exportClearance(item.account)">Export Clearance</button>
           </td>
           <td>
-            <button class="btn btn-dark" @click="showModal('address', item.account.id)">Add Address</button>
+            <button class="btn btn-dark" @click="showModal('address', item.account.id)">Set Barangay</button>
             <button class="btn btn-success" @click="showModal('place', item.account.id)">Add Visited Place</button>
             <button class="btn btn-warning" @click="showModal('user', item.account.id)">Edit User</button>
           </td>
@@ -143,14 +143,14 @@
           <div class="modal-body p-4">
             <div class="row mb-3 mx-0">
               <div class="col">
-                <b>Current Address: </b> {{brgyCodeParams.currentAdd ? brgyCodeParams.currentAdd : 'No address'}}
+                <b>Current Barangay: </b> {{brgyCodeParams.currentAdd ? brgyCodeParams.currentAdd : 'No address'}}
               </div>
             </div>
             <div class="form-group mt-2">
               <div id="err" />
               <label for="location">Set Address</label>
               <input v-model="brgyCodeParams.brgyCode" type="text" class="form-control" placeholder="Enter barangay code" required>
-              <small class="form-text text-muted">Please refer to the available barangay codes shown above</small>
+              <small class="form-text text-muted">Please refer to the available barangay codes above the search bar</small>
             </div>
           </div>
           <div class="modal-footer">
@@ -278,9 +278,9 @@ export default{
   mounted(){
     $('#loading').css({display: 'block'})
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
-    if (AUTH.user.location) {
-      this.retrieveBrgyCodes({locality: 'asc'})
-    }
+    // if (AUTH.user.location) {
+    this.retrieveBrgyCodes({locality: 'asc'})
+    // }
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
   },
@@ -510,6 +510,7 @@ export default{
           }]
         }
         $('#add_location #error').remove()
+        $('#add_location input').val('')
         $('#loading').css({display: 'block'})
         this.APIRequest('locations/retrieve', params).then(response => {
           if(response.data.length > 0) {
