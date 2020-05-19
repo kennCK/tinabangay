@@ -520,6 +520,17 @@ export default{
             }
           })
         })
+      } else {
+        this.APIRequest('sub_accounts/retrieve', parameter).then(response => {
+          if(response.data.length > 0){
+            this.data = response.data
+            this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+          }else{
+            this.data = null
+            this.numPages = null
+          }
+          $('#loading').css({display: 'none'})
+        })
       }
 
     },
