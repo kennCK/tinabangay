@@ -460,14 +460,6 @@ export default{
         offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
       }
 
-      let param = {
-        condition: [{
-          value: this.user.location.code,
-          column: 'code',
-          clause: '='
-        }]
-      }
-
       if(this.user.location && this.user.location.code) {
         let brgyImgPar = {
           condition: [{
@@ -481,46 +473,54 @@ export default{
             this.brgy_logo = CONFIG.BACKEND_URL + response.data[0].url
           }
         })
-      }
-      this.APIRequest('locations/retrieve', param).then(res => {
-        this.APIRequest('sub_accounts/retrieve', parameter).then(response => {
-          if(response.data.length > 0){
-            this.data = response.data
-            this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
-          }else{
-            this.data = null
-            this.numPages = null
-          }
-          if(res.data.length > 0) {
-            res.data.map(loc => {
-              let flag
-              this.data.map(acc => {
-                if(acc.account_id === loc.account_id) {
-                  flag = true
+
+        let param = {
+          condition: [{
+            value: this.user.location.code,
+            column: 'code',
+            clause: '='
+          }]
+        }
+        this.APIRequest('locations/retrieve', param).then(res => {
+          this.APIRequest('sub_accounts/retrieve', parameter).then(response => {
+            if(response.data.length > 0){
+              this.data = response.data
+              this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+            }else{
+              this.data = null
+              this.numPages = null
+            }
+            if(res.data.length > 0) {
+              res.data.map(loc => {
+                let flag
+                this.data.map(acc => {
+                  if(acc.account_id === loc.account_id) {
+                    flag = true
+                  }
+                })
+                if(!flag) {
+                  let par = {
+                    condition: [{
+                      value: loc.account_id,
+                      column: 'account_id',
+                      clause: '='
+                    }]
+                  }
+                  $('#loading').css({display: 'block'})
+                  this.APIRequest('sub_accounts/retrieve', par).then(resp => {
+                    if(resp.data.length > 0) {
+                      resp.data.map(newAcc => {
+                        this.data.push(newAcc)
+                      })
+                    }
+                    $('#loading').css({display: 'none'})
+                  })
                 }
               })
-              if(!flag) {
-                let par = {
-                  condition: [{
-                    value: loc.account_id,
-                    column: 'account_id',
-                    clause: '='
-                  }]
-                }
-                $('#loading').css({display: 'block'})
-                this.APIRequest('sub_accounts/retrieve', par).then(resp => {
-                  if(resp.data.length > 0) {
-                    resp.data.map(newAcc => {
-                      this.data.push(newAcc)
-                    })
-                  }
-                  $('#loading').css({display: 'none'})
-                })
-              }
-            })
-          }
+            }
+          })
         })
-      })
+      }
 
     },
     manageImageUrl(imageURL) {
