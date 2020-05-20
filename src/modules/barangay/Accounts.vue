@@ -890,7 +890,7 @@ export default{
                       pdf.images.brgyLogo = `${read.result}`
                       pdf.content.push({
                         image: 'brgyLogo',
-                        width: 150,
+                        width: 120,
                         alignment: 'center'
                       })
                       cont.map(pdfContent => {
