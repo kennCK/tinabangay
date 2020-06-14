@@ -122,7 +122,7 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    if(this.user.type !== 'BUSINESS'){
+    if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN'){
       ROUTER.push('/dashboard')
     }
     this.getDate()

@@ -94,6 +94,21 @@ export default {
   },
   {
     row: 'full',
+    label: 'Locality',
+    variable: 'locality',
+    placeholder: 'Enter locality',
+    value: null,
+    required: false,
+    id: 'locality',
+    type: 'input',
+    inputType: 'text',
+    validation: {
+      size: 0,
+      type: 'text'
+    }
+  },
+  {
+    row: 'full',
     label: 'Source',
     variable: 'source',
     placeholder: 'Enter Patient Information Source',

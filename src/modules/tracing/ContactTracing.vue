@@ -56,7 +56,7 @@
             <span class="badge text-uppercase" :class="{'badge-danger': item.remarks.toLowerCase().includes('admitted') === true || item.remarks.toLowerCase().includes('not admitted') === true, 'badge-black': item.remarks.toLowerCase().includes('death') === true, 'badge-success': item.remarks.toLowerCase().includes('negative') === true || item.remarks.toLowerCase().includes('recovered') === true}" v-if="item.remarks !== null">{{item.remarks}}</span>
           </td>
           <td>
-            <i class="fa fa-envelope text-primary action-link"></i>
+            <i class="text-primary text-uppercase">COMING SOON!</i>
           </td>
         </tr>
       </tbody>
@@ -96,7 +96,7 @@
             <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative'}">{{item.status_label}}</span>
           </td>
           <td>
-            <i class="fa fa-envelope text-primary action-link"></i>
+            <i class="text-primary text-uppercase">COMING SOON!</i>
           </td>
         </tr>
       </tbody>
@@ -130,7 +130,7 @@
             {{item.value + ' Degree Celsius'}}
           </td>
           <td>
-            <i class="fa fa-envelope text-primary action-link"></i>
+            <i class="text-primary text-uppercase">COMING SOON!</i>
           </td>
         </tr>
       </tbody>
@@ -172,7 +172,7 @@
             {{item.remarks}}
           </td>
           <td>
-            <i class="fa fa-envelope text-primary action-link"></i>
+            <i class="text-primary text-uppercase">COMING SOON!</i>
           </td>
         </tr>
       </tbody>
@@ -222,7 +222,7 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    if(this.user.type !== 'AGENCY_DOH' && this.user.type !== 'AGENCY_GOV'){
+    if(this.user.type !== 'AGENCY_DOH' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'ADMIN'){
       ROUTER.push('/dashboard')
     }
     this.getDate()
