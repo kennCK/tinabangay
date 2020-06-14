@@ -106,6 +106,13 @@ export default{
       tokenRequired: true
     }
   }, {
+    path: '/b/tracing/',
+    name: 'tracingBusiness',
+    component: resolve => require(['modules/tracing/ContactTracingBusiness.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  }, {
     path: '/temperature/',
     name: 'temperature',
     component: resolve => require(['modules/tracing/Temperature.vue'], resolve),

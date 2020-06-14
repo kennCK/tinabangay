@@ -57,6 +57,14 @@ export default {
       label: 'Positive'
     },
     {
+      value: 'recovered',
+      label: 'Recovered'
+    },
+    {
+      value: 'death',
+      label: 'Death'
+    },
+    {
       value: 'pui',
       label: 'Person Under Investigation'
     },
@@ -77,6 +85,21 @@ export default {
     value: null,
     required: false,
     id: 'remarks',
+    type: 'input',
+    inputType: 'text',
+    validation: {
+      size: 0,
+      type: 'text'
+    }
+  },
+  {
+    row: 'full',
+    label: 'Locality',
+    variable: 'locality',
+    placeholder: 'Enter locality',
+    value: null,
+    required: false,
+    id: 'locality',
     type: 'input',
     inputType: 'text',
     validation: {

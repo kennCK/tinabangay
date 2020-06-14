@@ -2,6 +2,11 @@
   <div style="margin-bottom: 200px;">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
+        <p>
+          <i class="text-lowercase">{{
+            'Data from ' + common.implementedLocality
+          }}</i>
+        </p>
         <div class="row w-100 mx-0 justify-content-end mb-3 align-items-center" v-if="user.type === 'USER'">
           <span>Having issues with your barangay?</span> <button class="ml-3 btn btn-primary" @click="showModal()">Send Feedback</button>
         </div>
@@ -106,7 +111,8 @@ export default{
         },
         placeholder: 'Type places'
       },
-      status: null
+      status: null,
+      common: COMMON
     }
   },
   props: {

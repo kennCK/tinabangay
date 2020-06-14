@@ -2,10 +2,10 @@
   <div v-if="data !== null" class="holder w-100">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
       <div class="row justify-content-end m-0 mr-5 align-items-center">
-        <button class="btn btn-primary mr-3 mb-3" @click="$refs.mapModal.showModal()">
+        <!-- <button class="btn btn-primary mr-3 mb-3" @click="$refs.mapModal.showModal()">
           <i class="fas fa-map-marker-alt mr-2"></i>
           View Locations on Map
-        </button>
+        </button> -->
         <Pager
           :pages="numPages"
           :active="activePage"
@@ -21,20 +21,23 @@
             </h6>
             <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
             <span class="card-title">
-              <b-button class="bg-black" style="margin-bottom: 25px; margin-bottom: 5px; ">
+              <b-button class="bg-black" style="margin-bottom: 25px; margin-bottom: 5px; " v-if="item.death_size > 0">
                 DEATH<b-badge class="badge" variant="light">{{data[index].death_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
+              <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; " v-if="item.positive_size > 0">
                 POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
+              <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.pui_size > 0">
                 PUI<b-badge class="badge" variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
+              <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.pum_size > 0"> 
                 PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="success" style="margin-bottom: 25px; margin-bottom: 5px;">
+              <b-button variant="success" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.negative_size > 0">
                NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+              <b-button variant="white" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.recovered_size > 0">
+              RECOVERED<b-badge class="badge" variant="light">{{data[index].recovered_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
             </span>
           </div> 

@@ -13,20 +13,24 @@
             </h6>
             <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{data[index].country}}</h6>                            
             <span class="card-title">
-              <b-button variant="dark" style="margin-bottom: 25px; margin-bottom: 5px; ">
+              <b-button variant="dark" style="margin-bottom: 25px; margin-bottom: 5px; " v-if="data[index].death_size > 0">
                 DEATH<b-badge class="badge" variant="light">{{data[index].death_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; ">
+              <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; " v-if="data[index].positive_size > 0">
                 POSITIVE<b-badge class="badge" variant="light">{{data[index].positive_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;">
+              <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="data[index].pui_size > 0">
                 PUI<b-badge class="badge" variant="light">{{data[index].pui_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;"> 
+              <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="data[index].pum_size > 0"> 
                 PUM<b-badge class="badge" variant="light">{{data[index].pum_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
-              <b-button variant="success" style="margin-bottom: 25px; margin-bottom: 5px;">
+              <b-button variant="success" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="data[index].negative_size > 0">
               NEGATIVE<b-badge class="badge" variant="light">{{data[index].negative_size}} <span class="sr-only">unread messages</span></b-badge>
+              </b-button>
+
+              <b-button variant="white" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="data[index].recovered_size > 0">
+              RECOVERED<b-badge class="badge" variant="light">{{data[index].recovered_size}} <span class="sr-only">unread messages</span></b-badge>
               </b-button>
             </span>
           </div> 

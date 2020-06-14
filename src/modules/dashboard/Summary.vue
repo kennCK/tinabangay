@@ -10,9 +10,19 @@
       {{data.pum}} Person under monitoring(PUM)
     </label>
 
-    <label class="text-primary" v-if="data.pui > 0">
+    <label class="text-warning" v-if="data.pui > 0">
       <i class="fas fa-square" style="margin-right: 5px;"></i>
       {{data.pui}} Person under investigation(PUI)
+    </label>
+
+    <label class="text-primary" v-if="data.recovered > 0">
+      <i class="fas fa-square" style="margin-right: 5px;"></i>
+      {{data.recovered}} Recoveries
+    </label>
+
+    <label v-if="data.death > 0">
+      <i class="fas fa-square" style="margin-right: 5px;"></i>
+      {{data.death}} Deaths
     </label>
   </div>
 </template>
