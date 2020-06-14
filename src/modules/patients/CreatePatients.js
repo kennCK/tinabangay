@@ -57,6 +57,14 @@ export default {
       label: 'Positive'
     },
     {
+      value: 'recovered',
+      label: 'Recovered'
+    },
+    {
+      value: 'death',
+      label: 'Death'
+    },
+    {
       value: 'pui',
       label: 'Person Under Investigation'
     },
