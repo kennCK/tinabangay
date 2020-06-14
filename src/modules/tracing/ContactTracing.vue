@@ -1,5 +1,8 @@
 <template>
   <div class="holder">
+    <div class="form-group" v-if="user.location !== null">
+      <label>Assigned address: <b class="text-primary">{{user.location.route + ',' + user.location.locality + ',' + user.location.region + ',' + user.location.country}}</b></label>
+    </div>
     <div class="form-group">
       <select class="form-control" v-model="selectedOption" @change="chageOption()">
         <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
@@ -219,6 +222,9 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
+    if(this.user.type !== 'AGENCY_DOH' && this.user.type !== 'AGENCY_GOV'){
+      ROUTER.push('/dashboard')
+    }
     this.getDate()
   },
   data(){

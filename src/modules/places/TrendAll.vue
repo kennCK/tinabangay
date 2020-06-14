@@ -2,10 +2,10 @@
   <div v-if="data !== null" class="holder w-100">
     <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
       <div class="row justify-content-end m-0 mr-5 align-items-center">
-        <button class="btn btn-primary mr-3 mb-3" @click="$refs.mapModal.showModal()">
+        <!-- <button class="btn btn-primary mr-3 mb-3" @click="$refs.mapModal.showModal()">
           <i class="fas fa-map-marker-alt mr-2"></i>
           View Locations on Map
-        </button>
+        </button> -->
         <Pager
           :pages="numPages"
           :active="activePage"
