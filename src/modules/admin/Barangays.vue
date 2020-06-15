@@ -30,7 +30,7 @@
           <td>{{item.locality}}</td>
           <td>{{item.region}}</td>
           <td>{{item.code}}</td>
-          <td> Coming soon </td>
+          <td><button class="btn btn-success" style="margin: .5% 0;" @click="showModal('edit', item)"><i class="fas fa-edit"></i> Edit</button></td>
         </tr>
       </tbody>
     </table>
@@ -91,6 +91,8 @@
         </div>
       </div>
     </div>
+
+    <increment-modal :property="editBrgyModal" ref="modal"></increment-modal>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -156,6 +158,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
+import EditBrgy from './EditBrgy'
 export default{
   mounted(){
     $('#loading').css({display: 'block'})
@@ -169,6 +172,7 @@ export default{
       selecteditem: null,
       config: CONFIG,
       customLocation: false,
+      editBrgyModal: EditBrgy,
       googleProperty: {
         style: {
           height: '45px !important'
@@ -232,6 +236,7 @@ export default{
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
     'google-autocomplete-location': require('src/components/increment/generic/location/GooglePlacesAutoComplete.vue'),
     'pin-location': require('components/increment/generic/map/PinLocation.vue'),
+    'increment-modal': require('components/increment/generic/modal/Modal.vue'),
     Pager
   },
   methods: {
@@ -272,9 +277,15 @@ export default{
         }
       })
     },
-    showModal(type) {
+    showModal(type, brgy = null) {
       if(type === 'new') {
         $('#add_location').modal('show')
+      } if (type === 'edit') {
+        this.editBrgyModal = {...EditBrgy}
+        this.editBrgyModal.inputs.map(input => {
+          input.value = brgy[input.variable]
+        })
+        $('#editBrgyModal').modal('show')
       }
     },
     hideModal(id) {
