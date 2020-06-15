@@ -166,6 +166,14 @@ export default {
       category: [{
         title: 'Sort by',
         sorting: [{
+          title: 'Locality ascending',
+          payload: 'locality',
+          payload_value: 'asc'
+        }, {
+          title: 'Locality descending',
+          payload: 'locality',
+          payload_value: 'desc'
+        }, {
           title: 'Status ascending',
           payload: 'status',
           payload_value: 'asc'
@@ -342,15 +350,27 @@ export default {
       if(filter === null && this.filter !== null){
         filter = this.filter
       }
-      let parameter = {
-        condition: [{
-          value: filter.value + '%',
-          column: filter.column,
-          clause: 'like'
-        }],
-        sort: sort,
-        limit: this.limit,
-        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+      let parameter = null
+      if(filter.column !== 'locality'){
+        parameter = {
+          condition: [{
+            value: filter.value + '%',
+            column: filter.column,
+            clause: 'like'
+          }],
+          sort: sort,
+          limit: this.limit,
+          offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        }
+      }else{
+        parameter = {
+          condition: [{
+            value: filter.value + '%',
+            column: filter.column,
+            clause: 'like'
+          }],
+          sort: sort
+        }
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('patients/retrieve', parameter).then(response => {
@@ -631,6 +651,10 @@ export default {
 
             if(input.variable === 'remarks'){
               input.value = update.remarks
+            }
+
+            if(input.variable === 'locality'){
+              input.value = update.locality
             }
 
             if(input.variable === 'source') {
