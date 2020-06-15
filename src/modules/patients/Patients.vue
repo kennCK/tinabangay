@@ -1,26 +1,44 @@
 <template>
   <div style="margin-top: 25px;">
     <div class="row m-0 justify-content-end">
-    <Pager
-      :pages="numPages"
-      :active="activePage"
-      :limit="limit"
-      />
-    <button class="btn btn-primary pull-right mr-3 ml-3" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
-    <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
-    <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button>
-    </div>
+   
+        <button class="btn btn-primary" style="margin-right: 5px;" @click="showModal('patient')">New</button>
+        <button class="btn btn-warning" style="margin-right: 5px;" @click="importFlag = true">Import</button>
+        <!-- <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button> -->
+        <button class="btn btn-primary" style="margin-right: 5px;" @click="showSummaryFlag = true">Summary</button>
+         <Pager
+          :pages="numPages"
+          :active="activePage"
+          :limit="limit"
+          />
+      </div>
+
+
     <div class="form-group" v-if="importFlag === true">
       <label style="width: 100%;">Using google sheet</label>
       <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button class="btn btn-primary" @click="syncing()">Start syncing</button>
     </div>
+
+
     <div class="form-group" v-if="exportFlag === true">
       <label style="width: 100%;">Using google sheet</label>
       <input type="text" class="form-control" style="width: 50% !important; float: left;" v-model="offset" placeholder="Offset">
       <button class="btn btn-primary" @click="exportPatients()">Start export</button>
     </div>
+
+
+
+    <div class="form-group" v-if="showSummaryFlag === true">
+      <label style="width: 100%;">Get summary per locality:</label>
+      <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px;" v-model="localitySearch" placeholder="Locality">
+      <button class="btn btn-primary" @click="retrieveLocality()">Search</button>
+      <p v-if="summary !== null">
+        Positive: {{summary.positive}}, Deceased: {{summary.death}}, Recovered: {{summary.recovered}}, Negative: {{summary.negative}}
+      </p>
+    </div>
+
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -173,7 +191,10 @@ export default {
       totalSize: null,
       activeExportPage: 0,
       exportFlag: false,
-      offset: 0
+      offset: 0,
+      showSummaryFlag: false,
+      localitySearch: null,
+      summary: null
     }
   },
   components: {
@@ -185,6 +206,19 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    retrieveLocality(){
+      if(this.localitySearch === null){
+        return
+      }
+      let parameter = {
+        locality: this.localitySearch
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('patients/summary', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.summary = response.data
+      })
     },
     exportPatients(){
       let parameter = {
