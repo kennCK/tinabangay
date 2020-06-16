@@ -9,6 +9,9 @@
         <td>Linked Account's Username</td>
         <td>Date</td>
         <td v-if="user.type !== 'USER'">
+          Type
+        </td>
+        <td v-if="user.type !== 'USER'">
           Address
         </td>
         <td v-if="user.type !== 'USER'">
@@ -20,6 +23,10 @@
           <td class="text-uppercase">{{item.owner_account.username}}</td>
           <td class="text-uppercase">{{item.account.username}}</td>
           <td class="text-uppercase">{{item.created_at_human}}</td>
+          <td v-if="user.type !== 'USER'">
+            <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
+            <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
+          </td>
           <td v-if="user.type !== 'USER'">
             <label v-if="item.account.location !== null">
               <b class="text-danger">({{item.account.location.code}})</b>{{' ' + item.account.location.route + ', ' + item.account.location.locality + ', ' + item.account.location.country}}
@@ -111,7 +118,8 @@ export default {
       params: null,
       locality: null,
       brgys: [],
-      selectedItem: null
+      selectedItem: null,
+      newAccountType: null
     }
   },
   components: {
@@ -132,6 +140,17 @@ export default {
     },
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    updateType(item, status){
+      let parameter = {
+        id: item.account.id,
+        account_type: status
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('accounts/update_account_type', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.retrieve()
+      })
     },
     createAddress(location){
       if(this.selectedItem === null){
