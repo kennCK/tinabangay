@@ -20,6 +20,7 @@
     <system-loading></system-loading>
     <privacy-policy></privacy-policy>
     <terms-and-conditions></terms-and-conditions>
+    <consent-modal></consent-modal>
   </div>
 </template>
 <style lang="scss">
@@ -212,6 +213,7 @@ export default {
     'system-loading': () => import('components/loader/Loading.vue'),
     'landing-footer': () => import('modules/home/Landing/Footer.vue'),
     'privacy-policy': () => import('modules/docs/PrivacyPolicy.vue'),
+    'consent-modal': () => import('modules/docs/Consent.vue'),
     'alert-modal': () => import('modules/docs/Alert.vue'),
     'terms-and-conditions': () => import('modules/docs/TermsAndConditions.vue'),
     'guide': () => import('modules/guide/Guide.vue'),

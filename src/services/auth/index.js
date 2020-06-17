@@ -87,6 +87,9 @@ export default {
     this.user.code = code
     this.user.location = location
     localStorage.setItem('account_id', this.user.userID)
+    if(this.user.userID > 0){
+      this.checkConsent(this.user.userID)
+    }
   },
   setToken(token){
     this.tokenData.token = token
@@ -343,6 +346,23 @@ export default {
       currency: 'PHP'
     })
     return formatter.format(amount)
+  },
+  checkConsent(userID){
+    let vue = new Vue()
+    let parameter = {
+      condition: [{
+        value: userID,
+        column: 'account_id',
+        clause: '='
+      }]
+    }
+    vue.APIRequest('consents/retrieve', parameter, (response) => {
+      if(response.data.length > 0){
+        $('#consentModal').modal('hide')
+      }else{
+        $('#consentModal').modal('show')
+      }
+    })
   },
   displayAmountWithCurrency(amount, currency){
     var formatter = new Intl.NumberFormat('en-US', {
