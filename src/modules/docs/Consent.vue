@@ -14,7 +14,7 @@
               Hi {{user.username}}!
             </p>
             <p>
-              Welcome to {{common.APP_NAME}}. We would like you to know that we need collect these data from you to help us compare and trace to the affected individual from Covid-19.
+              Welcome to {{common.APP_NAME}}. We would like you to know that we need to collect these data from you to help us compare and trace to the affected individual from Covid-19.
             </p>
             <p>(1) Personal information such as: username, e-mail address, password, first name, middle name, last name, birth date, address and gender</p>
             <p>(2) Your visited locations or places which includes route, locality, coordinates, country, date and time</p>
