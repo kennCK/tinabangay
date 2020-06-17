@@ -31,7 +31,7 @@ export default {
     icon: 'fa fa-users',
     route: '/referrals'
   }],
-  implementedLocality: 'Cebu City, Consolacion, Mandaue City, Lapu-Lapu City, Talisay Cebu',
+  implementedLocality: 'Cebu City, Consolacion, Mandaue City, Lapu-Lapu City, Talisay Cebu, Minglanilla',
   APP_NAME: 'BirdsEye',
   APP_NAME_HTML: 'BirdsEye',
   APP_EMAIL: 'support@birds-eye.org',

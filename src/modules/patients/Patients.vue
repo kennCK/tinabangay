@@ -145,6 +145,9 @@ import moment from 'moment'
 export default {
   mounted(){
    // this.retrieve()
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_DOH'){
+      ROUTER.push('/dashboard')
+    }
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     this.date = moment().format('MM-DD-YYYY-HH-mm-ss')
   },
