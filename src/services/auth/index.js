@@ -6,6 +6,7 @@ import Vue from 'vue'
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
 import Config from 'src/config.js'
+import COMMON from 'src/common.js'
 export default {
   user: {
     userID: 0,
@@ -86,6 +87,9 @@ export default {
     this.user.code = code
     this.user.location = location
     localStorage.setItem('account_id', this.user.userID)
+    if(this.user.userID > 0){
+      this.checkConsent(this.user.userID)
+    }
   },
   setToken(token){
     this.tokenData.token = token
@@ -215,16 +219,13 @@ export default {
     })
   },
   addNotification(notification){
-    if(parseInt(this.user.userID) === parseInt(notification.to)){
-      this.playNotificationSound()
-      if(this.user.notifications.data === null){
-        this.user.notifications.data = []
-        this.user.notifications.data.push(notification)
-        this.user.notifications.current = 1
-      }else{
-        this.user.notifications.data.unshift(notification)
-        this.user.notifications.current += 1
-      }
+    if(parseInt(this.user.userID) === parseInt(notification.id)){
+      $('#alertModal').modal('show')
+      COMMON.alertFlag = true
+      this.playNotificationSound(true)
+    }else{
+      $('#alertModal').modal('hide')
+      COMMON.alertFlag = false
     }
   },
   retrieveMessages(accountId, type){
@@ -244,6 +245,7 @@ export default {
   },
   addMessage(message){
     if(parseInt(message.messenger_group_id) === this.messenger.messengerGroupId && parseInt(message.account_id) !== this.user.userID){
+      $('#alertModal').modal('show')
       this.playNotificationSound()
       this.messenger.messages.push(message)
     }
@@ -263,12 +265,21 @@ export default {
       this.notifTimer.timer = null
     }
   },
-  playNotificationSound(){
+  playNotificationSound(flag = true){
+    let sound = null
     let audio = require('src/assets/audio/notification.mp3')
-    let sound = new Howl({
-      src: [audio]
-    })
-    sound.play()
+    if(flag === true){
+      sound = new Howl({
+        src: [audio]
+      })
+      setTimeout(() => {
+        setInterval(() => {
+          sound.play()
+        }, 2000)
+      }, 100)
+    }else{
+      ROUTER.go('/')
+    }
   },
   checkPlan(){
     if(Config.plan === true){
@@ -335,6 +346,23 @@ export default {
       currency: 'PHP'
     })
     return formatter.format(amount)
+  },
+  checkConsent(userID){
+    let vue = new Vue()
+    let parameter = {
+      condition: [{
+        value: userID,
+        column: 'account_id',
+        clause: '='
+      }]
+    }
+    vue.APIRequest('consents/retrieve', parameter, (response) => {
+      if(response.data.length > 0){
+        $('#consentModal').modal('hide')
+      }else{
+        $('#consentModal').modal('show')
+      }
+    })
   },
   displayAmountWithCurrency(amount, currency){
     var formatter = new Intl.NumberFormat('en-US', {

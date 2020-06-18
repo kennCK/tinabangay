@@ -28,7 +28,10 @@
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.created_at}}</td>
           <td>
-            <label class="action-link text-primary">{{item.username}}</label>
+            <label class="action-link text-primary">
+              {{item.account.location !== null ? '(' + item.account.location.code + ')' : ''}}
+              {{item.username}}
+            </label>
           </td>
           <td>{{item.email}}</td>
           <td>
@@ -44,11 +47,78 @@
           </td>
           <td>{{item.status}}</td>
           <td>
-            <button class="btn btn-primary" @click="update(item)">Grant</button>
+            <!-- <button class="btn btn-primary" @click="update(item)">Grant</button> -->
+
+            <button class="btn btn-primary" v-if="item.account.location === null" @click="showAddressModal(item)">Assign Address</button>
+            <button class="btn btn-primary" v-if="item.account.location !== null" @click="showAddressModal(item)">Update Address</button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div class="modal fade" id="addAddressAccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Assign Address</h5>
+            <button type="button" class="close" @click="hideModal()" aria-label="Close">
+              <span aria-hidden="true" class="text-primary">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group" v-if="errorMessage !== null">
+              <label class="text-danger"><b>Oops!</b> {{errorMessage}}</label>
+            </div>
+            <div class="form-group">
+              <label>Brgy Code</label>
+              <input type="text" class="form-control form-control-custom" v-model="brgyCode" placeholder="Type brgy code">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary" v-if="locationFlag === 'autocomplete'" @click="locationFlag = 'custom'">Use custom</button>
+              <button class="btn btn-primary" v-if="locationFlag === 'custom'" @click="locationFlag = 'autocomplete'">Use autocomplete</button>
+            </div>
+            <div v-if="locationFlag === 'autocomplete'">
+              <label>Search location</label>
+              <google-autocomplete-location
+                :property="googleProperty"
+                ref="location"
+                @onFinish="manageLocation($event)">
+                </google-autocomplete-location>
+            </div>
+            <div class="form-group" v-if="locationFlag === 'custom'">
+              <label>Latitude</label>
+              <input type="text" class="form-control form-control-custom" v-model="customLocation.latitude" placeholder="Type latitude">
+            </div>
+            <div class="form-group" v-if="locationFlag === 'custom'">
+              <label>Longitude</label>
+              <input type="text" class="form-control form-control-custom" v-model="customLocation.longitude" placeholder="Type longitude">
+            </div>
+            <div class="form-group" v-if="locationFlag === 'custom'">
+              <label>Route</label>
+              <input type="text" class="form-control form-control-custom" v-model="customLocation.route" placeholder="Type route">
+            </div>
+            <div class="form-group" v-if="locationFlag === 'custom'">
+              <label>Locality</label>
+              <input type="text" class="form-control form-control-custom" v-model="customLocation.locality" placeholder="Type locality">
+            </div>
+            <div class="form-group" v-if="locationFlag === 'custom'">
+              <label>Region</label>
+              <input type="text" class="form-control form-control-custom" v-model="customLocation.region" placeholder="Type region">
+            </div>
+            <div class="form-group" v-if="locationFlag === 'custom'">
+              <label>Country</label>
+              <input type="text" class="form-control form-control-custom" v-model="customLocation.country" placeholder="Type country">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" @click="hideModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" @click="submitLocation()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <empty v-if="data === null" :title="'No accounts available!'" :action="'Keep growing.'"></empty>
   </div>
 </template>
@@ -103,6 +173,10 @@ td i {
   padding-left: 0px !important;
 }
 
+.form-control-custom{
+  height: 45px !important;
+}
+
 @media (max-width: 992px){
   .ledger-summary-container{
     width: 100%;
@@ -126,6 +200,7 @@ export default{
       data: null,
       auth: AUTH,
       selecteditem: null,
+      errorMessage: null,
       config: CONFIG,
       category: [{
         title: 'Sort by',
@@ -170,15 +245,103 @@ export default{
       selectedAccount: null,
       limit: 10,
       activePage: 1,
-      numPages: null
+      numPages: null,
+      selectedItem: null,
+      location: null,
+      brgyCode: null,
+      googleProperty: {
+        style: {
+          height: '45px !important'
+        },
+        GOOGLE_API_KEY: CONFIG.GOOGLE_API_KEY,
+        results: {
+          style: {
+          }
+        },
+        placeholder: 'Type Location'
+      },
+      customLocation: {
+        route: null,
+        latitude: null,
+        longitude: null,
+        locality: null,
+        region: null,
+        country: null
+      },
+      locationFlag: 'autocomplete'
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'basic-filter': require('components/increment/generic/filter/Basic.vue'),
+    'google-autocomplete-location': require('src/components/increment/generic/location/GooglePlacesAutoComplete.vue'),
     Pager
   },
   methods: {
+    showAddressModal(item){
+      this.selectedItem = item
+      $('#addAddressAccount').modal('show')
+    },
+    hideModal(){
+      this.selectedItem = null
+      this.location = null
+      $('#addAddressAccount').modal('hide')
+    },
+    manageLocation(location){
+      this.location = location
+      console.log('location', this.location)
+    },
+    submitLocation(){
+      let route = null
+      let parameter = null
+      if(this.locationFlag === 'custom'){
+        this.location = this.customLocation
+        if(this.customLocation.latitude === null || this.customLocation.longitude === null || this.customLocation.route === null || this.customLocation.locality === null || this.customLocation.region === null || this.customLocation.country === null){
+          this.errorMessage = 'Location fields are required.'
+          return
+        }
+      }
+      if(this.brgyCode === null){
+        this.errorMessage = 'Invalid brgy code'
+        return
+      }
+      if(this.location === null){
+        this.errorMessage = 'Empty Address'
+        return
+      }
+      console.log(this.selectedItem)
+      if(this.selectedItem.account.location !== null){
+        route = 'locations/update'
+        parameter = {
+          id: this.selectedItem.account.location.id,
+          code: this.brgyCode,
+          route: this.location.route,
+          latitude: this.location.latitude,
+          longitude: this.location.longitude,
+          locality: this.location.locality,
+          region: this.location.region,
+          country: this.location.country
+        }
+      }else{
+        route = 'locations/create'
+        parameter = {
+          account_id: this.selectedItem.account.id,
+          code: this.brgyCode,
+          route: this.location.route,
+          latitude: this.location.latitude,
+          longitude: this.location.longitude,
+          locality: this.location.locality,
+          region: this.location.region,
+          country: this.location.country
+        }
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest(route, parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.hideModal()
+        this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+      })
+    },
     setEditTypeIndex(index, item){
       if(index === this.editTypeIndex){
         this.editTypeIndex = null

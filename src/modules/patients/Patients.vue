@@ -1,26 +1,44 @@
 <template>
   <div style="margin-top: 25px;">
     <div class="row m-0 justify-content-end">
-    <Pager
-      :pages="numPages"
-      :active="activePage"
-      :limit="limit"
-      />
-    <button class="btn btn-primary pull-right mr-3 ml-3" style="margin: .5% 0;" @click="showModal('patient')">New Patient</button>
-    <button class="btn btn-warning pull-right mr-3" style="margin: .5% 0;" @click="importFlag = true">Import Patients</button>
-    <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button>
-    </div>
+   
+        <button class="btn btn-primary" style="margin-right: 5px;" @click="showModal('patient')">New</button>
+        <button class="btn btn-warning" style="margin-right: 5px;" @click="importFlag = true">Import</button>
+        <!-- <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button> -->
+        <button class="btn btn-primary" style="margin-right: 5px;" @click="showSummaryFlag = true">Summary</button>
+         <Pager
+          :pages="numPages"
+          :active="activePage"
+          :limit="limit"
+          />
+      </div>
+
+
     <div class="form-group" v-if="importFlag === true">
       <label style="width: 100%;">Using google sheet</label>
       <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button class="btn btn-primary" @click="syncing()">Start syncing</button>
     </div>
+
+
     <div class="form-group" v-if="exportFlag === true">
       <label style="width: 100%;">Using google sheet</label>
       <input type="text" class="form-control" style="width: 50% !important; float: left;" v-model="offset" placeholder="Offset">
       <button class="btn btn-primary" @click="exportPatients()">Start export</button>
     </div>
+
+
+
+    <div class="form-group" v-if="showSummaryFlag === true">
+      <label style="width: 100%;">Get summary per locality:</label>
+      <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px;" v-model="localitySearch" placeholder="Locality">
+      <button class="btn btn-primary" @click="retrieveLocality()">Search</button>
+      <p v-if="summary !== null">
+        Positive: {{summary.positive}}, Deceased: {{summary.death}}, Recovered: {{summary.recovered}}, Negative: {{summary.negative}}
+      </p>
+    </div>
+
     <basic-filter 
       v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -127,6 +145,9 @@ import moment from 'moment'
 export default {
   mounted(){
    // this.retrieve()
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_DOH'){
+      ROUTER.push('/dashboard')
+    }
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     this.date = moment().format('MM-DD-YYYY-HH-mm-ss')
   },
@@ -148,6 +169,14 @@ export default {
       category: [{
         title: 'Sort by',
         sorting: [{
+          title: 'Locality ascending',
+          payload: 'locality',
+          payload_value: 'asc'
+        }, {
+          title: 'Locality descending',
+          payload: 'locality',
+          payload_value: 'desc'
+        }, {
           title: 'Status ascending',
           payload: 'status',
           payload_value: 'asc'
@@ -173,7 +202,10 @@ export default {
       totalSize: null,
       activeExportPage: 0,
       exportFlag: false,
-      offset: 0
+      offset: 0,
+      showSummaryFlag: false,
+      localitySearch: null,
+      summary: null
     }
   },
   components: {
@@ -185,6 +217,19 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    retrieveLocality(){
+      if(this.localitySearch === null){
+        return
+      }
+      let parameter = {
+        locality: this.localitySearch
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('patients/summary', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.summary = response.data
+      })
     },
     exportPatients(){
       let parameter = {
@@ -308,15 +353,27 @@ export default {
       if(filter === null && this.filter !== null){
         filter = this.filter
       }
-      let parameter = {
-        condition: [{
-          value: filter.value + '%',
-          column: filter.column,
-          clause: 'like'
-        }],
-        sort: sort,
-        limit: this.limit,
-        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+      let parameter = null
+      if(filter.column !== 'locality'){
+        parameter = {
+          condition: [{
+            value: filter.value + '%',
+            column: filter.column,
+            clause: 'like'
+          }],
+          sort: sort,
+          limit: this.limit,
+          offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        }
+      }else{
+        parameter = {
+          condition: [{
+            value: filter.value + '%',
+            column: filter.column,
+            clause: 'like'
+          }],
+          sort: sort
+        }
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('patients/retrieve', parameter).then(response => {
@@ -597,6 +654,10 @@ export default {
 
             if(input.variable === 'remarks'){
               input.value = update.remarks
+            }
+
+            if(input.variable === 'locality'){
+              input.value = update.locality
             }
 
             if(input.variable === 'source') {

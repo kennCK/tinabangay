@@ -31,12 +31,12 @@ export default {
     icon: 'fa fa-users',
     route: '/referrals'
   }],
-  implementedLocality: 'Cebu City, Consolacion, Mandaue City, Lapu-Lapu City, Talisay Cebu',
+  implementedLocality: 'Cebu City, Consolacion, Mandaue City, Lapu-Lapu City, Talisay Cebu, Minglanilla',
   APP_NAME: 'BirdsEye',
   APP_NAME_HTML: 'BirdsEye',
-  APP_EMAIL: 'support@increment.ltd',
-  COMPANY: 'Increment Technologies',
-  COMPANY_URL: 'http://www.increment.ltd',
+  APP_EMAIL: 'support@birds-eye.org',
+  COMPANY: 'BirdsEye',
+  COMPANY_URL: 'https://birds-eye.org',
   APP_URL: 'https://birds-eye.org',
   COPYRIGHT: 'BirdsEye ' + new Date().getFullYear(),
   USER_TYPE: [{
@@ -107,6 +107,7 @@ export default {
     label: 'Others',
     value: 'others'
   }],
-  broadcastingFlag: false,
-  passwordLimit: 8
+  broadcastingFlag: true,
+  passwordLimit: 8,
+  alertFlag: false
 }
