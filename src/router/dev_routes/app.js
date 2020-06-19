@@ -202,6 +202,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/business_settings',
+    name: 'businessSettings',
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
