@@ -219,7 +219,23 @@ export default {
     })
   },
   addNotification(notification){
-    if(parseInt(this.user.userID) === parseInt(notification.id)){
+    if(notification.payload !== undefined){
+      if(parseInt(this.user.userID) === parseInt(notification.to)){
+        if(this.user.notifications.data === null){
+          this.user.notifications.data = []
+          this.user.notifications.data.push(notification)
+          this.user.notifications.current = 1
+        }else{
+          this.user.notifications.data.unshift(notification)
+          this.user.notifications.current += 1
+        }
+        let audio = require('src/assets/audio/notification.mp3')
+        let sound = new Howl({
+          src: [audio]
+        })
+        sound.play()
+      }
+    }else if(parseInt(this.user.userID) === parseInt(notification.id)){
       $('#alertModal').modal('show')
       COMMON.alertFlag = true
       this.playNotificationSound(true)
