@@ -129,7 +129,7 @@ export default {
             this.checkOtp(response.data[0].notification_settings)
           }
         })
-        // this.retrieveNotifications(userInfo.id)
+        this.retrieveNotifications(userInfo.id)
         // this.retrieveMessages(userInfo.id, userInfo.account_type)
         if(callback){
           callback(userInfo)
@@ -170,7 +170,7 @@ export default {
             window.location.href = location
           }
         })
-        // this.retrieveNotifications(userInfo.id)
+        this.retrieveNotifications(userInfo.id)
         // this.retrieveMessages(userInfo.id, userInfo.account_type)
         this.getGoogleCode()
       }, (response) => {
