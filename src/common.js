@@ -107,6 +107,27 @@ export default {
     label: 'Others',
     value: 'others'
   }],
+  healthDec: {
+    personalInformation: {
+      first_name: null,
+      last_name: null,
+      middle_initial: null,
+      gender: null,
+      birth_date: null,
+      civil_status: null,
+      occupation: null,
+      contact_number: null,
+      email: null,
+      address: null
+    },
+    travelHistory: {
+      transportation: [],
+      countries: [],
+      cities_munipalities: []
+    },
+    symptoms: [],
+    questions: []
+  },
   broadcastingFlag: true,
   passwordLimit: 8,
   alertFlag: false

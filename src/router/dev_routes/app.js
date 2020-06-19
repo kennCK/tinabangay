@@ -202,6 +202,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/form/:code',
+    name: 'healthDeclaration',
+    component: resolve => require(['modules/business/HealthDeclaration.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
