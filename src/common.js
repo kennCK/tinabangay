@@ -112,7 +112,7 @@ export default {
     personalInformation: {
       first_name: null,
       last_name: null,
-      middle_initial: null,
+      middle_name: null,
       gender: null,
       birth_date: null,
       civil_status: null,
@@ -124,10 +124,10 @@ export default {
     travelHistory: {
       transportation: [],
       countries: [],
-      cities_munipalities: []
+      localities: []
     },
     symptoms: [],
-    questions: []
+    safety_questions: []
   },
   broadcastingFlag: true,
   passwordLimit: 8,
