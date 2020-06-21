@@ -30,7 +30,9 @@
           <td>{{item.locality}}</td>
           <td>{{item.region}}</td>
           <td>{{item.code}}</td>
-          <td><button class="btn btn-success" style="margin: .5% 0;" @click="showModal('edit', item)"><i class="fas fa-edit"></i> Edit</button></td>
+          <td>
+            <button class="btn btn-warning" @click="editBarangay(item.id)">Edit</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -92,7 +94,30 @@
       </div>
     </div>
 
-    <increment-modal :property="editBrgyModal" ref="modal"></increment-modal>
+    <!--MODAL FOR EDITING ADDRESS-->
+    <div class="modal fade right" id="edit_barangay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Address</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('edit_barangay')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="form-group">
+              <label for="code">Locality</label>
+              <input v-model="editBarangayInfo.locality" type="text" class="form-control" placeholder="Enter Locality">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('edit_barangay')">Cancel</button>
+            <button class="btn btn-primary" @click="editBarangay(null, true)">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -228,7 +253,11 @@ export default{
       limit: 10,
       activePage: 1,
       numPages: null,
-      location: null
+      location: null,
+      editBarangayInfo: {
+        id: null,
+        locality: ''
+      }
     }
   },
   components: {
@@ -289,6 +318,13 @@ export default{
       }
     },
     hideModal(id) {
+      if (id === 'edit_barangay') {
+        $(`#${id}`).modal('hide')
+        $('#edit_barangay #error').remove()
+        this.editBarangayInfo.id = null
+        this.editBarangayInfo.locality = ''
+        return
+      }
       $(`#${id}`).modal('hide')
       this.$refs.location.onCancel()
       this.location = null
@@ -336,6 +372,27 @@ export default{
           this.hideModal('add_location')
         })
       }
+    },
+    editBarangay(selectedId, onSubmit = false) {
+      if (!onSubmit) {
+        $('#edit_barangay').modal('show')
+        this.editBarangayInfo.id = selectedId
+        return
+      }
+      const { id, locality } = this.editBarangayInfo
+      if (id === null || locality.trim() === '') {
+        $('<span>', {
+          id: 'error',
+          class: 'text-danger',
+          html: '<b>Oops!</b> Empty locality.'
+        }).appendTo('#edit_barangay .modal-body')
+        return
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('brgy_codes/update', { id, locality }).then(response => {
+        this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+        this.hideModal('edit_barangay')
+      })
     }
   }
 }
