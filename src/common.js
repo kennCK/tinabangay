@@ -12,6 +12,7 @@ export default {
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Contract Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
+    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business_settings', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Feedback', icon: 'fa fa-comment', path: 'feedback', flag: false, subMenu: null},
@@ -31,12 +32,12 @@ export default {
     icon: 'fa fa-users',
     route: '/referrals'
   }],
-  implementedLocality: 'Cebu City, Consolacion, Mandaue City, Lapu-Lapu City, Talisay Cebu',
+  implementedLocality: 'Cebu City, Consolacion, Mandaue City, Minglanilla, Lapu-Lapu City, Liloan, Talisay Cebu',
   APP_NAME: 'BirdsEye',
   APP_NAME_HTML: 'BirdsEye',
-  APP_EMAIL: 'support@increment.ltd',
-  COMPANY: 'Increment Technologies',
-  COMPANY_URL: 'http://www.increment.ltd',
+  APP_EMAIL: 'support@birds-eye.org',
+  COMPANY: 'BirdsEye',
+  COMPANY_URL: 'https://birds-eye.org',
   APP_URL: 'https://birds-eye.org',
   COPYRIGHT: 'BirdsEye ' + new Date().getFullYear(),
   USER_TYPE: [{
@@ -107,6 +108,28 @@ export default {
     label: 'Others',
     value: 'others'
   }],
-  broadcastingFlag: false,
-  passwordLimit: 8
+  healthDec: {
+    personalInformation: {
+      first_name: null,
+      last_name: null,
+      middle_name: null,
+      gender: null,
+      birth_date: null,
+      civil_status: null,
+      occupation: null,
+      contact_number: null,
+      email: null,
+      address: null
+    },
+    travelHistory: {
+      transportation: [],
+      countries: [],
+      localities: []
+    },
+    symptoms: [],
+    safety_questions: []
+  },
+  broadcastingFlag: true,
+  passwordLimit: 8,
+  alertFlag: false
 }

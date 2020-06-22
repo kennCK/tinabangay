@@ -17,7 +17,7 @@
               </li>
               <li><strong>WHAT INFORMATION DO WE COLLECT ABOUT YOU?</strong></li>
               <li>
-                The information collected when you interact with our Program falls into two categories: (1) Personal information you voluntarily provide such as your name, address, email address and birthday; and (2) non-personal information collected through technology, which includes tracking information collected by us as well as third parties.
+                The information collected when you interact with our Program falls into two categories: (1) Personal information you voluntarily provide such as your name, address, email address, birthday, visited location, used transportation, symptoms reported, temperature recorded, health declaration, and your data reported by the Department of Health of the Philippines; and (2) non-personal information collected through technology, which includes tracking information collected by us as well as third parties.
               </li>
               <li><strong>Personal Information You Provide Directly To Us:</strong></li>
               <li>
@@ -99,7 +99,7 @@
                     {{common.COMPANY}} will retain your data until your account is deleted, after which point we will retain anonymous data collected through the Service, including Activity Data, which may be used by {{common.COMPANY}} and shared with third parties in any manner.
                     </li>
                     <li>
-                      Please note that some of these rights are not absolute. In some cases, we may refuse a request to exercise particular rights if complying with it meant that we are no longer able to meet our contractual obligation to provide you with particular products and services. We will keep you informed as to the actions that we can take when you make your request.
+                      Please note that some of these rights are not absolute. In some cases, we may refuse a request to exercise particular rights if complying with it means that we are no longer able to meet our contractual obligation to provide you with particular products and services. We will keep you informed as to the actions that we can take when you make your request.
                     </li>
                     <li><strong>THIRD PARTY WEBSITES AND LINKS</strong></li>
                     <li>

@@ -1,6 +1,9 @@
 <template>
   <div v-if="data !== null" class="holder w-100">
-    <input type="text" class="form-control" v-model="searchValue" placeholder="Search location" @keyup="filterLocation()">
+    <div class="form-group">
+      <input type="text" class="form-control" v-model="searchValue" placeholder="Search by town" style="float: left; width: 20%; margin-right: 5px;">
+      <button class="btn btn-primary" @click="retrieve()" style="height: 45px !important;">Search</button>
+    </div>
       <div class="row justify-content-end m-0 mr-5 align-items-center">
         <!-- <button class="btn btn-primary mr-3 mb-3" @click="$refs.mapModal.showModal()">
           <i class="fas fa-map-marker-alt mr-2"></i>
@@ -181,7 +184,7 @@ export default {
       common: COMMON,
       user: AUTH.user,
       data: null,
-      searchValue: null,
+      searchValue: '',
       result: null,
       limit: 10,
       activePage: 1,
@@ -201,11 +204,7 @@ export default {
         status: 'positive',
         limit: this.limit,
         offset: this.activePage,
-        condition: [{
-          value: this.searchValue + '%',
-          column: 'locality',
-          clause: 'like'
-        }]
+        locality: this.searchValue + '%'
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('tracing_places/places', parameter).then(response => {
@@ -217,12 +216,6 @@ export default {
         }
         this.result = this.lists(this.data)
       })
-    },
-    filterLocation(){
-      let filter = this.data.filter(item => {
-        return item.route.toLowerCase().indexOf(this.searchValue.toLowerCase()) > -1
-      })
-      this.result = this.lists(filter)
     },
     linkGen (pageNum){
       return '#page=' + pageNum
