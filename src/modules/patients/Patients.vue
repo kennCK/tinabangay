@@ -44,9 +44,7 @@
           <td class="text-uppercase" :class="{'alert-info': item.status === 'symptoms', 'bg-danger': item.status === 'positive', 'bg-warning': item.status === 'pum', 'bg-primary': item.status === 'pui', 'bg-success': item.status === 'tested'}">{{item.status}}</td>
           <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
           <td>{{item.remarks}}</td>
-          <td>{{
-            item.locality
-          }}</td>
+          <td>{{item.locality}}</td>
           <td>{{ item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
           <td>
@@ -58,7 +56,7 @@
       </tbody>
     </table>
     
-    <!--MODAL FOR VISITED PATIENTS-->
+    <!--MODAL FOR VISITED PLACES-->
     <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
@@ -77,6 +75,7 @@
                 <td> <i class=" fa fa-caret-down float-right" @click="sortTable2(2)"></i>Establishment</td>
                 <td>City</td>
                 <td>Country</td>
+                <td>Actions</td>
               </thead>
              <tbody>
               <tr v-for="(item, index) in selectedItem.places" :key="index">
@@ -85,6 +84,7 @@
                 <td>{{item.route}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
+                <td><button class="btn btn-danger" type="button" @click="deletePlace(item)"><i class="fa fa-trash"></i></button></td>
               </tr>
              </tbody>
             </table>
@@ -630,6 +630,17 @@ export default {
         $('#createPlacesModal').modal('show')
         // console.log('dead end for now')
       }
+    },
+    deletePlace(item){
+      console.log(this.selectedItem)
+      let params = {
+        id: item.id
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('visited_places/delete', params).then(response => {
+        // $('#visited_places').modal('hide')
+        this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+      })
     }
   }
 }
