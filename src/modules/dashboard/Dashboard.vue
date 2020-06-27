@@ -26,6 +26,7 @@
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           QR Code
         </div>
+
         <!-- QR CODE SCANNER -->
         <div>
           <div v-if="qrScannerError !== ''" class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -40,6 +41,7 @@
           <qrcode-stream v-if="showQrScanner" @init="onInit" @decode="onDecode"></qrcode-stream>
         </div>
         <!-- END QR CODE SCANNER -->
+
         <p>
           Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
         </p>

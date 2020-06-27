@@ -22,11 +22,28 @@
     </div>
 
     <!-- IF RECORD FOUND -->
-    <div v-if="scannedUserData !== null && !loading && !showQrScanner" class="d-flex flex-column align-items-center">
+    <div v-if="scannedUserData !== null && !loading && !showQrScanner" class="d-flex flex-column align-items-center mb-5">
       <h3 class="my-4">User Information</h3>
       <div class="user-card d-flex align-items-center flex-column mb-4">
         <i class="fa fa-user-circle-o profile-icon mb-3"></i>
         <h5>{{ scannedUserData.username }}</h5>
+        <div class="temperature text-center mb-2">
+          Temperature:
+          <span 
+            v-if="this.scannedUserData.temperature === null || typeof (this.scannedUserData.temperature) === 'undefined'"
+            class="text-warning"
+          >
+            No data
+          </span>
+          <span v-else 
+            :class="[this.scannedUserData.temperature.value > 38 ? 'text-danger' : 'text-success']">
+            {{ this.scannedUserData.temperature.value }}
+            <br>
+            <span class="text-secondary font-italic text-lowercase">
+              last updated: {{ this.scannedUserData.temperature.created_at_human }}
+            </span>
+          </span>
+        </div>
         <div class="location-code" :class="[scannedUserData.location === null ? 'mt-3' : 'mb-3']">
           <span v-if="scannedUserData.location !== null">
             {{ scannedUserData.location.code }}
@@ -48,6 +65,8 @@
           </span>
         </div>
       </div>
+
+      <!-- TEMP (FOR DEVELOPMENT ONLY) -->
       <div v-if="selectedOption !== ''" class="mb-4">
         <p class="alert alert-warning  alert-dismissible fade show" role="alert">
           <strong>{{ selectedOption }}</strong> 
@@ -57,9 +76,11 @@
           </button>
         </p>
       </div>
+      <!-- END TEMP -->
+
       <div class="available-options d-flex">
         <button class="btn btn-primary" @click="selectedOption = 'Linked my account'">Linked my account</button>
-        <button class="btn btn-primary" @click="selectedOption = 'Add temperature'">Add temperature</button>
+        <button class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
         <button class="btn btn-primary" @click="selectedOption = 'Send form'">Send form</button>
         <button class="btn btn-primary" @click="showQrScanner = true">Scan again</button>
       </div>
@@ -108,6 +129,37 @@
       </div>
     </div>
 
+    <!--MODAL FOR ADDING TEMPERATURE-->
+    <div class="modal fade right" id="add_temperature" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Temperature</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('add_temperature')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <form @submit.prevent>
+            <div class="modal-body p-3 px-5">
+              <div class="form-group">
+                <label for="temperature">Temperature</label>
+                <input v-model="temperatureInputs.value" id="temperature" class="form-control" type="number" placeholder="E.g. 36.50" step="0.01" required />
+              </div>
+              <div class="form-group">
+                <label for="remarks">Remarks (optional)</label>
+                <input v-model="temperatureInputs.remarks" id="remarks" class="form-control" type="text" placeholder="Type remarks" />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-danger" @click="hideModal('add_temperature')">Cancel</button>
+              <button class="btn btn-primary" type="submit" @click="addTemperature()">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 <style scoped lang="scss">
@@ -143,15 +195,12 @@
 import { QrcodeStream } from 'vue-qrcode-reader'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
-import axios from 'axios'
 import CONFIG from 'src/config.js'
-import COMMON from 'src/common.js'
 export default {
-  mounted(){
-    console.log('Parameter: ', this.code)
+  mounted() {
     this.retrieve(this.code)
   },
-  data(){
+  data() {
     return {
       user: AUTH.user,
       tokenData: AUTH.tokenData,
@@ -162,22 +211,26 @@ export default {
       showQrScanner: false,
       qrScannerError: '',
       addressVerified: false,
+      temperatureInputs: {
+        value: null,
+        remarks: ''
+      },
       selectedOption: '' // for testing
     }
   },
   components: { 'qrcode-stream': QrcodeStream },
   computed: {
-    getFullPath () {
+    getFullPath() {
       return this.$route.path
     }
   },
   watch: {
-    getFullPath () {
+    getFullPath() {
       this.retrieve(this.$route.params.code)
     }
   },
   methods: {
-    retrieve (code) {
+    retrieve(code) {
       this.loading = true
       this.scannedUserData = null
       $('#loading').css({display: 'block'})
@@ -188,17 +241,35 @@ export default {
           'column': 'code'
         }]
       }
-      this.APIRequest('accounts/retrieve', parameter).then(response => {
+      this.APIRequest('accounts/retrieve', parameter).then(async response => {
         if (response.data.length > 0) {
           this.scannedUserData = response.data[0]
-        } else {
-          console.log('No record found')
+          await this.getTemperature(response.data[0].id)
         }
         this.loading = false
         $('#loading').css({display: 'none'})
       })
     },
-    async onInit (promise) {
+    async getTemperature(id) {
+      let parameter = {
+        condition: [{
+          clause: '=',
+          column: 'account_id',
+          value: id
+        }],
+        sort: {
+          created_at: 'desc'
+        }
+      }
+      await this.APIRequest('temperatures/retrieve', parameter).then(response => {
+        if (response.data.length > 0) {
+          this.scannedUserData.temperature = response.data[0]
+        } else {
+          this.scannedUserData.temperature = null
+        }
+      })
+    },
+    async onInit(promise) {
       $('#loading').css({display: 'block'})
 
       try {
@@ -223,22 +294,22 @@ export default {
         $('#loading').css({display: 'none'})
       }
     },
-    onDecode (code) {
+    onDecode(code) {
       if (code !== '') {
         ROUTER.push(`/scanned/${code}`)
         this.showQrScanner = false
       }
     },
-    showModal (name) {
+    showModal(name) {
       $(`#${name}`).modal('show')
     },
-    hideModal (name) {
+    hideModal(name) {
       $(`#${name}`).modal('hide')
       if (name === 'add_address') this.addressVerified = false
+      if (name === 'add_temperature') this.temperatureInputs = { value: null, remarks: '' }
     },
-    addAddress () {
+    addAddress() {
       if (!this.addressVerified) return
-
       const parameters = {
         account_id: this.scannedUserData.id,
         code: this.user.location.code,
@@ -249,11 +320,24 @@ export default {
         country: this.user.location.country,
         region: this.user.location.region
       }
-
-      $('#loading').css({display: 'block'})
       this.APIRequest('locations/create', parameters).then(response => {
-        if (response.error.length > 0) console.error(response.error)
+        if (response.error.length > 0) console.log(`Error: ${response.error}`)
         this.hideModal('add_address')
+        this.retrieve(this.code)
+      })
+    },
+    addTemperature() {
+      if (this.temperatureInputs.value === null || this.temperatureInputs.value === '') return
+      const parameters = {
+        account_id: this.scannedUserData.id,
+        added_by: this.user.userID,
+        value: this.temperatureInputs.value,
+        remarks: this.temperatureInputs.remarks.trim() || null,
+        location: null
+      }
+      this.APIRequest('temperatures/create', parameters).then(response => {
+        if (response.error.length > 0) console.log(`Error: ${response.error}`)
+        this.hideModal('add_temperature')
         this.retrieve(this.code)
       })
     }
