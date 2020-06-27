@@ -33,7 +33,7 @@
           </span>
           <span v-else class="alert alert-info">
             No assigned address. If this individual belongs to your barangay. 
-            Click <a href="javascript:;" @click="addAddress()">here</a> to add address.
+            Click <a href="javascript:;" @click="showModal('add_address')">here</a> to add address.
           </span>
         </div>
         <div class="status-label d-flex w-100">
@@ -62,6 +62,49 @@
         <button class="btn btn-primary" @click="selectedOption = 'Add temperature'">Add temperature</button>
         <button class="btn btn-primary" @click="selectedOption = 'Send form'">Send form</button>
         <button class="btn btn-primary" @click="showQrScanner = true">Scan again</button>
+      </div>
+    </div>
+
+    <!--MODAL FOR ADDING ADDRESS-->
+    <div class="modal fade right" id="add_address" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div v-if="this.user.location === null" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger">Sorry, you are unable to add address.</h5>
+            <button @click="hideModal('add_address')" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        </div>
+        <div v-if="this.user.location !== null" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Address</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('add_address')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <form @submit.prevent>
+            <div class="modal-body p-3 pl-5">
+              <div class="form-group mb-0">
+                <input class="form-check-input" v-model="addressVerified" type="checkbox" aria-label="Checkbox for verifying address" required>
+                <p class="d-inline">
+                  {{`
+                    ${this.user.location.code},
+                    ${this.user.location.route},
+                    ${this.user.location.region},
+                    ${this.user.location.locality}
+                  `}}
+                </p>
+                <p class="text-secondary"><small>Please verify the address to be added.</small></p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-danger" @click="hideModal('add_address')">Cancel</button>
+              <button class="btn btn-primary" type="submit" @click="addAddress()">Submit</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
@@ -118,6 +161,7 @@ export default {
       scannedUserData: null,
       showQrScanner: false,
       qrScannerError: '',
+      addressVerified: false,
       selectedOption: '' // for testing
     }
   },
@@ -134,6 +178,7 @@ export default {
   },
   methods: {
     retrieve (code) {
+      this.loading = true
       this.scannedUserData = null
       $('#loading').css({display: 'block'})
       let parameter = {
@@ -144,7 +189,6 @@ export default {
         }]
       }
       this.APIRequest('accounts/retrieve', parameter).then(response => {
-        console.log({ response })
         if (response.data.length > 0) {
           this.scannedUserData = response.data[0]
         } else {
@@ -185,8 +229,33 @@ export default {
         this.showQrScanner = false
       }
     },
-    addAddress() {
-      console.log('Add address to user.')
+    showModal (name) {
+      $(`#${name}`).modal('show')
+    },
+    hideModal (name) {
+      $(`#${name}`).modal('hide')
+      if (name === 'add_address') this.addressVerified = false
+    },
+    addAddress () {
+      if (!this.addressVerified) return
+
+      const parameters = {
+        account_id: this.scannedUserData.id,
+        code: this.user.location.code,
+        longitude: this.user.location.longitude,
+        latitude: this.user.location.latitude,
+        route: this.user.location.route,
+        locality: this.user.location.locality,
+        country: this.user.location.country,
+        region: this.user.location.region
+      }
+
+      $('#loading').css({display: 'block'})
+      this.APIRequest('locations/create', parameters).then(response => {
+        if (response.error.length > 0) console.error(response.error)
+        this.hideModal('add_address')
+        this.retrieve(this.code)
+      })
     }
   }
 }
