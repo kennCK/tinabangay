@@ -234,6 +234,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/b/location',
+    name: 'bLocations',
+    component: resolve => require(['modules/location/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
