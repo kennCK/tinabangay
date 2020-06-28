@@ -226,6 +226,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/scanned/:code',
+    name: 'scannedUser',
+    component: resolve => require(['modules/scan/scannedUser.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
