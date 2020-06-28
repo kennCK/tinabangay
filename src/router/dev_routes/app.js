@@ -218,6 +218,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/b/patients',
+    name: 'bPatients',
+    component: resolve => require(['modules/patients/Brgy.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }

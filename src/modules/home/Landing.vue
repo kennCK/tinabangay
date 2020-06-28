@@ -1,6 +1,7 @@
 <template>
 	<div class="body">
     <!-- <google-places-auto-complete :property="property"></google-places-auto-complete> -->
+    <!-- <landing-search></landing-search> -->
 		<landing-banner></landing-banner>
     <landing-features></landing-features>
     <!-- <landing-contributors></landing-contributors> -->
@@ -14,6 +15,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 export default {
   components: {
+    'landing-search': require('modules/home/Landing/Search.vue'),
     'landing-banner': require('modules/home/Landing/Banner.vue'),
     'landing-features': require('modules/home/Landing/Features.vue'),
     'landing-donations': require('modules/home/Landing/Donations.vue'),
