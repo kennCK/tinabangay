@@ -229,7 +229,7 @@
 
         <ul class="list-group" v-if="!form">
           <li class="list-group-item" v-for="(item, index) in healthDec.symptoms" :key="index">
-            <span :class="item.answer === 'yes' ? 'text-success' : 'text-danger'">{{item.question}} [{{item.answer}}]</span>
+            <span :class="item.answer === 'yes' ? 'text-danger' : 'text-success'">{{item.question}} <b>[{{item.answer}}]</b></span>
           </li>
         </ul>
 
