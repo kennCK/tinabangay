@@ -220,9 +220,25 @@ export default{
     }
   },
   {
+    path: '/b/patients',
+    name: 'bPatients',
+    component: resolve => require(['modules/patients/Brgy.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
     path: '/scanned/:code',
     name: 'scannedUser',
     component: resolve => require(['modules/scan/scannedUser.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/b/location',
+    name: 'bLocations',
+    component: resolve => require(['modules/location/List.vue'], resolve),
     meta: {
       tokenRequired: true
     }
