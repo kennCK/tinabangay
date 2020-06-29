@@ -2,7 +2,7 @@
   <div>
     <!-- IF NO RECORD FOUND -->
     <div v-if="scannedUserData === null && !loading && !qrScannerState" class="w-100">
-      <h2>Sorry, user not found. Please try again.</h2>
+      <h2>Sorry, <mark class="p-0">user</mark> not found. Please try again.</h2>
       <button class="btn btn-primary" @click="showScanner()">Scan again</button>
     </div>
 
@@ -63,6 +63,10 @@
       </div>
       <!-- END TEMP -->
 
+      <!-- TODO: 
+        1) Linked my account option
+        2) Send form option
+      -->
       <div class="available-options d-flex">
         <button class="btn btn-primary" @click="selectedOption = 'Linked my account'">Linked my account</button>
         <button class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
@@ -176,7 +180,6 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 export default {
   mounted() {
-    console.log('Code: ', this.code)
     this.retrieve(this.code)
   },
   data() {

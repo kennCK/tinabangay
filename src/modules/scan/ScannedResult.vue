@@ -6,6 +6,7 @@
       <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
     </div>
 
+    <!-- ACCOUNT QR CODE RESULT -->
     <account-scanned
       v-if="payload === 'account'"
       :code="code"
@@ -13,6 +14,15 @@
       @toggleState="(newState) => qrScannerState = newState"
     >
     </account-scanned>
+
+    <!-- LOCATION QR CODE RESULT -->
+    <location-scanned
+      v-if="payload === 'location'"
+      :code="code"
+      :qrScannerState="qrScannerState"
+      @toggleState="(newState) => qrScannerState = newState"
+    >
+    </location-scanned>
 
   </div>
 </template>
@@ -45,7 +55,8 @@ export default {
   },
   components: {
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
-    'account-scanned': require('./AccountScanned')
+    'account-scanned': require('./AccountScanned'),
+    'location-scanned': require('./LocationScanned')
   },
   computed: {
     getFullPath() {
