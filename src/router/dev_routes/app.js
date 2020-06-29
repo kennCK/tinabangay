@@ -228,9 +228,9 @@ export default{
     }
   },
   {
-    path: '/scanned/:code',
+    path: '/scanned/:payload/:code',
     name: 'scannedUser',
-    component: resolve => require(['modules/scan/scannedUser.vue'], resolve),
+    component: resolve => require(['modules/scan/ScannedResult.vue'], resolve),
     meta: {
       tokenRequired: true
     }

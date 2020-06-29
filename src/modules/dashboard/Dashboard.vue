@@ -28,25 +28,13 @@
         </div>
 
         <!-- QR CODE SCANNER -->
-        <div>
-          <div v-if="qrScannerError !== ''" class="alert alert-warning alert-dismissible fade show" role="alert">
-            {{ qrScannerError }}
-            <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <button :class="['btn', 'mb-2', {'btn-primary': !showQrScanner}, {'btn-warning': showQrScanner} ]" @click="showQrScanner = !showQrScanner">
-            {{ showQrScanner ? 'End scanning' : 'Scan QR Code' }}
-          </button>
-          <qrcode-stream v-if="showQrScanner" @init="onInit" @decode="onDecode"></qrcode-stream>
-        </div>
-        <!-- END QR CODE SCANNER -->
+        <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
 
         <p>
           Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
         </p>
-        <div class="row justify-content-center pt-5">
-          <qr-code></qr-code>
+        <div v-if="user.code !== null" class="row justify-content-center pt-5">
+          <QrcodeVue :value="`account/${user.code}`" :size="300"></QrcodeVue>
         </div>
       </div>
       <trend></trend>
@@ -103,13 +91,11 @@
 }
 </style>
 <script>
-import { QrcodeStream } from 'vue-qrcode-reader'
-import ROUTER from 'src/router'
+import QrcodeVue from 'qrcode.vue'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
 import ComplaintProperty from './Complaint.js'
-import router from '../../router'
 export default{
   mounted(){
     this.retrieve()
@@ -131,18 +117,17 @@ export default{
       },
       status: null,
       common: COMMON,
-      showQrScanner: false,
-      qrScannerError: ''
+      qrScannerState: false
     }
   },
   props: {
   },
   components: {
     'trend': require('modules/places/Trend.vue'),
-    'qr-code': require('modules/dashboard/QrCode.vue'),
+    QrcodeVue,
     'data-summary': require('modules/dashboard/Summary.vue'),
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
-    'qrcode-stream': QrcodeStream
+    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue')
   },
   methods: {
     retrieve(){
@@ -170,34 +155,6 @@ export default{
     },
     hideModal(input) {
       $(`#${input}`).modal('hide')
-    },
-    async onInit (promise) {
-      $('#loading').css({display: 'block'})
-
-      try {
-        await promise
-      } catch (error) {
-        console.error(error)
-        const greetings = `Hello ${this.user.username || 'there'}!, `
-        if (error.name === 'NotAllowedError') {
-          this.qrScannerError = greetings + 'you need to grant camera access permisson.'
-        } else if (error.name === 'NotFoundError') {
-          this.qrScannerError = greetings + 'there is no camera on this device.'
-        } else if (error.name === 'NotReadableError') {
-          this.qrScannerError = greetings + 'is the camera already in use?'
-        } else if (error.name === 'OverconstrainedError') {
-          this.qrScannerError = greetings + 'installed cameras are not suitable.'
-        } else if (error.name === 'StreamApiNotSupportedError') {
-          this.qrScannerError = greetings + 'Stream API is not supported in this browser.'
-        }
-      } finally {
-        $('#loading').css({display: 'none'})
-      }
-    },
-    onDecode (code) {
-      if (code !== '') {
-        ROUTER.push(`scanned/${code}`)
-      }
     }
   }
 }
