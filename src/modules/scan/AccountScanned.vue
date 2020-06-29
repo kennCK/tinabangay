@@ -1,28 +1,13 @@
 <template>
-  <div class="w-100">
-
-    <!-- QR CODE SCANNER -->
-    <div v-if="showQrScanner" class="w-100 d-flex justify-content-center">
-      <div class="qr-container mt-2 w-50 h-50">
-        <div v-if="qrScannerError !== ''" class="alert alert-warning alert-dismissible fade show" role="alert">
-          {{ qrScannerError }}
-          <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <qrcode-stream v-if="showQrScanner" @init="onInit" @decode="onDecode"></qrcode-stream>
-        <button class="btn btn-warning mt-2" @click="showQrScanner = false">End scanning</button>
-      </div>
-    </div>
-
+  <div>
     <!-- IF NO RECORD FOUND -->
-    <div v-if="scannedUserData === null && !loading && !showQrScanner" class="w-100">
-      <h2>Sorry, user not found. Please try again.</h2>
-      <button class="btn btn-primary" @click="showQrScanner = true">Scan again</button>
+    <div v-if="scannedUserData === null && !loading && !qrScannerState" class="w-100">
+      <h2>Sorry, <mark class="p-0">user</mark> not found. Please try again.</h2>
+      <button class="btn btn-primary" @click="showScanner()">Scan again</button>
     </div>
 
     <!-- IF RECORD FOUND -->
-    <div v-if="scannedUserData !== null && !loading && !showQrScanner" class="d-flex flex-column align-items-center mb-5">
+    <div v-if="scannedUserData !== null && !loading && !qrScannerState" class="d-flex flex-column align-items-center mb-5">
       <h3 class="my-4">User Information</h3>
       <div class="user-card d-flex align-items-center flex-column mb-4">
         <i class="fa fa-user-circle-o profile-icon mb-3"></i>
@@ -78,17 +63,21 @@
       </div>
       <!-- END TEMP -->
 
+      <!-- TODO: 
+        1) Linked my account option
+        2) Send form option
+      -->
       <div class="available-options d-flex">
         <button class="btn btn-primary" @click="selectedOption = 'Linked my account'">Linked my account</button>
         <button class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
         <button class="btn btn-primary" @click="selectedOption = 'Send form'">Send form</button>
-        <button class="btn btn-primary" @click="showQrScanner = true">Scan again</button>
+        <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
     </div>
 
     <!--MODAL FOR ADDING ADDRESS-->
     <div class="modal fade right" id="add_address" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
+      aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div v-if="this.user.location === null" class="modal-content">
           <div class="modal-header">
@@ -130,8 +119,7 @@
     </div>
 
     <!--MODAL FOR ADDING TEMPERATURE-->
-    <div class="modal fade right" id="add_temperature" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
+    <div class="modal fade right" id="add_temperature" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -159,7 +147,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 <style scoped lang="scss">
@@ -185,11 +172,6 @@
   min-width: 150px;
   margin: 5px 5px !important;
 }
-@media (max-width: 767px) {
-  .qr-container {
-    width: 100% !important;
-  }
-}
 </style>
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
@@ -205,11 +187,8 @@ export default {
       user: AUTH.user,
       tokenData: AUTH.tokenData,
       config: CONFIG,
-      code: this.$route.params.code,
       loading: true,
       scannedUserData: null,
-      showQrScanner: false,
-      qrScannerError: '',
       addressVerified: false,
       temperatureInputs: {
         value: null,
@@ -218,18 +197,21 @@ export default {
       selectedOption: '' // for testing
     }
   },
-  components: { 'qrcode-stream': QrcodeStream },
+  props: ['code', 'qrScannerState'],
   computed: {
-    getFullPath() {
-      return this.$route.path
+    getCode() {
+      return this.code
     }
   },
   watch: {
-    getFullPath() {
-      this.retrieve(this.$route.params.code)
+    getCode() {
+      this.retrieve(this.code)
     }
   },
   methods: {
+    showScanner() {
+      this.$emit('toggleState', true)
+    },
     retrieve(code) {
       this.loading = true
       this.scannedUserData = null
@@ -268,37 +250,6 @@ export default {
           this.scannedUserData.temperature = null
         }
       })
-    },
-    async onInit(promise) {
-      $('#loading').css({display: 'block'})
-
-      try {
-        await promise
-      } catch (error) {
-        console.error(error)
-        const greetings = `Hello ${this.user.username || 'there'}!, `
-        if (error.name === 'NotAllowedError') {
-          this.qrScannerError = greetings + 'you need to grant camera access permisson.'
-        } else if (error.name === 'NotFoundError') {
-          this.qrScannerError = greetings + 'there is no camera on this device.'
-        } else if (error.name === 'NotSupportedError') {
-          this.qrScannerError = greetings + 'secure context required (HTTPS, localhost).'
-        } else if (error.name === 'NotReadableError') {
-          this.qrScannerError = greetings + 'is the camera already in use?'
-        } else if (error.name === 'OverconstrainedError') {
-          this.qrScannerError = greetings + 'installed cameras are not suitable.'
-        } else if (error.name === 'StreamApiNotSupportedError') {
-          this.qrScannerError = greetings + 'Stream API is not supported in this browser.'
-        }
-      } finally {
-        $('#loading').css({display: 'none'})
-      }
-    },
-    onDecode(code) {
-      if (code !== '') {
-        ROUTER.push(`/scanned/${code}`)
-        this.showQrScanner = false
-      }
     },
     showModal(name) {
       $(`#${name}`).modal('show')
