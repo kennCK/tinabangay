@@ -1,0 +1,63 @@
+<template>
+  <div class="w-100">
+
+    <!-- QR CODE SCANNER -->
+    <div v-if="qrScannerState" class="qr-container mt-2 w-50 h-50">
+      <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
+    </div>
+
+    <account-scanned
+      v-if="payload === 'account'"
+      :code="code"
+      :qrScannerState="qrScannerState"
+      @toggleState="(newState) => qrScannerState = newState"
+    >
+    </account-scanned>
+
+  </div>
+</template>
+<style scoped lang="scss">
+@import "~assets/style/colors.scss";
+
+@media (max-width: 767px) {
+  .qr-container {
+    width: 100% !important;
+  }
+}
+</style>
+<script>
+import { QrcodeStream } from 'vue-qrcode-reader'
+import ROUTER from 'src/router'
+import AUTH from 'src/services/auth'
+import CONFIG from 'src/config.js'
+export default {
+  mounted() {
+  },
+  data() {
+    return {
+      user: AUTH.user,
+      tokenData: AUTH.tokenData,
+      config: CONFIG,
+      payload: this.$route.params.payload,
+      code: this.$route.params.code,
+      qrScannerState: false
+    }
+  },
+  components: {
+    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
+    'account-scanned': require('./AccountScanned')
+  },
+  computed: {
+    getFullPath() {
+      return this.$route.path
+    }
+  },
+  watch: {
+    getFullPath() {
+      this.payload = this.$route.params.payload
+      this.code = this.$route.params.code
+    }
+  },
+  methods: {}
+}
+</script>
