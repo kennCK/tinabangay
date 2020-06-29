@@ -130,7 +130,7 @@
               <td>{{healthDec.personalInformation.email}}</td>
             </tr>
             <tr>
-              <td scope="row">Address in the Philippines</td>
+              <th scope="row">Address in the Philippines</th>
               <td>{{healthDec.personalInformation.address}}</td>
             </tr>
           </tbody>
