@@ -1,15 +1,15 @@
 <template>
-  <div v-if="data !== null" class="holder w-100">
-    <div class="form-group">
-      <button class="btn btn-primary pull-right" @click="retrieve()" style="height: 45px !important;">Add</button>
+  <div class="holder w-100">
+    <div class="form-group pr-5">
+      <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#add_location" style="height: 45px !important;">Add</button>
     </div>
-    <div class="row w-100 m-0">
+    <div class="row w-100 m-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
         <div>
-          <div class="qr-code" @click="setCode('location/' + item.code)">
+          <div class="qr-code" v-if="item.code !== null" @click="setCode('location/' + item.code)">
             <QrcodeVue :value="'location/' + item.code" :size="100"></QrcodeVue>
           </div>
-          <div class="details">
+          <div class="details" :class="item.code === null ? 'ml-4' : ''">
             <label class="card-title" style="margin-top:15px">
               {{item.route}}
             </label>
@@ -21,7 +21,66 @@
       </div>
     </div>
 
+
     <showQrCode ref="imageView"></showQrCode>
+    <empty v-if="data === null" :title="'No branches added!'" :action="'Add a branch location.'" :icon="'far fa-building'" :iconColor="'text-danger'"></empty>
+
+    <!--MODAL FOR ADDING LOCATION-->
+    <div class="modal fade right" id="add_location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Branch</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('add_location')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="form-group mb-5">
+              <label for="code">Branch Name</label>
+              <input type="text" name="branch" id="branch" class="form-control" placeholder="Enter Branch Name">
+            </div>
+            <div v-if="customLocation === false">
+              <div class="row mb-3 justify-content-end mx-0">
+                <button class="btn btn-primary" @click="customLocation = true">Use Custom Location</button>
+              </div>
+              <div class="form-group">
+                <label for="location">Set Address</label>
+                <google-autocomplete-location
+                  :property="googleProperty"
+                  :id="'location'"
+                  ref="location"
+                  @onFinish="getLocation($event)"
+                >
+                </google-autocomplete-location>
+              </div>
+            </div>
+            <div v-if="customLocation === true">
+              <div class="row mb-3 justify-content-end mx-0">
+                <button class="btn btn-primary" @click="customLocation = false">Use Google Autocomplete</button>
+              </div>
+              <div class="row mb-3">
+                <div class="col font-weight-bold">Please move the red pin first.</div>
+                <div class="col">
+                  <span class="text-danger font-weight-bold">Pin Location</span><br> Pins your current location.
+                </div>
+                <div class="col">
+                  <span class="text-primary font-weight-bold">Use Location</span> <br>Selects the location of the pin to use.
+                </div>
+              </div>
+              <pin-location @onSelect="getLocation($event)" :property="{
+                height: '400px'
+              }"></pin-location>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('add_location')">Cancel</button>
+            <button class="btn btn-primary" @click="addNew()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -167,6 +226,7 @@ input[type=number]::-webkit-outer-spin-button {
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import CONFIG from 'src/config.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import QrcodeVue from 'qrcode.vue'
 import showQrCode from './ShowMore.vue'
@@ -176,12 +236,28 @@ export default {
   },
   data(){
     return {
+      customLocation: false,
+      location: null,
       common: COMMON,
       user: AUTH.user,
-      data: null
+      data: null,
+      googleProperty: {
+        style: {
+          height: '45px !important'
+        },
+        GOOGLE_API_KEY: CONFIG.GOOGLE_API_KEY,
+        results: {
+          style: {
+          }
+        },
+        placeholder: 'Type Location'
+      }
     }
   },
   components: {
+    'google-autocomplete-location': require('src/components/increment/generic/location/GooglePlacesAutoComplete.vue'),
+    'pin-location': require('components/increment/generic/map/PinLocation.vue'),
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
     Pager,
     QrcodeVue,
     showQrCode
@@ -199,6 +275,10 @@ export default {
           value: this.user.userID,
           clause: '=',
           column: 'account_id'
+        }, {
+          value: 'business',
+          clause: '=',
+          column: 'payload'
         }]
       }
       $('#loading').css({display: 'block'})
@@ -210,6 +290,66 @@ export default {
           this.data = null
         }
       })
+    },
+    getLocation(event) {
+      console.log('getting location')
+
+      let location = {
+        locality: event.locality,
+        region: event.region,
+        country: event.country,
+        latitude: event.latitude,
+        longitude: event.longitude
+      }
+      this.location = location
+    },
+    hideModal(id) {
+      $('#add_location #error').remove()
+      $(`#${id}`).modal('hide')
+      this.$refs.location.onCancel()
+      this.location = null
+      $('#branch').val('')
+    },
+    addNew() {
+      console.log('Submit')
+      let branchName = $('#branch').val()
+      let error = false
+      $('#add_location #error').remove()
+      console.log(this.location)
+      console.log(branchName)
+      if(this.location === null) {
+        $('<div>', {
+          class: 'form-group text-danger error-msg',
+          html: '<b>Uh oh!</b> Location is required.'
+        }).prependTo('#add_location .modal-body')
+
+        error = true
+      }
+
+      if(branchName === null || branchName === '') {
+        $('<div>', {
+          class: 'form-group text-danger error-msg',
+          html: '<b>Uh oh!</b> Branch name is required.'
+        }).prependTo('#add_location .modal-body')
+
+        error = true
+      }
+
+      if(!error) {
+        this.location.route = branchName
+        let par = this.location
+        // par.autogenerate = true
+        par.payload = 'business'
+        par.account_id = this.user.userID
+
+        $('#loading').css({display: 'block'})
+        this.APIRequest('locations/create', par).then(response => {
+          this.location = null
+          $('#branch').val('')
+          this.retrieve()
+          this.hideModal('add_location')
+        })
+      }
     }
   }
 }
