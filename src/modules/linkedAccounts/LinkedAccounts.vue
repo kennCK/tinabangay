@@ -390,10 +390,6 @@ export default {
             value: this.user.userID,
             clause: '=',
             column: 'account_id'
-          }, {
-            value: 'business',
-            clause: '=',
-            column: 'payload'
           }],
           sort: {
             route: 'asc'
