@@ -340,14 +340,33 @@ export default {
         })
       } else {
         let parameter = {
-          id: this.selectedItem.assigned_location.id,
-          assigned_code: location.code
+          condition: [{
+            value: this.selectedItem.assigned_location.code,
+            clause: '=',
+            columm: 'assigned_code'
+          }, {
+            value: this.selectedItem.account_id,
+            clause: '=',
+            column: 'account_id'
+          }, {
+            value: 'business',
+            clause: '=',
+            column: 'payload'
+          }]
         }
         $('#loading').css({display: 'block'})
-        this.APIRequest('locations/update', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          this.hideModal('assign')
-          this.retrieve()
+        this.APIRequest('locations/retrieve', parameter).then(response => {
+          if(response.data > 0) {
+            let par = {
+              id: response.data[0].id,
+              assigned_code: location.code
+            }
+            this.APIRequest('locations/update', par).then(res => {
+              $('#loading').css({display: 'none'})
+              this.hideModal('addAddress')
+              this.retrieve()
+            })
+          }
         })
       }
     },
