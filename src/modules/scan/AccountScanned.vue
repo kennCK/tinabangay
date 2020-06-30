@@ -63,13 +63,24 @@
       </div>
       <!-- END TEMP -->
 
+      <!-- SUCCESS LINKING MESSAGE -->
+      <div v-if="successLinking">
+        <p class="alert alert-success  alert-dismissible fade show" role="alert">
+          Linked successfully. Your account is now linked with <span class="text-capitalize">{{ scannedUserData.username }}</span>
+          <button @click="successLinking = false" type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </p>
+      </div>
+
       <!-- TODO: 
-        1) Linked my account option
-        2) Send form option
+        1) Send form option
       -->
       <div class="available-options d-flex">
-        <button class="btn btn-primary" @click="selectedOption = 'Linked my account'">Linked my account</button>
-        <button class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
+        <!-- CAN ONLY LINK ONCE -->
+        <button v-if="user.linked_account === null" class="btn btn-primary" @click="showModal('link_my_account')">Link my account</button>
+        <!-- ['USER'] TYPE CANT ADD TEMPERATURE -->
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
         <button class="btn btn-primary" @click="selectedOption = 'Send form'">Send form</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
@@ -114,6 +125,32 @@
               <button class="btn btn-primary" type="submit" @click="addAddress()">Submit</button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!--MODAL LINK ACCOUNT-->
+    <div v-if="scannedUserData !== null" class="modal fade right" id="link_my_account" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Link Account</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('link_my_account')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-3 px-5">
+              <p v-if="scannedUserData.id === user.userID">You cannot link to your own account</p>
+              <p v-else-if="scannedUserData.account_type !== 'USER'">Are you sure you want to link with this account?</p>
+              <p v-else-if="scannedUserData.account_type === 'USER'">Sorry, you cannot link to this account. <span class="text-capitalize">{{ scannedUserData.username }}</span> is not authorized.</p>
+          </div>
+          <div v-if="scannedUserData.account_type !== 'USER'" class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('link_my_account')">No</button>
+            <button class="btn btn-primary" type="submit" @click="linkAccount()">Yes</button>
+          </div>
+          <div v-else class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('link_my_account')">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
@@ -168,8 +205,7 @@
   flex-wrap: wrap;
 }
 .available-options button {
-  flex-grow: 1;
-  min-width: 150px;
+  min-width: 315px;
   margin: 5px 5px !important;
 }
 </style>
@@ -194,6 +230,7 @@ export default {
         value: null,
         remarks: ''
       },
+      successLinking: false,
       selectedOption: '' // for testing
     }
   },
@@ -290,6 +327,28 @@ export default {
         if (response.error.length > 0) console.log(`Error: ${response.error}`)
         this.hideModal('add_temperature')
         this.retrieve(this.code)
+      })
+    },
+    linkAccount() {
+      const parameter = {
+        owner: this.scannedUserData.id,
+        account_id: this.user.userID
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('linked_accounts/create', parameter).then(response => {
+        if (response.data) {
+          parameter.id = response.data
+          parameter.created_at = response.request_timestamp
+          parameter.updated_at = response.request_timestamp
+          parameter.deleted_at = null
+          // quick fix for hiding link account button
+          AUTH.user.linked_account = parameter
+          this.successLinking = true
+        } else {
+          console.error('Error linking account')
+        }
+        this.hideModal('link_my_account')
+        $('#loading').css({display: 'none'})
       })
     }
   }

@@ -34,13 +34,14 @@
       <!-- END TEMP -->
 
       <!-- TODO: 
-        1) Add to visited places option
-        2) Health Declaration for Customer option
-        3) Health Declaration for Employee Checkin option
-        4) Health Declaration for Employee Checkout option
+        (DONE) 1) Add to visited places option
+               2) Health Declaration for Customer option
+               3) Health Declaration for Employee Checkin option
+               4) Health Declaration for Employee Checkout option
       -->
       <div class="available-options d-flex">
-        <button class="btn btn-primary" @click="selectedOption = 'Add to visited places'">Add to visited places</button>
+        <button v-if="addedToVisitedPlaces" class="btn btn-success">Added to visited places</button>
+        <button v-if="!addedToVisitedPlaces" class="btn btn-primary" @click="addVisitedPlace()">Add to visited places</button>
         <button class="btn btn-primary" @click="selectedOption = 'Health Declaration for Customer'">Health Declaration for Customer</button>
         <button class="btn btn-primary" @click="selectedOption = 'Health Declaration for Employee Checkin'">Health Declaration for Employee Checkin</button>
         <button class="btn btn-primary" @click="selectedOption = 'Health Declaration for Employee Checkout'">Health Declaration for Employee Checkout</button>
@@ -64,6 +65,7 @@
 </style>
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
+import moment from 'moment'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
@@ -78,6 +80,7 @@ export default {
       config: CONFIG,
       loading: true,
       scannedLocationData: null,
+      addedToVisitedPlaces: false,
       selectedOption: '' // for testing
     }
   },
@@ -99,6 +102,7 @@ export default {
     retrieve(code) {
       this.loading = true
       this.scannedLocationData = null
+      this.addedToVisitedPlaces = false
       $('#loading').css({display: 'block'})
       let parameter = {
         condition: [{
@@ -114,6 +118,28 @@ export default {
           this.scannedLocationData = response.data[0]
         }
         this.loading = false
+        $('#loading').css({display: 'none'})
+      })
+    },
+    addVisitedPlace() {
+      $('#loading').css({display: 'block'})
+      const parameter = {
+        account_id: this.user.userID,
+        longitude: this.scannedLocationData.longitude,
+        latitude: this.scannedLocationData.latitude,
+        route: this.scannedLocationData.route,
+        locality: this.scannedLocationData.locality,
+        country: this.scannedLocationData.country,
+        region: this.scannedLocationData.region,
+        date: moment().format('YYYY-MM-DD'),
+        time: moment().format('HH:mm')
+      }
+      this.APIRequest('visited_places/create', parameter).then(response => {
+        if (response.data) {
+          this.addedToVisitedPlaces = true
+        } else {
+          console.error('Error adding to visited_places')
+        }
         $('#loading').css({display: 'none'})
       })
     }
