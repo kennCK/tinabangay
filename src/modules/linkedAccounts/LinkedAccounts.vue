@@ -113,7 +113,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="assignHeader">Assign Address</h5>
+            <h5 class="modal-title" id="assignHeader">Assign Branch</h5>
             <button type="button" class="close" @click="hideModal('assign')" aria-label="Close">
               <span aria-hidden="true" class="text-primary">&times;</span>
             </button>
@@ -126,7 +126,7 @@
             </div>
             <table class="table table-borderless table-responsive">
               <thead>
-                <th>Yeepers</th>
+                <th>Branch</th>
                 <th>Action</th>
               </thead>
               <tbody>
