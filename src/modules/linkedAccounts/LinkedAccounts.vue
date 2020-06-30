@@ -5,18 +5,21 @@
     </div>
     <table class="table table-bordered table-responsive" v-if="data !== null">
       <thead class="bg-primary">
-        <td>Owner's Username</td>
-        <td>Linked Account's Username</td>
-        <td>Date</td>
-        <td v-if="user.type !== 'USER'">
+        <th scope="col">Owner</th>
+        <th scope="col">Linked User</th>
+        <th scope="col">Date</th>
+        <th scope="col" v-if="user.type !== 'USER'">
           Type
-        </td>
-        <td v-if="user.type !== 'USER'">
-          Address
-        </td>
-        <td v-if="user.type !== 'USER'">
+        </th>
+        <th scope="col" v-if="user.type !== 'USER'">
+          Home Address
+        </th>
+        <th scope="col" v-if="user.type !== 'USER'">
+          Assigned Branch
+        </th>
+        <th scope="col" v-if="user.type !== 'USER'">
           Actions
-        </td>
+        </th>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
@@ -29,15 +32,30 @@
           </td>
           <td v-if="user.type !== 'USER'">
             <label v-if="item.account.location !== null">
-              <b class="text-danger">({{item.account.location.code}})</b>{{' ' + item.account.location.route + ', ' + item.account.location.locality + ', ' + item.account.location.country}}
+              <b class="text-danger">({{item.account.location.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.account.location.route + ', ' + item.account.location.locality + ', ' + item.account.location.country"><i class="fa fa-question pr-0"></i></span>
             </label>
           </td>
           <td v-if="user.type !== 'USER'">
-            <button class="btn btn-primary" v-if="item.account.location === null" @click="show('create', item)">
+            <i v-if="item.assigned_location === null">Not assigned</i>
+            <label v-if="item.assigned_location !== null">
+              <b>{{item.assigned_location.route}}</b> <span class="badge badge-pill badge-dark" :title=" item.assigned_location.locality + ', ' + item.assigned_location.region + ', ' + item.assigned_location.country"><i class="fa fa-question pr-0"></i></span>
+            </label>
+          </td>
+          <td v-if="user.type !== 'USER'">
+            <button class="btn btn-primary" v-if="item.assigned_location === null" @click="show('branch', item)">
+              Assign branch
+            </button>
+            <button class="btn btn-primary" v-if="item.assigned_location !== null" @click="show('branch', item)">
+              Edit branch
+            </button>
+            <button class="btn btn-warning" v-if="item.account.location === null" @click="show('brgy', item)">
               Assign address
             </button>
-            <button class="btn btn-primary" v-if="item.account.location !== null" @click="show('update', item)">
+            <button class="btn btn-warning" v-if="item.account.location !== null" @click="show('brgy', item)">
               Edit address
+            </button>
+            <button type="button" @click="show('unlink', item)" class="btn btn-danger">
+              <i class="fa fa-trash"></i> Unlink
             </button>
           </td>
         </tr>
@@ -47,12 +65,12 @@
 
 
     <!-- Assign Address Modal -->
-    <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="addAddressHeader" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Assign Address</h5>
-            <button type="button" class="close" @click="hideModal()" aria-label="Close">
+            <h5 class="modal-title" id="addAddressHeader">Assign Address</h5>
+            <button type="button" class="close" @click="hideModal('addAddress')" aria-label="Close">
               <span aria-hidden="true" class="text-primary">&times;</span>
             </button>
           </div>
@@ -60,7 +78,7 @@
             <div class="form-group">
               <label style="width: 100%; float: left;">Filter</label>
               <input type="text" class="form-control form-control-custom" v-model="locality" placeholder="Town, Lungsod or locality" style="width: 80%; float:left; margin-right: 5px;" />
-              <button type="button" class="btn btn-primary pull-right" @click="search()">Search</button>
+              <button type="button" class="btn btn-primary pull-right" @click="search('brgy')">Search</button>
             </div>
             <table class="table table-borderless table-responsive">
               <thead>
@@ -75,20 +93,85 @@
                     </label>
                   </td>
                   <td>
-                    <button class="btn btn-primary" v-if="selectedItem.account.location === null" @click="createAddress(item)">Assign</button>
-                    <button class="btn btn-primary" v-if="selectedItem.account.location !== null" @click="updateAddress(item)">Update</button>
+                    <button class="btn btn-primary" v-if="selectedItem.account.location === null" @click="createAddress('brgy', item)">Assign</button>
+                    <button class="btn btn-primary" v-if="selectedItem.account.location !== null" @click="updateAddress('brgy', item)">Update</button>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" @click="hideModal()">Close</button>
+            <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Close</button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Assign Branch Modal -->
+    <div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="assignHeader" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="assignHeader">Assign Address</h5>
+            <button type="button" class="close" @click="hideModal('assign')" aria-label="Close">
+              <span aria-hidden="true" class="text-primary">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label style="width: 100%; float: left;">Filter</label>
+              <input type="text" class="form-control form-control-custom" v-model="branch" placeholder="Branch" style="width: 80%; float:left; margin-right: 5px;" />
+              <button type="button" class="btn btn-primary pull-right" @click="search('branch')">Search</button>
+            </div>
+            <table class="table table-borderless table-responsive">
+              <thead>
+                <th>Yeepers</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in branches" :key="index">
+                  <td>
+                    <label>
+                      <b>{{item.route}}</b> <span class="badge badge-pill badge-dark" :title="item.locality + ', ' + item.country"><i class="fa fa-question pr-0"></i></span>
+                    </label>
+                  </td>
+                  <td>
+                    <button class="btn btn-primary" v-if="selectedItem.assigned_location === null" @click="createAddress('branch', item)">Assign</button>
+                    <button class="btn btn-primary" v-if="selectedItem.assigned_location !== null" @click="updateAddress('branch', item)">Reassign</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unlink Account Modal -->
+    <div class="modal fade" id="unlink" tabindex="-1" role="dialog" aria-labelledby="unlinkHeader" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title text-white" id="unlinkHeader">Unlink Header</div>
+            <button type="button" class="close" @click="hideModal('unlink')" aria-label="Close">
+              <span aria-hidden="true" class="text-primary">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            Are you sure you want to unlink this account?
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="hideModal('unlink')">Cancel</button>
+            <button type="button" class="btn btn-success" @click="unlink()">Unlink</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -117,7 +200,9 @@ export default {
       data: null,
       params: null,
       locality: null,
+      branch: null,
       brgys: [],
+      branches: [],
       selectedItem: null,
       newAccountType: null
     }
@@ -127,16 +212,44 @@ export default {
   },
   methods: {
     show(params, item){
-      this.selectedItem = item
-      this.params = params
-      this.brgys = null
-      $('#addAddress').modal('show')
+      if(params === 'brgy') {
+        this.selectedItem = item
+        this.params = params
+        this.brgys = null
+        $('#addAddress').modal('show')
+      } else if(params === 'branch') {
+        this.locality = null
+        this.selectedItem = item
+        this.branches = null
+        $('#assign').modal('show')
+      } else {
+        this.selectedUser = item.id
+        $('#unlink').modal('show')
+      }
     },
-    hideModal(){
-      this.selectedItem = null
-      this.params = null
-      this.brgys = null
-      $('#addAddress').modal('hide')
+    unlink() {
+      let par = {
+        id: this.selectedUser
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('linked_accounts/delete', par).then(response => {
+        this.selectedUser = null
+        this.hideModal('unlink')
+        this.retrieve()
+      })
+    },
+    hideModal(id){
+      if(id === 'addAddress') {
+        this.selectedItem = null
+        this.locality = null
+        this.brgys = null
+      } else if(id === 'assign'){
+        this.selectedItem = null
+        this.branch = null
+        this.branches = null
+      }
+
+      $(`#${id}`).modal('hide')
     },
     redirect(parameter){
       ROUTER.push(parameter)
@@ -152,70 +265,135 @@ export default {
         this.retrieve()
       })
     },
-    createAddress(location){
+    createAddress(type, location){
       if(this.selectedItem === null){
         return
       }
-      let parameter = {
-        account_id: this.selectedItem.account_id,
-        code: location.code,
-        longitude: location.longitude,
-        latitude: location.latitude,
-        route: location.route,
-        locality: location.locality,
-        region: location.region,
-        country: location.country
+
+      if(type === 'brgy') {
+        let parameter = {
+          account_id: this.selectedItem.account_id,
+          code: location.code,
+          longitude: location.longitude,
+          latitude: location.latitude,
+          route: location.route,
+          locality: location.locality,
+          region: location.region,
+          country: location.country,
+          payload: 'brgy'
+        }
+        this.APIRequest('locations/create', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          this.hideModal('addAddress')
+          this.retrieve()
+        })
+      } else {
+        let parameter = {
+          account_id: this.selectedItem.account_id,
+          assigned_code: location.code,
+          payload: 'business'
+        }
+        this.APIRequest('locations/create', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          this.hideModal('assign')
+          this.retrieve()
+        })
       }
-      this.APIRequest('locations/create', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        this.hideModal()
-        this.retrieve()
-      })
     },
-    updateAddress(location){
+    updateAddress(type, location){
       if(this.selectedItem === null){
         return
       }
-      let parameter = {
-        id: this.selectedItem.account.location.id,
-        code: location.code,
-        longitude: location.longitude,
-        latitude: location.latitude,
-        route: location.route,
-        locality: location.locality,
-        region: location.region,
-        country: location.country
+      if(type === 'brgy') {
+        let parameter = {
+          id: this.selectedItem.account.location.id,
+          code: location.code,
+          longitude: location.longitude,
+          latitude: location.latitude,
+          route: location.route,
+          locality: location.locality,
+          region: location.region,
+          country: location.country
+        }
+        $('#loading').css({display: 'block'})
+        this.APIRequest('locations/update', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          this.hideModal('addAddress')
+          this.retrieve()
+        })
+      } else {
+        let parameter = {
+          id: this.selectedItem.assigned_location.id,
+          code: location.code
+        }
+        $('#loading').css({display: 'block'})
+        this.APIRequest('locations/update', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          this.hideModal('assign')
+          this.retrieve()
+        })
       }
-      this.APIRequest('locations/update', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        this.hideModal()
-        this.retrieve()
-      })
     },
-    search(){
-      this.brgys = null
-      if(this.locality === null || this.locality === ''){
-        return
-      }
-      let parameter = {
-        condition: [{
-          value: this.locality + '%',
-          clause: 'like',
-          column: 'locality'
-        }],
-        sort: {
-          route: 'asc'
+    search(type){
+      if(type === 'brgy') {
+        this.brgys = null
+        if(this.locality === null || this.locality === ''){
+          return
         }
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        if(response.data.length > 0){
-          this.brgys = response.data
-        }else{
-          this.brgys = []
+        let parameter = {
+          condition: [{
+            value: this.locality + '%',
+            clause: 'like',
+            column: 'locality'
+          }],
+          sort: {
+            route: 'asc'
+          }
         }
-      })
+        $('#loading').css({display: 'block'})
+        this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          if(response.data.length > 0){
+            this.brgys = response.data
+          }else{
+            this.brgys = []
+          }
+        })
+      } else {
+        this.branches = null
+        if(this.branch === null || this.locality === '') {
+          return
+        }
+
+        let parameter = {
+          condition: [{
+            value: this.branch + '%',
+            clause: 'like',
+            column: 'route'
+          }, {
+            value: this.user.userID,
+            clause: '=',
+            column: 'account_id'
+          }, {
+            value: 'business',
+            clause: '=',
+            column: 'payload'
+          }],
+          sort: {
+            route: 'asc'
+          }
+        }
+
+        $('#loading').css({display: 'block'})
+        this.APIRequest('locations/retrieve', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          if(response.data.length > 0) {
+            this.branches = response.data
+          } else {
+            this.branches = []
+          }
+        })
+      }
     },
     retrieve(){
       let parameter = null
