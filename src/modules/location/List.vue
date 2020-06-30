@@ -5,11 +5,11 @@
     </div>
     <div class="row w-100 m-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
-        <div>
+        <div class="row p-2">
           <div class="qr-code" v-if="item.code !== null" @click="setCode('location/' + item.code)">
             <QrcodeVue :value="'location/' + item.code" :size="100"></QrcodeVue>
           </div>
-          <div class="details" :class="item.code === null ? 'ml-4' : ''">
+          <div class="details col-5" :class="item.code === null ? 'ml-4' : ''">
             <label class="card-title" style="margin-top:15px">
               {{item.route}}
             </label>
@@ -17,7 +17,9 @@
               {{item.locality + ', ' + item.country}}
             </label>
           </div> 
+          <button class="btn btn-secondary ml-auto mr-4 mt-2" @click="selectedBranch = item" type="button" data-toggle="modal" data-target="#delete"><i class="fa fa-trash"></i></button>
         </div>
+
       </div>
     </div>
 
@@ -77,6 +79,28 @@
           <div class="modal-footer">
             <button class="btn btn-danger" @click="hideModal('add_location')">Cancel</button>
             <button class="btn btn-primary" @click="addNew()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE BRANCH MODAL -->
+    <div class="modal fade right" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteHeader"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-white" id="deleteheader">Delete Branch</h5>
+            <button type="button" class="close" aria-label="Close" data-dismiss="modal" @click="selectedBranch = null">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            Are you sure you want to delete this branch?
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-dark" data-dismiss="modal" @click="selectedBranch = null">Cancel</button>
+            <button class="btn btn-secondary" data-dismiss="modal" @click="deleteBranch()">Delete</button>
           </div>
         </div>
       </div>
@@ -236,6 +260,7 @@ export default {
   },
   data(){
     return {
+      selectedBranch: null,
       customLocation: false,
       location: null,
       common: COMMON,
@@ -275,10 +300,6 @@ export default {
           value: this.user.userID,
           clause: '=',
           column: 'account_id'
-        }, {
-          value: 'business',
-          clause: '=',
-          column: 'payload'
         }]
       }
       $('#loading').css({display: 'block'})
@@ -338,8 +359,7 @@ export default {
       if(!error) {
         this.location.route = branchName
         let par = this.location
-        // par.autogenerate = true
-        par.payload = 'business'
+        par.autogenerate = true
         par.account_id = this.user.userID
 
         $('#loading').css({display: 'block'})
@@ -348,6 +368,20 @@ export default {
           $('#branch').val('')
           this.retrieve()
           this.hideModal('add_location')
+        })
+      }
+    },
+    deleteBranch() {
+      if(this.selectedBranch !== null) {
+        let par = {
+          id: this.selectedBranch.id
+        }
+
+        $('#loading').css({display: 'block'})
+        this.APIRequest('locations/delete', par).then(response => {
+          $('#loading').css({display: 'none'})
+          this.selectedBranch = null
+          this.retrieve()
         })
       }
     }
