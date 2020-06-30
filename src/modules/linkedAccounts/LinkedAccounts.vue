@@ -31,8 +31,9 @@
             <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
           </td>
           <td v-if="user.type !== 'USER'">
-            <label v-if="item.account.location !== null">
-              <b class="text-danger">({{item.account.location.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.account.location.route + ', ' + item.account.location.locality + ', ' + item.account.location.country"><i class="fa fa-question pr-0"></i></span>
+            <i v-if="item.address === null">No address recorded</i>
+            <label v-if="item.address !== null">
+              <b class="text-danger">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
             </label>
           </td>
           <td v-if="user.type !== 'USER'">
@@ -48,14 +49,14 @@
             <button class="btn btn-primary" v-if="item.assigned_location !== null" @click="show('branch', item)">
               Edit branch
             </button>
-            <button class="btn btn-warning" v-if="item.account.location === null" @click="show('brgy', item)">
+            <button class="btn btn-warning" v-if="item.address === null" @click="show('brgy', item)">
               Assign address
             </button>
-            <button class="btn btn-warning" v-if="item.account.location !== null" @click="show('brgy', item)">
+            <button class="btn btn-warning" v-if="item.address !== null" @click="show('brgy', item)">
               Edit address
             </button>
-            <button type="button" @click="show('unlink', item)" class="btn btn-danger">
-              <i class="fa fa-trash"></i> Unlink
+            <button type="button" @click="show('unlink', item)" class="btn btn-secondary">
+              Unlink
             </button>
           </td>
         </tr>
@@ -93,8 +94,8 @@
                     </label>
                   </td>
                   <td>
-                    <button class="btn btn-primary" v-if="selectedItem.account.location === null" @click="createAddress('brgy', item)">Assign</button>
-                    <button class="btn btn-primary" v-if="selectedItem.account.location !== null" @click="updateAddress('brgy', item)">Update</button>
+                    <button class="btn btn-primary" v-if="selectedItem.address === null" @click="createAddress('brgy', item)">Assign</button>
+                    <button class="btn btn-primary" v-if="selectedItem.address !== null" @click="updateAddress('brgy', item)">Update</button>
                   </td>
                 </tr>
               </tbody>
@@ -321,7 +322,7 @@ export default {
       }
       if(type === 'brgy') {
         let parameter = {
-          id: this.selectedItem.account.location.id,
+          id: this.selectedItem.address.id,
           code: location.code,
           longitude: location.longitude,
           latitude: location.latitude,
