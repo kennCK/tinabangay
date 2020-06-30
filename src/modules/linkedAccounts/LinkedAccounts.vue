@@ -309,6 +309,7 @@ export default {
           assigned_code: location.code,
           payload: 'business'
         }
+
         this.APIRequest('locations/create', parameter).then(response => {
           $('#loading').css({display: 'none'})
           this.hideModal('assign')
@@ -340,7 +341,7 @@ export default {
       } else {
         let parameter = {
           id: this.selectedItem.assigned_location.id,
-          code: location.code
+          assigned_code: location.code
         }
         $('#loading').css({display: 'block'})
         this.APIRequest('locations/update', parameter).then(response => {
