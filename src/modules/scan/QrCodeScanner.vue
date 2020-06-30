@@ -73,7 +73,6 @@ export default {
     },
     onDecode (code) {
       if (code !== '') {
-        console.log({ code })
         const payload = code.split('/')[0]
         if (payload === 'account' || payload === 'location') {
           this.$emit('toggleState', false)
