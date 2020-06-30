@@ -223,20 +223,33 @@ export default {
         this.branches = null
         $('#assign').modal('show')
       } else {
-        this.selectedUser = item.id
+        this.selectedItem = item
         $('#unlink').modal('show')
       }
     },
     unlink() {
       let par = {
-        id: this.selectedUser
+        id: this.selectedItem.id
       }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('linked_accounts/delete', par).then(response => {
-        this.selectedUser = null
-        this.hideModal('unlink')
-        this.retrieve()
-      })
+
+      if(this.selectedItem.assigned_location !== null) {
+        let param = {
+          id: this.selectedItem.assigned_location.id
+        }
+
+        this.APIRequest('locations/delete', param).then(response => {
+          this.APIRequest('linked_accounts/delete', par).then(res => {
+            this.hideModal('unlink')
+            this.retrieve()
+          })
+        })
+      } else {
+        $('#loading').css({display: 'block'})
+        this.APIRequest('linked_accounts/delete', par).then(response => {
+          this.hideModal('unlink')
+          this.retrieve()
+        })
+      }
     },
     hideModal(id){
       if(id === 'addAddress') {
@@ -247,6 +260,8 @@ export default {
         this.selectedItem = null
         this.branch = null
         this.branches = null
+      } else {
+        this.selectedItem = null
       }
 
       $(`#${id}`).modal('hide')
