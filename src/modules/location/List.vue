@@ -335,7 +335,7 @@ export default {
       console.log('Submit')
       let branchName = $('#branch').val()
       let error = false
-      $('#add_location #error').remove()
+      $('#add_location .error-msg').remove()
       console.log(this.location)
       console.log(branchName)
       if(this.location === null) {
