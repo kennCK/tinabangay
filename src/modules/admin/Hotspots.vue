@@ -174,6 +174,9 @@ import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import ModalProperty from './CreateHotSpot.js'
 export default {
   mounted(){
+    if(this.user.type !== 'ADMIN'){
+      ROUTER.push('/dashboard')
+    }
     this.retrieve()
   },
   data(){

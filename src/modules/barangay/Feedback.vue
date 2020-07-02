@@ -68,6 +68,9 @@ import AUTH from 'src/services/auth'
 import moment from 'moment'
 export default {
   mounted() {
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_BRGY'){
+      ROUTER.push('/dashboard')
+    }
     $('#loading').css({display: 'block'})
     this.retrieve()
   },

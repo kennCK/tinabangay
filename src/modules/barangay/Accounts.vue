@@ -312,6 +312,9 @@ import vfsFonts from 'pdfmake/build/vfs_fonts'
 import moment from 'moment'
 export default{
   mounted(){
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_BRGY'){
+      ROUTER.push('/dashboard')
+    }
     $('#loading').css({display: 'block'})
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     // if (AUTH.user.location) {

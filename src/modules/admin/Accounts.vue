@@ -191,6 +191,9 @@ import COMMON from 'src/common.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default{
   mounted(){
+    if(this.user.type !== 'ADMIN'){
+      ROUTER.push('/dashboard')
+    }
     $('#loading').css({display: 'block'})
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
   },
