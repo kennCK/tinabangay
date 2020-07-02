@@ -33,9 +33,12 @@
           <span v-if="scannedUserData.location !== null">
             {{ scannedUserData.location.code }}
           </span>
-          <span v-else class="alert alert-info">
+          <span v-else-if="scannedUserData.location === null && user.type !== 'USER'" class="alert alert-info">
             No assigned address. If this individual belongs to your barangay. 
             Click <a href="javascript:;" @click="showModal('add_address')">here</a> to add address.
+          </span>
+          <span v-else class="alert alert-info">
+            No location record.
           </span>
         </div>
         <div class="status-label d-flex w-100">
@@ -66,7 +69,7 @@
       <!-- SUCCESS LINKING MESSAGE -->
       <div v-if="successLinking">
         <p class="alert alert-success  alert-dismissible fade show" role="alert">
-          Linked successfully. Your account is now linked with <span class="text-capitalize">{{ scannedUserData.username }}</span>
+          Linked successfully. <span class="text-capitalize">{{ scannedUserData.username }}</span> is now linked to your account.
           <button @click="successLinking = false" type="button" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -78,10 +81,10 @@
       -->
       <div class="available-options d-flex">
         <!-- CAN ONLY LINK ONCE -->
-        <button v-if="user.linked_account === null" class="btn btn-primary" @click="showModal('link_my_account')">Link my account</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
         <!-- ['USER'] TYPE CANT ADD TEMPERATURE -->
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
-        <button class="btn btn-primary" @click="selectedOption = 'Send form'">Send form</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="selectedOption = 'Send form'">Send form</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
     </div>
@@ -140,16 +143,16 @@
             </button>
           </div>
           <div class="modal-body p-3 px-5">
-              <p v-if="scannedUserData.id === user.userID">You cannot link to your own account</p>
-              <p v-else-if="scannedUserData.account_type !== 'USER'">Are you sure you want to link with this account?</p>
-              <p v-else-if="scannedUserData.account_type === 'USER'">Sorry, you cannot link to this account. <span class="text-capitalize">{{ scannedUserData.username }}</span> is not authorized.</p>
+              <p v-if="scannedUserData.id === user.userID">You cannot link your own account.</p>
+              <p v-else-if="scannedUserData.linked_account !== null">Account has already been linked.</p>
+              <p v-else-if="scannedUserData.linked_account === null">Are you sure you want to link this account?</p>
           </div>
-          <div v-if="scannedUserData.account_type !== 'USER'" class="modal-footer">
-            <button class="btn btn-danger" @click="hideModal('link_my_account')">No</button>
-            <button class="btn btn-primary" type="submit" @click="linkAccount()">Yes</button>
+          <div v-if="scannedUserData.linked_account === null && scannedUserData.id !== user.userID" class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('link_my_account')">NO</button>
+            <button class="btn btn-primary" type="submit" @click="linkAccount()">YES</button>
           </div>
           <div v-else class="modal-footer">
-            <button class="btn btn-danger" @click="hideModal('link_my_account')">Cancel</button>
+            <button class="btn btn-primary" @click="hideModal('link_my_account')">OK</button>
           </div>
         </div>
       </div>
@@ -306,7 +309,8 @@ export default {
         route: this.user.location.route,
         locality: this.user.location.locality,
         country: this.user.location.country,
-        region: this.user.location.region
+        region: this.user.location.region,
+        payload: 'brgy'
       }
       this.APIRequest('locations/create', parameters).then(response => {
         if (response.error.length > 0) console.log(`Error: ${response.error}`)
@@ -331,8 +335,8 @@ export default {
     },
     linkAccount() {
       const parameter = {
-        owner: this.scannedUserData.id,
-        account_id: this.user.userID
+        owner: this.user.userID,
+        account_id: this.scannedUserData.id
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('linked_accounts/create', parameter).then(response => {
@@ -341,8 +345,8 @@ export default {
           parameter.created_at = response.request_timestamp
           parameter.updated_at = response.request_timestamp
           parameter.deleted_at = null
-          // quick fix for hiding link account button
-          AUTH.user.linked_account = parameter
+          // quick fix for updating link account button
+          this.scannedUserData.linked_account = parameter
           this.successLinking = true
         } else {
           console.error('Error linking account')
