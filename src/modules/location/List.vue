@@ -90,7 +90,7 @@
       <div class="modal-dialog modal-side modal-notify modal-primary" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title text-white" id="deleteheader">Delete Branch</h5>
+            <h5 class="modal-title" id="deleteheader">Delete Branch</h5>
             <button type="button" class="close" aria-label="Close" data-dismiss="modal" @click="selectedBranch = null">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
