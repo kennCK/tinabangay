@@ -9,7 +9,7 @@
           </button>
         </div>
         <div class="modal-body text-center">
-          <QrcodeVue :value="code" :size="getHeightOnly()"></QrcodeVue>
+          <QrcodeVue :value="code" :size="qrCodeHeight"></QrcodeVue>
         </div>
       </div>
     </div>
@@ -151,7 +151,8 @@ export default {
   },
   data(){
     return {
-      code: ''
+      code: '',
+      qrCodeHeight: this.getHeightOnly()
     }
   },
   components: {
@@ -163,13 +164,15 @@ export default {
     },
     setCode(code){
       this.code = code
+      this.qrCodeHeight = this.getHeightOnly()
       setTimeout(() => {
         jquery('#qr-code-viewer').modal('show')
-      }, 1000)
+      }, 500)
     },
     getHeightOnly(){
-      let height = jquery(window).height()
-      return parseInt(height - (height * 0.05))
+      let width = jquery(window).width()
+      let height = parseInt(width - (width * 0.5))
+      return height < 768 ? height : 768
     },
     getHeight(){
       let height = jquery(window).height()

@@ -1,23 +1,23 @@
 <template>
   <div class="holder w-100">
-    <div class="form-group pr-5">
-      <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#add_location" style="height: 45px !important;">Add</button>
+    <div class="nav-buttons row">
+      <button class="btn btn-primary" data-toggle="modal" data-target="#add_location">Add</button>
     </div>
     <div class="row w-100 m-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
-        <div class="row p-2">
+        <div class="qr-code-container p-2">
           <div class="qr-code" v-if="item.code !== null" @click="setCode('location/' + item.code)">
             <QrcodeVue :value="'location/' + item.code" :size="100"></QrcodeVue>
           </div>
-          <div class="details col-5" :class="item.code === null ? 'ml-4' : ''">
-            <label class="card-title" style="margin-top:15px">
+          <div class="details" :class="item.code === null ? 'ml-4' : ''">
+            <label class="card-title">
               {{item.route}}
             </label>
             <label class="card-title">
               {{item.locality + ', ' + item.country}}
             </label>
           </div> 
-          <button class="btn btn-secondary ml-auto mr-4 mt-2" @click="selectedBranch = item" type="button" data-toggle="modal" data-target="#delete"><i class="fa fa-trash"></i></button>
+          <button class="btn btn-secondary" @click="selectedBranch = item" type="button" data-toggle="modal" data-target="#delete"><i class="fa fa-trash"></i></button>
         </div>
 
       </div>
@@ -90,7 +90,7 @@
       <div class="modal-dialog modal-side modal-notify modal-primary" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title text-white" id="deleteheader">Delete Branch</h5>
+            <h5 class="modal-title" id="deleteheader">Delete Branch</h5>
             <button type="button" class="close" aria-label="Close" data-dismiss="modal" @click="selectedBranch = null">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
@@ -125,14 +125,15 @@
   margin-top: 25px;
 }
 
-.qr-code, .details{
-  float: left;
-  padding: 5px;
+.nav-buttons {
+  width: 100%;
+  padding: 0px .5%;
+  margin: 0px 0px .5rem 0px;
+  justify-content: flex-end;
 }
 
-.qr-code{
-  width: 25%;
-  text-align: center;
+.qr-code-container {
+  display: flex;
 }
 
 .qr-code:hover{
@@ -141,7 +142,11 @@
 }
 
 .details{
-  width: 75%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  padding: 0 15px;
 }
 
 .form-control{
@@ -235,6 +240,9 @@ input[type=number]::-webkit-outer-spin-button {
   .card.card-half {
     width: 100%;
     margin: 0;
+  }
+  .nav-buttons {
+    padding: 0px;
   }
 }
 
