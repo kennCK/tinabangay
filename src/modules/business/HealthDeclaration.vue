@@ -1,364 +1,369 @@
 <template>
-  <div class="col-10 mx-auto mt-5">
-    <div class="mx-auto col-2 mt-3">
-      <img :src="config.BACKEND_URL+data.merchant.logo" :alt="data.merchant.name" class="img-fluid">
-    </div>
-    <div class="mx-auto text-center mb-4">
-      <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
-      <span class="text-secondary">{{data.merchant.address}}</span>
-    </div>
-    <h3 class="text-primary text-center font-weight-bold">Health Declaration Form</h3>
-    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{data.updated_at}}</h5>
-    <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
-      <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
-    </div>
-    <hr>
-    <form method="POST">
-      <div class="border border-2 my-5 mx-auto p-3 rounded">
-        <h5 class="health-group-header">Personal Information</h5>
-        <div v-if="form">
-          <div class="row">
-            <div class="form-group col-4">
-              <label for="lastName" class="required">Last Name</label>
-              <input class="form-control" type="text" name="last_name" id="lastName" placeholder="Enter Last Name" :value="healthDec.personalInformation.last_name ? healthDec.personalInformation.last_name : userInfo.last_name ? userInfo.last_name : ''" required>
+  <div>
+    <div v-if="data !== null && data.merchant !== null" class="col-10 mx-auto mt-5">
+      <div class="mx-auto col-2 mt-3">
+        <img :src="config.BACKEND_URL+data.merchant.logo" :alt="data.merchant.name" class="img-fluid">
+      </div>
+      <div class="mx-auto text-center mb-4">
+        <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
+        <span class="text-secondary">{{data.merchant.address}}</span>
+      </div>
+      <h3 class="text-primary text-center font-weight-bold">Health Declaration Form</h3>
+      <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{data.updated_at}}</h5>
+      <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
+        <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
+      </div>
+      <hr>
+      <form method="POST">
+        <div class="border border-2 my-5 mx-auto p-3 rounded">
+          <h5 class="health-group-header">Personal Information</h5>
+          <div v-if="form">
+            <div class="row">
+              <div class="form-group col-4">
+                <label for="lastName" class="required">Last Name</label>
+                <input class="form-control" type="text" name="last_name" id="lastName" placeholder="Enter Last Name" :value="healthDec.personalInformation.last_name ? healthDec.personalInformation.last_name : userInfo.last_name ? userInfo.last_name : ''" required>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="firstName" class="required">First Name</label>
+                <input class="form-control" type="text" name="first_name" id="firstName" placeholder="Enter First Name" :value="healthDec.personalInformation.first_name ? healthDec.personalInformation.first_name : userInfo.first_name ? userInfo.first_name : ''" required>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="middleInitial" class="required">Middle Name</label>
+                <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" :value="healthDec.personalInformation.middle_initial ? healthDec.personalInformation.middle_initial : userInfo.middle_name ? userInfo.middle_name : ''" required>
+              </div>
             </div>
 
-            <div class="form-group col-4">
-              <label for="firstName" class="required">First Name</label>
-              <input class="form-control" type="text" name="first_name" id="firstName" placeholder="Enter First Name" :value="healthDec.personalInformation.first_name ? healthDec.personalInformation.first_name : userInfo.first_name ? userInfo.first_name : ''" required>
-            </div>
-
-            <div class="form-group col-4">
-              <label for="middleInitial" class="required">Middle Name</label>
-              <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" :value="healthDec.personalInformation.middle_initial ? healthDec.personalInformation.middle_initial : userInfo.middle_name ? userInfo.middle_name : ''" required>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group col-4">
-              <label for="gender" class="required">Sex</label>
-              <div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" id="male" name="gender" class="custom-control-input" value="male" v-model="gender" required>
-                  <label class="custom-control-label" for="male">Male</label>
+            <div class="row">
+              <div class="form-group col-4">
+                <label for="gender" class="required">Sex</label>
+                <div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="male" name="gender" class="custom-control-input" value="male" v-model="gender" required>
+                    <label class="custom-control-label" for="male">Male</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="female" name="gender" class="custom-control-input" value="female" v-model="gender">
+                    <label class="custom-control-label" for="female">Female</label>
+                  </div>
                 </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" id="female" name="gender" class="custom-control-input" value="female" v-model="gender">
-                  <label class="custom-control-label" for="female">Female</label>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="birthday" class="required">Date of Birth</label>
+                <input type="date" name="birth_date" id="birthday" class="form-control" :value="userInfo.birth_date ? userInfo.birth_date : ''" required>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="civilStatus" class="required">Civil Status</label>
+                <div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="single" name="civilStatus" class="custom-control-input" value="single" v-model="civil" required>
+                    <label class="custom-control-label" for="single">Single</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="married" name="civilStatus" class="custom-control-input" value="married" v-model="civil">
+                    <label class="custom-control-label" for="married">Married</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" name="civilStatus" id="otherStatus" class="custom-control-input" value="others" v-model="civil">
+                    <label for="otherStatus" class="custom-control-label">Others</label>
+                  </div>
+                  <input type="text" name="civilStatus-others" id="civilStatus" class="form-control" placeholder="Please specify" v-if="civil && civil !== 'single' && civil !== 'married'" required>
                 </div>
               </div>
             </div>
 
-            <div class="form-group col-4">
-              <label for="birthday" class="required">Date of Birth</label>
-              <input type="date" name="birth_date" id="birthday" class="form-control" :value="userInfo.birth_date ? userInfo.birth_date : ''" required>
+            <div class="row">
+              <div class="form-group col-4">
+                <label for="occupation" class="required">Occupation</label>
+                <input type="text" name="occupation" id="occupation" class="form-control" placeholder="Enter Occupation" required>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="contactNum" class="required">Tel./Mobile No.</label>
+                <input type="text" name="contact_number" id="contactNum" class="form-control" placeholder="Enter Contact Information" required>
+              </div>
+
+              <div class="form-group col-4">
+                <label for="email" class="required">Email</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" :value="user.email" required>
+              </div>
             </div>
 
-            <div class="form-group col-4">
-              <label for="civilStatus" class="required">Civil Status</label>
-              <div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" id="single" name="civilStatus" class="custom-control-input" value="single" v-model="civil" required>
-                  <label class="custom-control-label" for="single">Single</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" id="married" name="civilStatus" class="custom-control-input" value="married" v-model="civil">
-                  <label class="custom-control-label" for="married">Married</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" name="civilStatus" id="otherStatus" class="custom-control-input" value="others" v-model="civil">
-                  <label for="otherStatus" class="custom-control-label">Others</label>
-                </div>
-                <input type="text" name="civilStatus-others" id="civilStatus" class="form-control" placeholder="Please specify" v-if="civil && civil !== 'single' && civil !== 'married'" required>
+            <div class="row">
+              <div class="form-group col-12">
+                <label for="address" class="required">Address in the Philippines</label>
+                <input type="text" name="address" id="address" class="form-control" :value="userInfo.address ? userInfo.address : ''" placeholder="Enter Address" required>
               </div>
             </div>
           </div>
 
-          <div class="row">
-            <div class="form-group col-4">
-              <label for="occupation" class="required">Occupation</label>
-              <input type="text" name="occupation" id="occupation" class="form-control" placeholder="Enter Occupation" required>
+          <table class="table table-striped" v-if="!form">
+            <tbody>
+              <tr>
+                <th scope="row">Name</th>
+                <td>{{healthDec.personalInformation.last_name}}, {{healthDec.personalInformation.first_name}} {{healthDec.personalInformation.middle_name}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Sex</th>
+                <td>{{healthDec.personalInformation.gender}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Date of Birth</th>
+                <td>{{healthDec.personalInformation.birth_date}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Civil Status</th>
+                <td>{{healthDec.personalInformation.civil_status}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Occupation</th>
+                <td>{{healthDec.personalInformation.occupation}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Tel./Mobile No.</th>
+                <td>{{healthDec.personalInformation.contact_number}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Email</th>
+                <td>{{healthDec.personalInformation.email}}</td>
+              </tr>
+              <tr>
+                <th scope="row">Address in the Philippines</th>
+                <td>{{healthDec.personalInformation.address}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="border border-2 my-5 mx-auto p-3 rounded">
+          <h5 class="health-group-header">Travel History</h5>
+          <h6 class="font-weight-bold mt-4">Transporations:</h6>
+          <ul v-if="!form" id="transportations" class="mb-3 list-group mx-3">
+            <li class="row list-group-item" v-for="(item, index) in healthDec.travelHistory.transportation" :key="index">
+              <span class="col-3 py-2"><b>Arrival Date:</b> {{item.date}}</span>
+              <span class="col-3 py-2"><b>Port of Origin:</b> {{item.origin}}</span>
+              <span class="col-3 py-2"><b>Flight No.:</b> {{item.flight}}</span>
+              <span class="col-3 py-2"><b>Seat No.:</b> {{item.seat}}</span>
+            </li>
+          </ul>
+          <div class="row" v-if="form">
+            <div class="form-group col-3">
+              <label for="arrivalDate">Arrival Date</label>
+              <input type="date" name="arrivalDate" id="arrivalDate" class="form-control">
+            </div>
+            
+            <div class="form-group col-3">
+              <label for="origin">Port of Origin:</label>
+              <input type="text" name="origin" id="origin" class="form-control" placeholder="Enter Origin">
             </div>
 
-            <div class="form-group col-4">
-              <label for="contactNum" class="required">Tel./Mobile No.</label>
-              <input type="text" name="contact_number" id="contactNum" class="form-control" placeholder="Enter Contact Information" required>
+            <div class="form-group col-3">
+              <label for="flight">Flight No.</label>
+              <input type="text" name="flight" id="flight" class="form-control" placeholder="Enter Flight No.">
             </div>
 
-            <div class="form-group col-4">
-              <label for="email" class="required">Email</label>
-              <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" :value="user.email" required>
+            <div class="form-group col-2">
+              <label for="seat">Seat No.</label>
+              <input type="text" name="seat" id="seat" class="form-control" placeholder="Enter Seat No.">
+            </div>
+
+            <div class="form-group col-1">
+              <label class="text-white">Empty</label>
+              <button class="col-12 btn btn-success" type="button" @click="addTranspo">
+                <i class="fa fa-plus"></i>
+              </button>
             </div>
           </div>
-
+          <hr>
           <div class="row">
-            <div class="form-group col-12">
-              <label for="address" class="required">Address in the Philippines</label>
-              <input type="text" name="address" id="address" class="form-control" :value="userInfo.address ? userInfo.address : ''" placeholder="Enter Address" required>
+            <div class="col-6 border border-top-0 border-left-0 border-bottom-0">
+              <h6 class="font-weight-bold mt-4">Countries visited for the past fourteen (14) days:</h6>
+              <ul v-if="!form" id="countries" class="mb-3 list-group mx-3">
+                <li class="list-group-item" v-for="(item, index) in healthDec.travelHistory.countries" :key="index">
+                  {{item.title}}
+                </li>
+              </ul>
+              <div class="row" v-if="form">
+                <div class="form-group col-10">
+                  <label for="country">Country</label>
+                  <input type="text" name="country" id="country" class="form-control" placeholder="Enter Country">
+                </div>
+                <div class="frorm-group col-1">
+                  <label class="text-white">Empty</label>
+                  <button class="btn btn-success" type="button" @click="addPlace('country')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <h6 class="font-weight-bold mt-4">Cities / municipalities in the Philippines visited for the past fourteen (14) days:</h6>
+              <ul v-if="!form" id="localities" class="mb-3 list-group mx-3">
+                <li class="list-group-item" v-for="(item, index) in healthDec.travelHistory.localities" :key="index">
+                  {{item.title}}
+                </li>
+              </ul>
+              <div class="row" v-if="form">
+                <div class="form-group col-10">
+                  <label for="locality">City / Municipality</label>
+                  <input type="text" name="locality" id="locality" class="form-control" placeholder="Enter City / Municipality">
+                </div>
+                <div class="form-group col-1">
+                  <label class="text-white">Empty</label>
+                  <button class="btn btn-success" type="button" @click="addPlace('locality')">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <table class="table table-striped" v-if="!form">
-          <tbody>
-            <tr>
-              <th scope="row">Name</th>
-              <td>{{healthDec.personalInformation.last_name}}, {{healthDec.personalInformation.first_name}} {{healthDec.personalInformation.middle_name}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Sex</th>
-              <td>{{healthDec.personalInformation.gender}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Date of Birth</th>
-              <td>{{healthDec.personalInformation.birth_date}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Civil Status</th>
-              <td>{{healthDec.personalInformation.civil_status}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Occupation</th>
-              <td>{{healthDec.personalInformation.occupation}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Tel./Mobile No.</th>
-              <td>{{healthDec.personalInformation.contact_number}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Email</th>
-              <td>{{healthDec.personalInformation.email}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Address in the Philippines</th>
-              <td>{{healthDec.personalInformation.address}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="border border-2 my-5 mx-auto p-3 rounded">
-        <h5 class="health-group-header">Travel History</h5>
-        <h6 class="font-weight-bold mt-4">Transporations:</h6>
-        <ul id="transportations" class="mb-3 list-group mx-3">
-          <li class="row list-group-item" v-if="!form" v-for="(item, index) in healthDec.travelHistory.transportation" :key="index">
-            <span class="col-3 py-2"><b>Arrival Date:</b> {{item.date}}</span>
-            <span class="col-3 py-2"><b>Port of Origin:</b> {{item.origin}}</span>
-            <span class="col-3 py-2"><b>Flight No.:</b> {{item.flight}}</span>
-            <span class="col-3 py-2"><b>Seat No.:</b> {{item.seat}}</span>
-          </li>
-        </ul>
-        <div class="row" v-if="form">
-          <div class="form-group col-3">
-            <label for="arrivalDate">Arrival Date</label>
-            <input type="date" name="arrivalDate" id="arrivalDate" class="form-control">
-          </div>
+        <div class="border border-2 my-5 mx-auto p-3 rounded">
+          <h5 class="health-group-header">Symptoms</h5>
+          <h6 class="font-weight-bold mt-3" v-if="form">PLEASE CHECK IF YOU HAVE ANY OF THE FOLLOWING SYMPTOMS AT PRESENT OR DURING THE PAST FOURTEEN (14) DAYS:</h6>
           
-          <div class="form-group col-3">
-            <label for="origin">Port of Origin:</label>
-            <input type="text" name="origin" id="origin" class="form-control" placeholder="Enter Origin">
-          </div>
+          <h6 class="font-weight-bold mt-3" v-if="!form">Symptoms felt during the completion of this form or within fourteen (14) days prior to completion</h6>
 
-          <div class="form-group col-3">
-            <label for="flight">Flight No.</label>
-            <input type="text" name="flight" id="flight" class="form-control" placeholder="Enter Flight No.">
-          </div>
+          <ul class="list-group" v-if="!form">
+            <li class="list-group-item" v-for="(item, index) in healthDec.symptoms" :key="index">
+              <span :class="item.answer === 'yes' ? 'text-danger' : 'text-success'">{{item.question}} <b>[{{item.answer}}]</b></span>
+            </li>
+          </ul>
 
-          <div class="form-group col-2">
-            <label for="seat">Seat No.</label>
-            <input type="text" name="seat" id="seat" class="form-control" placeholder="Enter Seat No.">
-          </div>
-
-          <div class="form-group col-1">
-            <label class="text-white">Empty</label>
-            <button class="col-12 btn btn-success" type="button" @click="addTranspo">
-              <i class="fa fa-plus"></i>
-            </button>
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-6 border border-top-0 border-left-0 border-bottom-0">
-            <h6 class="font-weight-bold mt-4">Countries visited for the past fourteen (14) days:</h6>
-            <ul id="countries" class="mb-3 list-group mx-3">
-              <li class="list-group-item" v-if="!form" v-for="(item, index) in healthDec.travelHistory.countries" :key="index">
-                {{item.title}}
-              </li>
-            </ul>
-            <div class="row" v-if="form">
-              <div class="form-group col-10">
-                <label for="country">Country</label>
-                <input type="text" name="country" id="country" class="form-control" placeholder="Enter Country">
+          <div v-if="form">
+            <div class="row px-3">
+              <div class="form-group col-2">
+                <input type="checkbox" name="symptoms" id="fever" class="form-control form-control-inline" value="Fever">
+                <label for="fever">Fever</label>
               </div>
-              <div class="frorm-group col-1">
-                <label class="text-white">Empty</label>
-                <button class="btn btn-success" type="button" @click="addPlace('country')">
-                  <i class="fa fa-plus"></i>
-                </button>
+              
+              <div class="form-group col-2">
+                <input type="checkbox" name="symptoms" id="cough" class="form-control form-control-inline" value="Cough">
+                <label for="cough">Cough</label>
+              </div>
+
+              <div class="form-group col-2">
+                <input type="checkbox" name="symptoms" id="headache" class="form-control form-control-inline" value="Headache">
+                <label for="headache">Headache</label>
+              </div>
+
+              <div class="form-group col-3">
+                <input type="checkbox" name="symptoms" id="difficultyBreathing" class="form-control form-control-inline" value="Difficulty of Breathing">
+                <label for="difficultyBreathing">Difficulty of Breathing</label>
+              </div>
+
+              <div class="form-group col-3">
+                <input type="checkbox" name="symptoms" id="diarrhea" class="form-control form-control-inline" value="Severe Diarrhea">
+                <label for="diarrhea">Sever Diarrhea</label>
               </div>
             </div>
-          </div>
-          <div class="col-6">
-            <h6 class="font-weight-bold mt-4">Cities / municipalities in the Philippines visited for the past fourteen (14) days:</h6>
-            <ul id="localities" class="mb-3 list-group mx-3">
-              <li class="list-group-item" v-if="!form" v-for="(item, index) in healthDec.travelHistory.localities" :key="index">
-                {{item.title}}
-              </li>
-            </ul>
-            <div class="row" v-if="form">
-              <div class="form-group col-10">
-                <label for="locality">City / Municipality</label>
-                <input type="text" name="locality" id="locality" class="form-control" placeholder="Enter City / Municipality">
+
+            <div class="row px-3">
+              <div class="form-group col-2">
+                <input type="checkbox" name="symptoms" id="soreThroat" class="form-control form-control-inline" value="Sore Throat">
+                <label for="soreThroat">Sore Throat</label>
               </div>
-              <div class="form-group col-1">
-                <label class="text-white">Empty</label>
-                <button class="btn btn-success" type="button" @click="addPlace('locality')">
-                  <i class="fa fa-plus"></i>
-                </button>
+
+              <div class="form-group col-3">
+                <input type="checkbox" name="symptoms" id="bodyWeakness" class="form-control form-control-inline" value="Body Weakness">
+                <label for="bodyWeakness">Body Weakness</label>
+              </div>
+
+              <div class="form-group col-4">
+                <input type="checkbox" name="symptoms" id="bruising" class="form-control form-control-inline" value="Unexplained Bruising or Bleeding">
+                <label for="bruising">Unexplained Bruising or Bleeding</label>
+              </div>
+
+              <div class="form-group col-3">
+                <input type="checkbox" name="otherSymptoms" id="otherSymptoms" class="form-control form-control-inline" value="1" v-model="otherSymptoms">
+                <label for="otherSymptoms">Others</label>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="border border-2 my-5 mx-auto p-3 rounded">
-        <h5 class="health-group-header">Symptoms</h5>
-        <h6 class="font-weight-bold mt-3" v-if="form">PLEASE CHECK IF YOU HAVE ANY OF THE FOLLOWING SYMPTOMS AT PRESENT OR DURING THE PAST FOURTEEN (14) DAYS:</h6>
-        
-        <h6 class="font-weight-bold mt-3" v-if="!form">Symptoms felt during the completion of this form or within fourteen (14) days prior to completion</h6>
-
-        <ul class="list-group" v-if="!form">
-          <li class="list-group-item" v-for="(item, index) in healthDec.symptoms" :key="index">
-            <span :class="item.answer === 'yes' ? 'text-danger' : 'text-success'">{{item.question}} <b>[{{item.answer}}]</b></span>
-          </li>
-        </ul>
-
-        <div v-if="form">
-          <div class="row px-3">
-            <div class="form-group col-2">
-              <input type="checkbox" name="symptoms" id="fever" class="form-control form-control-inline" value="Fever">
-              <label for="fever">Fever</label>
-            </div>
-            
-            <div class="form-group col-2">
-              <input type="checkbox" name="symptoms" id="cough" class="form-control form-control-inline" value="Cough">
-              <label for="cough">Cough</label>
-            </div>
-
-            <div class="form-group col-2">
-              <input type="checkbox" name="symptoms" id="headache" class="form-control form-control-inline" value="Headache">
-              <label for="headache">Headache</label>
-            </div>
-
-            <div class="form-group col-3">
-              <input type="checkbox" name="symptoms" id="difficultyBreathing" class="form-control form-control-inline" value="Difficulty of Breathing">
-              <label for="difficultyBreathing">Difficulty of Breathing</label>
-            </div>
-
-            <div class="form-group col-3">
-              <input type="checkbox" name="symptoms" id="diarrhea" class="form-control form-control-inline" value="Severe Diarrhea">
-              <label for="diarrhea">Sever Diarrhea</label>
-            </div>
-          </div>
-
-          <div class="row px-3">
-            <div class="form-group col-2">
-              <input type="checkbox" name="symptoms" id="soreThroat" class="form-control form-control-inline" value="Sore Throat">
-              <label for="soreThroat">Sore Throat</label>
-            </div>
-
-            <div class="form-group col-3">
-              <input type="checkbox" name="symptoms" id="bodyWeakness" class="form-control form-control-inline" value="Body Weakness">
-              <label for="bodyWeakness">Body Weakness</label>
-            </div>
-
-            <div class="form-group col-4">
-              <input type="checkbox" name="symptoms" id="bruising" class="form-control form-control-inline" value="Unexplained Bruising or Bleeding">
-              <label for="bruising">Unexplained Bruising or Bleeding</label>
-            </div>
-
-            <div class="form-group col-3">
-              <input type="checkbox" name="otherSymptoms" id="otherSymptoms" class="form-control form-control-inline" value="1" v-model="otherSymptoms">
-              <label for="otherSymptoms">Others</label>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="form-group col-12">
-              <input type="text" name="symptoms-others" id="symptoms-others" class="form-control" placeholder="Enter Symptoms" v-if="otherSymptoms" required>
+            <div class="row">
+              <div class="form-group col-12">
+                <input type="text" name="symptoms-others" id="symptoms-others" class="form-control" placeholder="Enter Symptoms" v-if="otherSymptoms" required>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="border border-2 my-5 mx-auto p-3 rounded">
-        <h5 class="health-group-header">Health and Safety-Related Questions</h5>
-        <table class="table striped" v-if="!form">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" class="text-center">Yes</th>
-              <th scope="col" class="text-center">No</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in healthDec.safety_questions" :key="index">
-              <td>{{item.question}}</td>
-              <td><span class="font-weight-bold" v-if="item.answer === 'yes'">X</span></td>
-              <td><span class="font-weight-bold" v-if="item.answer === 'no'">X</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="table table-striped" v-if="form">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" class="text-center">Yes</th>
-              <th scope="col" class="text-center">No</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Did you visit any hospital, clinic, or nursing home in the past fourteen (14) days?</td>
-              <td><input class="col-12" type="radio" name="hospital" id="hospital-yes" value="Yes" required></td>
-              <td><input type="radio" name="hospital" id="hospital-no" class="col-12" value="No"></td>
-            </tr>
-            
-            <tr>
-              <td>Have you been in contact with a suspected or confirmed SARS - COV (COVID-19) patient for the past courteen (14) days?</td>
-              <td><input class="col-12" type="radio" name="contact" id="contact-yes" value="Yes" required></td>
-              <td><input type="radio" name="contact" id="contact-no" class="col-12" value="No"></td>
-            </tr>
+        <div class="border border-2 my-5 mx-auto p-3 rounded">
+          <h5 class="health-group-header">Health and Safety-Related Questions</h5>
+          <table class="table striped" v-if="!form">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col" class="text-center">Yes</th>
+                <th scope="col" class="text-center">No</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in healthDec.safety_questions" :key="index">
+                <td>{{item.question}}</td>
+                <td><span class="font-weight-bold" v-if="item.answer === 'yes'">X</span></td>
+                <td><span class="font-weight-bold" v-if="item.answer === 'no'">X</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-striped" v-if="form">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col" class="text-center">Yes</th>
+                <th scope="col" class="text-center">No</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Did you visit any hospital, clinic, or nursing home in the past fourteen (14) days?</td>
+                <td><input class="col-12" type="radio" name="hospital" id="hospital-yes" value="Yes" required></td>
+                <td><input type="radio" name="hospital" id="hospital-no" class="col-12" value="No"></td>
+              </tr>
+              
+              <tr>
+                <td>Have you been in contact with a suspected or confirmed SARS - COV (COVID-19) patient for the past courteen (14) days?</td>
+                <td><input class="col-12" type="radio" name="contact" id="contact-yes" value="Yes" required></td>
+                <td><input type="radio" name="contact" id="contact-no" class="col-12" value="No"></td>
+              </tr>
 
-            <tr>
-              <td>Do you have any household member/s, or close friend/s who have met a person currently having a fever, cough and/or respiratory problems?</td>
-              <td><input class="col-12" type="radio" name="household" id="household-yes" value="Yes" required></td>
-              <td><input type="radio" name="household" id="household-no" class="col-12" value="No"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <p>
-        <small>
-          <i><b>Data Privacy Notice:</b> {{data.merchant.name}}, in line with Republic Act 10173 or the Data Privacy Act os 2012, is committed to protect and secure personal information obtained in the performances of its duties. The establishment collects the following personal information relevant in the advancement of protocols and precautionary measures against COVID-19 Acute Respiratory Disease. The collected personal information will be kept/stores and accessed only by authorized personnel and will not be shared with any outside parties unless the disclosure is required by, or in compliane with applicable laws and regulations.</i>
-        </small>
-      </p>
-
-      <p>
-        <small>
-          <i><b>Declaration and Data Privacy Consent Form:</b>
-          <br>
-          I knowingly and voluntarily agree to the terms of this binding Declaration, and in doing so represent the truthfulness and veracity of the above answers. I understand that the failure to answer any questions or giving false answer can be penalized in the accordance with the law. Relative thereto, I voluntarily and freely consent to the processing and collection of personal data only in relation to COVID-19 internal protocols.</i>
-        </small>
-      </p>
-      <div class="my-5" v-if="!form"></div>
-      <div class="row justify-content-end" id="submit" v-if="form">
-        <div class="col-2">
-          <button class="btn btn-success btn-lg mb-5" type="button" @click="submitForm()">Submit</button> 
+              <tr>
+                <td>Do you have any household member/s, or close friend/s who have met a person currently having a fever, cough and/or respiratory problems?</td>
+                <td><input class="col-12" type="radio" name="household" id="household-yes" value="Yes" required></td>
+                <td><input type="radio" name="household" id="household-no" class="col-12" value="No"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-    </form>
+
+        <p>
+          <small>
+            <i><b>Data Privacy Notice:</b> {{data.merchant.name}}, in line with Republic Act 10173 or the Data Privacy Act os 2012, is committed to protect and secure personal information obtained in the performances of its duties. The establishment collects the following personal information relevant in the advancement of protocols and precautionary measures against COVID-19 Acute Respiratory Disease. The collected personal information will be kept/stores and accessed only by authorized personnel and will not be shared with any outside parties unless the disclosure is required by, or in compliane with applicable laws and regulations.</i>
+          </small>
+        </p>
+
+        <p>
+          <small>
+            <i><b>Declaration and Data Privacy Consent Form:</b>
+            <br>
+            I knowingly and voluntarily agree to the terms of this binding Declaration, and in doing so represent the truthfulness and veracity of the above answers. I understand that the failure to answer any questions or giving false answer can be penalized in the accordance with the law. Relative thereto, I voluntarily and freely consent to the processing and collection of personal data only in relation to COVID-19 internal protocols.</i>
+          </small>
+        </p>
+        <div class="my-5" v-if="!form"></div>
+        <div class="row justify-content-end" id="submit" v-if="form">
+          <div class="col-2">
+            <button class="btn btn-success btn-lg mb-5" type="button" @click="submitForm()">Submit</button> 
+          </div>
+        </div>
+      </form>
+    </div>
+    <div v-if="data !== null && data.merchant === null" class="col-10 mx-auto mt-5 d-flex align-items-center">
+      <h3 class="w-100 text-center">Invalid form, no merchant found</h3>
+    </div>
   </div>
 </template>
 <style lang="scss">
@@ -473,6 +478,17 @@ export default {
       country: [],
       locality: [],
       otherSymptoms: 0
+    }
+  },
+  computed: {
+    getFullPath() {
+      return this.$route.path
+    }
+  },
+  watch: {
+    getFullPath() {
+      this.code = this.$route.params.code
+      this.retrieve()
     }
   },
   methods: {
