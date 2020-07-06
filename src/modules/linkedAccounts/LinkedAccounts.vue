@@ -156,7 +156,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <div class="modal-title text-white" id="unlinkHeader">Unlink Header</div>
+            <div class="modal-title" id="unlinkHeader">Unlink Account</div>
             <button type="button" class="close" @click="hideModal('unlink')" aria-label="Close">
               <span aria-hidden="true" class="text-primary">&times;</span>
             </button>
