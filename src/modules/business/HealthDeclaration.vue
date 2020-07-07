@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div v-if="data !== null && data.merchant !== null" class="col-10 mx-auto mt-5">
-      <div class="mx-auto col-2 mt-3">
-        <img :src="config.BACKEND_URL+data.merchant.logo" :alt="data.merchant.name" class="img-fluid">
+    <div v-if="data !== null && data.merchant !== null" class="mt-5 form-wrapper">
+      <div class="mt-3 text-center">
+        <img v-if="data.merchant.logo" :src="config.BACKEND_URL+data.merchant.logo" width="80" height="80" :alt="data.merchant.name" class="img-fluid">
+        <span v-else class="fa fa-user-circle-o" style="font-size: 80px"></span>
       </div>
       <div class="mx-auto text-center mb-4">
         <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
@@ -19,24 +20,24 @@
           <h5 class="health-group-header">Personal Information</h5>
           <div v-if="form">
             <div class="row">
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="lastName" class="required">Last Name</label>
                 <input class="form-control" type="text" name="last_name" id="lastName" placeholder="Enter Last Name" :value="healthDec.personalInformation.last_name ? healthDec.personalInformation.last_name : userInfo.last_name ? userInfo.last_name : ''" required>
               </div>
 
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="firstName" class="required">First Name</label>
                 <input class="form-control" type="text" name="first_name" id="firstName" placeholder="Enter First Name" :value="healthDec.personalInformation.first_name ? healthDec.personalInformation.first_name : userInfo.first_name ? userInfo.first_name : ''" required>
               </div>
 
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="middleInitial" class="required">Middle Name</label>
                 <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" :value="healthDec.personalInformation.middle_initial ? healthDec.personalInformation.middle_initial : userInfo.middle_name ? userInfo.middle_name : ''" required>
               </div>
             </div>
 
             <div class="row">
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="gender" class="required">Sex</label>
                 <div>
                   <div class="custom-control custom-radio custom-control-inline">
@@ -50,12 +51,12 @@
                 </div>
               </div>
 
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="birthday" class="required">Date of Birth</label>
                 <input type="date" name="birth_date" id="birthday" class="form-control" :value="userInfo.birth_date ? userInfo.birth_date : ''" required>
               </div>
 
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="civilStatus" class="required">Civil Status</label>
                 <div>
                   <div class="custom-control custom-radio custom-control-inline">
@@ -76,17 +77,17 @@
             </div>
 
             <div class="row">
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="occupation" class="required">Occupation</label>
                 <input type="text" name="occupation" id="occupation" class="form-control" placeholder="Enter Occupation" required>
               </div>
 
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="contactNum" class="required">Tel./Mobile No.</label>
                 <input type="text" name="contact_number" id="contactNum" class="form-control" placeholder="Enter Contact Information" required>
               </div>
 
-              <div class="form-group col-4">
+              <div class="form-group col-md-4">
                 <label for="email" class="required">Email</label>
                 <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" :value="user.email" required>
               </div>
@@ -150,36 +151,36 @@
             </li>
           </ul>
           <div class="row" v-if="form">
-            <div class="form-group col-3">
+            <div class="form-group col-md-3">
               <label for="arrivalDate">Arrival Date</label>
               <input type="date" name="arrivalDate" id="arrivalDate" class="form-control">
             </div>
             
-            <div class="form-group col-3">
+            <div class="form-group col-md-3">
               <label for="origin">Port of Origin:</label>
               <input type="text" name="origin" id="origin" class="form-control" placeholder="Enter Origin">
             </div>
 
-            <div class="form-group col-3">
+            <div class="form-group col-md-3">
               <label for="flight">Flight No.</label>
               <input type="text" name="flight" id="flight" class="form-control" placeholder="Enter Flight No.">
             </div>
 
-            <div class="form-group col-2">
+            <div class="form-group col-md-2">
               <label for="seat">Seat No.</label>
               <input type="text" name="seat" id="seat" class="form-control" placeholder="Enter Seat No.">
             </div>
 
-            <div class="form-group col-1">
-              <label class="text-white">Empty</label>
-              <button class="col-12 btn btn-success" type="button" @click="addTranspo">
+            <div class="form-group col-sm-12 col-md-1">
+              <label class="text-white d-none d-md-block">Empty</label>
+              <button class="btn btn-success add-button" type="button" @click="addTranspo()">
                 <i class="fa fa-plus"></i>
               </button>
             </div>
           </div>
           <hr>
           <div class="row">
-            <div class="col-6 border border-top-0 border-left-0 border-bottom-0">
+            <div class="col-md-6 border border-top-0 border-left-0 border-bottom-0">
               <h6 class="font-weight-bold mt-4">Countries visited for the past fourteen (14) days:</h6>
               <ul v-if="!form" id="countries" class="mb-3 list-group mx-3">
                 <li class="list-group-item" v-for="(item, index) in healthDec.travelHistory.countries" :key="index">
@@ -191,7 +192,7 @@
                   <label for="country">Country</label>
                   <input type="text" name="country" id="country" class="form-control" placeholder="Enter Country">
                 </div>
-                <div class="frorm-group col-1">
+                <div class="frorm-group col-1 pl-0">
                   <label class="text-white">Empty</label>
                   <button class="btn btn-success" type="button" @click="addPlace('country')">
                     <i class="fa fa-plus"></i>
@@ -199,7 +200,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
               <h6 class="font-weight-bold mt-4">Cities / municipalities in the Philippines visited for the past fourteen (14) days:</h6>
               <ul v-if="!form" id="localities" class="mb-3 list-group mx-3">
                 <li class="list-group-item" v-for="(item, index) in healthDec.travelHistory.localities" :key="index">
@@ -211,7 +212,7 @@
                   <label for="locality">City / Municipality</label>
                   <input type="text" name="locality" id="locality" class="form-control" placeholder="Enter City / Municipality">
                 </div>
-                <div class="form-group col-1">
+                <div class="form-group col-1 pl-0">
                   <label class="text-white">Empty</label>
                   <button class="btn btn-success" type="button" @click="addPlace('locality')">
                     <i class="fa fa-plus"></i>
@@ -235,58 +236,56 @@
           </ul>
 
           <div v-if="form">
-            <div class="row px-3">
-              <div class="form-group col-2">
+            <div class="row px-3 pt-3">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="fever" class="form-control form-control-inline" value="Fever">
                 <label for="fever">Fever</label>
               </div>
               
-              <div class="form-group col-2">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="cough" class="form-control form-control-inline" value="Cough">
                 <label for="cough">Cough</label>
               </div>
 
-              <div class="form-group col-2">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="headache" class="form-control form-control-inline" value="Headache">
                 <label for="headache">Headache</label>
               </div>
 
-              <div class="form-group col-3">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="difficultyBreathing" class="form-control form-control-inline" value="Difficulty of Breathing">
                 <label for="difficultyBreathing">Difficulty of Breathing</label>
               </div>
 
-              <div class="form-group col-3">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="diarrhea" class="form-control form-control-inline" value="Severe Diarrhea">
                 <label for="diarrhea">Sever Diarrhea</label>
               </div>
-            </div>
 
-            <div class="row px-3">
-              <div class="form-group col-2">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="soreThroat" class="form-control form-control-inline" value="Sore Throat">
                 <label for="soreThroat">Sore Throat</label>
               </div>
 
-              <div class="form-group col-3">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="bodyWeakness" class="form-control form-control-inline" value="Body Weakness">
                 <label for="bodyWeakness">Body Weakness</label>
               </div>
 
-              <div class="form-group col-4">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="symptoms" id="bruising" class="form-control form-control-inline" value="Unexplained Bruising or Bleeding">
                 <label for="bruising">Unexplained Bruising or Bleeding</label>
               </div>
 
-              <div class="form-group col-3">
+              <div class="form-group col-md-4 col-sm-6">
                 <input type="checkbox" name="otherSymptoms" id="otherSymptoms" class="form-control form-control-inline" value="1" v-model="otherSymptoms">
                 <label for="otherSymptoms">Others</label>
               </div>
             </div>
 
-            <div class="row">
+            <div class="row" v-if="otherSymptoms">
               <div class="form-group col-12">
-                <input type="text" name="symptoms-others" id="symptoms-others" class="form-control" placeholder="Enter Symptoms" v-if="otherSymptoms" required>
+                <input type="text" name="symptoms-others" id="symptoms-others" class="form-control" placeholder="Enter Symptoms" required>
               </div>
             </div>
           </div>
@@ -354,9 +353,9 @@
           </small>
         </p>
         <div class="my-5" v-if="!form"></div>
-        <div class="row justify-content-end" id="submit" v-if="form">
-          <div class="col-2">
-            <button class="btn btn-success btn-lg mb-5" type="button" @click="submitForm()">Submit</button> 
+        <div class="row" id="submit" v-if="form">
+          <div class="col d-flex justify-content-end">
+            <button class="btn btn-success btn-lg mb-5 add-button" type="button" @click="submitForm()">Submit</button> 
           </div>
         </div>
       </form>
@@ -368,6 +367,19 @@
 </template>
 <style lang="scss">
   @import "~assets/style/colors.scss";
+
+  @media (min-width: 992px) {
+    .form-wrapper {
+      margin-left: 3rem;
+      margin-right: 3rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .add-button {
+      width: 100% !important;
+    }
+  }
 
   .border-2 {
     border-width: 2px !important;
@@ -503,6 +515,7 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('health_declarations/retrieve', parameter).then(response => {
         this.data = response.data[0]
+        console.log('data: ', this.data)
         if(this.data.content === '' || this.data.content === null) {
           this.form = true
         } else {
