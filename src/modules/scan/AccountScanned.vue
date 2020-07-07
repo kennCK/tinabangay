@@ -73,8 +73,8 @@
         <!-- ['USER'] TYPE CANT ADD TEMPERATURE -->
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('customer')">Health Declaration for Customer</button>
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee-checkin')">Health Declaration for Employee Checkin</button>
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee-checkout')">Health Declaration for Employee Checkout</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee_checkin')">Health Declaration for Employee Checkin</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee_checkout')">Health Declaration for Employee Checkout</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
     </div>
@@ -356,6 +356,15 @@ export default {
     sendForm(type) {
       $('#loading').css({display: 'block'})
 
+      let content = null
+      if (type === 'employee_checkin' || type === 'employee_checkout') {
+        content = JSON.stringify({
+          format: type,
+          status: null,
+          statusLabel: null
+        })
+      }
+
       let merchantOwner = this.user.userID
       if (this.user.linked_account) {
         merchantOwner = this.user.linked_account.owner
@@ -365,7 +374,8 @@ export default {
         owner: merchantOwner,
         account_id: this.scannedUserData.id,
         from: this.user.userID,
-        to: this.scannedUserData.id
+        to: this.scannedUserData.id,
+        content
       }
 
       this.APIRequest('health_declarations/create', parameter)
