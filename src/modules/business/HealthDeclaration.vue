@@ -1,6 +1,17 @@
 <template>
   <div>
-    <div v-if="data !== null && data.merchant !== null" class="mt-5 form-wrapper">
+    <!-- FETCHING FORM -->
+    <div v-if="loading" class="mt-5 form-wrapper">
+      <center><h3>Loading form...</h3></center>
+    </div>
+
+    <!-- INVALID HEALTH DECLARATION -->
+    <div v-if="!loading && data.merchant === null" class="col-10 mx-auto mt-5 d-flex align-items-center">
+      <h3 class="w-100 text-center alert alert-danger">Invalid form, no merchant found</h3>
+    </div>
+
+    <!-- HEALTH DECLARATION FOR CUSTOMER -->
+    <div v-if="!loading && formParameters.format === 'customer' && data.merchant !== null" class="mt-5 form-wrapper">
       <div class="mt-3 text-center">
         <img v-if="data.merchant.logo" :src="config.BACKEND_URL+data.merchant.logo" width="80" height="80" :alt="data.merchant.name" class="img-fluid">
         <span v-else class="fa fa-user-circle-o" style="font-size: 80px"></span>
@@ -15,7 +26,7 @@
         <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
       </div>
       <hr>
-      <form method="POST">
+      <form @submit.prevent>
         <div class="border border-2 my-5 mx-auto p-3 rounded">
           <h5 class="health-group-header">Personal Information</h5>
           <div v-if="form">
@@ -31,8 +42,8 @@
               </div>
 
               <div class="form-group col-md-4">
-                <label for="middleInitial" class="required">Middle Name</label>
-                <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" :value="healthDec.personalInformation.middle_initial ? healthDec.personalInformation.middle_initial : userInfo.middle_name ? userInfo.middle_name : ''" required>
+                <label for="middleName" class="required">Middle Name</label>
+                <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" :value="healthDec.personalInformation.middle_name ? healthDec.personalInformation.middle_name : userInfo.middle_name ? userInfo.middle_name : ''" required>
               </div>
             </div>
 
@@ -142,15 +153,15 @@
         <div class="border border-2 my-5 mx-auto p-3 rounded">
           <h5 class="health-group-header">Travel History</h5>
           <h6 class="font-weight-bold mt-4">Transporations:</h6>
-          <ul v-if="!form" id="transportations" class="mb-3 list-group mx-3">
-            <li class="row list-group-item" v-for="(item, index) in healthDec.travelHistory.transportation" :key="index">
-              <span class="col-3 py-2"><b>Arrival Date:</b> {{item.date}}</span>
-              <span class="col-3 py-2"><b>Port of Origin:</b> {{item.origin}}</span>
-              <span class="col-3 py-2"><b>Flight No.:</b> {{item.flight}}</span>
-              <span class="col-3 py-2"><b>Seat No.:</b> {{item.seat}}</span>
+          <ul v-if="!form" class="mb-3 list-group mx-3">
+            <li class="row list-group-item m-0" v-for="(item, index) in healthDec.travelHistory.transportation" :key="index">
+              <span class="col-sm-6 col-md-3 py-2"><b>Arrival Date:</b> {{item.date}}</span>
+              <span class="col-sm-6 col-md-3 py-2"><b>Port of Origin:</b> {{item.origin}}</span>
+              <span class="col-sm-6 col-md-3 py-2"><b>Flight No.:</b> {{item.flight}}</span>
+              <span class="col-sm-6 col-md-3 py-2"><b>Seat No.:</b> {{item.seat}}</span>
             </li>
           </ul>
-          <div class="row" v-if="form">
+          <div id="transportations" class="row" v-if="form">
             <div class="form-group col-md-3">
               <label for="arrivalDate">Arrival Date</label>
               <input type="date" name="arrivalDate" id="arrivalDate" class="form-control">
@@ -187,12 +198,12 @@
                   {{item.title}}
                 </li>
               </ul>
-              <div class="row" v-if="form">
+              <div id="countries" class="row" v-if="form">
                 <div class="form-group col-10">
                   <label for="country">Country</label>
                   <input type="text" name="country" id="country" class="form-control" placeholder="Enter Country">
                 </div>
-                <div class="frorm-group col-1 pl-0">
+                <div class="form-group col-1 pl-0">
                   <label class="text-white">Empty</label>
                   <button class="btn btn-success" type="button" @click="addPlace('country')">
                     <i class="fa fa-plus"></i>
@@ -207,7 +218,7 @@
                   {{item.title}}
                 </li>
               </ul>
-              <div class="row" v-if="form">
+              <div id="localities" class="row" v-if="form">
                 <div class="form-group col-10">
                   <label for="locality">City / Municipality</label>
                   <input type="text" name="locality" id="locality" class="form-control" placeholder="Enter City / Municipality">
@@ -304,8 +315,8 @@
             <tbody>
               <tr v-for="(item, index) in healthDec.safety_questions" :key="index">
                 <td>{{item.question}}</td>
-                <td><span class="font-weight-bold" v-if="item.answer === 'yes'">X</span></td>
-                <td><span class="font-weight-bold" v-if="item.answer === 'no'">X</span></td>
+                <td class="text-center"><span class="font-weight-bold" v-if="item.answer === 'yes'">X</span></td>
+                <td class="text-center"><span class="font-weight-bold" v-if="item.answer === 'no'">X</span></td>
               </tr>
             </tbody>
           </table>
@@ -360,8 +371,15 @@
         </div>
       </form>
     </div>
-    <div v-if="data !== null && data.merchant === null" class="col-10 mx-auto mt-5 d-flex align-items-center">
-      <h3 class="w-100 text-center">Invalid form, no merchant found</h3>
+    
+    <!-- HEALTH DECLARATION FOR EMPLOYEE CHECKIN -->
+    <div v-if="!loading && formParameters.format === 'employee_checkin' && data.merchant !== null" class="mt-5 form-wrapper">
+      <center><h2>EMPLOYEE_CHECKIN</h2></center>
+    </div>
+
+    <!-- HEALTH DECLARATION FOR EMPLOYEE CHECKOUT -->
+    <div v-if="!loading && formParameters.format === 'employee_checkout' && data.merchant !== null" class="mt-5 form-wrapper">
+      <center><h2>EMPLOYEE_CHECKOUT</h2></center>
     </div>
   </div>
 </template>
@@ -479,6 +497,13 @@ export default {
     return{
       user: AUTH.user,
       healthDec: COMMON.healthDec,
+      loading: true,
+      // customer employee_checkin employee_checkout
+      formParameters: {
+        format: 'customer',
+        status: null,
+        statusLabel: null
+      },
       form: false,
       code: null,
       data: null,
@@ -505,6 +530,7 @@ export default {
   },
   methods: {
     retrieve() {
+      this.loading = true
       let parameter = {
         condition: [{
           value: this.code,
@@ -512,14 +538,23 @@ export default {
           clause: '='
         }]
       }
-      $('#loading').css({display: 'block'})
+
       this.APIRequest('health_declarations/retrieve', parameter).then(response => {
         this.data = response.data[0]
-        console.log('data: ', this.data)
-        if(this.data.content === '' || this.data.content === null) {
+        if (this.data.content === '' || this.data.content === null) {
           this.form = true
+          this.formParameters.format = 'customer'
         } else {
-          this.healthDec = JSON.parse(this.data.content)
+          const parsedContent = JSON.parse(this.data.content)
+          if (Object.keys(parsedContent).length === 3) {
+            this.form = true
+          } else {
+            this.form = false
+            this.healthDec = parsedContent
+          }
+          this.formParameters.format = parsedContent.format
+          this.formParameters.status = parsedContent.status
+          this.formParameters.statusLabel = parsedContent.statusLabel
         }
 
         let par = {
@@ -531,15 +566,16 @@ export default {
         }
 
         this.APIRequest('account_informations/retrieve', par).then(res => {
-          $('#loading').css({display: 'none'})
           this.userInfo = res.data[0]
           this.gender = this.userInfo.sex
+          this.loading = false
+          $('#loading').css({display: 'none'})
         })
       })
     },
     addTranspo() {
       let flag = this.checkTranspo()
-      let inputs = $('#transportations + .row input')
+      let inputs = $('#transportations .form-group input')
       inputs.map((index, input) => {
         $(input).removeClass('is-invalid')
       })
@@ -550,13 +586,14 @@ export default {
           flight: $('#flight').val(),
           seat: $('#seat').val()
         }
-        $('<li>', {
-          class: 'row list-group-item',
-          html: `<span class="col-3 py-2"><b>Arrival Date:</b> <span class="arrival">${info.date}</span></span>
-          <span class="col-3 py-2"><b>Port of Origin:</b> <span class="origin">${info.origin}</span></span>
-          <span class="col-3 py-2"><b>Flight No.:</b> <span class="flight">${info.flight}</span></span>
-          <span class="col-2 py-2"><b>Seat No.:</b> <span class="seat">${info.seat}</span></span>
-          <span class="col-1"></span>`
+        $('<div>', {
+          id: 'transpo-list',
+          class: 'row list-group-item w-100 my-0 mx-4',
+          html: `<span class="col-sm-3 py-2"><b>Arrival Date:</b> <span class="arrival">${info.date}</span></span>
+          <span class="col-sm-3 py-2"><b>Port of Origin:</b> <span class="origin">${info.origin}</span></span>
+          <span class="col-sm-3 py-2"><b>Flight No.:</b> <span class="flight">${info.flight}</span></span>
+          <span class="col-sm-2 py-2"><b>Seat No.:</b> <span class="seat">${info.seat}</span></span>
+          <span id="transpo-list-delete" class="col-sm-1"></span>`
         }).appendTo('#transportations')
 
         $('<button>', {
@@ -566,7 +603,7 @@ export default {
           click: (e) => {
             this.deleteTranspo($(event.target))
           }
-        }).appendTo('#transportations .row:last-child span.col-1')
+        }).appendTo('#transpo-list:last-child #transpo-list-delete')
 
         this.transpo.push(info)
 
@@ -579,7 +616,7 @@ export default {
     },
     checkTranspo() {
       let flag = {empty: false}
-      let inputs = $('#transportations + .row input')
+      let inputs = $('#transportations .form-group input')
       inputs.map((index, input) => {
         if(!flag.empty && ($(input).val() === '' || $(input).val() === undefined || $(input).val() === null)) {
           flag = {empty: true, info: $(input).attr('id')}
@@ -596,7 +633,8 @@ export default {
         flight: parent.find('.flight').html(),
         seat: parent.find('.seat').html()
       }
-      this.transpo = this.transpo.filter(item => item.date !== info.date && item.origin !== info.origin && item.flight !== info.flight && item.seat !== info.seat)
+      const updatedList = this.transpo.filter(item => JSON.stringify(item) !== JSON.stringify(info))
+      this.transpo = [...updatedList]
       parent.remove()
     },
     addPlace(type) {
@@ -605,9 +643,10 @@ export default {
         $(`#${type}`).addClass('is-invalid')
       } else {
         let info = {title: $(`#${type}`).val()}
-        $('<li>', {
-          class: 'row list-group-item',
-          html: `<span class="col-10 py-2">${info.title}</span><span class="col-2"></span>`
+        $('<div>', {
+          class: 'row list-group-item w-100 my-0 mx-4 d-flex justify-content-between align-items-center',
+          html: `<span>${info.title}</span>
+                 <span></span>`
         }).appendTo(type === 'country' ? '#countries' : '#localities')
 
         $('<button>', {
@@ -625,14 +664,14 @@ export default {
     },
     deletePlace(type, elem) {
       let parent = $(elem).parent().parent()
-      let info = parent.find('span:first-child').html()
-      this[type] = this[type].filter(item => item.title !== info)
+      let selectedTitle = parent.find('span:first-child').html()
+      this[type] = this[type].filter(item => item.title !== selectedTitle)
       parent.remove()
     },
     submitForm(){
       this.healthDec = COMMON.healthDec
       let valid = this.checkRequired()
-      if(valid) {
+      if (valid) {
         for(let [key, val] of Object.entries(this.healthDec.personalInformation)) {
           if(key === 'gender') {
             this.healthDec.personalInformation[key] = this.gender
@@ -660,13 +699,15 @@ export default {
           }
           this.healthDec.symptoms.push(obj)
         })
-        if($('input[name=otherSymptoms]').is(':checked')) {
+
+        if ($('input[name=otherSymptoms]').is(':checked')) {
           let obj = {
             question: 'Other Symptoms',
             answer: $('input[name="symptoms-others"]').val()
           }
           this.healthDec.symptoms.push(obj)
         }
+
         let rows = $('tbody tr')
         this.healthDec.safety_questions = []
         rows.map((i, elem) => {
@@ -676,12 +717,20 @@ export default {
           }
           this.healthDec.safety_questions.push(obj)
         })
+
+        this.healthDec.format = this.formParameters.format
+        this.healthDec.status = this.formParameters.status
+        this.healthDec.statusLabel = this.formParameters.statusLabel
+
+        $('#loading').css({display: 'block'})
         let param = {
           id: this.data.id,
           content: JSON.stringify(this.healthDec),
           account_id: this.data.account_id,
           code: this.data.code,
-          owner: this.data.owner
+          owner: this.data.owner,
+          from: this.user.userID,
+          to: this.data.owner
         }
         this.APIRequest('health_declarations/update', param).then(response => {
           this.retrieve()
