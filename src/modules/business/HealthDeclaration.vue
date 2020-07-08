@@ -152,8 +152,8 @@
 
         <div class="border border-2 my-5 mx-auto p-3 rounded">
           <h5 class="health-group-header">Travel History</h5>
-          <h6 class="font-weight-bold mt-4">Transporations:</h6>
-          <ul v-if="!form" class="mb-3 list-group mx-3">
+          <h6 :class="['font-weight-bold', 'mt-4', { 'd-inline-flex': healthDec.travelHistory.transportation.length <= 0 }]">Transporations:</h6>
+          <ul v-if="!form && healthDec.travelHistory.transportation.length > 0" class="mb-3 list-group mx-3">
             <li class="row list-group-item m-0" v-for="(item, index) in healthDec.travelHistory.transportation" :key="index">
               <span class="col-sm-6 col-md-3 py-2"><b>Arrival Date:</b> {{item.date}}</span>
               <span class="col-sm-6 col-md-3 py-2"><b>Port of Origin:</b> {{item.origin}}</span>
@@ -161,6 +161,7 @@
               <span class="col-sm-6 col-md-3 py-2"><b>Seat No.:</b> {{item.seat}}</span>
             </li>
           </ul>
+          <span v-if="!form && healthDec.travelHistory.transportation.length <= 0" class="d-inline">None</span>
           <div id="transportations" class="row" v-if="form">
             <div class="form-group col-md-3">
               <label for="arrivalDate">Arrival Date</label>
@@ -192,12 +193,13 @@
           <hr>
           <div class="row">
             <div class="col-md-6 border border-top-0 border-left-0 border-bottom-0">
-              <h6 class="font-weight-bold mt-4">Countries visited for the past fourteen (14) days:</h6>
-              <ul v-if="!form" id="countries" class="mb-3 list-group mx-3">
+              <h6 :class="['font-weight-bold', 'mt-4', { 'd-inline-flex': healthDec.travelHistory.countries.length <= 0 }]">Countries visited for the past fourteen (14) days:</h6>
+              <ul v-if="!form && healthDec.travelHistory.countries.length > 0" id="countries" class="mb-3 list-group mx-3">
                 <li class="list-group-item" v-for="(item, index) in healthDec.travelHistory.countries" :key="index">
                   {{item.title}}
                 </li>
               </ul>
+              <span v-if="!form && healthDec.travelHistory.countries.length <= 0" class="d-inline">None</span>
               <div id="countries" class="row" v-if="form">
                 <div class="form-group col-10">
                   <label for="country">Country</label>
@@ -212,12 +214,13 @@
               </div>
             </div>
             <div class="col-md-6">
-              <h6 class="font-weight-bold mt-4">Cities / municipalities in the Philippines visited for the past fourteen (14) days:</h6>
-              <ul v-if="!form" id="localities" class="mb-3 list-group mx-3">
+              <h6 :class="['font-weight-bold', 'mt-4', { 'd-inline-flex': healthDec.travelHistory.localities.length <= 0 }]">Cities / municipalities in the Philippines visited for the past fourteen (14) days:</h6>
+              <ul v-if="!form && healthDec.travelHistory.localities.length > 0" id="localities" class="mb-3 list-group mx-3">
                 <li class="list-group-item" v-for="(item, index) in healthDec.travelHistory.localities" :key="index">
                   {{item.title}}
                 </li>
               </ul>
+              <span v-if="!form && healthDec.travelHistory.localities.length <= 0" class="d-inline">None</span>
               <div id="localities" class="row" v-if="form">
                 <div class="form-group col-10">
                   <label for="locality">City / Municipality</label>
@@ -315,8 +318,8 @@
             <tbody>
               <tr v-for="(item, index) in healthDec.safety_questions" :key="index">
                 <td>{{item.question}}</td>
-                <td class="text-center"><span class="font-weight-bold" v-if="item.answer === 'yes'">X</span></td>
-                <td class="text-center"><span class="font-weight-bold" v-if="item.answer === 'no'">X</span></td>
+                <td class="text-center text-danger"><span class="font-weight-bold" v-if="item.answer === 'yes'">X</span></td>
+                <td class="text-center text-success"><span class="font-weight-bold" v-if="item.answer === 'no'">X</span></td>
               </tr>
             </tbody>
           </table>
