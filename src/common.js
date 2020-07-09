@@ -95,6 +95,38 @@ export default {
     label: 'Others',
     value: 'others'
   }],
+  symptomsHealthDec: [{
+    label: 'Fever',
+    translate: 'Lagnat',
+    value: 'fever'
+  }, {
+    label: 'Headache',
+    translate: 'Sakit ng ulo',
+    value: 'headache'
+  }, {
+    label: 'Sore Throat',
+    translate: 'Namamagang lalamunan',
+    value: 'sore-throat'
+  }, {
+    label: 'Cough',
+    translate: 'Ubo'
+  }, {
+    label: 'Difficulty of Breathing',
+    translate: 'Kahirapan sa paghinga',
+    value: 'difficulty-of-breathing'
+  }, {
+    label: 'Body Weakness',
+    translate: 'Paghihina ng katawan',
+    value: 'body-weakness'
+  }, {
+    label: 'Unexplained Bruising or Bleeding',
+    translate: 'hindi maipaliwanag na mga pasa',
+    value: 'unexplained-bruising-or-bleeding'
+  }, {
+    label: 'Severe Diarrhea',
+    translate: 'Matinding pagtatae',
+    value: 'severe-diarrhea'
+  }],
   symptoms: [{
     label: 'Fever',
     value: 'fever'
