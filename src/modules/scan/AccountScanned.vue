@@ -356,19 +356,17 @@ export default {
     sendForm(type) {
       $('#loading').css({display: 'block'})
 
-      let content = null
-      if (type === 'employee_checkin' || type === 'employee_checkout') {
-        content = JSON.stringify({
-          format: type,
-          status: null,
-          statusLabel: null
-        })
-      }
-
       let merchantOwner = this.user.userID
       if (this.user.linked_account) {
         merchantOwner = this.user.linked_account.owner
       }
+
+      let content = JSON.stringify({
+        format: type,
+        status: null,
+        statusLabel: null,
+        location: merchantOwner === this.user.userID ? this.user.location : this.user.assigned_location
+      })
 
       const parameter = {
         owner: merchantOwner,

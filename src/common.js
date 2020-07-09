@@ -71,6 +71,9 @@ export default {
     label: 'Bus',
     value: 'bus'
   }, {
+    label: 'Bicycle',
+    value: 'bicycle'
+  }, {
     label: 'Plane',
     value: 'plane'
   }, {
@@ -83,11 +86,20 @@ export default {
     label: 'Motorcycle',
     value: 'motorcycle'
   }, {
+    label: 'Grab/Angkas',
+    value: 'grab/angkas'
+  }, {
     label: 'Shippings',
     value: 'shppings'
   }, {
     label: 'Train',
     value: 'train'
+  }, {
+    label: 'Taxi',
+    value: 'taxi'
+  }, {
+    label: 'Tricycle',
+    value: 'tricycle'
   }, {
     label: 'Van',
     value: 'van'
@@ -106,26 +118,26 @@ export default {
   }, {
     label: 'Sore Throat',
     translate: 'Namamagang lalamunan',
-    value: 'sore-throat'
+    value: 'sore_throat'
   }, {
     label: 'Cough',
     translate: 'Ubo'
   }, {
     label: 'Difficulty of Breathing',
     translate: 'Kahirapan sa paghinga',
-    value: 'difficulty-of-breathing'
+    value: 'difficulty_of_breathing'
   }, {
     label: 'Body Weakness',
     translate: 'Paghihina ng katawan',
-    value: 'body-weakness'
+    value: 'body_weakness'
   }, {
     label: 'Unexplained Bruising or Bleeding',
     translate: 'hindi maipaliwanag na mga pasa',
-    value: 'unexplained-bruising-or-bleeding'
+    value: 'unexplained_bruising_or_bleeding'
   }, {
     label: 'Severe Diarrhea',
     translate: 'Matinding pagtatae',
-    value: 'severe-diarrhea'
+    value: 'severe_diarrhea'
   }],
   symptoms: [{
     label: 'Fever',
@@ -162,7 +174,11 @@ export default {
       localities: []
     },
     symptoms: [],
-    safety_questions: []
+    safety_questions: [],
+    company: {
+      person_in_contact: [],
+      related_questions: []
+    }
   },
   broadcastingFlag: true,
   passwordLimit: 8,
