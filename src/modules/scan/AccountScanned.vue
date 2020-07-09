@@ -317,7 +317,7 @@ export default {
         added_by: this.user.userID,
         value: this.temperatureInputs.value,
         remarks: this.temperatureInputs.remarks.trim() || null,
-        location: null
+        location: this.user.assigned_location
       }
       this.APIRequest('temperatures/create', parameters).then(response => {
         if (response.error.length > 0) console.log(`Error: ${response.error}`)
