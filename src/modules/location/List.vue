@@ -14,7 +14,7 @@
               {{item.route}}
             </label>
             <label class="card-title">
-              {{item.locality + ', ' + item.country}}
+              {{item.locality ? item.locality : ''}} {{item.country === null ? '' : item.location ? `,  ${item.country}` : item.country}}
             </label>
           </div> 
           <button class="btn btn-secondary" @click="selectedBranch = item" type="button" data-toggle="modal" data-target="#delete"><i class="fa fa-trash"></i></button>
