@@ -4,7 +4,7 @@
       <!-- <span class="loading">
         <i class="fas fa-circle-o-notch fa-spin"></i>
       </span> -->
-      <div class="loadingV2"><div></div><div></div><div></div></div>
+      <img class="image_loader" src="../../assets/img/logo_white.png" width="100" height="100" />
     </div>
   </div>
 </template>
@@ -13,7 +13,6 @@
 <style scoped lang="scss">
 @import "~assets/style/colors.scss";
 .customModal{
-  backdrop-filter: blur(1px);
   position: fixed;
   background: rgba(254, 254, 254, 0);
   top: 0;
@@ -45,43 +44,23 @@
   animation-duration: 0.70s;
 }
 
-// lds-fb
-.loadingV2 {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: calc(50vh - 80px) auto 0 auto;
-}
-.loadingV2 div {
-  display: inline-block;
-  position: absolute;
-  left: 8px;
-  width: 16px;
-  background: $primary;
-  animation: loadingV2 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-}
-.loadingV2 div:nth-child(1) {
-  left: 8px;
-  animation-delay: -0.24s;
-}
-.loadingV2 div:nth-child(2) {
-  left: 32px;
-  animation-delay: -0.12s;
-}
-.loadingV2 div:nth-child(3) {
-  left: 56px;
-  animation-delay: 0;
-}
-@keyframes loadingV2 {
+// image loader
+@keyframes flip-with-scale {
   0% {
-    top: 8px;
-    height: 64px;
+      transform: scaleX(1);
   }
-  50%, 100% {
-    top: 24px;
-    height: 32px;
+
+  100% {
+      transform: scaleX(-1);
   }
 }
-
+.image_loader {
+  margin: calc(50vh - 100px) auto 0 auto;
+  animation-timing-function: ease-in-out;
+  animation-duration: 1s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  box-shadow: none !important;
+  animation-name: flip-with-scale;
+}
 </style>
