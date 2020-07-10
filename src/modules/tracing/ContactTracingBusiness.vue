@@ -7,10 +7,14 @@
       <select class="form-control" v-model="selectedOption" @change="chageOption()">
         <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
       </select>
+      <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null && selectedOption === 'customers'">
+        <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
+      </select>
       <select class="form-control" v-model="selectedWeek" @change="getDate()" v-if="selectedOption === 'customers'">
         <option v-for="(item, index) in 8" :key="index" :value="item">Last {{item > 1 ? item + ' Weeks' : item + ' Week'}}</option>
       </select>
-      <button class="btn btn-primary" @click="retrieve()">Search</button>
+      <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
+      <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
     </div>
 
     <!-- Results for Visited Places -->
@@ -34,7 +38,7 @@
             <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
           </td>
           <td>
-            <i class="text-primary text-uppercase">COMING SOON!</i>
+            <button class="btn btn-primary">View Health Declaration</button>
           </td>
         </tr>
       </tbody>
@@ -72,7 +76,7 @@
             <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
           </td>
           <td>
-            <i class="text-primary text-uppercase">COMING SOON!</i>
+            <button class="btn btn-primary">View Health Declaration</button>
           </td>
         </tr>
       </tbody>
@@ -95,7 +99,7 @@
   height: 45px !important;
 }
 
-.btn{
+.btn-custom{
   height: 45px !important;
 }
 .bg-primary, .badge-primary{
@@ -126,6 +130,7 @@ export default {
       ROUTER.push('/dashboard')
     }
     this.getDate()
+    this.getLocation()
   },
   data(){
     return {
@@ -155,7 +160,9 @@ export default {
       statusFlag: false,
       sortedData: [],
       selectedRadius: 0.1,
-      typeFlag: false
+      typeFlag: false,
+      selectedLocationIndex: null,
+      locations: null
     }
   },
   components: {
@@ -163,6 +170,29 @@ export default {
     'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue')
   },
   methods: {
+    getLocation(){
+      let parameter = {
+        conditions: [{
+          value: this.user.userID,
+          column: 'account_id',
+          clause: '='
+        }, {
+          value: null,
+          column: 'assigned_code',
+          clause: '='
+        }]
+      }
+      this.APIRequest('locations/retrieve', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        if(response.data.length > 0){
+          this.selectedLocationIndex = 0
+          this.locations = response.data
+        }else{
+          this.selectedLocationIndex = null
+          this.locations = null
+        }
+      })
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
@@ -190,9 +220,9 @@ export default {
       })
     },
     retrieve(){
-      if(this.user.location === null){
-        return
-      }
+      // if(this.user.location === null){
+      //   return
+      // }
       if(this.selectedOption === 'linked_accounts'){
         let parameter = {
           condition: [{
@@ -208,18 +238,15 @@ export default {
           this.sortedData = response.data
         })
       }else if(this.selectedOption === 'customers'){
-        if(this.user.location === null){
-          return
-        }
         let parameter = {
           condition: [{
-            clause: 'like',
+            clause: '=',
             column: 'latitude',
-            value: this.user.location.latitude + '%'
+            value: this.locations[this.selectedLocationIndex].latitude
           }, {
-            clause: 'like',
+            clause: '=',
             column: 'longitude',
-            value: this.user.location.longitude + '%'
+            value: this.locations[this.selectedLocationIndex].longitude
           }, {
             clause: '>=',
             column: 'date',
