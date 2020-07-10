@@ -17,6 +17,7 @@ export default {
     status: null,
     linked_account: null,
     location: null,
+    assigned_location: null,
     profile: null,
     amount: null,
     subAccount: null,
@@ -65,7 +66,7 @@ export default {
   },
   echo: null,
   currentPath: false,
-  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code, location, linkedAccount){
+  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code, location, linkedAccount, assignedLocation){
     if(userID === null){
       username = null
       email = null
@@ -77,6 +78,7 @@ export default {
       code = null
       location = null
       linkedAccount = null
+      assignedLocation = null
     }
     this.user.userID = userID * 1
     this.user.username = username
@@ -89,6 +91,7 @@ export default {
     this.user.code = code
     this.user.location = location
     this.user.linked_account = linkedAccount
+    this.user.assigned_location = assignedLocation
     localStorage.setItem('account_id', this.user.userID)
     if(this.user.userID > 0){
       this.checkConsent(this.user.userID)
@@ -164,7 +167,8 @@ export default {
           let subAccount = response.data[0].sub_account
           let location = response.data[0].location
           let linkedAccount = response.data[0].linked_account
-          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount)
+          let assignedLocation = response.data[0].assigned_location
+          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation)
         }).done(response => {
           this.tokenData.verifyingToken = false
           let location = window.location.href
@@ -346,7 +350,8 @@ export default {
     let subAccount = data[0].sub_account
     let location = data[0].location
     let linkedAccount = data[0].linked_account
-    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount)
+    let assignedLocation = data[0].assigned_location
+    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation)
     ROUTER.push('/dashboard')
   },
   setGoogleCode(code, scope){

@@ -54,23 +54,11 @@
         </div>
       </div>
 
-      <!-- TEMP (FOR DEVELOPMENT ONLY) -->
-      <div v-if="selectedOption !== ''" class="mb-4">
-        <p class="alert alert-warning  alert-dismissible fade show" role="alert">
-          <strong>{{ selectedOption }}</strong> 
-          option is currently in development
-          <button @click="selectedOption = ''" type="button" class="close" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </p>
-      </div>
-      <!-- END TEMP -->
-
       <!-- SUCCESS LINKING MESSAGE -->
-      <div v-if="successLinking">
-        <p class="alert alert-success  alert-dismissible fade show" role="alert">
-          Linked successfully. <span class="text-capitalize">{{ scannedUserData.username }}</span> is now linked to your account.
-          <button @click="successLinking = false" type="button" class="close" aria-label="Close">
+      <div v-if="alertMessage.message !== null">
+        <p :class="`alert ${alertMessage.type ? `alert-${alertMessage.type}` : ''} alert-dismissible fade show`" role="alert">
+          {{ alertMessage.message }}
+          <button @click="alertMessage = { type: null, message: null }" type="button" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </p>
@@ -84,7 +72,9 @@
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
         <!-- ['USER'] TYPE CANT ADD TEMPERATURE -->
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="selectedOption = 'Send form'">Send form</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('customer')">Health Declaration for Customer</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee_checkin')">Health Declaration for Employee Checkin</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee_checkout')">Health Declaration for Employee Checkout</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
     </div>
@@ -233,8 +223,10 @@ export default {
         value: null,
         remarks: ''
       },
-      successLinking: false,
-      selectedOption: '' // for testing
+      alertMessage: {
+        type: null,
+        message: null
+      }
     }
   },
   props: ['code', 'qrScannerState'],
@@ -325,7 +317,7 @@ export default {
         added_by: this.user.userID,
         value: this.temperatureInputs.value,
         remarks: this.temperatureInputs.remarks.trim() || null,
-        location: null
+        location: this.user.assigned_location
       }
       this.APIRequest('temperatures/create', parameters).then(response => {
         if (response.error.length > 0) console.log(`Error: ${response.error}`)
@@ -347,13 +339,58 @@ export default {
           parameter.deleted_at = null
           // quick fix for updating link account button
           this.scannedUserData.linked_account = parameter
-          this.successLinking = true
+          this.alertMessage = {
+            type: 'success',
+            message: `Linked successfully! ${this.scannedUserData.username.toUpperCase()} is now linked to your account.`
+          }
         } else {
-          console.error('Error linking account')
+          this.alertMessage = {
+            type: 'danger',
+            message: 'Error linking account.'
+          }
         }
         this.hideModal('link_my_account')
         $('#loading').css({display: 'none'})
       })
+    },
+    sendForm(type) {
+      $('#loading').css({display: 'block'})
+
+      let merchantOwner = this.user.userID
+      if (this.user.linked_account) {
+        merchantOwner = this.user.linked_account.owner
+      }
+
+      let content = JSON.stringify({
+        format: type,
+        status: null,
+        statusLabel: null,
+        location: merchantOwner === this.user.userID ? this.user.location : this.user.assigned_location
+      })
+
+      const parameter = {
+        owner: merchantOwner,
+        account_id: this.scannedUserData.id,
+        from: this.user.userID,
+        to: this.scannedUserData.id,
+        content
+      }
+
+      this.APIRequest('health_declarations/create', parameter)
+        .then(response => {
+          if (response.data) {
+            this.alertMessage = {
+              type: 'success',
+              message: `Health Declaration Form for ${type} successfully sent to ${this.scannedUserData.username.toUpperCase()}.`
+            }
+          } else {
+            this.alertMessage = {
+              type: 'danger',
+              message: 'Error sending form.'
+            }
+          }
+          $('#loading').css({display: 'none'})
+        })
     }
   }
 }
