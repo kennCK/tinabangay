@@ -238,6 +238,12 @@ export default {
           this.sortedData = response.data
         })
       }else if(this.selectedOption === 'customers'){
+<<<<<<< HEAD
+=======
+        // if(this.user.location === null){
+        //   return
+        // }
+>>>>>>> update
         let parameter = {
           condition: [{
             clause: '=',
