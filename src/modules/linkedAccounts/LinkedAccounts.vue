@@ -229,26 +229,33 @@ export default {
       }
     },
     unlink() {
-      let par = {
+      $('#loading').css({display: 'block'})
+      const linkedAccountsParam = {
         id: this.selectedItem.id
+      }
+      const accountTypeParam = {
+        id: this.selectedItem.account_id,
+        account_type: 'USER'
       }
 
       if(this.selectedItem.assigned_location !== null) {
-        let param = {
+        const locationsParam = {
           id: this.selectedItem.assigned_location.id
         }
-
-        this.APIRequest('locations/delete', param).then(response => {
-          this.APIRequest('linked_accounts/delete', par).then(res => {
-            this.hideModal('unlink')
-            this.retrieve()
+        this.APIRequest('accounts/update_account_type', accountTypeParam).then(() => {
+          this.APIRequest('locations/delete', locationsParam).then(() => {
+            this.APIRequest('linked_accounts/delete', linkedAccountsParam).then(() => {
+              this.hideModal('unlink')
+              this.retrieve()
+            })
           })
         })
       } else {
-        $('#loading').css({display: 'block'})
-        this.APIRequest('linked_accounts/delete', par).then(response => {
-          this.hideModal('unlink')
-          this.retrieve()
+        this.APIRequest('accounts/update_account_type', accountTypeParam).then(() => {
+          this.APIRequest('linked_accounts/delete', linkedAccountsParam).then(response => {
+            this.hideModal('unlink')
+            this.retrieve()
+          })
         })
       }
     },
