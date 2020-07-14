@@ -212,7 +212,23 @@ export default{
     }
   },
   {
-    path: '/business_settings',
+    path: '/lgu/settings',
+    name: 'businessSettings',
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/barangay/settings',
+    name: 'businessSettings',
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/business/settings',
     name: 'businessSettings',
     component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {

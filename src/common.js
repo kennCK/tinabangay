@@ -1,24 +1,38 @@
 export default {
   sidebarMenu: [
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Temperature', icon: 'fa fa-thermometer-half', path: 'temperature/p', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Symptoms Reporting', icon: 'fas fa-diagnoses', path: 'symptoms_reporting', flag: false, subMenu: null},
-    {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Places', icon: 'fa fa-map', path: 'all-places', flag: false, subMenu: null},
-    {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Rides', icon: 'fa fa-truck', path: 'all-rides', flag: false, subMenu: null},
-    {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
-    {accountType: 'AGENCY_DOH', accountStatus: 'ALL', showOnAdmin: true, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
-    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
-    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
+    {accountType: 'USER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
+    {accountType: 'USER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Temperature', icon: 'fa fa-thermometer-half', path: 'temperature/p', flag: false, subMenu: null},
+    {accountType: 'USER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
+    {accountType: 'USER', accountStatus: 'ALL', showOnAdmin: false, description: 'Symptoms Reporting', icon: 'fas fa-diagnoses', path: 'symptoms_reporting', flag: false, subMenu: null},
+//
+//
+//
+    // {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: false, description: 'Places', icon: 'fa fa-map', path: 'all-places', flag: false, subMenu: null},
+    // {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: false, description: 'Rides', icon: 'fa fa-truck', path: 'all-rides', flag: false, subMenu: null},
+    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
+    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
+    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Locations', icon: 'fa fa-sitemap', path: 'b/location/', flag: false, subMenu: null},
+    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
+    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'LGU Settings', icon: 'fa fa-sitemap', path: 'lgu/settings', flag: false, subMenu: null},
+//
+//
+//
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Contract Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
-    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Branch/Location', icon: 'fa fa-sitemap', path: 'b/location/', flag: false, subMenu: null},
-    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business_settings', flag: false, subMenu: null},
-    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
-    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
-    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Feedback', icon: 'fa fa-comment', path: 'feedback', flag: false, subMenu: null},
-    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Branch/Location', icon: 'fa fa-sitemap', path: 'b/location/', flag: false, subMenu: null},
-    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Patients', icon: 'fa fa-comment', path: 'b/patients', flag: false, subMenu: null},
+    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Locations', icon: 'fa fa-sitemap', path: 'b/location/', flag: false, subMenu: null},
+    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business/settings', flag: false, subMenu: null},
+//
+//
+//
+    // {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Feedback', icon: 'fa fa-comment', path: 'feedback', flag: false, subMenu: null},
+    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
+    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
+    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Locations', icon: 'fa fa-sitemap', path: 'b/location/', flag: false, subMenu: null},
+    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
+    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Barangay Settings', icon: 'fa fa-sitemap', path: 'barangay/settings', flag: false, subMenu: null},
+//
+//
+//
     {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'admin/accounts', flag: false, subMenu: null},
     {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: true, description: 'Barangays', icon: 'fa fa-building', path: 'admin/barangays', flag: false, subMenu: null}
   ],
