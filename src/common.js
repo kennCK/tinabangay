@@ -26,8 +26,8 @@ export default {
 //
 //
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Contract Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
-    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Locations', icon: 'fa fa-sitemap', path: 'business/location/', flag: false, subMenu: null},
-    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business/settings', flag: false, subMenu: null},
+    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: false, description: 'Locations', icon: 'fa fa-sitemap', path: 'business/location/', flag: false, subMenu: null},
+    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: false, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business/settings', flag: false, subMenu: null},
 //
 //
 //
