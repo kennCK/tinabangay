@@ -8,6 +8,13 @@ export default {
 //
 //
 //
+    {accountType: 'TEMP_SCANNER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
+    {accountType: 'TEMP_SCANNER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Temperature', icon: 'fa fa-thermometer-half', path: 'temperature/p', flag: false, subMenu: null},
+    {accountType: 'TEMP_SCANNER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
+    {accountType: 'TEMP_SCANNER', accountStatus: 'ALL', showOnAdmin: false, description: 'Symptoms Reporting', icon: 'fas fa-diagnoses', path: 'symptoms_reporting', flag: false, subMenu: null},
+//
+//
+//
     // {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: false, description: 'Places', icon: 'fa fa-map', path: 'all-places', flag: false, subMenu: null},
     // {accountType: 'ADMIN', accountStatus: 'ALL', showOnAdmin: false, description: 'Rides', icon: 'fa fa-truck', path: 'all-rides', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
