@@ -13,8 +13,8 @@ export default {
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Locations', icon: 'fa fa-sitemap', path: 'lgu/location/', flag: false, subMenu: null},
-    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
-    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'LGU Settings', icon: 'fa fa-sitemap', path: 'lgu/settings', flag: false, subMenu: null},
+    // {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
+    {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: true, description: 'LGU Settings', icon: 'fa fa-sitemap', path: 'lgu/settings', flag: false, subMenu: null},
 //
 //
 //
@@ -28,7 +28,7 @@ export default {
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Patients', icon: 'fa fa-users', path: 'patients', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Locations', icon: 'fa fa-sitemap', path: 'barangay/location/', flag: false, subMenu: null},
-    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
+    // {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Barangay Settings', icon: 'fa fa-sitemap', path: 'barangay/settings', flag: false, subMenu: null},
 //
 //

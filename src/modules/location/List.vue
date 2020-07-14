@@ -264,7 +264,7 @@ import QrcodeVue from 'qrcode.vue'
 import showQrCode from './ShowMore.vue'
 export default {
   mounted(){
-    if(this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS'){
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS' && this.user.type !== 'AGENCY_BRGY' && this.user.type !== 'AGENCY_GOV'){
       ROUTER.push('/dashboard')
     }
     this.retrieve()

@@ -1,11 +1,15 @@
 <template>
   <div style="margin-top: 25px;">
+
+    <div class="form-group" v-if="user.location !== null">
+      <label>Location: <b class="text-danger">({{user.location.code}})</b> {{user.location.route + ', ' + user.location.locality}}</label>
+    </div>
     <div class="row m-0 justify-content-end">
    
         <button class="btn btn-primary" style="margin-right: 5px;" @click="showModal('patient')">New</button>
-        <button class="btn btn-warning" style="margin-right: 5px;" @click="importFlag = true">Import</button>
+        <!-- <button class="btn btn-warning" style="margin-right: 5px;" @click="importFlag = true">Import</button> -->
         <!-- <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button> -->
-        <button class="btn btn-primary" style="margin-right: 5px;" @click="showSummaryFlag = true">Summary</button>
+        <!-- <button class="btn btn-primary" style="margin-right: 5px;" @click="showSummaryFlag = true">Summary</button> -->
          <Pager
           :pages="numPages"
           :active="activePage"
@@ -30,10 +34,10 @@
 
 
 
-    <div class="form-group" v-if="showSummaryFlag === true">
-      <label style="width: 100%;">Get summary per locality:</label>
-      <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px;" v-model="localitySearch" placeholder="Locality">
-      <button class="btn btn-primary" @click="retrieveLocality()">Search</button>
+    <div class="form-group">
+      <!-- <label style="width: 100%;">Get summary per locality:</label> -->
+      <!-- <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px;" v-model="localitySearch" placeholder="Locality">
+      <button class="btn btn-primary" @click="retrieveLocality()">Search</button> -->
       <p v-if="summary !== null">
         Positive: {{summary.positive}}, Deceased: {{summary.death}}, Recovered: {{summary.recovered}}, Negative: {{summary.negative}}
       </p>
@@ -145,10 +149,11 @@ import moment from 'moment'
 export default {
   mounted(){
    // this.retrieve()
-    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_DOH'){
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'AGENCY_DOH' && this.user.type !== 'AGENCY_BRGY'){
       ROUTER.push('/dashboard')
     }
     this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+    this.retrieveLocality()
     this.date = moment().format('MM-DD-YYYY-HH-mm-ss')
   },
   data(){
@@ -219,11 +224,11 @@ export default {
       ROUTER.push(parameter)
     },
     retrieveLocality(){
-      if(this.localitySearch === null){
+      if(this.user.location === null){
         return
       }
       let parameter = {
-        locality: this.localitySearch
+        locality: this.user.location.code
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('patients/summary', parameter).then(response => {
@@ -354,25 +359,41 @@ export default {
         filter = this.filter
       }
       let parameter = null
-      if(filter.column !== 'locality'){
-        parameter = {
-          condition: [{
-            value: filter.value + '%',
-            column: filter.column,
-            clause: 'like'
-          }],
-          sort: sort,
-          limit: this.limit,
-          offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+      if(this.user.type === 'ADMIN'){
+        if(filter.column !== 'locality'){
+          parameter = {
+            condition: [{
+              value: filter.value + '%',
+              column: filter.column,
+              clause: 'like'
+            }],
+            sort: sort,
+            limit: this.limit,
+            offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+          }
+        }else{
+          parameter = {
+            condition: [{
+              value: filter.value + '%',
+              column: filter.column,
+              clause: 'like'
+            }],
+            sort: sort
+          }
         }
       }else{
+        if(this.user.location === null){
+          return
+        }
         parameter = {
           condition: [{
-            value: filter.value + '%',
-            column: filter.column,
+            value: this.user.location.code + '%',
+            column: 'locality',
             clause: 'like'
           }],
-          sort: sort
+          sort: {
+            created_at: 'desc'
+          }
         }
       }
       $('#loading').css({display: 'block'})
