@@ -252,7 +252,23 @@ export default{
     }
   },
   {
-    path: '/b/location',
+    path: '/business/location',
+    name: 'bLocations',
+    component: resolve => require(['modules/location/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/lgu/location',
+    name: 'bLocations',
+    component: resolve => require(['modules/location/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/barangay/location',
     name: 'bLocations',
     component: resolve => require(['modules/location/List.vue'], resolve),
     meta: {
