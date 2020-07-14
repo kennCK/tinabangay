@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <!-- SUCCESS LINKING MESSAGE -->
+      <!-- ALERT MESSAGE -->
       <div v-if="alertMessage.message !== null">
         <p :class="`alert ${alertMessage.type ? `alert-${alertMessage.type}` : ''} alert-dismissible fade show`" role="alert">
           {{ alertMessage.message }}
@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <!--MODAL FOR ADDING ADDRESS-->
+    <!-- MODAL FOR SENDING FORM -->
     <div class="modal fade right" id="send_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
@@ -239,46 +239,46 @@
   margin: 0 auto;
 }
 .loading-div {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .spinner {
-    width: 70px;
-    text-align: center;
-  }
-  .spinner > div {
-    width: 15px;
-    height: 15px;
-    background-color: #333;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.spinner {
+  width: 70px;
+  text-align: center;
+}
+.spinner > div {
+  width: 15px;
+  height: 15px;
+  background-color: #333;
 
-    border-radius: 100%;
-    display: inline-block;
-    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% { 
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
   }
-  .spinner .bounce1 {
-    -webkit-animation-delay: -0.32s;
-    animation-delay: -0.32s;
-  }
-  .spinner .bounce2 {
-    -webkit-animation-delay: -0.16s;
-    animation-delay: -0.16s;
-  }
-  @-webkit-keyframes sk-bouncedelay {
-    0%, 80%, 100% { -webkit-transform: scale(0) }
-    40% { -webkit-transform: scale(1.0) }
-  }
-  @keyframes sk-bouncedelay {
-    0%, 80%, 100% { 
-      -webkit-transform: scale(0);
-      transform: scale(0);
-    } 40% { 
-      -webkit-transform: scale(1.0);
-      transform: scale(1.0);
-    }
-  }
+}
 </style>
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
@@ -470,7 +470,7 @@ export default {
           } else {
             this.alertMessage = {
               type: 'danger',
-              message: 'Error sending form.'
+              message: 'Error sending form. Please try again.'
             }
             this.hideModal('send_form')
           }
