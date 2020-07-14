@@ -1,8 +1,20 @@
 <template>
   <div>
+    <!-- LOADING STATE -->
+    <div v-if="loading" class="mt-5 form-wrapper">
+      <div class="loading-div">
+        <h3>Processing</h3>
+        <div class="spinner">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- IF NO RECORD FOUND -->
     <div v-if="scannedUserData === null && !loading && !qrScannerState" class="w-100">
-      <h2>Sorry, <mark class="p-0">user</mark> not found. Please try again.</h2>
+      <h2>Sorry, <mark class="p-0">data</mark> not found. Please try again.</h2>
       <button class="btn btn-primary" @click="showScanner()">Scan again</button>
     </div>
 
@@ -54,7 +66,7 @@
         </div>
       </div>
 
-      <!-- SUCCESS LINKING MESSAGE -->
+      <!-- ALERT MESSAGE -->
       <div v-if="alertMessage.message !== null">
         <p :class="`alert ${alertMessage.type ? `alert-${alertMessage.type}` : ''} alert-dismissible fade show`" role="alert">
           {{ alertMessage.message }}
@@ -64,18 +76,36 @@
         </p>
       </div>
 
-      <!-- TODO: 
-        1) Send form option
-      -->
       <div class="available-options d-flex">
-        <!-- CAN ONLY LINK ONCE -->
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
-        <!-- ['USER'] TYPE CANT ADD TEMPERATURE -->
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('send_form')">Send Form</button>
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('customer')">Health Declaration for Customer</button>
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee_checkin')">Health Declaration for Employee Checkin</button>
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="sendForm('employee_checkout')">Health Declaration for Employee Checkout</button>
+        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
+      </div>
+    </div>
+
+    <!-- MODAL FOR SENDING FORM -->
+    <div class="modal fade right" id="send_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Send Health Declaration Form</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('send_form')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group mb-0 d-flex flex-column align-items-center mb-3">
+              <button v-if="user.type !== 'USER'" class="btn btn-primary mt-3 w-100" @click="sendForm('customer')">Customer</button>
+              <button v-if="user.type !== 'USER'" class="btn btn-primary mt-3 w-100" @click="sendForm('employee_checkin')">Employee Checkin</button>
+              <button v-if="user.type !== 'USER'" class="btn btn-primary mt-3 w-100" @click="sendForm('employee_checkout')">Employee Checkout</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('send_form')">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -134,7 +164,9 @@
           </div>
           <div class="modal-body p-3 px-5">
               <p v-if="scannedUserData.id === user.userID">You cannot link your own account.</p>
+              <!-- CAN ONLY LINK ONCE -->
               <p v-else-if="scannedUserData.linked_account !== null">Account has already been linked.</p>
+              <!--  -->
               <p v-else-if="scannedUserData.linked_account === null">Are you sure you want to link this account?</p>
           </div>
           <div v-if="scannedUserData.linked_account === null && scannedUserData.id !== user.userID" class="modal-footer">
@@ -201,6 +233,52 @@
   min-width: 315px;
   margin: 5px 5px !important;
 }
+
+#send_form .modal-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+.loading-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.spinner {
+  width: 70px;
+  text-align: center;
+}
+.spinner > div {
+  width: 15px;
+  height: 15px;
+  background-color: #333;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% { 
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}
 </style>
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
@@ -247,7 +325,9 @@ export default {
     retrieve(code) {
       this.loading = true
       this.scannedUserData = null
-      $('#loading').css({display: 'block'})
+
+      $('#loading').css({display: 'none'})
+
       let parameter = {
         'condition': [{
           'value': code,
@@ -261,7 +341,6 @@ export default {
           await this.getTemperature(response.data[0].id)
         }
         this.loading = false
-        $('#loading').css({display: 'none'})
       })
     },
     async getTemperature(id) {
@@ -292,6 +371,7 @@ export default {
       if (name === 'add_temperature') this.temperatureInputs = { value: null, remarks: '' }
     },
     addAddress() {
+      $('#loading').css({display: 'block'})
       if (!this.addressVerified) return
       const parameters = {
         account_id: this.scannedUserData.id,
@@ -311,6 +391,7 @@ export default {
       })
     },
     addTemperature() {
+      $('#loading').css({display: 'block'})
       if (this.temperatureInputs.value === null || this.temperatureInputs.value === '') return
       const parameters = {
         account_id: this.scannedUserData.id,
@@ -326,11 +407,11 @@ export default {
       })
     },
     linkAccount() {
+      $('#loading').css({display: 'block'})
       const parameter = {
         owner: this.user.userID,
         account_id: this.scannedUserData.id
       }
-      $('#loading').css({display: 'block'})
       this.APIRequest('linked_accounts/create', parameter).then(response => {
         if (response.data) {
           parameter.id = response.data
@@ -338,6 +419,8 @@ export default {
           parameter.updated_at = response.request_timestamp
           parameter.deleted_at = null
           // quick fix for updating link account button
+          // -> this is to notify that the scanned account is already been
+          //    linked without refreshing the page
           this.scannedUserData.linked_account = parameter
           this.alertMessage = {
             type: 'success',
@@ -381,13 +464,15 @@ export default {
           if (response.data) {
             this.alertMessage = {
               type: 'success',
-              message: `Health Declaration Form for ${type} successfully sent to ${this.scannedUserData.username.toUpperCase()}.`
+              message: `Health Declaration Form for ${type.replace('_', ' ').toUpperCase()} successfully sent to ${this.scannedUserData.username.toUpperCase()}.`
             }
+            this.hideModal('send_form')
           } else {
             this.alertMessage = {
               type: 'danger',
-              message: 'Error sending form.'
+              message: 'Error sending form. Please try again.'
             }
+            this.hideModal('send_form')
           }
           $('#loading').css({display: 'none'})
         })

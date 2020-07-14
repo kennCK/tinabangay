@@ -15,7 +15,7 @@ export default {
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Branch/Location', icon: 'fa fa-sitemap', path: 'b/location/', flag: false, subMenu: null},
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business_settings', flag: false, subMenu: null},
     {accountType: 'AGENCY_GOV', accountStatus: 'ALL', showOnAdmin: false, description: 'Temperature Summary', icon: 'fa fa-chart-line', path: 'temperature', flag: false, subMenu: null},
-    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
+    {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: true, description: 'Accounts', icon: 'fa fa-users', path: 'accounts', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Feedback', icon: 'fa fa-comment', path: 'feedback', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Tracing', icon: 'fa fa-sitemap', path: 'tracing', flag: false, subMenu: null},
     {accountType: 'AGENCY_BRGY', accountStatus: 'ALL', showOnAdmin: false, description: 'Purok/Segment', icon: 'fa fa-sitemap', path: 'b/location/', flag: false, subMenu: null},

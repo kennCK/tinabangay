@@ -1,5 +1,17 @@
 <template>
   <div>
+     <!-- LOADING STATE -->
+    <div v-if="loading" class="mt-5 form-wrapper">
+      <div class="loading-div">
+        <h3>Processing</h3>
+        <div class="spinner">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- IF NO RECORD FOUND -->
     <div v-if="scannedLocationData === null && !loading && !qrScannerState" class="w-100">
       <h2>Sorry, <mark class="p-0">location</mark> not found. Please try again.</h2>
@@ -11,41 +23,73 @@
       <h3 class="my-4">Location Information</h3>
       <div class="d-flex align-items-center flex-column mb-4">
         <ul class="list-group">
-          <li class="list-group-item">Code:       {{ scannedLocationData.code }}</li>
-          <li class="list-group-item">Route:      {{ scannedLocationData.route }}</li>
-          <li class="list-group-item">Region:     {{ scannedLocationData.region }}</li>
-          <li class="list-group-item">Locality:   {{ scannedLocationData.locality }}</li>
-          <li class="list-group-item">Country:    {{ scannedLocationData.country }}</li>
-          <li class="list-group-item">Latitude:   {{ scannedLocationData.latitude }}</li>
-          <li class="list-group-item">Longitude:  {{ scannedLocationData.longitude }}</li>
+          <li class="list-group-item">
+            Branch:
+            <b>{{ scannedLocationData.route }}</b>
+          </li>
+          <li class="list-group-item">
+            Region:
+            <b>{{ scannedLocationData.region }}</b>
+          </li>
+          <li class="list-group-item">
+            Locality:
+            <b>{{ scannedLocationData.locality }}</b>
+          </li>
+          <li class="list-group-item">
+            Country:
+            <b>{{ scannedLocationData.country }}</b>
+          </li>
+          <li class="list-group-item">
+            Latitude:
+            <b>{{ scannedLocationData.latitude }}</b>
+          </li>
+          <li class="list-group-item">
+            Longitude:
+            <b>{{ scannedLocationData.longitude }}</b>
+          </li>
         </ul>
       </div>
 
-      <!-- TEMP (FOR DEVELOPMENT ONLY) -->
-      <div v-if="selectedOption !== ''" class="mb-4">
-        <p class="alert alert-warning  alert-dismissible fade show" role="alert">
-          <strong>{{ selectedOption }}</strong> 
-          option is currently in development
-          <button @click="selectedOption = ''" type="button" class="close" aria-label="Close">
+     <!-- ALERT MESSAGE -->
+      <div v-if="alertMessage.message !== null" class="alert-message">
+        <p :class="`alert ${alertMessage.type ? `alert-${alertMessage.type}` : ''} alert-dismissible fade show`" role="alert">
+          {{ alertMessage.message }}
+          <button @click="alertMessage = { type: null, message: null }" type="button" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </p>
       </div>
-      <!-- END TEMP -->
 
-      <!-- TODO: 
-        (DONE) 1) Add to visited places option
-               2) Health Declaration for Customer option
-               3) Health Declaration for Employee Checkin option
-               4) Health Declaration for Employee Checkout option
-      -->
       <div class="available-options d-flex">
         <button v-if="addedToVisitedPlaces" class="btn btn-success">Added to visited places</button>
         <button v-if="!addedToVisitedPlaces" class="btn btn-primary" @click="addVisitedPlace()">Add to visited places</button>
-        <button class="btn btn-primary" @click="selectedOption = 'Health Declaration for Customer'">Health Declaration for Customer</button>
-        <button class="btn btn-primary" @click="selectedOption = 'Health Declaration for Employee Checkin'">Health Declaration for Employee Checkin</button>
-        <button class="btn btn-primary" @click="selectedOption = 'Health Declaration for Employee Checkout'">Health Declaration for Employee Checkout</button>
+        <button class="btn btn-primary" @click="showModal('request_form')">Request Form</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
+      </div>
+    </div>
+
+    <!--MODAL FOR REQUESTING FORM-->
+    <div class="modal fade right" id="request_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Request Health Declaration Form</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('request_form')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group mb-0 d-flex flex-column align-items-center mb-3">
+              <button class="btn btn-primary mt-3 w-100" @click="requestForm('customer')">For Customer</button>
+              <button class="btn btn-primary mt-3 w-100" @click="requestForm('employee_checkin')">For Employee Checkin</button>
+              <button class="btn btn-primary mt-3 w-100" @click="requestForm('employee_checkout')">For Employee Checkout</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('request_form')">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -61,6 +105,54 @@
 .available-options button {
   min-width: 315px;
   margin: 5px 5px !important;
+}
+#request_form .modal-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+.loading-div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.spinner {
+  width: 70px;
+  text-align: center;
+}
+.spinner > div {
+  width: 15px;
+  height: 15px;
+  background-color: #333;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% { 
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}
+.alert-message {
+  max-width: 600px;
 }
 </style>
 <script>
@@ -81,7 +173,10 @@ export default {
       loading: true,
       scannedLocationData: null,
       addedToVisitedPlaces: false,
-      selectedOption: '' // for testing
+      alertMessage: {
+        type: null,
+        message: null
+      }
     }
   },
   props: ['code', 'qrScannerState'],
@@ -121,6 +216,12 @@ export default {
         $('#loading').css({display: 'none'})
       })
     },
+    showModal(id) {
+      $(`#${id}`).modal('show')
+    },
+    hideModal(id) {
+      $(`#${id}`).modal('hide')
+    },
     addVisitedPlace() {
       $('#loading').css({display: 'block'})
       const parameter = {
@@ -138,10 +239,71 @@ export default {
         if (response.data) {
           this.addedToVisitedPlaces = true
         } else {
-          console.error('Error adding to visited_places')
+          console.error('Error adding to visited places')
         }
         $('#loading').css({display: 'none'})
       })
+    },
+    requestForm(type) {
+      $('#loading').css({display: 'block'})
+
+      if (this.scannedLocationData.account_id && this.scannedLocationData.payload === null) {
+        const merchantOwner = this.scannedLocationData.account_id
+        const parameter = {
+          condition: [{
+            value: merchantOwner,
+            column: 'account_id',
+            clause: '='
+          }]
+        }
+        this.APIRequest('merchants/retrieve', parameter).then(response => {
+          if (response.data.length) {
+            const content = JSON.stringify({
+              format: type,
+              status: null,
+              statusLabel: null,
+              location: this.scannedLocationData
+            })
+
+            const hdrParam = {
+              owner: merchantOwner,
+              account_id: this.user.userID,
+              from: merchantOwner,
+              to: this.user.userID,
+              content
+            }
+
+            this.APIRequest('health_declarations/create', hdrParam).then(response => {
+              if (response.data) {
+                this.alertMessage = {
+                  type: 'success',
+                  message: 'Requested form successfully. Please check your notification to view the form you requested. If the notification does not show up, please try refreshing the page.'
+                }
+                this.hideModal('request_form')
+              } else {
+                this.alertMessage = {
+                  type: 'danger',
+                  message: 'Error requesting form. Please try again.'
+                }
+                this.hideModal('request_form')
+              }
+              $('#loading').css({display: 'none'})
+            })
+          } else {
+            this.alertMessage = {
+              type: 'danger',
+              message: 'Sorry, you cannot request HDR form to this address'
+            }
+            this.hideModal('request_form')
+            $('#loading').css({display: 'none'})
+          }
+        })
+      } else {
+        this.alertMessage = {
+          type: 'danger',
+          message: 'Sorry, you cannot request HDR form to this address'
+        }
+      }
     }
   }
 }
