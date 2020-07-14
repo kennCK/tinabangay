@@ -1,6 +1,8 @@
 <template>
   <div style="margin-bottom: 200px;">
-    <!-- <div class="row" style="margin-top: 25px;">
+    <business v-if="dashType === 'BUSINESS'"></business>
+    <user v-else-if="dashType === 'USER'"></user>
+    <div v-else class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
           <i class="text-lowercase">{{
@@ -14,9 +16,9 @@
           Your Status
         </div>
         <label class="text-uppercase" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null">
-          <i class="fas fa-square" style="margin-right: 5px;"></i> -->
+          <i class="fas fa-square" style="margin-right: 5px;"></i>
           <!-- Person Under Investigation(PUI) -->
-          <!-- {{status.status_label}}
+          {{status.status_label}}
         </label>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
           Current Data
@@ -25,12 +27,12 @@
         <data-summary></data-summary>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           QR Code
-        </div> -->
+        </div>
 
         <!-- QR CODE SCANNER -->
-        <!-- <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner> -->
+        <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
 
-        <!-- <p>
+        <p>
           Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
         </p>
         <div v-if="user.code !== null" class="row justify-content-center pt-5">
@@ -39,8 +41,7 @@
       </div>
       <trend></trend>
     </div>
-    <increment-modal refs="modal" :property="modalProperty"></increment-modal> -->
-    <business v-if="user.type === 'BUSINESS'"></business>
+    <increment-modal refs="modal" :property="modalProperty"></increment-modal>
     <!--MODAL FOR NO BRGY ERROR-->
     <div class="modal fade right" id="no_code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
@@ -99,10 +100,16 @@ import ComplaintProperty from './Complaint.js'
 export default{
   mounted(){
     this.retrieve()
+    if(this.userTypes.indexOf(this.user.type) > -1) {
+      this.dashType = 'USER'
+    }
   },
   data(){
     return {
       user: AUTH.user,
+      dashType: AUTH.user.type,
+      userTypes: ['USER', 'TEMP_SCANNER', 'AGENCY_TEST_MNGT', 'AGENCY_TEMPT_MNGT'],
+      type: null,
       modalProperty: ComplaintProperty,
       property: {
         style: {
@@ -128,7 +135,8 @@ export default{
     'data-summary': require('modules/dashboard/Summary.vue'),
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
-    'business': require('./Business.vue')
+    'business': require('./Business.vue'),
+    'user': require('./User.vue')
   },
   methods: {
     retrieve(){
