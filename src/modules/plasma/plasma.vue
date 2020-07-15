@@ -56,7 +56,9 @@ export default{
     return {
       data: [
           { username: 'Annonymous', message: 'kinahanglan nako og plasma' },
-          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!' }
+          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!' },
+          { username: 'Annonymous', message: 'Unsaon d i ng plasma? Wla lagi ko na inform kung unsa na cya. Makaon na cya? hahaha Tagpila mn xd na?' },
+          { username: 'Annonymous', message:'Kung mamatay ko tungod sa covid, naa pa bah kaha mohatod nako inig lubong nako? daghan pd vah kaha tao kung naay mohatod?' }
       ]
     }
   },
