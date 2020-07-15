@@ -49,12 +49,10 @@ export default {
       let parameter = {
         id: this.user.userID
       }
-      // $('#loading').css({display: 'block'})
+      $('#loading').css({display: 'block'})
       this.APIRequest('tracings/status', parameter).then(response => {
-        // $('#loading').css({display: 'none'})
+        $('#loading').css({display: 'none'})
         this.status = response.data
-        console.log('hello')
-        console.log(this.status)
       })
     }
   }
