@@ -33,14 +33,14 @@
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Add Branch</h5>
+            <h5 class="modal-title">Add Location</h5>
             <button type="button" class="close" aria-label="Close" @click="hideModal('add_location')">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
           </div>
           <div class="modal-body p-4">
             <div class="form-group mb-5">
-              <label for="code">Branch Name</label>
+              <label for="code">Location Name</label>
               <input type="text" name="branch" id="branch" class="form-control" placeholder="Enter Branch Name">
             </div>
             <div v-if="customLocation === false">
