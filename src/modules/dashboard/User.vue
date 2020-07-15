@@ -1,10 +1,10 @@
 <template>
   <div>
    <p>
-      Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
+      Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or DOH authorized personnel.
    </p>
    <div v-if="user.code !== null" class="alert row justify-content-center align-items-center col-4 mt-5 mx-auto" :class="{'alert-danger': status.status === 'positive' || status.status === 'pui' || status.status === 'pum', 'alert-success': status.status === 'negative'}" role="alert">
-      <label class="text-uppercase m-0" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null">
+      <label class="m-0" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null">
         <h4>
           <i :class="{'fas fa-exclamation-triangle': status.status === 'pum' || status.status == 'positive' || status.status == 'pui', 'fas fa-check': status.status === 'negative', 'fas fa-plus': status.status === 'death' }" style="margin-right: 5px;"></i>
           {{label}}
@@ -72,7 +72,7 @@ export default {
           this.label = 'User is a PUM'
           break
         case 'negative':
-          this.label = 'User is Negative'
+          this.label = 'You\'re All Clear!'
       }
     }
   }
