@@ -1,6 +1,6 @@
 <template>
   <div class="merchant-holder" v-if="data !== null">
-    <span class="header">Business Settings</span>
+    <span class="header">Barangay Settings</span>
     <span class="content">
       <span class="error text-danger" v-if="errorMessage !== null">
         <b>Oops!</b> {{errorMessage}}
@@ -11,18 +11,18 @@
       <span class="inputs">
 
         <div class="form-group">
-          <label for="address">Business name <label class="text-danger">*</label></label>
-          <input type="text" class="form-control" placeholder="Business Name" v-model="data.name" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
+          <label for="address">Barangay name <label class="text-danger">*</label></label>
+          <input type="text" class="form-control" placeholder="Barangay Name" v-model="data.name" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
         </div>
 
         <div class="form-group" style="margin-top: 25px;">
-          <label for="address">Business email address<label class="text-danger">*</label></label>
-          <input type="text" class="form-control" placeholder="Business email address" v-model="data.email" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
+          <label for="address">Barangay email address<label class="text-danger">*</label></label>
+          <input type="text" class="form-control" placeholder="Barangay email address" v-model="data.email" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
         </div>
 
         <div class="form-group" style="margin-top: 25px;">
-          <label for="address">Business address <label class="text-danger">*</label></label>
-          <input type="text" class="form-control" placeholder="Business Address" v-model="data.address" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
+          <label for="address">Barangay address <label class="text-danger">*</label></label>
+          <input type="text" class="form-control" placeholder="Barangay Address" v-model="data.address" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
         </div>
 
 <!--         <div class="form-group" style="margin-top: 25px;" v-if="allowed.indexOf('prefix') > -1">
@@ -38,7 +38,7 @@
         <button class="btn btn-primary" style="margin-bottom: 25px;" @click="update()" v-if="parseInt(data.account_id) === parseInt(user.userID)">Update</button>
       </span>
       <span class="sidebar" v-if="createFlag === false">
-        <span class="sidebar-header" style="margin-top: 25px;">Business Logo</span>
+        <span class="sidebar-header" style="margin-top: 25px;">Barangay Logo</span>
         <span class="image" v-if="data.logo !== null">
           <img :src="config.BACKEND_URL + data.logo" height="auto" width="100%" >
         </span>
@@ -156,7 +156,7 @@ import axios from 'axios'
 import CONFIG from 'src/config.js'
 export default {
   mounted(){
-    if(this.user.type !== 'USER' && this.user.type !== 'BUSINESS' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'AGENCY_BRGY'){
+    if(this.user.type !== 'USER' && this.user.type !== 'Barangay' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'AGENCY_BRGY'){
       ROUTER.push('/dashboard')
     }
     $('#loading').css({display: 'block'})

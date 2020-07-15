@@ -214,7 +214,7 @@ export default{
   {
     path: '/lgu/settings',
     name: 'lguSettings',
-    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    component: resolve => require(['modules/barangay/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -222,7 +222,7 @@ export default{
   {
     path: '/barangay/settings',
     name: 'barangaySettings',
-    component: resolve => require(['modules/barangay/MerchantDirect.vue'], resolve),
+    component: resolve => require(['modules/barangay/settings/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
