@@ -215,36 +215,12 @@ export default{
       category: [{
         title: 'Sort by',
         sorting: [{
-          title: 'Username ascending',
-          payload: 'username',
+          title: 'Locality ascending',
+          payload: 'locality',
           payload_value: 'asc'
         }, {
-          title: 'Username descending',
-          payload: 'username',
-          payload_value: 'desc'
-        }, {
-          title: 'Email ascending',
-          payload: 'email',
-          payload_value: 'asc'
-        }, {
-          title: 'Email descending',
-          payload: 'email',
-          payload_value: 'desc'
-        }, {
-          title: 'Type ascending',
-          payload: 'status',
-          payload_value: 'asc'
-        }, {
-          title: 'Type descending',
-          payload: 'status',
-          payload_value: 'desc'
-        }, {
-          title: 'Created ascending',
-          payload: 'created_at',
-          payload_value: 'asc'
-        }, {
-          title: 'Created descending',
-          payload: 'created_at',
+          title: 'Locality descending',
+          payload: 'locality',
           payload_value: 'desc'
         }]
       }],
@@ -294,9 +270,7 @@ export default{
           column: filter.column,
           clause: 'like'
         }],
-        sort: sort,
-        limit: this.limit,
-        offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+        sort: sort
       }
       this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})

@@ -212,7 +212,23 @@ export default{
     }
   },
   {
-    path: '/business_settings',
+    path: '/lgu/settings',
+    name: 'lguSettings',
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/barangay/settings',
+    name: 'barangaySettings',
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/business/settings',
     name: 'businessSettings',
     component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {
@@ -236,7 +252,23 @@ export default{
     }
   },
   {
-    path: '/b/location',
+    path: '/business/location',
+    name: 'bLocations',
+    component: resolve => require(['modules/location/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/lgu/location',
+    name: 'bLocations',
+    component: resolve => require(['modules/location/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/barangay/location',
     name: 'bLocations',
     component: resolve => require(['modules/location/List.vue'], resolve),
     meta: {

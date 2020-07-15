@@ -1,6 +1,6 @@
 export default {
   page: [{
-    title: 'BirdsEye: COVID-19 Contact Tracing',
+    title: 'BirdsEye: Centralized Real-Time Precautions and Contact Tracing',
     subtitle: 'Trace places, transportation and individuals easily!',
     description: 'Centralize application for LGU to monitor and trace individuals using visited places, transportation used, temperature and symptoms reported!',
     image: require('assets/img/logo.svg'),
