@@ -1,8 +1,8 @@
 <template>
   <div style="margin-bottom: 200px;">
-    <!-- <business v-if="dashType === 'BUSINESS'"></business>
-    <user v-else-if="dashType === 'USER'"></user> -->
-    <div class="row" style="margin-top: 25px;">
+    <business v-if="dashType === 'BUSINESS'"></business>
+    <user v-else-if="dashType === 'USER'"></user>
+    <div v-else class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
           <i class="text-lowercase">{{
