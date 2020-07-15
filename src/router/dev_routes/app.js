@@ -230,7 +230,7 @@ export default{
   {
     path: '/business/settings',
     name: 'businessSettings',
-    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    component: resolve => require(['modules/barangay/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }

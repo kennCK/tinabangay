@@ -25,7 +25,7 @@
 
 
     <showQrCode ref="imageView"></showQrCode>
-    <empty v-if="data === null" :title="'No branches added!'" :action="'Add a branch location.'" :icon="'far fa-building'" :iconColor="'text-danger'"></empty>
+    <empty v-if="data === null" :title="'No locations added!'" :action="'Add a location.'" :icon="'far fa-building'" :iconColor="'text-danger'"></empty>
 
     <!--MODAL FOR ADDING LOCATION-->
     <div class="modal fade right" id="add_location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

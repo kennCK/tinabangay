@@ -1,6 +1,6 @@
 <template>
   <div class="merchant-holder" v-if="data !== null">
-    <span class="header">Barangay Settings</span>
+    <span class="header">{{label}} Settings</span>
     <span class="content">
       <span class="error text-danger" v-if="errorMessage !== null">
         <b>Oops!</b> {{errorMessage}}
@@ -11,17 +11,17 @@
       <span class="inputs">
 
         <div class="form-group">
-          <label for="address">Barangay name <label class="text-danger">*</label></label>
+          <label for="address">{{label}} name <label class="text-danger">*</label></label>
           <input type="text" class="form-control" placeholder="Barangay Name" v-model="data.name" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
         </div>
 
         <div class="form-group" style="margin-top: 25px;">
-          <label for="address">Barangay email address<label class="text-danger">*</label></label>
+          <label for="address">{{label}} email address<label class="text-danger">*</label></label>
           <input type="text" class="form-control" placeholder="Barangay email address" v-model="data.email" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
         </div>
 
         <div class="form-group" style="margin-top: 25px;">
-          <label for="address">Barangay address <label class="text-danger">*</label></label>
+          <label for="address">{{label}} address <label class="text-danger">*</label></label>
           <input type="text" class="form-control" placeholder="Barangay Address" v-model="data.address" :disabled="parseInt(data.account_id) !== parseInt(user.userID)">
         </div>
 
@@ -38,7 +38,7 @@
         <button class="btn btn-primary" style="margin-bottom: 25px;" @click="update()" v-if="parseInt(data.account_id) === parseInt(user.userID)">Update</button>
       </span>
       <span class="sidebar" v-if="createFlag === false">
-        <span class="sidebar-header" style="margin-top: 25px;">Barangay Logo</span>
+        <span class="sidebar-header" style="margin-top: 25px;">{{label}} Logo</span>
         <span class="image" v-if="data.logo !== null">
           <img :src="config.BACKEND_URL + data.logo" height="auto" width="100%" >
         </span>
@@ -161,10 +161,12 @@ export default {
     }
     $('#loading').css({display: 'block'})
     this.retrieve()
+    this.createLabel()
   },
   data(){
     return {
       user: AUTH.user,
+      label: null,
       tokenData: AUTH.tokenData,
       config: CONFIG,
       data: null,
@@ -207,6 +209,18 @@ export default {
           this.data = this.newData
         }
       })
+    },
+    createLabel(){
+      switch(this.user.type){
+        case 'AGENCY_BRGY':
+          this.label = 'Barangay'
+          break
+        case 'AGENCY_GOV':
+          this.label = 'LGU'
+          break
+        case 'BUSINESS':
+          this.label = 'Business'
+      }
     },
     update(url){
       if(this.data.email !== null && AUTH.validateEmail(this.data.email) === false){
