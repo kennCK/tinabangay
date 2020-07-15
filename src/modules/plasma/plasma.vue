@@ -7,10 +7,24 @@
             <div class="col-lg-8 container-size">
                 <div class="div-contain">
                     <div>
-                        <h4>{{datus.username}}</h4>
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <i class="fa fa-user-circle-o profile-icon i-style"></i>
+                            </div>
+                            <div class="col-lg-11">
+                                <h4 class="h4Style">{{datus.username}}</h4>
+                            </div>
+                        </div>
                     </div>
-                    <div class="div-message">
-                        <p>&nbsp;&nbsp;&nbsp;&nbsp;{{datus.message}}</p>
+                    <div class="p-date">
+                        <p>{{datus.date}}</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="div-message col-lg-10">
+                            <p class="p-message">{{datus.message}}</p>
+                        </div>
+                        <div class="col-lg-1"></div>
                     </div>
                 </div>
             </div>
@@ -36,13 +50,15 @@
     <google-map-modal ref="mapModal" :place_data="data" v-if="data.length > 0"></google-map-modal>
   </div>
 </template>
-<style>
+<style scoped>
     .container-size{  
         /* width: 60%; */
         /* background-color: #005b96 !important; */
         /* border-color: red; */
-        border-style: inset;
-        border-width: 3px;
+        /* border-bottom: 3px solid; */
+        height: 150px;
+        box-shadow: 1px 1px #888888;
+        border-width: 1px;
         border-radius: 10px;
         margin-bottom: 1%;
     }
@@ -52,10 +68,21 @@
     .btn {
         margin-top: 10px;
     }
-    h3 {
+    .h4Style {
         padding: 2px;
+        margin-top:20px;
+        margin-left: -15px;
     }
-    p {
+    .i-style {
+        margin-top:18px;
+    }
+    .p-date {
+        font-size: 12px;
+        float: right;
+        position: relative;
+        top: -20px;
+    }
+    .p-message {
         font-size: 15px;
     }
     .div-contain {
@@ -63,7 +90,15 @@
     }
     .div-message {
         margin-top: 2%;
+        width: 70%;
     }
+    i {
+        font-size: 30px;
+    }
+    /* .div-contain div {
+        margin-top: 2%;
+        margin-left: 2%;
+    } */
 </style>
 
 
@@ -73,15 +108,16 @@
 // import CONFIG from 'src/config.js'
 // import COMMON from 'src/common.js'
 // import PropertyModal from './CreateSymptom.js'
+import moment from 'moment'
 import plasmaForm from './plasmaForm'
 export default{
   data(){
     return {
       data: [
-          { username: 'Annonymous', message: 'kinahanglan nako og plasma' },
-          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!' },
-          { username: 'Annonymous', message: 'Unsaon d i ng plasma? Wla lagi ko na inform kung unsa na cya. Makaon na cya? hahaha Tagpila mn xd na?' },
-          { username: 'Annonymous', message:'Kung mamatay ko tungod sa covid, naa pa bah kaha mohatod nako inig lubong nako? daghan pd vah kaha tao kung naay mohatod?' }
+          { username: 'Annonymous', message: 'kinahanglan nako og plasma', date: moment(String(new Date())).format('MM/DD/YYYY') },
+          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!', date: moment(String(new Date())).format('MM/DD/YYYY') },
+          { username: 'Annonymous', message: 'Unsaon d i ng plasma? Wla lagi ko na inform kung unsa na cya. Makaon na cya? hahaha Tagpila mn xd na?', date: moment(String(new Date())).format('MM/DD/YYYY') },
+          { username: 'Annonymous', message: 'Kung mamatay ko tungod sa covid, naa pa bah kaha mohatod nako inig lubong nako? daghan pd vah kaha tao kung naay mohatod?', date: moment(String(new Date())).format('MM/DD/YYYY') }
       ]
     }
   },
