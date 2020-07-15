@@ -12,7 +12,7 @@
       </button>
     </div>
     <button 
-      :class="['btn', 'mb-2', {'btn-primary': !state}, {'btn-warning': state} ]"
+      :class="['btn', 'mb-2', {'btn-primary': !state}, {'btn-warning': state}, (btnWidth ? btnWidth : '') ]"
       @click="toggleScanner()"
     >
       {{ state ? 'End scanning' : 'Scan QR Code' }}
@@ -40,6 +40,9 @@ export default {
   props: {
     state: {
       required: true
+    },
+    btnWidth: {
+      required: false
     }
   },
   components: { 'qrcode-stream': QrcodeStream },

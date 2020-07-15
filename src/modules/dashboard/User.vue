@@ -1,6 +1,6 @@
 <template>
   <div>
-    stuff here
+    <QrcodeVue :value="`account/${user.code}`" :size="300"></QrcodeVue>
   </div>
 </template>
 <style scoped lang="scss">
@@ -24,6 +24,7 @@ export default {
     }
   },
   components: {
+    QrcodeVue
   },
   methods: {
   }
