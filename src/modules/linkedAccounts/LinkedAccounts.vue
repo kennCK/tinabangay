@@ -235,7 +235,7 @@ export default {
       }
       const accountTypeParam = {
         id: this.selectedItem.account_id,
-        account_type: 'USER'
+        account_type: this.selectedItem.account.account_type === 'TEMP_SCANNER' ? 'USER' : this.selectedItem.account.account_type
       }
 
       if(this.selectedItem.assigned_location !== null) {
