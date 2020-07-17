@@ -21,6 +21,9 @@
          <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
       </div>
     </div>
+    <div class="col-md-6 col-sm-12">
+      <trending></trending>
+    </div>
    </div>
   </div>
 </template>
@@ -45,12 +48,15 @@ export default {
       common: COMMON,
       qrScannerState: false,
       status: null,
-      label: null
+      label: null,
+      result: null,
+      limit: 5
     }
   },
   components: {
     QrcodeVue,
-    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue')
+    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
+    'trending': require('modules/places/Trend_v2.vue')
   },
   methods: {
     retrieve(){
@@ -64,6 +70,22 @@ export default {
         this.createLabel()
         console.log(this.status)
       })
+      // parameter = {
+      //   status: 'positive',
+      //   limit: this.limit,
+      //   offset: this.activePage,
+      //   locality: this.searchValue + '%'
+      // }
+      // $('#loading').css({display: 'block'})
+      // this.APIRequest('tracing_places/places', parameter).then(response => {
+      //   $('#loading').css({display: 'none'})
+      //   if(response.data.length > 0){
+      //     this.data = response.data
+      //   }else{
+      //     this.data = null
+      //   }
+      //   this.result = this.lists(this.data)
+      // })
     },
     createLabel(){
       switch(this.status.status){
