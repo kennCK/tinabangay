@@ -36,7 +36,7 @@
             <tbody>
               <tr>
                 <th scope="row">Name</th>
-                <td>{{healthDec.personalInformation.last_name}}, {{healthDec.personalInformation.first_name}} {{healthDec.personalInformation.middle_name}}</td>
+                <td>{{healthDec.personalInformation.last_name}}, {{healthDec.personalInformation.first_name}} {{healthDec.personalInformation.middle_name || ''}}</td>
               </tr>
               <tr>
                 <th scope="row">Temperature</th>
@@ -64,7 +64,7 @@
               </tr>
               <tr>
                 <th scope="row">Civil Status</th>
-                <td>{{healthDec.personalInformation.civil_status}}</td>
+                <td>{{healthDec.personalInformation.civil_status || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Occupation</th>
@@ -257,8 +257,8 @@
             </div>
 
             <div class="form-group col-md-4">
-              <label for="middleName" class="required">Middle Name</label>
-              <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" v-model="healthDec.personalInformation.middle_name" required>
+              <label for="middleName">Middle Name</label>
+              <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" v-model="healthDec.personalInformation.middle_name">
             </div>
           </div>
 
@@ -283,10 +283,10 @@
             </div>
 
             <div class="form-group col-md-4">
-              <label for="civilStatus" class="required">Civil Status</label>
+              <label for="civilStatus">Civil Status</label>
               <div>
                 <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" id="single" name="civilStatus" class="custom-control-input" value="single" v-model="civil" required>
+                  <input type="radio" id="single" name="civilStatus" class="custom-control-input" value="single" v-model="civil">
                   <label class="custom-control-label" for="single">Single</label>
                 </div>
                 <div class="custom-control custom-radio custom-control-inline">
