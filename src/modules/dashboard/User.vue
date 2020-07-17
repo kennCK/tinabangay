@@ -14,12 +14,15 @@
            </h4>
          </label>
       </div>
-      <div v-if="user.code !== null" class="row justify-content-center pt-5">
-         <QrcodeVue :value="`account/${user.code}`" :size="300" v-if="qrScannerState == false"></QrcodeVue>
-      </div>
-      <div class="row justify-content-center pt-5 mb-5">
-         <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
-                          :location="qrLocation"></qr-code-scanner>
+      <div class="row m-0">
+        <div v-if="user.code !== null" class="row justify-content-center pt-5 col-12">
+             <QrcodeVue :value="`account/${user.code}`" :size="300" v-if="qrScannerState == false"></QrcodeVue>
+
+          <div class="row justify-content-center pt-5 mb-5 col-12">
+             <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
+                              :location="qrLocation"></qr-code-scanner>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-md-6 col-sm-12">
@@ -87,7 +90,7 @@ export default {
       //     this.data = null
       //   }
       //   this.result = this.lists(this.data)
-      // })
+      // })a
     },
     createLabel(){
       switch(this.status.status){
