@@ -7,7 +7,7 @@
   <div>
     <div v-if="qrScannerError !== '' && state" class="alert alert-warning alert-dismissible fade show" role="alert">
       {{ qrScannerError }}
-      <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close">
+      <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close" >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>

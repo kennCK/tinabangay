@@ -17,7 +17,7 @@
       <div v-if="user.code !== null" class="row justify-content-center pt-5">
          <QrcodeVue :value="`account/${user.code}`" :size="300" v-if="qrScannerState == false"></QrcodeVue>
       </div>
-      <div class="row justify-content-center pt-5">
+      <div class="row justify-content-center pt-5 mb-5">
          <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
                           :location="qrLocation"></qr-code-scanner>
       </div>
