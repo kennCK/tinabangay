@@ -31,7 +31,7 @@
             <span class="card-title col-4 p-1">
               <span class="card text-white bg-dark" style="max-width: 9rem;">
                 <span class="card-header"><h5 class="card-title text-center" v-if="data[index].death_size > 0">{{data[index].death_size}}</h5></span>
-                <span class="card-body p-0 mx-auto" v-if="data[index].death_size > 1">Deaths</span>
+                <span class="card-body p-0 mx-auto" v-if="data[index].death_size > 1 || data[index].death_size == 0">Deaths</span>
                 <span class="card-body p-0 mx-auto" v-if="data[index].death_size == 1">Death</span>
               </span>
             </span>
