@@ -11,6 +11,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+    <qrcode-stream v-if="state && location === 'top'" @init="onInit" @decode="onDecode"></qrcode-stream>
     <button 
       :class="['btn', 'mb-2', 'btn-lg', 'py-1', 'px-2', {'btn-danger': !state}, {'btn-warning': state}, (btnWidth ? btnWidth : '') ]"
       @click="toggleScanner()"
@@ -18,7 +19,7 @@
       <i class="fa" :class="state ? 'fa-ban' : 'fa-expand'"></i>
       <span class="font-weight-bold">{{ state ? 'Cancel' : 'Scan QR' }}</span>
     </button>
-    <qrcode-stream v-if="state" @init="onInit" @decode="onDecode"></qrcode-stream>
+    <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -43,7 +44,8 @@ export default {
   data(){
     return {
       user: AUTH.user,
-      qrScannerError: ''
+      qrScannerError: '',
+      location: null
     }
   },
   props: {
@@ -51,6 +53,9 @@ export default {
       required: true
     },
     btnWidth: {
+      required: false
+    },
+    location: {
       required: false
     }
   },
