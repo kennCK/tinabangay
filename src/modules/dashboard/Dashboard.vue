@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom: 200px;">
+  <div style="margin-bottom: 50px;">
     <business v-if="dashType === 'BUSINESS'"></business>
     <user v-else-if="dashType === 'USER'"></user>
     <div v-else class="row" style="margin-top: 25px;">

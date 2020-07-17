@@ -16,7 +16,7 @@
         <h5 class="text-primary font-weight-bold">Dashboard</h5>
       </div>
       <div class="col-6 mt-3">
-        <qr-code-scanner :btnWidth="'w-100'" :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
+        <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
       </div>
       <div class="col-6 mt-3">
         

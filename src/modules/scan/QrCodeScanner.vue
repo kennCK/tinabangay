@@ -12,16 +12,25 @@
       </button>
     </div>
     <button 
-      :class="['btn', 'mb-2', {'btn-primary': !state}, {'btn-warning': state}, (btnWidth ? btnWidth : '') ]"
+      :class="['btn', 'mb-2', 'btn-lg', 'py-1', 'px-2', {'btn-danger': !state}, {'btn-warning': state}, (btnWidth ? btnWidth : '') ]"
       @click="toggleScanner()"
     >
-      {{ state ? 'End scanning' : 'Scan QR Code' }}
+      <i class="fa" :class="state ? 'fa-ban' : 'fa-expand'"></i>
+      <span class="font-weight-bold">{{ state ? 'Cancel' : 'Scan QR' }}</span>
     </button>
     <qrcode-stream v-if="state" @init="onInit" @decode="onDecode"></qrcode-stream>
   </div>
 </template>
 <style lang="scss" scoped> 
   @import "~assets/style/colors.scss";
+  .btn-danger {
+    background-color: $dangerLight !important;
+    height: unset !important;
+  }
+
+  .btn-warning {
+    height: unset !important;
+  }
 </style>
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
