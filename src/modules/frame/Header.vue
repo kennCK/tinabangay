@@ -56,6 +56,7 @@
                 <i class="far fa-handshake"></i>
                 <label>Terms and Conditions</label>
               </span>
+              <span class="dropdown-divider"></span>
               <span class="dropdown-item text-danger" v-on:click="logOut()">
                 <i class="fas fa-sign-out-alt text-danger"></i>
                   <label>Logout</label>
@@ -350,6 +351,7 @@ body{
   background: #fff !important;
   padding-top: 0px !important;
 }
+
 .dropdown-item:hover{
   background: #ddd !important;
 }

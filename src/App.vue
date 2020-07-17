@@ -170,9 +170,9 @@ td i:hover{
 
 </style>
 <script>
-import ROUTER from './router'
-import AUTH from './services/auth'
-import global from './helpers/global'
+import ROUTER from 'src/router'
+import AUTH from 'src/services/auth'
+import global from 'src/helpers/global'
 export default {
   name: 'app',
   mounted(){
@@ -207,7 +207,7 @@ export default {
   components: {
     'login-header': () => import('modules/home/Landing/Header.vue'),
     'system-header': () => import('modules/frame/Header.vue'),
-    'system-sidebar': () => import('components/increment/generic/frame/Sidebar.vue'),
+    'system-sidebar': () => import('modules/frame/Sidebar.vue'),
     'system-content': () => import('modules/frame/Content.vue'),
     'system-footer': () => import('components/increment/generic/frame/Footer.vue'),
     'system-loading': () => import('components/loader/Loading.vue'),
