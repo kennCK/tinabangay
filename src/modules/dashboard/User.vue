@@ -5,7 +5,7 @@
    </p>
    <div class="row m-0">
     <div class="col-md-6 col-sm-12">
-      <div v-if="user.code !== null" class="alert row justify-content-center align-items-center col-4 mt-5 mx-auto" :class="{'alert-danger': status.status === 'positive', 'alert-warning': status.status === 'pui' || status.status === 'pum', 'alert-success': status.status === 'negative' || status.status === 'recovered'}" role="alert">
+      <div v-if="user.code !== null" class="alert row justify-content-center align-items-center col-8 mt-5 mx-auto" :class="{'alert-danger': status.status === 'positive', 'alert-warning': status.status === 'pui' || status.status === 'pum', 'alert-success': status.status === 'negative' || status.status === 'recovered'}" role="alert">
          <label class="m-0" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum' || status.status === 'pui', 'text-success': status.status === 'negative' || status.status === 'recovered'}" v-if="status !== null">
            <h4>
              <i :class="{'fas fa-exclamation-triangle': status.status === 'pum' || status.status == 'positive' || status.status == 'pui' || status.status === 'symptoms', 'fas fa-check': status.status === 'negative' || status.status === 'recovered', 'fas fa-plus': status.status === 'death' }" style="margin-right: 5px;"></i>
@@ -14,12 +14,19 @@
            </h4>
          </label>
       </div>
-      <div v-if="user.code !== null" class="row justify-content-center pt-5">
-         <QrcodeVue :value="`account/${user.code}`" :size="300"></QrcodeVue>
+      <div class="row m-0">
+        <div v-if="user.code !== null" class="row justify-content-center pt-5 col-12">
+             <QrcodeVue :value="`account/${user.code}`" :size="300" v-if="qrScannerState == false"></QrcodeVue>
+
+          <div class="row justify-content-center pt-5 mb-5 col-12">
+             <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
+                              :location="qrLocation"></qr-code-scanner>
+          </div>
+        </div>
       </div>
-      <div class="row justify-content-center pt-5">
-         <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
-      </div>
+    </div>
+    <div class="col-md-6 col-sm-12">
+      <trending></trending>
     </div>
    </div>
   </div>
@@ -45,12 +52,16 @@ export default {
       common: COMMON,
       qrScannerState: false,
       status: null,
-      label: null
+      label: null,
+      result: null,
+      limit: 5,
+      qrLocation: 'top'
     }
   },
   components: {
     QrcodeVue,
-    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue')
+    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
+    'trending': require('modules/places/Trend_v2.vue')
   },
   methods: {
     retrieve(){
@@ -64,6 +75,22 @@ export default {
         this.createLabel()
         console.log(this.status)
       })
+      // parameter = {
+      //   status: 'positive',
+      //   limit: this.limit,
+      //   offset: this.activePage,
+      //   locality: this.searchValue + '%'
+      // }
+      // $('#loading').css({display: 'block'})
+      // this.APIRequest('tracing_places/places', parameter).then(response => {
+      //   $('#loading').css({display: 'none'})
+      //   if(response.data.length > 0){
+      //     this.data = response.data
+      //   }else{
+      //     this.data = null
+      //   }
+      //   this.result = this.lists(this.data)
+      // })
     },
     createLabel(){
       switch(this.status.status){
