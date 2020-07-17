@@ -8,6 +8,7 @@
         <h4>
           <i :class="{'fas fa-exclamation-triangle': status.status === 'pum' || status.status == 'positive' || status.status == 'pui' || status.status === 'symptoms', 'fas fa-check': status.status === 'negative' || status.status === 'recovered', 'fas fa-plus': status.status === 'death' }" style="margin-right: 5px;"></i>
           {{status.status_label}}
+          <!-- Once API is updated change from {{status.status_label}} to {{label}} -->
         </h4>
       </label>
    </div>
