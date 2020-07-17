@@ -90,7 +90,7 @@ export default {
       //     this.data = null
       //   }
       //   this.result = this.lists(this.data)
-      // })s
+      // })
     },
     createLabel(){
       switch(this.status.status){
