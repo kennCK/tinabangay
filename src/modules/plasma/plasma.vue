@@ -1,19 +1,19 @@
 <template>
-  <div class="container" style="background-color:#DCDCDC">
+  <div class="container">
      <div v-if="data.length > 0" class="container"><br>
          <div class="card" style="width:96%;margin-left:3vh">
             <div class="row">
-                 <div>
-                  <i class="fa fa-user-circle-o profile-icon i-style"></i>
+                <div class="col-0">
+                    <i class="fa fa-user-circle-o profile-icon i-style"></i>
                 </div>
                  <div class="col-lg-10">
                     <textarea class="form-control textarea" v-model="post" placeholder="Type your POST here... Please Include Your Address" rows="15" id="comment" ref="textarea"></textarea>
                 </div>
-                 <div class="col-sm-1">
+                 <div class="col-1">
                     <button class="btn btn-primary postBtn" :hidden="!post.length > 0">Post</button>
                 </div>
             </div>
-        </div>
+        </div><br>
             <div class="row">
                 <div class="column" v-for="(datus, index) in data" :key="index">
                     <div class="card cards">
@@ -43,7 +43,7 @@
         padding: 0 10px;
         height: 150px;
         position: relative;
-        margin-bottom:9vh
+        margin-bottom:2vh
     }
     .btn {
         margin-top: 10px;
@@ -56,8 +56,7 @@
     .i-style {
         padding: 10px;
         transition: margin 300ms;
-        font-size:50px;
-        color:#005b96;
+        font-size:30px;
     }
     .ellipsis{
         position: absolute;
