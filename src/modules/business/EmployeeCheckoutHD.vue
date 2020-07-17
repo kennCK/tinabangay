@@ -36,7 +36,7 @@
             <tbody>
               <tr>
                 <th scope="row">Name</th>
-                <td>{{healthDec.personalInformation.last_name}}, {{healthDec.personalInformation.first_name}} {{healthDec.personalInformation.middle_name}}</td>
+                <td>{{healthDec.personalInformation.last_name}}, {{healthDec.personalInformation.first_name}} {{healthDec.personalInformation.middle_name || ''}}</td>
               </tr>
               <tr>
                 <th scope="row">Department</th>
@@ -187,8 +187,8 @@
             </div>
 
             <div class="form-group col-md-4">
-              <label for="middleName" class="required">Middle Name</label>
-              <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" v-model="healthDec.personalInformation.middle_name" required>
+              <label for="middleName">Middle Name</label>
+              <input class="form-control" type="text" name="middle_name" id="middleName" placeholder="Enter Middle Initial" v-model="healthDec.personalInformation.middle_name">
             </div>
           </div>
 
