@@ -17,7 +17,7 @@
           </h4>
         </span>
           <a class="" :href="downloads.android.link" v-if="downloads.android !== null">
-          <img class="button img-fluid float-left mt-3 rounded" alt='Get it on Google Play' :src="require('assets/img/dlbirdseyeV2.png')"/></a>
+          <img class="button img-fluid float-left mt-3 rounded" alt='Get it on Google Play' :src="require('assets/img/dlbirdseye.png')"/></a>
       </div>
       <div class="image" v-if="item.template === 'right'">
         <img :src="item.image" style="margin-bottom: 5px;" width="100%">

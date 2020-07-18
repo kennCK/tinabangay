@@ -42,7 +42,6 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
 import ComplaintProperty from './Complaint.js'
-import testData from 'src/data-test.js'
 export default {
   mounted(){
     this.retrieve()
