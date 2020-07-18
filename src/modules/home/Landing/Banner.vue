@@ -30,7 +30,7 @@
 .cw-banner{
   width: 100%;
   float: left;
-  height: 600px;
+  height: 750px;
 }
 .text{
   width: 45%;
@@ -62,7 +62,11 @@
   position:left;
   width:194px;
 }
-
+@media (min-width: 768px) {  
+  .cw-banner {
+    height: 600px;
+  }
+}
 @media screen and (max-width: 992px){
   .text{
     width: 90%;
