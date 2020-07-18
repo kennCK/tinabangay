@@ -36,7 +36,7 @@
           <td>{{item.email}}</td>
           <td>
             <label v-if="editTypeIndex !== index">{{item.account_type}}</label>
-            <i class="fa fa-pencil text-primary" style="margin-left: 10px;" @click="setEditTypeIndex(index, item)" v-if="editTypeIndex !== index"></i>
+            <i class="fa fa-edit text-primary" style="margin-left: 10px;" @click="setEditTypeIndex(index, item)" v-if="editTypeIndex !== index"></i>
             <span v-if="editTypeIndex === index">
               <select class="form-control" v-model="newAccountType" style="float: left; width: 70%;">
                 <option v-for="(typeItem, typeIndex) in ['USER', 'BUSINESS', 'AGENCY_TEST_MNGT', 'AGENCY_TEMP_MNGT', 'AGENCY_BRGY', 'AGENCY_GOV', 'AGENCY_DOH', 'ADMIN']" :key="typeIndex">{{typeItem}}</option>
