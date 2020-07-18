@@ -17,13 +17,13 @@
           </button> -->
           <h6 class="card-title" style="margin-top: 15px;">{{item.route == 'xx' ? `Custom Location` : `${item.route}, ${item.locality}, ${item.country}`}}</h6>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date_human}}</div>
-          <div class="m-0 pb-2">
+          <!-- <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
             <b-button variant="warning" class="not-btn" v-if="item.status === 'pum'">There was a PUM in this area.</b-button>
             <b-button variant="danger" style="max-width: 100%; white-space: normal; height: initial !important" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person in this area.</b-button>
             <b-button variant="dark" class="not-btn" v-if="item.status === 'death'">There's been a death in this area.</b-button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
