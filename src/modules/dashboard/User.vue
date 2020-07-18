@@ -5,7 +5,7 @@
    </p>
    <div class="row m-0">
     <div class="col-md-6 col-sm-12">
-      <div v-if="user.code !== null" class="alert row justify-content-center align-items-center col-8 mt-5 mx-auto" :class="{'alert-danger': status.status === 'positive', 'alert-warning': status.status === 'pui' || status.status === 'pum', 'alert-success': status.status === 'negative' || status.status === 'recovered'}" role="alert">
+      <div v-if="user.code !== null" class="alert row justify-content-center align-items-center col-9 mt-5 mx-auto" :class="{'alert-danger': status.status === 'positive', 'alert-warning': status.status === 'pui' || status.status === 'pum', 'alert-success': status.status === 'negative' || status.status === 'recovered'}" role="alert">
          <label class="m-0" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum' || status.status === 'pui', 'text-success': status.status === 'negative' || status.status === 'recovered'}" v-if="status !== null">
            <h4>
              <i :class="{'fas fa-exclamation-triangle': status.status === 'pum' || status.status == 'positive' || status.status == 'pui' || status.status === 'symptoms', 'fas fa-check': status.status === 'negative' || status.status === 'recovered', 'fas fa-plus': status.status === 'death' }" style="margin-right: 5px;"></i>
