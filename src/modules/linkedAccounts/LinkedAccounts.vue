@@ -5,12 +5,13 @@
     </div>
     <table class="table table-bordered table-responsive" v-if="data !== null">
       <thead class="bg-primary">
-        <th scope="col">Owner</th>
-        <th scope="col">Linked User</th>
+        <!-- <th scope="col">Owner</th> -->
+        <th scope="col">Employee</th>
+        <!-- <th scope="col">Name</th> -->
         <th scope="col">Date</th>
-        <th scope="col" v-if="user.type !== 'USER'">
-          Type
-        </th>
+        <!-- <th scope="col" v-if="user.type !== 'USER'">
+          User Type
+        </th> -->
         <th scope="col" v-if="user.type !== 'USER'">
           Home Address
         </th>
@@ -23,13 +24,13 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td class="text-uppercase">{{item.owner_account.username}}</td>
-          <td class="text-uppercase">{{item.account.username}}</td>
+          <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
+          <td>{{item.account.information.first_name}} {{item.account.information.last_name}} <small class="text-uppercase font-weight-bold text-primary">({{item.account.username}})</small></td>
           <td class="text-uppercase">{{item.created_at_human}}</td>
-          <td v-if="user.type !== 'USER'">
+          <!-- <td v-if="user.type !== 'USER'">
             <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
             <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
-          </td>
+          </td> -->
           <td v-if="user.type !== 'USER'">
             <i v-if="item.address === null">No address recorded</i>
             <label v-if="item.address !== null">
@@ -43,6 +44,8 @@
             </label>
           </td>
           <td v-if="user.type !== 'USER'">
+            <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
+            <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
             <button class="btn btn-primary" v-if="item.assigned_location === null" @click="show('branch', item)">
               Assign branch
             </button>
@@ -56,7 +59,7 @@
               Edit address
             </button>
             <button type="button" @click="show('unlink', item)" class="btn btn-secondary">
-              Unlink
+              <i class="fa fa-trash p-0"></i>
             </button>
           </td>
         </tr>
