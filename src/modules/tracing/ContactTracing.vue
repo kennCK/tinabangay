@@ -150,7 +150,7 @@
           Type
 
           <i class="fa fa-chevron-down pull-right" v-if="typeFlag === false" @click="manageSort('type', 'desc', true)"></i>
-          <i class="fa fa-chevron-up pull-right" v-if="typeFlag === true" @click="manageSort('type', 'asc', false)"></i></td>
+          <i class="fa fa-chevron-up pull-right" v-if="typeFlag === true" @click="manageSort('type', 'asc', false)"></i>
         </td>
         <td>Remarks</td>
         <td>Actions</td>
