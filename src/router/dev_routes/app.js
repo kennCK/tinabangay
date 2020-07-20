@@ -274,6 +274,22 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/plasma/posts',
+    name: 'pPosts',
+    component: resolve => require(['modules/plasma/plasma.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/plasma/add-post',
+    name: 'addPosts',
+    component: resolve => require(['modules/plasma/plasmaForm.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
