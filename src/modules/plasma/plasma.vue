@@ -17,8 +17,9 @@
             <div class="row">
                 <div class="column" v-for="(datus, index) in data" :key="index">
                     <div class="card cards">
-                        <i class='fas fa-ellipsis-v ellipsis'></i>
-                        <div style="align-items:center;display:flex">
+                        <i class='fas fa-ellipsis-v ellipsis' @click="showMenu(index)" v-if="user.type === 'ADMIN'"></i>
+                        <button class="btn" v-if="menushow">Delete</button>
+                        <div style="align-items:center;display:flex"  @click="menushow = false">
                             <i class="fa fa-user-circle-o profile-icon i-style"></i>
                             <h4 class="h4Style">{{datus.username}}<br/>
                                 <p class="p-date">{{datus.date}}</p>
@@ -124,20 +125,22 @@
 
 <script>
 import ROUTER from 'src/router'
-// import AUTH from 'src/services/auth'
+import AUTH from 'src/services/auth'
 // import CONFIG from 'src/config.js'
 // import COMMON from 'src/common.js'
 // import PropertyModal from './CreateSymptom.js'
 export default{
   data(){
     return {
+      user: AUTH.user,
       goingToPost: false,
       post: '',
+      menushow: false,
       data: [
-          { username: 'Annonymous', message: 'kinahanglan nako og plasma', date: '07/15/2020' },
-          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!', date: '07/15/2020' },
-          { username: 'Annonymous', message: 'kinahanglan nako og plasma', date: '07/15/2020' },
-          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!', date: '07/15/2020' }
+          { username: 'Annonymous', message: 'kinahanglan nako og plasma', date: '07/15/2020', id: 0 },
+          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!', date: '07/15/2020', id: 1 },
+          { username: 'Annonymous', message: 'kinahanglan nako og plasma', date: '07/15/2020', id: 2 },
+          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!', date: '07/15/2020', id: 3 }
       ]
     }
   },
@@ -150,6 +153,13 @@ export default{
   methods: {
     addPost(){
       ROUTER.push('/plasma/add-post')
+    },
+    showMenu(index){
+      this.data.forEach(el => {
+        if(el.id === index){
+          this.menushow = true
+        }
+      })
     }
   }
 }
