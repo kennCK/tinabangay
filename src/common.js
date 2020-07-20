@@ -52,7 +52,7 @@ export default {
     icon: 'fa fa-cog',
     route: '/profile'
   }, {
-    title: 'Linked Employees',
+    title: 'Employees',
     icon: 'fa fa-users',
     route: '/linked_accounts'
   }, {
