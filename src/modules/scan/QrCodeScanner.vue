@@ -44,8 +44,7 @@ export default {
   data(){
     return {
       user: AUTH.user,
-      qrScannerError: '',
-      location: null
+      qrScannerError: ''
     }
   },
   props: {
