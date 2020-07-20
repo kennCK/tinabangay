@@ -77,9 +77,9 @@
       </div>
 
       <div class="available-options d-flex">
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('send_form')">Send Form</button>
+        <button v-if="user.type === 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('send_form')">Send Form</button>
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
-        <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
+        <button v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
     </div>
@@ -436,19 +436,22 @@ export default {
         $('#loading').css({display: 'none'})
       })
     },
-    sendForm(type) {
-      $('#loading').css({display: 'block'})
-
-      let merchantOwner = this.user.userID
-      if (this.user.linked_account) {
-        merchantOwner = this.user.linked_account.owner
-      }
-
+    canSendEmployeeHDF() {
+      return (
+        this.user.type !== 'USER' &&
+        this.user.assigned_location !== null &&
+        (
+          this.scannedUserData.linked_account !== null &&
+          parseInt(this.scannedUserData.linked_account.owner) === parseInt(this.user.linked_account.owner)
+        )
+      )
+    },
+    sendHDF(merchantOwner, type) {
       let content = JSON.stringify({
         format: type,
         status: null,
         statusLabel: null,
-        location: merchantOwner === this.user.userID ? this.user.location : this.user.assigned_location
+        location: this.user.assigned_location
       })
 
       const parameter = {
@@ -456,6 +459,7 @@ export default {
         account_id: this.scannedUserData.id,
         from: this.user.userID,
         to: this.scannedUserData.id,
+        payload: `form_request/${type}`,
         content
       }
 
@@ -476,6 +480,35 @@ export default {
           }
           $('#loading').css({display: 'none'})
         })
+    },
+    sendForm(type) {
+      $('#loading').css({display: 'block'})
+      const merchantOwner = this.user.linked_account.owner
+
+      if (this.user.assigned_location === null) {
+        this.alertMessage = {
+          type: 'warning',
+          message: 'Sorry, you do not have assigned location. Please contact your merchant'
+        }
+        this.hideModal('send_form')
+        $('#loading').css({display: 'none'})
+        return
+      }
+
+      if (type === 'customer' && this.user.assigned_location !== null) {
+        this.sendHDF(merchantOwner, type)
+      } else {
+        if (this.canSendEmployeeHDF()) {
+          this.sendHDF(merchantOwner, type)
+        } else {
+          this.alertMessage = {
+            type: 'warning',
+            message: 'Scanned user is not linked to the merchant'
+          }
+          this.hideModal('send_form')
+          $('#loading').css({display: 'none'})
+        }
+      }
     }
   }
 }

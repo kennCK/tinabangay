@@ -22,7 +22,7 @@
       :class="['text-center', 'font-weight-bold', {'text-danger': formParameters.status === 'danger', 'text-success': formParameters.status === 'clear'}]">
       Status: {{formParameters.status}}{{formParameters.statusLabel !== 'clear' ? ` [${formParameters.statusLabel}]` : ''}}
     </h5>
-    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{data.updated_at}}</h5>
+    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ getRelativeTime(data.updated_at) }}</h5>
     <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
       <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
     </div>
@@ -84,37 +84,17 @@
       <div class="border border-2 my-5 mx-auto p-3 rounded">
         <h5 class="health-group-header">Health and Safety-Related Questions</h5>
 
-        <!-- healthDec.company.related_questions[0] -->
-        <div class="company_question_container">
-          <span>Offices/Section visited today:</span>
-          <span v-if="healthDec.company.related_questions[0].answer.length > 0" class="d-inline">
-            <span class="related_questions_answer" v-for="(item, index) in healthDec.company.related_questions[0].answer" :key="index">
-              <b>{{item}}</b>,
+        <!-- healthDec.company.related_questions -->
+        <div class="company_question_container" v-for="(question, idx) in healthDec.company.related_questions" :key="idx">
+          <span>{{question.question}}</span>
+          <span v-if="question.answer.length > 0" class="d-inline">
+            <span class="related_questions_answer" v-for="(answer, index) in question.answer" :key="index">
+              <b>{{`${answer}${index + 1 === question.answer.length ? '' : ', '}`}}</b>
             </span>
           </span>
-          <span v-else class="d-inline">None</span>
-        </div>
-
-        <!-- healthDec.company.related_questions[1] -->
-        <div class="company_question_container">
-          <span>Place intended to go after visit:</span>
-          <span v-if="healthDec.company.related_questions[1].answer.length > 0" class="d-inline">
-            <span class="related_questions_answer" v-for="(item, index) in healthDec.company.related_questions[1].answer" :key="index">
-              <b>{{item}}</b>,
-            </span>
+          <span v-else class="d-inline related_questions_answer">
+            <b>None</b>
           </span>
-          <span v-else class="d-inline">None</span>
-        </div>
-
-        <!-- healthDec.company.related_questions[2] -->
-        <div class="company_question_container">
-          <span>Irregular/unusual health/safety condition noticed:</span>
-          <span v-if="healthDec.company.related_questions[2].answer.length > 0" class="d-inline">
-            <span class="related_questions_answer" v-for="(item, index) in healthDec.company.related_questions[2].answer" :key="index">
-              <b>{{item}}</b>,
-            </span>
-          </span>
-          <span v-else class="d-inline">None</span>
         </div>
 
         <div class="person_in_contact_container">
@@ -287,7 +267,7 @@
         <!-- COMPANY RELATED_QUESTIONS -->
         <section :id="`company-related-question-${index}`" v-for="(item, index) in healthDec.company.related_questions" :key="index">
           <div class="mt-4">
-            <h6 class="font-weight-bold required">
+            <h6 :class="['font-weight-bold', { 'required': item.required }]">
               {{ item.question }}
             </h6>
             <p style="font-size: 12px">
@@ -492,6 +472,7 @@
   }
 </style>
 <script>
+import moment from 'moment'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
@@ -523,16 +504,19 @@ export default {
         {
           question: 'What Offices/Section you have been to today: (Official or non Official)',
           translate: '(Asa nga opisina/section imong giadto karon (opisyal or personal nga katuyuan))',
+          required: true,
           answer: []
         },
         {
           question: 'Where do you intend to go after here?',
           translate: '(Asa imong plano moadto moadto gikan diri?)',
+          required: true,
           answer: []
         },
         {
           question: 'Did you notice something irregular/unusual in your work or coworkers in terms of health/safety condition today? Please specify.',
           translate: '(Naa ka ba`y naobserbahan nga kalahian sa normal nga health and safety condisyon sa trabaho o sa imong mga kauban? I-detalye)',
+          required: true,
           answer: []
         }
       ]
@@ -556,8 +540,11 @@ export default {
       otherSymptoms: 0
     }
   },
-  props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam'],
+  props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    getRelativeTime(time) {
+      return moment(time).fromNow()
+    },
     addPerson() {
       const name = $('#person_in_contact_name').val().trim()
       const department = $('#person_in_contact_department').val().trim()
@@ -611,25 +598,47 @@ export default {
         this.healthDec.location = this.formParameters.location
 
         $('#loading').css({display: 'block'})
-        let param = {
-          id: this.data.id,
-          content: JSON.stringify(this.healthDec),
-          account_id: this.data.account_id,
-          code: this.data.code,
-          owner: this.data.owner,
-          from: this.user.userID,
-          to: this.data.owner
-        }
 
-        this.APIRequest('health_declarations/update', param).then(response => {
-          this.$emit('triggerRetrieve', true)
-        }).fail(() => {
-          $('<div>', {
-            id: 'error',
-            class: 'row justify-content-end mb-3',
-            html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
-          }).insertBefore('#submit')
-        })
+        if (this.isUserCreate) {
+          let param = {
+            owner: this.data.owner,
+            account_id: this.user.userID,
+            from: this.user.userID,
+            to: this.data.owner,
+            content: JSON.stringify(this.healthDec),
+            payload: `form_submitted/${this.healthDec.format}`
+          }
+          this.APIRequest('health_declarations/create', param).then(response => {
+            ROUTER.push(`/form/${response.generated_code}`)
+          }).fail(() => {
+            $('<div>', {
+              id: 'error',
+              class: 'row justify-content-end mb-3',
+              html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
+            }).insertBefore('#submit')
+          })
+        } else {
+          let param = {
+            id: this.data.id,
+            content: JSON.stringify(this.healthDec),
+            account_id: this.data.account_id,
+            code: this.data.code,
+            owner: this.data.owner,
+            from: this.user.userID,
+            to: this.data.owner,
+            payload: `form_submitted/${this.healthDec.format}`
+          }
+
+          this.APIRequest('health_declarations/update', param).then(response => {
+            this.$emit('triggerRetrieve', true)
+          }).fail(() => {
+            $('<div>', {
+              id: 'error',
+              class: 'row justify-content-end mb-3',
+              html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
+            }).insertBefore('#submit')
+          })
+        }
       } else {
         if($('#error').length === 0) {
           $('<div>', {
