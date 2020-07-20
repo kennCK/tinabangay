@@ -35,7 +35,7 @@
             <b class="text-danger">{{item.account.information && item.account.information.first_name && item.account.information.last_name ? item.account.information.first_name + ' ' + item.account.information.last_name : item.account.username}}</b>
           </td>
           <td>
-            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
+            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms', 'badge-info': item.status === 'tested'}">{{item.status_label}}</span>
           </td>
           <td>
             <button class="btn btn-primary">View Health Declaration</button>
