@@ -1,7 +1,6 @@
 export default {
   sidebarMenu: [
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fas fa-tachomete-alt', path: 'dashboard', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Plasma Posts', icon: 'fas fa-diagnoses', path: 'plasma/posts', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fas fa-tachometer-alt', path: 'dashboard', flag: false, subMenu: null},
 //
 //
 //

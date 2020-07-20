@@ -617,7 +617,15 @@ export default {
         this.patientProperty.inputs = freshInput
         if(!update) {
           inputs.map(input => {
-            input.value = null
+            if(input.variable === 'locality') {
+              if(this.user.location !== null){
+                input.value = this.user.location.code
+              }else{
+                input.value = null
+              }
+            }else{
+              input.value = null
+            }
           })
           this.patientProperty.params.map(par => {
             if(par.variable === 'added_by') {
