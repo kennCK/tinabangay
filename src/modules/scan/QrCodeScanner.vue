@@ -7,21 +7,31 @@
   <div>
     <div v-if="qrScannerError !== '' && state" class="alert alert-warning alert-dismissible fade show" role="alert">
       {{ qrScannerError }}
-      <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close">
+      <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close" >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+    <qrcode-stream v-if="state && location === 'top'" @init="onInit" @decode="onDecode"></qrcode-stream>
     <button 
-      :class="['btn', 'mb-2', {'btn-primary': !state}, {'btn-warning': state} ]"
+      :class="['btn', 'mb-2', 'btn-lg', 'py-1', 'px-2', {'btn-danger': !state}, {'btn-warning': state}, (btnWidth ? btnWidth : '') ]"
       @click="toggleScanner()"
     >
-      {{ state ? 'End scanning' : 'Scan QR Code' }}
+      <i class="fa" :class="state ? 'fa-ban' : 'fa-expand'"></i>
+      <span class="font-weight-bold">{{ state ? 'Cancel' : 'Scan QR' }}</span>
     </button>
-    <qrcode-stream v-if="state" @init="onInit" @decode="onDecode"></qrcode-stream>
+    <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
   </div>
 </template>
 <style lang="scss" scoped> 
   @import "~assets/style/colors.scss";
+  .btn-danger {
+    background-color: $dangerLight !important;
+    height: unset !important;
+  }
+
+  .btn-warning {
+    height: unset !important;
+  }
 </style>
 <script>
 import { QrcodeStream } from 'vue-qrcode-reader'
@@ -34,12 +44,19 @@ export default {
   data(){
     return {
       user: AUTH.user,
-      qrScannerError: ''
+      qrScannerError: '',
+      location: null
     }
   },
   props: {
     state: {
       required: true
+    },
+    btnWidth: {
+      required: false
+    },
+    location: {
+      required: false
     }
   },
   components: { 'qrcode-stream': QrcodeStream },

@@ -25,7 +25,7 @@
 
 
     <showQrCode ref="imageView"></showQrCode>
-    <empty v-if="data === null" :title="'No branches added!'" :action="'Add a branch location.'" :icon="'far fa-building'" :iconColor="'text-danger'"></empty>
+    <empty v-if="data === null" :title="'No locations added!'" :action="'Add a location.'" :icon="'far fa-building'" :iconColor="'text-danger'"></empty>
 
     <!--MODAL FOR ADDING LOCATION-->
     <div class="modal fade right" id="add_location" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -33,14 +33,14 @@
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Add Branch</h5>
+            <h5 class="modal-title">Add Location</h5>
             <button type="button" class="close" aria-label="Close" @click="hideModal('add_location')">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
           </div>
           <div class="modal-body p-4">
             <div class="form-group mb-5">
-              <label for="code">Branch Name</label>
+              <label for="code">Location Name</label>
               <input type="text" name="branch" id="branch" class="form-control" placeholder="Enter Branch Name">
             </div>
             <div v-if="customLocation === false">

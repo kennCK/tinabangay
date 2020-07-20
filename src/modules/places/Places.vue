@@ -1,6 +1,6 @@
 <template>
   <div class="mx-3">
-    <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Place</button>
+    <!-- <button class="btn btn-primary pull-right" style="margin: .5% 0;" @click="showModal('create', null)">New Place</button>
     <div class="row w-100 m-0">
       <div class="alert alert-danger mt-2 p-3 col-12" role="alert">
         <b>Note:</b> COVID Positive rows <b><u>does not</u></b> automatically mean you have contracted the virus. It just means the location matches an reportedly affected location.
@@ -8,7 +8,7 @@
           Have you been travelling the last 3 months? Add the places that you've been to! This will help with the accuracy of <b>BirdsEye</b>.
         </p>
       </div>
-    </div>
+    </div> -->
     <div class="position-relative w-100 m-0 row justify-content-between mt-2 pt-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;">
         <div class="card-block px-3">
@@ -17,13 +17,13 @@
           </button> -->
           <h6 class="card-title" style="margin-top: 15px;">{{item.route == 'xx' ? `Custom Location` : `${item.route}, ${item.locality}, ${item.country}`}}</h6>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;">{{item.date_human}}</div>
-          <div class="m-0 pb-2">
+          <!-- <div class="m-0 pb-2">
             <b-button variant="success" class="not-btn" v-if="item.status === 'negative'">This area is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="item.status === 'pui'">There was a PUI in this area.</b-button>
             <b-button variant="warning" class="not-btn" v-if="item.status === 'pum'">There was a PUM in this area.</b-button>
             <b-button variant="danger" style="max-width: 100%; white-space: normal; height: initial !important" class="not-btn" v-if="item.status === 'positive'">There was a COVID Positive person in this area.</b-button>
             <b-button variant="dark" class="not-btn" v-if="item.status === 'death'">There's been a death in this area.</b-button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

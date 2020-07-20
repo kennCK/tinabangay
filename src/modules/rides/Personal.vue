@@ -16,26 +16,26 @@
 
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-map-marker" style="margin-right: 10px"></i>{{item.from ? item.from : 'Not Specified'}} - {{item.to ? item.to : 'Not Specified'}}</div>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.from_date_human}} - {{item.to_date_human}}</div>
-          <div class="m-0 pb-2" v-if="(calcStatus = getStatus(item.from_status, item.to_status))">
+          <!-- <div class="m-0 pb-2" v-if="(calcStatus = getStatus(item.from_status, item.to_status))">
             <b-button variant="success" class="not-btn" v-if="calcStatus === 'negative'">This route is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="calcStatus === 'pui'">There was a PUI in this route.</b-button>
             <b-button variant="warning" class="not-btn" v-if="calcStatus === 'pum'">There was a PUM in this route.</b-button>
             <b-button variant="danger" style="max-width: 100%; white-space: normal; height: initial !important" class="not-btn" v-if="calcStatus === 'positive'">There was a COVID Positive person in this route.</b-button>
             <b-button variant="dark" class="not-btn" v-if="calcStatus === 'death'">There's been a death in this route.</b-button>
-          </div>
+          </div> -->
         </div>
         <div class="card-block px-3" v-else>
           <h6 class="card-title text-capitalize" style="margin-top: 15px;"><b>Type: </b>{{item.transportation.type}}</h6>
           <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Model: </b>{{item.transportation.model}}</div>
           <div class="card-title text-capitalize" style="margin-top: 15px;"><b>Code: </b>{{item.transportation.number}}</div>
           <div class="card-title" style="font-size: 15px; margin: 15px 0;"><i class="fa fa-calendar" style="margin-right: 10px"></i>{{item.created_at_human}}</div>
-          <div class="m-0 pb-2" v-if="(calcStatus = getStatus(item.from_status, item.to_status))">
+          <!-- <div class="m-0 pb-2" v-if="(calcStatus = getStatus(item.from_status, item.to_status))">
             <b-button variant="success" class="not-btn" v-if="calcStatus === 'negative'">This route is clear.</b-button>
             <b-button variant="primary" class="not-btn" v-if="calcStatus === 'pui'">There was a PUI in this route.</b-button>
             <b-button variant="warning" class="not-btn" v-if="calcStatus === 'pum'">There was a PUM in this route.</b-button>
             <b-button variant="danger" style="max-width: 100%; white-space: normal; height: initial !important" class="not-btn" v-if="calcStatus === 'positive'">There was a COVID Positive person in this route.</b-button>
             <b-button variant="dark" class="not-btn" v-if="calcStatus === 'death'">There's been a death in this route.</b-button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

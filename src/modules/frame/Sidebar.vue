@@ -14,7 +14,7 @@
                 </span>
                 <i v-bind:class="toggleSidebar + ' pull-right'" aria-hidden="true" v-on:click="changeToggleSidebarIcon()" id="toggleIcon"></i>
             </li>
-            <li v-for="item, index in menu" v-bind:class="{ 'active-menu': item.flag === true }" v-on:click="setActive(index)" v-if="(((item.users === user.type || item.users === 'ALL') && user.type !== 'ADMIN') || user.type === 'ADMIN') && menuFlag === true" class="menu-holder">
+            <li v-for="(item, index) in menu" :key="index" :class="item.flag || $route.path === '/' + item.path ? ' active-menu' : ''" v-on:click="setActive(index)" v-if="(((item.accountType === user.type || item.accountType === 'ALL') && user.type !== 'ADMIN') || (user.type === 'ADMIN' && item.showOnAdmin === true)) && (item.accountStatus === 'ALL' || (user.subAccount === null || (user.subAccount !== null && user.subAccount.status === item.accountStatus))) && menuFlag === true" class="menu-holder">
               <i v-bind:class="item.icon" class=" visible"></i> 
               <label>{{item.description}}</label>
               <ul class="sub-menu" v-if="item.subMenu !== null">
@@ -24,7 +24,7 @@
                 </li>
               </ul>
             </li>
-            <li v-for="item, index in menuOff" v-bind:class="{ 'active-menu': item.flag === true }" v-on:click="setActiveOff(index)" v-if="(((item.users === user.type || item.users === 'ALL') && user.type !== 'ADMIN') || user.type === 'ADMIN') && menuFlag === false" class="menu-holder-hidden">
+            <li v-for="item, index in menuOff" v-bind:class="{ 'active-menu': item.flag === true }" v-on:click="setActiveOff(index)" v-if="(((item.accountType === user.type || item.accountType === 'ALL') && user.type !== 'ADMIN') || (user.type === 'ADMIN' && item.showOnAdmin === true)) && menuFlag === false" class="menu-holder-hidden">
               <i v-bind:class="item.icon"></i>
             </li>
           </ul>
@@ -50,6 +50,7 @@
       </div>
 
       <div class="content-holder" v-bind:class="hide">
+        <system-notification></system-notification>
         <transition >
           <router-view ></router-view>
         </transition>
@@ -66,17 +67,27 @@
   z-index: 1;
   margin-top: 50px;
 }
+
+.pull-right {
+  float: right;
+}
+
 .main-sidebar{
   overflow-y: hidden;
   z-index: 10000;
-  height: calc(100vh - 60px);
+}
+
+.sidebar{
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .sidebar-menu{
   list-style: none;
   padding: 0px;
   margin: 0px;
-  height: calc(100vh - 60px);
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .sidebar-menu .header{
@@ -118,7 +129,7 @@
 .profile-image-holder img{
   width: 80px;
   height: 80px;
-  border-radius: 5px;
+  border-radius: 50%;
 }
 
 .profile-photo .profile-icon{
@@ -154,6 +165,8 @@
   float: left;
   width: 86%;
   margin-left: 4%;
+  margin-top: 0px;
+  margin-bottom: 0px;
   line-height: 40px;
 }
 
@@ -175,11 +188,11 @@
   height: 35px;
   line-height: 35px;
   margin-left: 5%;
-  color: $darkPrimary;
+  color: $primary;
 }
 
 .active-menu{
-  color: $darkPrimary !important;
+  color: $primary !important;
 }
 
 .menu-holder-hidden{
@@ -193,7 +206,7 @@
 
 .menu-holder-hidden i{
   font-size: 20px;
-  padding-right: 5px;
+  padding-right: 5px; 
 }
 
 /*---------------------------------------------------------          
@@ -209,42 +222,47 @@
   }
   .sidebar-collapse{
     display: block;
+    position: fixed; /*- fixed sidebar -*/
   }
   .sidebar-menu .header span{
     display: block;
   }
   .content-holder{
-    width: 81%;
+    width: 80%;
     margin: 60px 0px 0px 0px;
-    float: left;
+    margin-right: 1%;
+    float: right; /*- changed float left to right -*/
   }
   /*  Change with Menu Toggled */
   .main-sidebar.hidden{
     width: 5%;
+    position: fixed; /*- fixed sidebar -*/
   }
   .content-holder.hidden{
     width: 94%;
     margin: 60px 0px 0px 1%;
-    float: left;
+    float: right; /*- changed float from left to right -*/
   }
 }
 
 /*-------------- Medium Screen for Tablets  --------------*/
-@media (max-width: 1199px){
+@media (min-width: 992px) and (max-width: 1199px){
   .main-sidebar{
     width: 23%;
     float: left;
   }
   .content-holder{
-    width: 72%;
+    width: 71%;
     margin: 60px 0px 0px 0px;
-    float: left;
+    margin-right: 1%;
+    float: right; /*- changed float from left to right -*/
   }
   .main-sidebar.active{
     padding-left:15%;
   }
   .sidebar-collapse{
     display: block;
+    position: fixed; /*- fixed sidebar -*/
   }
   .sidebar-menu .header span{
     display: block;
@@ -253,58 +271,26 @@
   /*  Change with Menu Toggled */
   .main-sidebar.hidden{
     width: 5%;
+    position: fixed; /*- fixed sidebar -*/
   }
   .content-holder.hidden{
     width: 94%;
     margin: 60px 0px 0px 1%;
-    float: left;
+    float: right; /*- changed float from left to right -*/
   }
 }
-/*-------------- Small Screen for Mobile Phones  --------------*/
-/*@media screen (min-width: 768px), screen and (max-width: 991px){
-  .main-sidebar{
-    width: 90%;
-    position: absolute;
-    top:0;
-    left: 0;
-    z-index: 10;
-    background: #fff;
-  }
-  .content-holder{
-    width: 96%;
-    margin: 60px 2% 0 2%;
-  }
-  .sm-title{
-    text-align: center;
-  }
-   .sidebar-collapse{
-    display: none;
-  }
-  .sidebar-menu .header span{
-    display: none;
-  }
-  
-  .main-sidebar.hidden{
-     margin-left: 0;
-  }
-  #toggleIcon{
-    display: none;
-  }
-  .force-collapse{
-    display: none;
-  }
-}*/
 
 /*-------------- Extra Small Screen for Mobile Phones --------------*/
 @media (max-width: 991px){
   .main-sidebar{
     width: 100%;
-    position: absolute;
+    position: fixed;
     top:0;
     left: 0;
     z-index: 30;
     background-color: rgba(0,0,0,0.5);
     margin-top: 50px;
+    height: 100vh;
   }
   .content-holder{
     min-height: 10px;
@@ -315,8 +301,9 @@
   }
   .main-sidebar ul{
     background: #fff;
-    width: 90%;
+    width: 60%;
     min-height: 400px;
+    height: 100vh;
   }
    .sm-title{
     text-align: center;
@@ -357,12 +344,17 @@
   }
   .main-sidebar{
     width: 90%;
-    position: absolute;
+    position: fixed;
     top:0;
     left: 0;
     z-index: 10;
     background: #fff;
     margin-top: 100px;
+    height: 100vh;
+  }
+
+  .main-sidebar ul{
+    height: 100vh;
   }
 
   .content-holder{
@@ -401,9 +393,10 @@
 }
 </style>
 <script>
-import AUTH from '../../services/auth'
-import CONFIG from '../../config.js'
-import ROUTER from '../../router'
+import AUTH from 'src/services/auth'
+import CONFIG from 'src/config.js'
+import COMMON from 'src/common.js'
+import ROUTER from 'src/router'
 export default {
   mounted(){
   },
@@ -411,20 +404,8 @@ export default {
     return{
       user: AUTH.user,
       config: CONFIG,
-      menu: [
-        {id: 1, users: 'ALL', parent_id: 0, description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
-        {id: 2, users: 'ALL', parent_id: 0, description: 'Requested', icon: 'fa fa-arrow-right', path: 'requests', flag: false, subMenu: null},
-        {id: 3, users: 'INVESTOR', parent_id: 0, description: 'Invested', icon: 'fa fa-arrow-left', path: 'investments', flag: false, subMenu: null},
-        {id: 4, users: 'ALL', parent_id: 0, description: 'Payments', icon: 'fa fa-money', path: 'payments', flag: false, subMenu: null},
-        {id: 5, users: 'ALL', parent_id: 0, description: 'Deposit', icon: 'fa fa-money', path: 'deposits', flag: false, subMenu: null},
-        {id: 5, users: 'ALL', parent_id: 0, description: 'Withdrawals', icon: 'fa fa-money', path: 'withdrawals', flag: false, subMenu: null}
-      ],
-      menuOff: [
-        {id: 1, users: 'ALL', parent_id: 0, description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
-        {id: 2, users: 'ALL', parent_id: 0, description: 'Requested', icon: 'fa fa-arrow-right', path: 'requests', flag: false, subMenu: null},
-        {id: 3, users: 'INVESTOR', parent_id: 0, description: 'Invested', icon: 'fa fa-arrow-left', path: 'investments', flag: false, subMenu: null},
-        {id: 4, users: 'ALL', parent_id: 0, description: 'Payments', icon: 'fa fa-money', path: 'payments', flag: false, subMenu: null}
-      ],
+      menu: COMMON.sidebarMenu,
+      menuOff: COMMON.sidebarMenu,
       toggleSidebar: 'fa fa-toggle-on',
       hide: '',
       flag: false,
@@ -437,8 +418,29 @@ export default {
       menuFlag: true
     }
   },
+  components: {
+    'system-notification': require('components/increment/generic/system/Notifications.vue')
+  },
+  watch: {
+    '$route' (to, from) {
+      let index = null
+      for(var i = 0; i < COMMON.sidebarMenu.length && !index; i++) {
+        let item = COMMON.sidebarMenu[i]
+        if(to.path === '/' + item.path) {
+          index = i
+        }
+      }
+      if(index !== null){
+        this.setActiveOnWatch(index, to.path)
+      }else{
+        if(this.prevMenu !== null){
+          this.menu[this.prevMenu].flag = false
+        }
+      }
+    }
+  },
   methods: {
-    setActive(index){
+    setActive(index, code = null){
       if(this.prevMenu !== index){
         this.menu[this.prevMenu].flag = false
         this.menu[index].flag = true
@@ -449,6 +451,20 @@ export default {
       }
       if(this.menu[index].subMenu === null){
         ROUTER.push('/' + this.menu[this.prevMenu].path)
+        $('.navbar-collapse').collapse('hide')
+      }
+    },
+    setActiveOnWatch(index, path){
+      if(this.prevMenu !== index){
+        this.menu[this.prevMenu].flag = false
+        this.menu[index].flag = true
+        if(this.menu[this.prevMenu].subMenu !== null){
+          this.menu[this.prevMenu].subMenu[this.subPrevMenu].flag = false
+        }
+        this.prevMenu = index
+      }
+      if(this.menu[index].subMenu === null){
+        ROUTER.push(path)
         $('.navbar-collapse').collapse('hide')
       }
     },

@@ -71,6 +71,18 @@ export default {
     {
       value: 'pum',
       label: 'Person Under Monitoring'
+    },
+    {
+      value: 'lsi',
+      label: 'Locally Stranded Individuals'
+    },
+    {
+      value: 'rofw',
+      label: 'Returning Overseas Filipino Workers'
+    },
+    {
+      value: 'others',
+      label: 'Others'
     }],
     validation: {
       size: 1,
