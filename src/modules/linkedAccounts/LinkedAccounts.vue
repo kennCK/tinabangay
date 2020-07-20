@@ -25,7 +25,11 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
-          <td>{{item.account.information.first_name}} {{item.account.information.last_name}} <small class="text-uppercase font-weight-bold text-primary">({{item.account.username}})</small></td>
+          <td>
+            <span v-if="item.account.information.first_name !== null">{{item.account.information.first_name}}</span> 
+            <span v-if="item.account.information.last_name !== null">{{item.account.information.last_name}}</span> 
+            <small class="text-uppercase font-weight-bold text-primary">({{item.account.username}})</small>
+          </td>
           <td class="text-uppercase">{{item.created_at_human}}</td>
           <!-- <td v-if="user.type !== 'USER'">
             <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
