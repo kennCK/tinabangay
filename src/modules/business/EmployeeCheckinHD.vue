@@ -699,7 +699,6 @@ export default {
     this.formParameters = this.formParam
     this.form = this.isForm
     this.data = this.dataParam
-    this.userInfo = this.userInfoParam
 
     if (this.form) {
       this.healthDec.personalInformation.first_name = this.userInfoParam.first_name
@@ -758,7 +757,6 @@ export default {
       data: null,
       config: CONFIG,
       civil: null,
-      userInfo: null,
       transpo: [],
       country: [],
       locality: [],
@@ -914,14 +912,20 @@ export default {
         $('#loading').css({display: 'block'})
 
         if (this.isUserCreate) {
+          let userId = this.user.userID
+          if (this.formParameters.hasOwnProperty('scannedUserAnswerForm')) {
+            userId = this.userInfoParam.account_id
+          }
           let param = {
             owner: this.data.owner,
-            account_id: this.user.userID,
-            from: this.user.userID,
+            account_id: userId,
+            from: userId,
             to: this.data.owner,
             content: JSON.stringify(this.healthDec),
             payload: `form_submitted/${this.healthDec.format}`
           }
+
+          console.log({ param })
           this.APIRequest('health_declarations/create', param).then(response => {
             ROUTER.push(`/form/${response.generated_code}`)
           }).fail(() => {
