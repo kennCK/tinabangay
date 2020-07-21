@@ -78,9 +78,35 @@
 
       <div class="available-options d-flex">
         <button v-if="user.type === 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('send_form')">Send Form</button>
+        <button v-if="user.type === 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('answer_form')">Answer Form</button>
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
         <button v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
+      </div>
+    </div>
+
+    <!-- MODAL FOR ANSWERING FORM -->
+    <div class="modal fade right" id="answer_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Answer Health Declaration Form</h5>
+            <button type="button" class="close" aria-label="Close" @click="hideModal('answer_form')">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group mb-0 d-flex flex-column align-items-center mb-3">
+              <button v-if="user.type !== 'USER'" class="btn btn-primary mt-3 w-100" @click="sendForm('customer', true)">Customer</button>
+              <button v-if="user.type !== 'USER'" class="btn btn-primary mt-3 w-100" @click="sendForm('employee_checkin', true)">Employee Checkin</button>
+              <button v-if="user.type !== 'USER'" class="btn btn-primary mt-3 w-100" @click="sendForm('employee_checkout', true)">Employee Checkout</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" @click="hideModal('answer_form')">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -234,7 +260,7 @@
   margin: 5px 5px !important;
 }
 
-#send_form .modal-content {
+#send_form .modal-content, #answer_form .modal-content {
   max-width: 400px;
   margin: 0 auto;
 }
@@ -481,7 +507,12 @@ export default {
           $('#loading').css({display: 'none'})
         })
     },
-    sendForm(type) {
+    redirectToForm(type, merchantOwner, content) {
+      ROUTER.push(`/form/${type}&${merchantOwner}&${content}`)
+      this.hideModal('answer_form')
+      $('#loading').css({display: 'none'})
+    },
+    sendForm(type, answerForm = false) {
       $('#loading').css({display: 'block'})
       const merchantOwner = this.user.linked_account.owner
 
@@ -495,18 +526,49 @@ export default {
         return
       }
 
-      if (type === 'customer' && this.user.assigned_location !== null) {
-        this.sendHDF(merchantOwner, type)
+      if (answerForm) {
+        const userData = {...this.scannedUserData.account_information}
+        const location = {...this.user.assigned_location}
+        userData.id = null
+        location.id = null
+        location.account_id = null
+        const content = JSON.stringify({
+          format: type,
+          status: null,
+          statusLabel: null,
+          answerForm,
+          userData,
+          location
+        })
+
+        if (type === 'customer' && this.user.assigned_location !== null) {
+          this.redirectToForm(type, merchantOwner, content)
+        } else {
+          if (this.canSendEmployeeHDF()) {
+            this.redirectToForm(type, merchantOwner, content)
+          } else {
+            this.alertMessage = {
+              type: 'warning',
+              message: 'Scanned user is not linked to the merchant'
+            }
+            this.hideModal('answer_form')
+            $('#loading').css({display: 'none'})
+          }
+        }
       } else {
-        if (this.canSendEmployeeHDF()) {
+        if (type === 'customer' && this.user.assigned_location !== null) {
           this.sendHDF(merchantOwner, type)
         } else {
-          this.alertMessage = {
-            type: 'warning',
-            message: 'Scanned user is not linked to the merchant'
+          if (this.canSendEmployeeHDF()) {
+            this.sendHDF(merchantOwner, type)
+          } else {
+            this.alertMessage = {
+              type: 'warning',
+              message: 'Scanned user is not linked to the merchant'
+            }
+            this.hideModal('send_form')
+            $('#loading').css({display: 'none'})
           }
-          this.hideModal('send_form')
-          $('#loading').css({display: 'none'})
         }
       }
     }

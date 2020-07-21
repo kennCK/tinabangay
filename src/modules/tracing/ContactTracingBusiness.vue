@@ -233,8 +233,8 @@ export default {
       return moment(time).fromNow()
     },
     getLocation(){
-      let parameter = {
-        conditions: [{
+      const parameter = {
+        condition: [{
           value: this.user.userID,
           column: 'account_id',
           clause: '='
@@ -242,7 +242,10 @@ export default {
           value: null,
           column: 'assigned_code',
           clause: '='
-        }]
+        }],
+        sort: {
+          route: 'asc'
+        }
       }
       this.APIRequest('locations/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})

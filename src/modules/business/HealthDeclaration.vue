@@ -119,6 +119,7 @@ import CONFIG from 'src/config.js'
 export default {
   mounted() {
     this.userHDFcreate = false
+    this.scannedUserAnswerForm = false
     this.code = this.$route.params.code
     const isHDFcode = this.code.substring(0, 4) === 'HDF-'
 
@@ -132,6 +133,9 @@ export default {
         this.userHDFcreate = true
         this.merchantOwner = parseInt(param[1])
         this.userHDFcontent = JSON.parse(param[2])
+        if (this.userHDFcontent.hasOwnProperty('answerForm') && this.userHDFcontent.answerForm) {
+          this.scannedUserAnswerForm = true
+        }
         this.retrieve()
       } else {
         this.loading = false
@@ -158,7 +162,8 @@ export default {
       config: CONFIG,
       merchantOwner: null,
       userHDFcreate: false,
-      userHDFcontent: null
+      userHDFcontent: null,
+      scannedUserAnswerForm: false
     }
   },
   components: {
@@ -174,6 +179,7 @@ export default {
   watch: {
     getFullPath() {
       this.userHDFcreate = false
+      this.scannedUserAnswerForm = false
       this.code = this.$route.params.code
       const isHDFcode = this.code.substring(0, 4) === 'HDF-'
 
@@ -187,6 +193,9 @@ export default {
           this.userHDFcreate = true
           this.merchantOwner = parseInt(param[1])
           this.userHDFcontent = JSON.parse(param[2])
+          if (this.userHDFcontent.hasOwnProperty('answerForm') && this.userHDFcontent.answerForm) {
+            this.scannedUserAnswerForm = true
+          }
           this.retrieve()
         } else {
           this.loading = false
@@ -229,10 +238,17 @@ export default {
             owner: this.merchantOwner,
             merchant: response.data[0]
           }
-          this.APIRequest('account_informations/retrieve', userParam).then(response => {
-            this.userInfo = response.data[0]
+
+          if (this.scannedUserAnswerForm && this.userHDFcontent.hasOwnProperty('userData')) {
+            this.formParameters.scannedUserAnswerForm = true
+            this.userInfo = this.userHDFcontent.userData
             this.loading = false
-          })
+          } else {
+            this.APIRequest('account_informations/retrieve', userParam).then(response => {
+              this.userInfo = response.data[0]
+              this.loading = false
+            })
+          }
         }).fail(() => {
           this.loading = false
           this.formNotFound = true
