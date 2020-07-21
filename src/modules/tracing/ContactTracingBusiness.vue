@@ -240,7 +240,7 @@ export default {
           clause: '='
         }, {
           value: null,
-          column: 'assigned_code',
+          column: 'payload',
           clause: '='
         }],
         sort: {
