@@ -1,37 +1,30 @@
 <template>
   <div class="container">
-     <div v-if="data.length > 0" class="container"><br>
-         <div class="card" style="width:96%;margin-left:3vh">
+   <button class="btn btn-primary addNewBtn" @click="showTextField()" v-if="data !== null">Add New Post</button><br>
+     <div v-if="data !== null" class="container"><br>
             <div class="row">
-                <div class="col-0">
-                    <i class="fa fa-user-circle-o profile-icon i-style"></i>
+                <div class="col-sm-3 column" v-if="showField">
+                <div class="card cards">
+                        <i class="far fa-user-circle profile-icon i-style"></i>
+                        <textarea class="form-control textarea" v-model="post" placeholder="Type your POST here... Please Include Your Address"  id="comment"></textarea>
+                        <button class="btn btn-primary postBtn" :hidden="!post.length > 0">Post</button>
+                </div>    
                 </div>
-                 <div class="col-lg-10">
-                    <textarea class="form-control textarea" v-model="post" placeholder="Type your POST here... Please Include Your Address" rows="15" id="comment" ref="textarea"></textarea>
-                </div>
-                 <div class="col-1">
-                    <button class="btn btn-primary postBtn" :hidden="!post.length > 0">Post</button>
-                </div>
-            </div>
-        </div><br>
-            <div class="row">
-                <div class="column" v-for="(datus, index) in data" :key="index">
+                <div class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
                     <div class="card cards">
                         <i class='fas fa-ellipsis-v ellipsis' @click="showMenu(index)" v-if="user.type === 'ADMIN'"></i>
                         <button class="btn" v-if="menushow">Delete</button>
                         <div style="align-items:center;display:flex"  @click="menushow = false">
-                            <i class="fa fa-user-circle-o profile-icon i-style"></i>
-                            <h4 class="h4Style">{{datus.username}}<br/>
-                                <p class="p-date">{{datus.date}}</p>
-                            </h4>         
+                            <i class="far fa-user-circle profile-icon i-style"></i>
+                            <p class="p-date">{{time}}</p>     
                         </div>
-                     <p class="p-message">{{datus.message}}</p>
-                    </div><br/>
-                </div><br/>
+                     <p class="p-message">{{datus.content}}</p>
+                    </div>
+                </div>
             </div>
     </div>
-    <empty v-if="data.length <= 0" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
-    <google-map-modal ref="mapModal" :place_data="data" v-if="data.length > 0"></google-map-modal>
+    <empty v-if="data === null" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
+    <google-map-modal ref="mapModal" :place_data="data" v-if="data !== null"></google-map-modal>
   </div>
 </template>
 <style scoped>
@@ -40,10 +33,8 @@
     }
     .column {
         float: left;
-        width: 50%;
-        padding: 0 10px;
-        height: 150px;
-        position: relative;
+        width: 25%;
+        padding: 0 5px;
         margin-bottom:2vh
     }
     .btn {
@@ -94,9 +85,9 @@
 
     /* Clear floats after the columns */
     .row:after {
-    content: "";
-    display: table;
-    clear: both;
+        content: "";
+        display: table;
+        clear: both;
     }
 
     /* Responsive columns */
@@ -109,6 +100,7 @@
     }
     .cards {
         padding: 16px;
+        height:30vh
     
     }
     .textarea{
@@ -119,6 +111,10 @@
         width:80vh
     }
 
+    .addNewBtn{
+        float:right
+    }
+
 </style>
 
 
@@ -126,22 +122,19 @@
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
-// import CONFIG from 'src/config.js'
+import CONFIG from 'src/config.js'
 // import COMMON from 'src/common.js'
 // import PropertyModal from './CreateSymptom.js'
 export default{
   data(){
     return {
       user: AUTH.user,
+      showField: false,
       goingToPost: false,
       post: '',
       menushow: false,
-      data: [
-          { username: 'Annonymous', message: 'kinahanglan nako og plasma', date: '07/15/2020', id: 0 },
-          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!', date: '07/15/2020', id: 1 },
-          { username: 'Annonymous', message: 'kinahanglan nako og plasma', date: '07/15/2020', id: 2 },
-          { username: 'Annonymous', message: 'kamatyunon na kaau ko. Tabang!!!', date: '07/15/2020', id: 3 }
-      ]
+      data: null,
+      time: null
     }
   },
   components: {
@@ -149,16 +142,27 @@ export default{
     'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue')
   },
   mounted(){
+    this.retrieve()
+    // if(this.user.type !== 'ADMIN'){
+    //   ROUTER.push('/dashboard')
+    // }
+    //  $('#loading').css({display: 'block'})
   },
   methods: {
     addPost(){
       ROUTER.push('/plasma/add-post')
     },
     showMenu(index){
-      this.data.forEach(el => {
-        if(el.id === index){
-          this.menushow = true
-        }
+      this.menushow = true
+    },
+    showTextField(){
+      this.showField = true
+    },
+    retrieve(){
+      this.APIRequest('posts/retrieve').then(response => {
+        console.log('resposes', response.data)
+        this.data = response.data
+        this.time = response.request_timestamp
       })
     }
   }

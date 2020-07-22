@@ -278,10 +278,10 @@ export default{
   {
     path: '/plasma/posts',
     name: 'pPosts',
-    component: resolve => require(['modules/plasma/plasma.vue'], resolve),
-    meta: {
-      tokenRequired: true
-    }
+    component: resolve => require(['modules/plasma/plasma.vue'], resolve)
+    // meta: {
+    //   tokenRequired: true
+    // }
   },
   {
     path: '/plasma/add-post',
