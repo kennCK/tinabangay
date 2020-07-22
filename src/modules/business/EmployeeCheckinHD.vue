@@ -22,7 +22,7 @@
       :class="['text-center', 'font-weight-bold', {'text-danger': formParameters.status === 'danger', 'text-success': formParameters.status === 'clear'}]">
       Status: {{formParameters.status}}{{formParameters.statusLabel !== 'clear' ? ` [${formParameters.statusLabel}]` : ''}}
     </h5>
-    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{data.updated_at}}</h5>
+    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ getRelativeTime(data.updated_at) }}</h5>
     <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
       <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
     </div>
@@ -116,37 +116,17 @@
           </tbody>
         </table>
 
-        <!-- healthDec.company.related_questions[0] -->
-        <div class="company_question_container">
-          <span>Medicines/vitamins/supplements taken in the past 24 hours:</span>
-          <span v-if="healthDec.company.related_questions[0].answer.length > 0" class="d-inline">
-            <span class="related_questions_answer" v-for="(item, index) in healthDec.company.related_questions[0].answer" :key="index">
-              <b>{{item}}</b>,
+        <!-- healthDec.company.related_questions -->
+        <div class="company_question_container" v-for="(question, idx) in healthDec.company.related_questions" :key="idx">
+          <span>{{question.question}}</span>
+          <span v-if="question.answer.length > 0" class="d-inline">
+            <span class="related_questions_answer" v-for="(answer, index) in question.answer" :key="index">
+              <b>{{`${answer}${index + 1 === question.answer.length ? '' : ', '}`}}</b>
             </span>
           </span>
-          <span v-else class="d-inline">None</span>
-        </div>
-
-        <!-- healthDec.company.related_questions[1] -->
-        <div class="company_question_container">
-          <span>Purpose of coming:</span>
-          <span v-if="healthDec.company.related_questions[1].answer.length > 0" class="d-inline">
-            <span class="related_questions_answer" v-for="(item, index) in healthDec.company.related_questions[1].answer" :key="index">
-              <b>{{item}}</b>,
-            </span>
+          <span v-else class="d-inline related_questions_answer">
+            <b>None</b>
           </span>
-          <span v-else class="d-inline">None</span>
-        </div>
-
-        <!-- healthDec.company.related_questions[2] -->
-        <div class="company_question_container">
-          <span>Transactions:</span>
-          <span v-if="healthDec.company.related_questions[2].answer.length > 0" class="d-inline">
-            <span class="related_questions_answer" v-for="(item, index) in healthDec.company.related_questions[2].answer" :key="index">
-              <b>{{item}}</b>,
-            </span>
-          </span>
-          <span v-else class="d-inline">None</span>
         </div>
 
         <div class="person_in_contact_container">
@@ -178,7 +158,9 @@
             <b>{{item}}</b>,
           </span>
         </span>
-        <span v-if="healthDec.travelHistory.transportation.length <= 0" class="d-inline">None</span>
+        <span v-if="healthDec.travelHistory.transportation.length <= 0" class="d-inline">
+          <b>None</b>
+        </span>
         <hr>
         <div class="row">
           <div class="col-md-6 border border-top-0 border-left-0 border-bottom-0">
@@ -188,7 +170,9 @@
                 {{item.title}}
               </li>
             </ul>
-            <span v-if="healthDec.travelHistory.countries.length <= 0" class="d-inline">None</span>
+            <span v-if="healthDec.travelHistory.countries.length <= 0" class="d-inline">
+              <b>None</b>
+            </span>
           </div>
           <div class="col-md-6">
             <h6 :class="['font-weight-bold', 'mt-4', { 'd-inline-flex': healthDec.travelHistory.localities.length <= 0 }]">Cities / municipalities in the Philippines visited for the past fourteen (14) days:</h6>
@@ -197,7 +181,9 @@
                 {{item.title}}
               </li>
             </ul>
-            <span v-if="healthDec.travelHistory.localities.length <= 0" class="d-inline">None</span>
+            <span v-if="healthDec.travelHistory.localities.length <= 0" class="d-inline">
+              <b>None</b>
+            </span>
           </div>
         </div>
       </div>
@@ -435,7 +421,7 @@
         <!-- COMPANY RELATED_QUESTIONS -->
         <section :id="`company-related-question-${index}`" v-for="(item, index) in healthDec.company.related_questions" :key="index">
           <div class="mt-4">
-            <h6 class="font-weight-bold required">
+            <h6 :class="['font-weight-bold', { 'required': item.required }]">
               {{ item.question }}
             </h6>
             <p style="font-size: 12px">
@@ -701,6 +687,7 @@
   }
 </style>
 <script>
+import moment from 'moment'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
@@ -712,7 +699,6 @@ export default {
     this.formParameters = this.formParam
     this.form = this.isForm
     this.data = this.dataParam
-    this.userInfo = this.userInfoParam
 
     if (this.form) {
       this.healthDec.personalInformation.first_name = this.userInfoParam.first_name
@@ -731,18 +717,24 @@ export default {
 
       this.healthDec.company.related_questions = [
         {
+          label: 'Medicines/vitamins/supplements taken in the past 24 hours:',
           question: 'Have you taken medicines/vitamins/supplements in the past 24 hours? Please indicate specific names.',
           translate: '(Naa ka ba’y gitomar nga mga tambal sulod sa 24 ka oras? Unsa ang mga pangalan sa tambal?)',
+          required: false,
           answer: []
         },
         {
+          label: 'Purpose of coming:',
           question: 'What is your purpose of coming here?',
           translate: '(Unsa imong katuyu-an sa pag-ari?)',
+          required: true,
           answer: []
         },
         {
+          label: 'Transactions:',
           question: 'Aside from your own work area/section, do you plan to transact with other dept/ section today? To whom in particular?',
           translate: '(Gawas sa imong section, naa ka bay plano mo transact sa lain nga departamento o section? Kang kinsa imong katuyuan?)',
+          required: true,
           answer: []
         }
       ]
@@ -765,7 +757,6 @@ export default {
       data: null,
       config: CONFIG,
       civil: null,
-      userInfo: null,
       transpo: [],
       country: [],
       locality: [],
@@ -773,8 +764,11 @@ export default {
       otherTransportation: 0
     }
   },
-  props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam'],
+  props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    getRelativeTime(time) {
+      return moment(time).fromNow()
+    },
     addPerson() {
       const name = $('#name').val().trim()
       const relation = $('#relation').val().trim()
@@ -916,24 +910,52 @@ export default {
         this.healthDec.location = this.formParameters.location
 
         $('#loading').css({display: 'block'})
-        let param = {
-          id: this.data.id,
-          content: JSON.stringify(this.healthDec),
-          account_id: this.data.account_id,
-          code: this.data.code,
-          owner: this.data.owner,
-          from: this.user.userID,
-          to: this.data.owner
+
+        if (this.isUserCreate) {
+          let userId = this.user.userID
+          if (this.formParameters.hasOwnProperty('scannedUserAnswerForm')) {
+            userId = this.userInfoParam.account_id
+          }
+          let param = {
+            owner: this.data.owner,
+            account_id: userId,
+            from: userId,
+            to: this.data.owner,
+            content: JSON.stringify(this.healthDec),
+            payload: `form_submitted/${this.healthDec.format}`
+          }
+
+          console.log({ param })
+          this.APIRequest('health_declarations/create', param).then(response => {
+            ROUTER.push(`/form/${response.generated_code}`)
+          }).fail(() => {
+            $('<div>', {
+              id: 'error',
+              class: 'row justify-content-end mb-3',
+              html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
+            }).insertBefore('#submit')
+          })
+        } else {
+          let param = {
+            id: this.data.id,
+            content: JSON.stringify(this.healthDec),
+            account_id: this.data.account_id,
+            code: this.data.code,
+            owner: this.data.owner,
+            from: this.user.userID,
+            to: this.data.owner,
+            payload: `form_submitted/${this.healthDec.format}`
+          }
+          this.APIRequest('health_declarations/update', param).then(response => {
+            this.$emit('triggerRetrieve', true)
+          }).fail(() => {
+            $('<div>', {
+              id: 'error',
+              class: 'row justify-content-end mb-3',
+              html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
+            }).insertBefore('#submit')
+          })
         }
-        this.APIRequest('health_declarations/update', param).then(response => {
-          this.$emit('triggerRetrieve', true)
-        }).fail(() => {
-          $('<div>', {
-            id: 'error',
-            class: 'row justify-content-end mb-3',
-            html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
-          }).insertBefore('#submit')
-        })
       } else {
         if($('#error').length === 0) {
           $('<div>', {
@@ -972,7 +994,7 @@ export default {
           return valid
         }
         this.healthDec.company.related_questions.map((question, index) => {
-          if (question.answer.length === 0) {
+          if (question.answer.length === 0 && question.required === true) {
             valid = false
             setTimeout(() => $('body,html').animate({ scrollTop: $(`#company-related-question-${index}`).offset().top - 350 }, 500), 500)
             setTimeout(() => $(`#company-related-question-${index} h6`).css({ 'color': 'red' }),

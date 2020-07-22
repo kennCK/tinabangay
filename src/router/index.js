@@ -26,5 +26,6 @@ AUTH.checkAuthentication()
 Vue.use(BootstrapVue)
 Vue.use(Router)
 export default new Router({
+  base: process.env.BASE_URL,
   routes: ModuleRoutes.routes
 })

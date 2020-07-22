@@ -214,7 +214,7 @@ export default{
   {
     path: '/lgu/settings',
     name: 'lguSettings',
-    component: resolve => require(['modules/barangay/MerchantDirect.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -222,7 +222,7 @@ export default{
   {
     path: '/barangay/settings',
     name: 'barangaySettings',
-    component: resolve => require(['modules/barangay/MerchantDirect.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -230,7 +230,7 @@ export default{
   {
     path: '/business/settings',
     name: 'businessSettings',
-    component: resolve => require(['modules/barangay/MerchantDirect.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -271,6 +271,22 @@ export default{
     path: '/barangay/location',
     name: 'bLocations',
     component: resolve => require(['modules/location/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/plasma/posts',
+    name: 'pPosts',
+    component: resolve => require(['modules/plasma/plasma.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/plasma/add-post',
+    name: 'addPosts',
+    component: resolve => require(['modules/plasma/plasmaForm.vue'], resolve),
     meta: {
       tokenRequired: true
     }

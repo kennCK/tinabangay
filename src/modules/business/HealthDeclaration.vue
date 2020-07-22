@@ -32,6 +32,7 @@
         :isForm="form"
         :dataParam="data"
         :userInfoParam="userInfo"
+        :isUserCreate="userHDFcreate"
         @triggerRetrieve="retrieve()"
       >
       </customer-health-declaration>
@@ -44,6 +45,7 @@
         :isForm="form"
         :dataParam="data"
         :userInfoParam="userInfo"
+        :isUserCreate="userHDFcreate"
         @triggerRetrieve="retrieve()"
       >
       </employee-checkin-hd>
@@ -56,6 +58,7 @@
         :isForm="form"
         :dataParam="data"
         :userInfoParam="userInfo"
+        :isUserCreate="userHDFcreate"
         @triggerRetrieve="retrieve()"
       >
       </employee-checkout-hd>
@@ -115,8 +118,30 @@ import CONFIG from 'src/config.js'
 
 export default {
   mounted() {
+    this.userHDFcreate = false
+    this.scannedUserAnswerForm = false
     this.code = this.$route.params.code
-    this.retrieve()
+    const isHDFcode = this.code.substring(0, 4) === 'HDF-'
+
+    if (this.code.length === 64 && isHDFcode) {
+      this.userHDFcreate = false
+      this.retrieve()
+    } else {
+      const param = this.code.split('&')
+      if (param[0] === 'customer' || param[0] === 'employee_checkin' || param[0] === 'employee_checkout') {
+        this.form = true
+        this.userHDFcreate = true
+        this.merchantOwner = parseInt(param[1])
+        this.userHDFcontent = JSON.parse(param[2])
+        if (this.userHDFcontent.hasOwnProperty('answerForm') && this.userHDFcontent.answerForm) {
+          this.scannedUserAnswerForm = true
+        }
+        this.retrieve()
+      } else {
+        this.loading = false
+        this.formNotFound = true
+      }
+    }
   },
   data() {
     return{
@@ -134,7 +159,11 @@ export default {
       code: null,
       data: null,
       userInfo: null,
-      config: CONFIG
+      config: CONFIG,
+      merchantOwner: null,
+      userHDFcreate: false,
+      userHDFcontent: null,
+      scannedUserAnswerForm: false
     }
   },
   components: {
@@ -149,9 +178,32 @@ export default {
   },
   watch: {
     getFullPath() {
+      this.userHDFcreate = false
+      this.scannedUserAnswerForm = false
       this.code = this.$route.params.code
+      const isHDFcode = this.code.substring(0, 4) === 'HDF-'
+
+      if (this.code.length === 64 && isHDFcode) {
+        this.userHDFcreate = false
+        this.retrieve()
+      } else {
+        const param = this.code.split('&')
+        if (param[0] === 'customer' || param[0] === 'employee_checkin' || param[0] === 'employee_checkout') {
+          this.form = true
+          this.userHDFcreate = true
+          this.merchantOwner = parseInt(param[1])
+          this.userHDFcontent = JSON.parse(param[2])
+          if (this.userHDFcontent.hasOwnProperty('answerForm') && this.userHDFcontent.answerForm) {
+            this.scannedUserAnswerForm = true
+          }
+          this.retrieve()
+        } else {
+          this.loading = false
+          this.formNotFound = true
+        }
+      }
+
       this.healthDec = JSON.parse(JSON.stringify(COMMON.healthDec))
-      this.retrieve()
     }
   },
   methods: {
@@ -160,44 +212,78 @@ export default {
       this.loading = true
       $('#loading').css({display: 'none'})
 
-      let parameter = {
+      const userParam = {
         condition: [{
-          value: this.code,
-          column: 'code',
+          value: this.user.userID,
+          column: 'account_id',
           clause: '='
         }]
       }
 
-      this.APIRequest('health_declarations/retrieve', parameter).then(response => {
-        this.data = response.data[0]
-        const parsedContent = JSON.parse(this.data.content)
-        if (Object.keys(parsedContent).length === 4) {
-          this.form = true
-        } else {
-          this.form = false
-          this.healthDec = parsedContent
-        }
-        this.formParameters.location = parsedContent.location
-        this.formParameters.format = parsedContent.format
-        this.formParameters.status = parsedContent.status
-        this.formParameters.statusLabel = parsedContent.statusLabel
-
-        let par = {
+      if (this.userHDFcreate) {
+        const merchantParam = {
           condition: [{
-            value: this.user.userID,
             column: 'account_id',
-            clause: '='
+            clauses: '=',
+            value: this.merchantOwner
           }]
         }
 
-        this.APIRequest('account_informations/retrieve', par).then(res => {
-          this.userInfo = res.data[0]
+        this.formParameters.location = this.userHDFcontent.location
+        this.formParameters.format = this.userHDFcontent.format
+        this.formParameters.status = this.userHDFcontent.status
+        this.formParameters.statusLabel = this.userHDFcontent.statusLabel
+        this.APIRequest('merchants/retrieve', merchantParam).then(response => {
+          this.data = {
+            owner: this.merchantOwner,
+            merchant: response.data[0]
+          }
+
+          if (this.scannedUserAnswerForm && this.userHDFcontent.hasOwnProperty('userData')) {
+            this.formParameters.scannedUserAnswerForm = true
+            this.userInfo = this.userHDFcontent.userData
+            this.loading = false
+          } else {
+            this.APIRequest('account_informations/retrieve', userParam).then(response => {
+              this.userInfo = response.data[0]
+              this.loading = false
+            })
+          }
+        }).fail(() => {
           this.loading = false
+          this.formNotFound = true
         })
-      }).fail(() => {
-        this.loading = false
-        this.formNotFound = true
-      })
+      } else {
+        const hdfParam = {
+          condition: [{
+            value: this.code,
+            column: 'code',
+            clause: '='
+          }]
+        }
+        this.APIRequest('health_declarations/retrieve', hdfParam).then(response => {
+          this.data = response.data[0]
+          const parsedContent = JSON.parse(this.data.content)
+          if (response.data[0].updated_at === null) {
+            this.form = true
+          } else {
+            this.form = false
+            this.healthDec = parsedContent
+          }
+          this.formParameters.location = parsedContent.location
+          this.formParameters.format = parsedContent.format
+          this.formParameters.status = parsedContent.status
+          this.formParameters.statusLabel = parsedContent.statusLabel
+
+          this.APIRequest('account_informations/retrieve', userParam).then(res => {
+            this.userInfo = res.data[0]
+            this.loading = false
+          })
+        }).fail(() => {
+          this.loading = false
+          this.formNotFound = true
+        })
+      }
     }
   }
 }
