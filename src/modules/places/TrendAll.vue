@@ -23,26 +23,30 @@
               {{item.route}} , {{item.locality === 'testin' ? 'true' : item.locality}}
             </h6>
             <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{item.country}}</h6>                            
-            <span class="card-title">
-              <b-button class="bg-black" style="margin-bottom: 25px; margin-bottom: 5px; " v-if="item.death_size > 0">
-                DEATH<b-badge class="badge" variant="light">{{data[index].death_size}} <span class="sr-only">unread messages</span></b-badge>
-              </b-button>
-              <b-button variant="danger" style="margin-bottom: 25px; margin-bottom: 5px; " v-if="item.positive_size > 0">
-                POSITIVE<b-badge class="badge" variant="light">{{item.positive_size}} <span class="sr-only">unread messages</span></b-badge>
-              </b-button>
-              <b-button variant="warning" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.pui_size > 0">
-                PUI<b-badge class="badge" variant="light">{{item.pui_size}} <span class="sr-only">unread messages</span></b-badge>
-              </b-button>
-              <b-button variant="primary" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.pum_size > 0"> 
-                PUM<b-badge class="badge" variant="light">{{item.pum_size}} <span class="sr-only">unread messages</span></b-badge>
-              </b-button>
-              <b-button variant="success" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.negative_size > 0">
-               NEGATIVE<b-badge class="badge" variant="light">{{item.negative_size}} <span class="sr-only">unread messages</span></b-badge>
-              </b-button>
-              <b-button variant="white" style="margin-bottom: 25px; margin-bottom: 5px;" v-if="item.recovered_size > 0">
-              RECOVERED<b-badge class="badge" variant="light">{{data[index].recovered_size}} <span class="sr-only">unread messages</span></b-badge>
-              </b-button>
+              <div class="col-12">
+            <!-- Card for positive -->
+            <span class="card-title col-4 p-1">
+              <span class="card text-white bg-danger" style="max-width: 9rem;">
+                <span class="card-header"><h5 class="card-title text-center" v-if="data[index].positive_size >= 0">{{data[index].positive_size}}</h5></span>
+                <span class="card-body p-0 mx-auto">Positive</span>
+              </span>
+            </span>               
+            <!-- Card for recovered -->
+            <span class="card-title col-4 p-1">
+              <span class="card text-white bg-success" style="max-width: 9rem;">
+                <span class="card-header"><h5 class="card-title text-center" v-if="data[index].recovered_size >= 0">{{data[index].recovered_size}}</h5></span>
+                <span class="card-body p-0 mx-auto">Recovered</span>
+              </span>
             </span>
+            <!-- Card for deaths -->
+            <span class="card-title col-4 p-1">
+              <span class="card text-white bg-dark" style="max-width: 9rem;">
+                <span class="card-header"><h5 class="card-title text-center" v-if="data[index].death_size > -1">{{data[index].death_size}}</h5></span>
+                <span class="card-body p-0 mx-auto" v-if="data[index].death_size > 1 || data[index].death_size == 0">Deaths</span>
+                <span class="card-body p-0 mx-auto" v-if="data[index].death_size == 1">Death</span>
+              </span>
+            </span>
+            </div> 
           </div> 
         </div>
       </div>

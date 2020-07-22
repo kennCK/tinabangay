@@ -1,5 +1,7 @@
 <template>
-  <div style="margin-bottom: 200px;">
+  <div style="margin-bottom: 50px;">
+    <!-- <business v-if="dashType === 'BUSINESS'"></business> -->
+    <!-- <user v-else-if="dashType === 'USER'"></user> -->
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
@@ -40,7 +42,6 @@
       <trend></trend>
     </div>
     <increment-modal refs="modal" :property="modalProperty"></increment-modal>
-
     <!--MODAL FOR NO BRGY ERROR-->
     <div class="modal fade right" id="no_code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
@@ -99,10 +100,16 @@ import ComplaintProperty from './Complaint.js'
 export default{
   mounted(){
     this.retrieve()
+    if(this.userTypes.indexOf(this.user.type) > -1) {
+      this.dashType = 'USER'
+    }
   },
   data(){
     return {
       user: AUTH.user,
+      dashType: AUTH.user.type,
+      userTypes: ['USER', 'TEMP_SCANNER', 'AGENCY_TEST_MNGT', 'AGENCY_TEMPT_MNGT'],
+      type: null,
       modalProperty: ComplaintProperty,
       property: {
         style: {
@@ -127,7 +134,9 @@ export default{
     QrcodeVue,
     'data-summary': require('modules/dashboard/Summary.vue'),
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
-    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue')
+    'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
+    'business': require('./Business.vue'),
+    'user': require('./User.vue')
   },
   methods: {
     retrieve(){

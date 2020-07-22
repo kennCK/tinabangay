@@ -1,17 +1,18 @@
  <template>
     <div class="card">
-        <div class="card-header plasma-header"></div>
+        <div class="card-header plasma-header">
+        </div>
         <div class="card-body plasma-body">
             <div class="card plasma-card-content">
                 <div class="card-body">
                     <div class="form-group">
                         <!-- <label for="comment" id="content">Content:</label> -->
-                        <textarea class="form-control" placeholder="Type your POST here..." rows="15" id="comment"></textarea>
+                        <textarea class="form-control" placeholder="Type your POST here... Please Include Your Address" rows="15" id="comment"></textarea>
                     </div>
                 </div>
                 <div class="card-footer plasma-footer text-right">
                     <button type="button" class="btn btn-primary post-btn plasma-post">POST</button>
-                    <button type="button" class="btn btn-primary post-btn plasma-cancel">CANCEL</button>
+                    <button type="button" class="btn btn-danger post-btn plasma-cancel">CANCEL</button>
                 </div>
             </div>
         </div>
@@ -69,6 +70,10 @@ export default {
     .post-btn{
         width:130px;
         outline:none;
+    }
+    h1{
+        color:white;
+        text-align:center
     }
 
 </style>
