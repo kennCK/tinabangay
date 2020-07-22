@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div class="card">
         <div class="card-header plasma-header"></div>
         <div class="card-body plasma-body">

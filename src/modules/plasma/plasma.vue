@@ -78,8 +78,6 @@
     }
     .p-date {
         font-size: 12px;
-        float: right;
-        position: relative;
         top: -20px;
     }
     .p-message {
