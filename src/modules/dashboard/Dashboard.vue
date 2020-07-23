@@ -43,6 +43,7 @@
     </div>
     <increment-modal refs="modal" :property="modalProperty"></increment-modal>
     <!--MODAL FOR NO BRGY ERROR-->
+    <!-- AES ECB 128 bit key: birdseyeeyesdrib msg: FNzIRo4HlSyS++5O8Q8UopjlQTLuB9/NWyGz2y65RKbJQctH99glWcMsSDUKrRdl -->
     <div class="modal fade right" id="no_code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
