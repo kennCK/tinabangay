@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
                     <div class="card cards">
-                        <i class='fas fa-ellipsis-v ellipsis' @click="showMenu(index)" v-if="user.type === 'ADMIN'"></i>
+                        <i class='fas fa-ellipsis-v ellipsis' @click="showMenu(index)"></i>
                         <button class="btn" v-if="menushow">Delete</button>
                         <div style="align-items:center;display:flex"  @click="menushow = false">
                             <i class="far fa-user-circle profile-icon i-style"></i>
