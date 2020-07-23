@@ -22,7 +22,7 @@
                         >
                         </textarea>
                         <div class="d-flex justify-content-center">
-                            <button v-bind:disabled="post===''" class="btn plasma-post-btn" @click="post">POST</button>
+                            <button v-bind:disabled="post===''" class="btn plasma-post-btn" @click="posts">POST</button>
                         </div>
                     </div>
                 </div>
@@ -40,11 +40,11 @@
                         <div>
                             <i class="far fa-user-circle profile-icon i-style"></i>
                         </div>
-                        <div class="dropdown">
+                        <div class="dropdown" v-if="user.type === 'ADMIN'">
                             <button class="btn plasma-option-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>  
                             <div class="dropdown-menu float-left">
-                                <a class="dropdown-item" href="#">Edit</a>
-                                <a class="dropdown-item" href="#">Delete</a>
+                                <a class="dropdown-item" @click="edit(datus.id)">Edit</a>
+                                <a class="dropdown-item" @click="deletePost(datus.id)">Delete</a>
                             </div>
                         </div>   
                     </div>
@@ -58,7 +58,6 @@
         </div>
     </div>
     <empty v-if="data === null" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
-    <google-map-modal ref="mapModal" :place_data="data" v-if="data !== null"></google-map-modal>
   </div>
 </template>
 <style scoped>
@@ -201,27 +200,13 @@ export default{
       user: AUTH.user,
       showField: false,
       goingToPost: false,
+      isEdit: false,
       disabled: true,
       post: '',
+      editID: null,
       menushow: false,
       plasmaBtnColor: 'background-color:white;',
-      data: [
-        {
-          content: 'The quick brown fox jumps over the lazy dog.'
-        },
-        {
-          content: 'The quick brown fox jumps over the lazy dog.'
-        },
-        {
-          content: 'The quick brown fox jumps over the lazy dog.'
-        },
-        {
-          content: 'The quick brown fox jumps over the lazy dog.'
-        },
-        {
-          content: 'The quick brown fox jumps over the lazy dog.'
-        }
-      ],
+      data: [],
       time: '7/23/2020'
     }
   },
@@ -230,6 +215,10 @@ export default{
     'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue')
   },
   mounted(){
+    if(this.user.type !== 'ADMIN'){
+      ROUTER.push('/dashboard')
+    }
+    $('#loading').css({display: 'block'})
     this.retrieve()
   },
   methods: {
@@ -244,14 +233,54 @@ export default{
       console.log('testing')
     },
     retrieve(){
+      $('#loading').css({display: 'none'})
       this.APIRequest('posts/retrieve').then(response => {
         console.log('resposes', response.data)
         this.data = response.data
         this.time = response.request_timestamp
       })
     },
-    post(){
-      //  For posting
+    posts(){
+      $('#loading').css({display: 'block'})
+      if(this.isEdit === false){
+        let params = {
+          content: this.post
+        }
+        this.APIRequest('posts/create', params).then(response => {
+          this.retrieve()
+          this.post = ''
+        })
+      }else{
+        let params = {
+          id: this.editID,
+          content: this.post
+        }
+        this.APIRequest('posts/update', params).then(response => {
+          this.retrieve()
+          this.post = ''
+        })
+      }
+    },
+    edit(id){
+      this.isEdit = true
+      this.data.forEach(element => {
+        console.log(element.id)
+        if(element.id === id){
+          this.showTextField()
+          this.post = element.content
+          this.editID = element.id
+        }
+      })
+    },
+    deletePost(postID){
+      console.log('data', postID)
+      $('#loading').css({display: 'block'})
+      let params = {
+        id: postID
+      }
+      this.APIRequest('posts/delete', params).then(response => {
+        this.retrieve()
+      })
     }
   }
 }
