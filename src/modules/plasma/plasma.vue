@@ -1,33 +1,76 @@
 <template>
   <div class="container">
-   <button class="btn btn-primary addNewBtn" @click="showTextField()" v-if="data !== null">Add New Post</button><br>
      <div v-if="data !== null" class="container"><br>
-            <div class="row">
-                <div class="col-sm-3 column" v-if="showField">
+        <div class="row">
+
+            <div class="col-sm-3 column" v-if="showField">
                 <div class="card cards">
-                        <i class="far fa-user-circle profile-icon i-style"></i>
-                        <textarea class="form-control textarea" v-model="post" placeholder="Type your POST here... Please Include Your Address"  id="comment"></textarea>
-                        <button class="btn btn-primary postBtn" :hidden="!post.length > 0">Post</button>
-                </div>    
-                </div>
-                <div class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
-                    <div class="card cards">
-                        <i class='fas fa-ellipsis-v ellipsis' @click="showMenu(index)" v-if="user.type === 'ADMIN'"></i>
-                        <button class="btn" v-if="menushow">Delete</button>
-                        <div style="align-items:center;display:flex"  @click="menushow = false">
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
                             <i class="far fa-user-circle profile-icon i-style"></i>
-                            <p class="p-date">{{time}}</p>     
                         </div>
-                     <p class="p-message">{{datus.content}}</p>
+                        <div>
+                            <button class="btn plasma-cancel-btn" @click="showTextField()"><i class="fas fa-times"></i></button>    
+                        </div> 
+                    </div>
+                    <div class="card-body textarea-card">
+                        <textarea 
+                            class="form-control textarea" 
+                            v-model="post" 
+                            placeholder="Type your POST here... Please Include Your Address"  
+                            id="comment"
+                        >
+                        </textarea>
+                        <div class="d-flex justify-content-center">
+                            <button v-bind:disabled="post===''" class="btn plasma-post-btn" @click="post">POST</button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()">
+               <div class="card cards">
+                    <i class="add-post fa fa-plus"></i>
+                </div>
+            </div>
+
+            <div class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
+                <div class="card cards">
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
+                            <i class="far fa-user-circle profile-icon i-style"></i>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn plasma-option-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>  
+                            <div class="dropdown-menu float-left">
+                                <a class="dropdown-item" href="#">Edit</a>
+                                <a class="dropdown-item" href="#">Delete</a>
+                            </div>
+                        </div>   
+                    </div>
+                    <p class="date-posted">{{time}}</p>
+                    <div class="card-body">
+                        {{datus.content}}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
     </div>
     <empty v-if="data === null" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
     <google-map-modal ref="mapModal" :place_data="data" v-if="data !== null"></google-map-modal>
   </div>
 </template>
 <style scoped>
+    .add-post-btn-card :hover{
+        cursor: pointer;
+    }   
+    .add-post{
+        font-size:40px;
+        margin-top:26%;
+        margin-left:42%;
+        color:#005b96;
+    }
     .container .container {
         margin-top:40px
     }
@@ -37,41 +80,34 @@
         padding: 0 5px;
         margin-bottom:2vh
     }
-    .btn {
-        margin-top: 10px;
+    .cards {
+        padding: 16px;
+        padding-top:2px;
+        height:20vh
     }
-    .h4Style {
-        margin-left: -15px;
-        padding: 10px;
-        transition: margin 300ms;
+    .card-header{
+        padding:0px;
+        background-color:white;
+    }
+    .card-body{
+        padding:0px;
+        padding-left:10px;
+        padding-right:10px;
+        font-size:12px;
+    }
+    .date-posted{
+        font-size:8px;
+        margin-left:10px;
+    }
+    .dropdown-menu{
+        margin-top:-25px;
+        margin-left:-131px;
     }
     .i-style {
         padding: 10px;
         transition: margin 300ms;
         font-size:30px;
     }
-    .ellipsis{
-        position: absolute;
-        right: 0;
-        width: 20px;
-    }
-    .p-date {
-        font-size: 12px;
-        position: relative;
-        color:#A9A9A9
-    }
-    .p-message {
-        font-size: 15px;
-        padding-bottom:5vh
-    }
-    .div-contain {
-        padding: 5px;
-    }
-    .div-message {
-        margin-top: 2%;
-        width: 70%;
-    }
-   
     * {
         box-sizing: border-box;
     }
@@ -89,7 +125,6 @@
         display: table;
         clear: both;
     }
-
     /* Responsive columns */
     @media screen and (max-width: 600px) {
     .column {
@@ -98,27 +133,57 @@
         margin-bottom: 20px;
     }
     }
-    .cards {
-        padding: 16px;
-        height:30vh
-    
+    .plasma-option-btn{
+        margin-top: 10px;
+        background: white !important ;
+        box-shadow:none !important;
+        border: none !important;
+    }
+    .plasma-option-btn:focus{
+        background: white !important ;
+        box-shadow:none !important;
+        border: none !important;
+    }
+    .plasma-post-btn{
+        height:30px;
+        width:40%;
+        margin-top:7px;
+        background-color:#005b96;
+        color:white;
+        padding:0px;
+    }
+    .plasma-post-btn:focus{
+        box-shadow: none;
+    }
+    .plasma-cancel-btn{
+        margin-top:8px;
+        color:#e92424;
+        background-color:white;
+        border-radius:20px;
+        border-color:#e92424;
+    }
+    .plasma-cancel-btn:focus{
+        border-radius:20px !important;
+        border-color:#e92424 !important;
+        background-color:white !important;
+        box-shadow:none !important;
     }
     .textarea{
-        height:10vh;
-        border-color:white;
+        height:70%;
+        border:none;
+        border-bottom:1px solid #dfe1e6;
+        resize: none;
+        padding-left:10px;
+        padding-right:10px;
     }
-    .textareas{
-        width:80vh
+    .textarea-card{
+        padding:0px;
     }
-
     .addNewBtn{
         float:right
     }
 
 </style>
-
-
-
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
@@ -131,10 +196,28 @@ export default{
       user: AUTH.user,
       showField: false,
       goingToPost: false,
+      disabled: true,
       post: '',
       menushow: false,
-      data: null,
-      time: null
+      plasmaBtnColor: 'background-color:white;',
+      data: [
+        {
+          content: 'The quick brown fox jumps over the lazy dog.'
+        },
+        {
+          content: 'The quick brown fox jumps over the lazy dog.'
+        },
+        {
+          content: 'The quick brown fox jumps over the lazy dog.'
+        },
+        {
+          content: 'The quick brown fox jumps over the lazy dog.'
+        },
+        {
+          content: 'The quick brown fox jumps over the lazy dog.'
+        }
+      ],
+      time: '7/23/2020'
     }
   },
   components: {
@@ -143,10 +226,6 @@ export default{
   },
   mounted(){
     this.retrieve()
-    // if(this.user.type !== 'ADMIN'){
-    //   ROUTER.push('/dashboard')
-    // }
-    //  $('#loading').css({display: 'block'})
   },
   methods: {
     addPost(){
@@ -156,7 +235,8 @@ export default{
       this.menushow = true
     },
     showTextField(){
-      this.showField = true
+      this.showField = !this.showField
+      console.log('testing')
     },
     retrieve(){
       this.APIRequest('posts/retrieve').then(response => {
@@ -164,6 +244,9 @@ export default{
         this.data = response.data
         this.time = response.request_timestamp
       })
+    },
+    post(){
+      //  For posting
     }
   }
 }
