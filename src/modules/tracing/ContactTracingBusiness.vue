@@ -106,11 +106,19 @@
                   <tr v-for="(item, index) in healthDecList" :key="index">
                     <td>{{ item.format.replace('_', ' ').toUpperCase() }}</td>
                     <td>{{ getRelativeTime(item.submitted_on) }}</td>
-                    <td :class="[{ 'text-success': item.status === 'clear', 'text-danger': item.status !== 'clear' }]">
-                      <b>{{ item.status }}</b>
+                    <td :class="[{
+                        'text-success': item.status === 'clear' || item.status === null,
+                        'text-danger': item.status !== 'clear' && item.status !== null
+                      }]"
+                    >
+                      <b>{{ item.status === null ? 'clear' : item.status }}</b>
                     </td>
-                    <td :class="[{ 'text-success': item.status === 'clear', 'text-danger': item.status !== 'clear' }]">
-                      <b>{{ item.statusLabel }}</b>
+                    <td :class="[{
+                        'text-success': item.status === 'clear' || item.status === null,
+                        'text-danger': item.status !== 'clear' && item.status !== null
+                      }]"
+                    >
+                      <b>{{ item.statusLabel === null ? 'clear' : item.status }}</b>
                     </td>
                     <td>
                       <button @click="redirect(`/form/${item.code}`)" class="btn btn-primary">View Form</button>
@@ -330,6 +338,17 @@ export default {
         })
       }
     },
+    isValidForm(data) {
+      const parsedContent = JSON.parse(data)
+      if (parsedContent === null || typeof parsedContent === 'undefined') return false
+
+      const { format, status, statusLabel } = parsedContent
+      return (
+        (format !== null && typeof format !== 'undefined') &&
+        (typeof status !== 'undefined') &&
+        (typeof statusLabel !== 'undefined')
+      )
+    },
     showModal(id, item = null) {
       if (item) {
         $('#loading').css({display: 'block'})
@@ -352,15 +371,19 @@ export default {
         this.APIRequest('health_declarations/retrieve', parameter).then(response => {
           if (response.data.length > 0) {
             response.data.map(data => {
-              const parsedContent = JSON.parse(data.content)
-              const details = {
-                code: data.code,
-                format: parsedContent.format,
-                status: parsedContent.status,
-                statusLabel: parsedContent.statusLabel,
-                submitted_on: data.updated_at
+              if (data.updated_at !== null) {
+                if ((data.content !== null && typeof data.content !== 'undefined') && this.isValidForm(data.content)) {
+                  const parsedContent = JSON.parse(data.content)
+                  const details = {
+                    code: data.code,
+                    format: parsedContent.format,
+                    status: parsedContent.status,
+                    statusLabel: parsedContent.statusLabel,
+                    submitted_on: data.updated_at
+                  }
+                  this.healthDecList.push(details)
+                }
               }
-              this.healthDecList.push(details)
             })
             $(`#${id}`).modal('show')
           } else {
