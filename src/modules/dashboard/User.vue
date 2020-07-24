@@ -1,7 +1,7 @@
 <template>
   <div>
    <p>
-      Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or DOH authorized personnel.
+      Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners or DOH authorized personnel everytime they read your temperature.
    </p>
    <div class="row m-0">
     <div class="col-md-6 col-sm-12">
@@ -21,7 +21,28 @@
           <div class="row justify-content-center pt-5 mb-5 col-12">
              <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
                               :location="qrLocation"></qr-code-scanner>
+                              
           </div>
+          <div class="text-left">
+            <b-list-group>
+              <b-list-group-item class="text-center">How are you feeling today?</b-list-group-item>
+              <b-list-group-item v-for="(item, index) in options" :key="index" v-b-popover.hover.left="options[index].description" :title="options[index].text">
+                <input type="checkbox" :id="index" :value="options[index].text" v-model="selected">
+                <label :for="index">{{options[index].text}}</label>
+              </b-list-group-item>
+              <b-list-group-item v-if="selected.length === 0" variant="success" class="text-center">
+                <label v-b-popover.hover.left="'Always remember to practice social distancing, wash your hands, and stay at home!'" title="Looks like you're doing fine.">Looking good, stay safe!</label>
+              </b-list-group-item>
+              <b-list-group-item v-if="selected.length > 0" variant="danger" class="text-center">
+                <a href="symptoms_reporting" v-b-popover.hover.left="'You have symptoms of COVID-19. If they do not improve, please see a doctor.'" title="You have symptoms.">Visit Symptoms Reporting</a>
+              </b-list-group-item>
+              {{selected}}
+            
+            </b-list-group>
+
+    
+          </div>
+          
         </div>
       </div>
     </div>
@@ -48,6 +69,7 @@ export default {
   },
   data(){
     return {
+      selected: [],
       user: AUTH.user,
       common: COMMON,
       qrScannerState: false,
@@ -55,7 +77,13 @@ export default {
       label: null,
       result: null,
       limit: 5,
-      qrLocation: 'top'
+      qrLocation: 'top',
+      options: [
+        { text: 'Fever', value: 0, description: 'In most adults, an oral or axillary temperature above 37.6°C or a rectal or ear temperature above 38.1°C (100.6°F) is considered a fever. A child has a fever when his or her rectal temperature is 38°C or higher or armpit (axillary) temperature is 37.6°C or higher.' },
+        { text: 'Colds', value: 0, description: 'Cold symptoms peak at 1 to 3 days. The main symptoms include sore throat, stuffy nose, runny nose, cough, discomfort, sneezing, fever (more common in children), headaches, clear, watery discharge from your nose (mucus), and body aches.' },
+        { text: 'Diarrhea', value: 0, description: 'Diarrhea is characterized by loose, watery stools or a frequent need to have a bowel movement. It usually lasts a few days and often disappears without any treatment. Diarrhea can be acute or chronic.' },
+        { text: 'Loss of sense of taste/smell', value: 0, description: 'Up to 80% of people who test positive for COVID-19 have subjective complaints of smell or taste loss. That percentage rises when these patients are tested using objective methods that measure smell function. Most patients first notice problems with their sense of smell, but because smell is necessary to taste flavor, the symptoms are often connected.' },
+        { text: 'Sore Throat', value: 0, description: 'Sore throat is a very common and non-specific symptom (aka, a symptom that is self-reported and doesn\'t indicate a specific disease) and will feel the same whether you have a cold, the flu, coronavirus, or even strep throat. That means if you experience one, it can be difficult to determine whether it is COVID-related based solely on the symptom alone. However, due to the low percentage of individuals with confirmed cases of the virus listing it as a symptom, it is more likely that it\'s not COVID-related. ' }]
     }
   },
   components: {
