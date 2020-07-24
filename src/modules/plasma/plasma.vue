@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-     <div v-if="data !== null" class="container"><br>
+     <div v-if="data.length > 0" class="container"><br>
         <div class="row">
 
             <div class="col-sm-3 column" v-if="showField">
@@ -57,7 +57,7 @@
             
         </div>
     </div>
-    <empty v-if="data === null" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
+    <empty v-if="data.length <=0" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style scoped>
