@@ -23,19 +23,22 @@
                               :location="qrLocation"></qr-code-scanner>
                               
           </div>
-          <div class="text-left">
+          <div class="text-left font-weight-bold">
             <b-list-group>
               <b-list-group-item class="text-center">How are you feeling today?</b-list-group-item>
-              <b-list-group-item v-for="(item, index) in options" :key="index" v-b-popover.hover.left="options[index].description" :title="options[index].text">
-                <input type="checkbox" :id="index" :value="options[index].text" v-model="selected">
-                <label :for="index">{{options[index].text}}</label>
+              <b-list-group-item v-for="(item, index) in options" :key="index" :variant="selected.includes(item.text)? 'danger' : 'success'" v-b-popover.hover.left="item.description" :title="item.text">
+                <input type="checkbox" :id="index" :value="item.text" v-model="selected">
+                <label :for="index">{{item.text}}</label>
               </b-list-group-item>
-              <b-list-group-item v-if="selected.length === 0" variant="success" class="text-center">
+              <!-- <b-list-group-item v-if="selected.length === 0" variant="success" class="text-center">
                 <label v-b-popover.hover.left="'Always remember to practice social distancing, wash your hands, and stay at home!'" title="Looks like you're doing fine.">Looking good, stay safe!</label>
-              </b-list-group-item>
-              <b-list-group-item v-if="selected.length > 0" variant="danger" class="text-center">
-                <a href="symptoms_reporting" v-b-popover.hover.left="'You have symptoms of COVID-19. If they do not improve, please see a doctor.'" title="You have symptoms.">Visit Symptoms Reporting</a>
-              </b-list-group-item>
+              </b-list-group-item> -->
+              <b-popover placement="left" target="hatdog" triggers="hover" variant="danger" :title="selected.length < 3? warn[selected.length].title : warn[3].title" :content="selected.length < 3? warn[selected.length].text : warn[3].text" ></b-popover>
+              <span id="hatdog">
+                <b-list-group-item :variant="selected.length > 0 ? 'danger' : 'success'" class="text-center">
+                <a href="symptoms_reporting" :class="{'text-danger': selected.length > 0, 'text-success': selected.length === 0}" >Visit Symptoms Reporting</a>
+                </b-list-group-item>
+              </span>
               {{selected}}
             
             </b-list-group>
@@ -70,6 +73,12 @@ export default {
   data(){
     return {
       selected: [],
+      warn: [
+        {title: 'Looks like you\'re doing fine!', text: 'Always remember to practice social distancing, wash your hands, and stay at home!'},
+        {title: 'Uh oh! Looks like you have a symptom.', text: 'Take it easy, get some rest. It might be a good idea to self-isolate until it subsides.'},
+        {title: 'You have a couple symptoms.', text: 'Isolate yourself and get some rest. If your condition doesn\'t improve, consider seeing a doctor.'},
+        {title: 'You have a lot of symptoms.', text: 'Consider seeing a doctor and getting tested. Wear a mask and isolate yourself from others.'}
+      ],
       user: AUTH.user,
       common: COMMON,
       qrScannerState: false,
