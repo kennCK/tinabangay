@@ -172,7 +172,7 @@ export default {
     getHeightOnly(){
       let width = jquery(window).width()
       let height = parseInt(width - (width * 0.5))
-      return height < 768 ? height : 768
+      return height < 300 ? height : 300
     },
     getHeight(){
       let height = jquery(window).height()

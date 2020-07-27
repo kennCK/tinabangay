@@ -2,6 +2,10 @@ export default {
   sidebarMenu: [
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Plasma Posts', icon: 'fas fa-diagnoses', path: 'plasma/posts', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fas fa-tachometer-alt', path: 'dashboard', flag: false, subMenu: null},
+//
+//
+//
     {accountType: 'USER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
     {accountType: 'USER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Temperature', icon: 'fa fa-thermometer-half', path: 'temperature/p', flag: false, subMenu: null},
     {accountType: 'USER', accountStatus: 'ALL', showOnAdmin: false, description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
@@ -50,7 +54,7 @@ export default {
     icon: 'fa fa-cog',
     route: '/profile'
   }, {
-    title: 'Linked Employees',
+    title: 'Employees',
     icon: 'fa fa-users',
     route: '/linked_accounts'
   }, {

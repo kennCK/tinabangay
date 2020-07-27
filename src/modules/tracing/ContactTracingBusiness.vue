@@ -35,10 +35,10 @@
             <b class="text-danger">{{item.account.information && item.account.information.first_name && item.account.information.last_name ? item.account.information.first_name + ' ' + item.account.information.last_name : item.account.username}}</b>
           </td>
           <td>
-            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
+            <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms', 'badge-info': item.status === 'tested'}">{{item.status_label}}</span>
           </td>
           <td>
-            <button class="btn btn-primary">View Health Declaration</button>
+            <button @click="showModal('view_health_dec', item)" class="btn btn-primary">View Health Declaration</button>
           </td>
         </tr>
       </tbody>
@@ -76,11 +76,69 @@
             <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
           </td>
           <td>
-            <button class="btn btn-primary">View Health Declaration</button>
+            <button @click="showModal('view_health_dec', item)" class="btn btn-primary">View Health Declaration</button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!--MODAL FOR VIEWING HEALTH DECLARATION -->
+    <div class="modal fade" id="view_health_dec" tabindex="-1" role="dialog" aria-labelledby="healthDecModal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="healthDecModal">Health Declaration</h5>
+            <button type="button" class="close" @click="hideModal('view_health_dec')" aria-label="Close">
+              <span aria-hidden="true" class="text-primary">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div v-if="healthDecList.length > 0" class="w-100">
+              <table class="table table-responsive">
+                <thead class="bg-primary">
+                  <td>Type</td>
+                  <td>Submitted</td>
+                  <td>Status</td>
+                  <td>Label</td>
+                  <td>Action</td>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in healthDecList" :key="index">
+                    <td>{{ item.format.replace('_', ' ').toUpperCase() }}</td>
+                    <td>{{ getRelativeTime(item.submitted_on) }}</td>
+                    <td :class="[{
+                        'text-success': item.status === 'clear' || item.status === null,
+                        'text-danger': item.status !== 'clear' && item.status !== null
+                      }]"
+                    >
+                      <b>{{ item.status === null ? 'clear' : item.status }}</b>
+                    </td>
+                    <td :class="[{
+                        'text-success': item.status === 'clear' || item.status === null,
+                        'text-danger': item.status !== 'clear' && item.status !== null
+                      }]"
+                    >
+                      <b>{{ item.statusLabel === null ? 'clear' : item.status }}</b>
+                    </td>
+                    <td>
+                      <button @click="redirect(`/form/${item.code}`)" class="btn btn-primary">View Form</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div v-else class="w-100">
+              <center>
+                <h3>No Health Declaration Records</h3>
+              </center>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" @click="hideModal('view_health_dec')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <empty v-if="data.length <= 0" :title="'No data available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
     <google-map-modal ref="mapModal" :place_data="data" v-if="data.length > 0 && selectedOption === 'visited_places'"></google-map-modal>
@@ -119,8 +177,16 @@
 .badge-gray{
   background: $gray !important;
 }
+
+#view_health_dec {
+  overflow: auto !important
+}
+#view_health_dec .modal-dialog {
+  max-width: 90% !important;
+}
 </style>
 <script>
+import moment from 'moment'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
@@ -151,6 +217,7 @@ export default {
       }],
       selectedOption: 'linked_accounts',
       data: [],
+      healthDecList: [],
       selectedCountry: 'Philippines',
       selectedRegion: '',
       selectedLocality: '',
@@ -170,17 +237,23 @@ export default {
     'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue')
   },
   methods: {
+    getRelativeTime(time) {
+      return moment(time).fromNow()
+    },
     getLocation(){
-      let parameter = {
-        conditions: [{
+      const parameter = {
+        condition: [{
           value: this.user.userID,
           column: 'account_id',
           clause: '='
         }, {
           value: null,
-          column: 'assigned_code',
+          column: 'payload',
           clause: '='
-        }]
+        }],
+        sort: {
+          route: 'asc'
+        }
       }
       this.APIRequest('locations/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
@@ -194,6 +267,7 @@ export default {
       })
     },
     redirect(parameter){
+      this.hideModal('view_health_dec')
       ROUTER.push(parameter)
     },
     getDate(){
@@ -263,6 +337,64 @@ export default {
           this.sortedData = response.data
         })
       }
+    },
+    isValidForm(data) {
+      const parsedContent = JSON.parse(data)
+      if (parsedContent === null || typeof parsedContent === 'undefined') return false
+
+      const { format, status, statusLabel } = parsedContent
+      return (
+        (format !== null && typeof format !== 'undefined') &&
+        (typeof status !== 'undefined') &&
+        (typeof statusLabel !== 'undefined')
+      )
+    },
+    showModal(id, item = null) {
+      if (item) {
+        $('#loading').css({display: 'block'})
+        this.healthDecList = []
+
+        const parameter = {
+          condition: [{
+            clause: '=',
+            column: 'account_id',
+            value: item.account_id
+          }, {
+            clause: '!=',
+            column: 'updated_at',
+            value: null
+          }],
+          sort: {
+            updated_at: 'desc'
+          }
+        }
+        this.APIRequest('health_declarations/retrieve', parameter).then(response => {
+          if (response.data.length > 0) {
+            response.data.map(data => {
+              if (data.updated_at !== null) {
+                if ((data.content !== null && typeof data.content !== 'undefined') && this.isValidForm(data.content)) {
+                  const parsedContent = JSON.parse(data.content)
+                  const details = {
+                    code: data.code,
+                    format: parsedContent.format,
+                    status: parsedContent.status,
+                    statusLabel: parsedContent.statusLabel,
+                    submitted_on: data.updated_at
+                  }
+                  this.healthDecList.push(details)
+                }
+              }
+            })
+            $(`#${id}`).modal('show')
+          } else {
+            $(`#${id}`).modal('show')
+          }
+          $('#loading').css({display: 'none'})
+        })
+      }
+    },
+    hideModal(id) {
+      $(`#${id}`).modal('hide')
     }
   }
 }
