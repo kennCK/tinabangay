@@ -284,9 +284,9 @@ export default{
     }
   },
   {
-    path: '/plasma/add-post',
-    name: 'addPosts',
-    component: resolve => require(['modules/plasma/plasmaForm.vue'], resolve),
+    path: '/business/schedule',
+    name: 'Schedule',
+    component: resolve => require(['modules/business/SanitarySchedule.vue'], resolve),
     meta: {
       tokenRequired: true
     }
