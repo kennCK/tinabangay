@@ -22,7 +22,7 @@
       :class="['text-center', 'font-weight-bold', {'text-danger': formParameters.status === 'danger', 'text-success': formParameters.status === 'clear'}]">
       Status: {{formParameters.status}}{{formParameters.statusLabel !== 'clear' ? ` [${formParameters.statusLabel}]` : ''}}
     </h5>
-    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{data.updated_at}}</h5>
+    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ getRelativeTime(data.updated_at) }}</h5>
     <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
       <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
     </div>
@@ -80,7 +80,9 @@
             <span class="col-sm-6 col-md-3 py-2"><b>Seat No.:</b> {{item.seat}}</span>
           </li>
         </ul>
-        <span v-if="healthDec.travelHistory.transportation.length <= 0" class="d-inline">None</span>
+        <span v-if="healthDec.travelHistory.transportation.length <= 0" class="d-inline">
+          <b>None</b>  
+        </span>
         <hr>
         <div class="row">
           <div class="col-md-6 border border-top-0 border-left-0 border-bottom-0">
@@ -90,7 +92,9 @@
                 {{item.title}}
               </li>
             </ul>
-            <span v-if="healthDec.travelHistory.countries.length <= 0" class="d-inline">None</span>
+            <span v-if="healthDec.travelHistory.countries.length <= 0" class="d-inline">
+              <b>None</b>
+            </span>
           </div>
           <div class="col-md-6">
             <h6 :class="['font-weight-bold', 'mt-4', { 'd-inline-flex': healthDec.travelHistory.localities.length <= 0 }]">Cities / municipalities in the Philippines visited for the past fourteen (14) days:</h6>
@@ -99,7 +103,9 @@
                 {{item.title}}
               </li>
             </ul>
-            <span v-if="healthDec.travelHistory.localities.length <= 0" class="d-inline">None</span>
+            <span v-if="healthDec.travelHistory.localities.length <= 0" class="d-inline">
+              <b>None</b>
+            </span>
           </div>
         </div>
       </div>
@@ -487,6 +493,7 @@
   }
 </style>
 <script>
+import moment from 'moment'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
@@ -498,7 +505,6 @@ export default {
     this.formParameters = this.formParam
     this.form = this.isForm
     this.data = this.dataParam
-    this.userInfo = this.userInfoParam
 
     if (this.form) {
       this.healthDec.personalInformation.first_name = this.userInfoParam.first_name
@@ -528,15 +534,17 @@ export default {
       config: CONFIG,
       civil: null,
       gender: null,
-      userInfo: null,
       transpo: [],
       country: [],
       locality: [],
       otherSymptoms: 0
     }
   },
-  props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam'],
+  props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    getRelativeTime(time) {
+      return moment(time).fromNow()
+    },
     addTranspo() {
       let flag = this.checkTranspo()
       let inputs = $('#transportations .form-group input')
@@ -710,24 +718,51 @@ export default {
         this.healthDec.location = this.formParameters.location
 
         $('#loading').css({display: 'block'})
-        let param = {
-          id: this.data.id,
-          content: JSON.stringify(this.healthDec),
-          account_id: this.data.account_id,
-          code: this.data.code,
-          owner: this.data.owner,
-          from: this.user.userID,
-          to: this.data.owner
+
+        if (this.isUserCreate) {
+          let userId = this.user.userID
+          if (this.formParameters.hasOwnProperty('scannedUserAnswerForm')) {
+            userId = this.userInfoParam.account_id
+          }
+          let param = {
+            owner: this.data.owner,
+            account_id: userId,
+            from: userId,
+            to: this.data.owner,
+            content: JSON.stringify(this.healthDec),
+            payload: `form_submitted/${this.healthDec.format}`
+          }
+          console.log({ param })
+          this.APIRequest('health_declarations/create', param).then(response => {
+            ROUTER.push(`/form/${response.generated_code}`)
+          }).fail(() => {
+            $('<div>', {
+              id: 'error',
+              class: 'row justify-content-end mb-3',
+              html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
+            }).insertBefore('#submit')
+          })
+        } else {
+          let param = {
+            id: this.data.id,
+            content: JSON.stringify(this.healthDec),
+            account_id: this.data.account_id,
+            code: this.data.code,
+            owner: this.data.owner,
+            from: this.user.userID,
+            to: this.data.owner,
+            payload: `form_submitted/${this.healthDec.format}`
+          }
+          this.APIRequest('health_declarations/update', param).then(response => {
+            this.$emit('triggerRetrieve', true)
+          }).fail(() => {
+            $('<div>', {
+              id: 'error',
+              class: 'row justify-content-end mb-3',
+              html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
+            }).insertBefore('#submit')
+          })
         }
-        this.APIRequest('health_declarations/update', param).then(response => {
-          this.$emit('triggerRetrieve', true)
-        }).fail(() => {
-          $('<div>', {
-            id: 'error',
-            class: 'row justify-content-end mb-3',
-            html: '<small class="col-5 text-danger font-weight-bold">There is an error in submitting the form. Please contact support@birdseye.org</small>'
-          }).insertBefore('#submit')
-        })
       } else {
         if($('#error').length === 0) {
           $('<div>', {

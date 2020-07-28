@@ -1,7 +1,7 @@
 <template>
   <div class="holder">
     <div class="form-group" v-if="user.location !== null">
-      <label>Assigned address: <b class="text-primary">{{user.location.route + ',' + user.location.locality + ',' + user.location.region + ',' + user.location.country}}</b></label>
+      <label>Assigned address:  <b class="text-danger">({{user.location.code}})</b>{{user.location.route + ',' + user.location.locality + ',' + user.location.region + ',' + user.location.country}}</label>
     </div>
     <div class="form-group">
       <select class="form-control" v-model="selectedOption" @change="chageOption()">
@@ -10,11 +10,12 @@
       <select class="form-control" v-model="selectedWeek" @change="getDate()">
         <option v-for="(item, index) in 8" :key="index" :value="item">Last {{item > 1 ? item + ' Weeks' : item + ' Week'}}</option>
       </select>
+      <!-- 
       <select class="form-control" v-model="selectedCountry">
         <option v-for="(item, index) in country" :key="index">{{item.title}}</option>
-      </select>
-      <input type="text" v-model="selectedRegion" class="form-control" placeholder="Region">
-      <input type="text" v-model="selectedLocality" class="form-control" placeholder="Town or City">
+      </select> -->
+      <!-- <input type="text" v-model="selectedRegion" class="form-control" placeholder="Region" > -->
+      <!-- <input type="text" v-model="selectedLocality" class="form-control" placeholder="Town or City" disabled="true"> -->
       <select class="form-control" v-if="selectedOption === 'visited_places'" v-model="selectedRadius">
         <option value="0.05">50 Meters radius</option>
         <option v-for="(item, index) in 10" :key="index" :value="item / 10">{{100 * item}} Meters radius</option>
@@ -150,7 +151,7 @@
           Type
 
           <i class="fa fa-chevron-down pull-right" v-if="typeFlag === false" @click="manageSort('type', 'desc', true)"></i>
-          <i class="fa fa-chevron-up pull-right" v-if="typeFlag === true" @click="manageSort('type', 'asc', false)"></i></td>
+          <i class="fa fa-chevron-up pull-right" v-if="typeFlag === true" @click="manageSort('type', 'asc', false)"></i>
         </td>
         <td>Remarks</td>
         <td>Actions</td>
@@ -226,6 +227,9 @@ export default {
       ROUTER.push('/dashboard')
     }
     this.getDate()
+    if(this.user.location !== null){
+      this.selectedLocality = this.user.location.locality
+    }
   },
   data(){
     return {

@@ -63,31 +63,31 @@
       <div class="available-options d-flex">
         <button v-if="addedToVisitedPlaces" class="btn btn-success">Added to visited places</button>
         <button v-if="!addedToVisitedPlaces" class="btn btn-primary" @click="addVisitedPlace()">Add to visited places</button>
-        <button class="btn btn-primary" @click="showModal('request_form')">Request Form</button>
+        <button class="btn btn-primary" @click="showModal('send_form')">Send Form</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
     </div>
 
     <!--MODAL FOR REQUESTING FORM-->
-    <div class="modal fade right" id="request_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <div class="modal fade right" id="send_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Request Health Declaration Form</h5>
-            <button type="button" class="close" aria-label="Close" @click="hideModal('request_form')">
+            <button type="button" class="close" aria-label="Close" @click="hideModal('send_form')">
               <span aria-hidden="true" class="white-text">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <div class="form-group mb-0 d-flex flex-column align-items-center mb-3">
-              <button class="btn btn-primary mt-3 w-100" @click="requestForm('customer')">For Customer</button>
-              <button class="btn btn-primary mt-3 w-100" @click="requestForm('employee_checkin')">For Employee Checkin</button>
-              <button class="btn btn-primary mt-3 w-100" @click="requestForm('employee_checkout')">For Employee Checkout</button>
+              <button class="btn btn-primary mt-3 w-100" @click="sendForm('customer')">For Customer</button>
+              <button class="btn btn-primary mt-3 w-100" @click="sendForm('employee_checkin')">For Employee Checkin</button>
+              <button class="btn btn-primary mt-3 w-100" @click="sendForm('employee_checkout')">For Employee Checkout</button>
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-danger" @click="hideModal('request_form')">Cancel</button>
+            <button class="btn btn-danger" @click="hideModal('send_form')">Cancel</button>
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@
   min-width: 315px;
   margin: 5px 5px !important;
 }
-#request_form .modal-content {
+#send_form .modal-content {
   max-width: 400px;
   margin: 0 auto;
 }
@@ -244,11 +244,16 @@ export default {
         $('#loading').css({display: 'none'})
       })
     },
-    requestForm(type) {
+    redirectToForm(type, merchantOwner, content) {
+      ROUTER.push(`/form/${type}&${merchantOwner}&${content}`)
+      this.hideModal('send_form')
+      $('#loading').css({display: 'none'})
+    },
+    sendForm(type) {
       $('#loading').css({display: 'block'})
+      const merchantOwner = this.scannedLocationData.account_id
 
-      if (this.scannedLocationData.account_id && this.scannedLocationData.payload === null) {
-        const merchantOwner = this.scannedLocationData.account_id
+      if (merchantOwner && this.scannedLocationData.payload === null) {
         const parameter = {
           condition: [{
             value: merchantOwner,
@@ -258,51 +263,47 @@ export default {
         }
         this.APIRequest('merchants/retrieve', parameter).then(response => {
           if (response.data.length) {
+            const location = {...this.scannedLocationData}
+            location.account_id = null
+            location.id = null
             const content = JSON.stringify({
               format: type,
               status: null,
               statusLabel: null,
-              location: this.scannedLocationData
+              location
             })
 
-            const hdrParam = {
-              owner: merchantOwner,
-              account_id: this.user.userID,
-              from: merchantOwner,
-              to: this.user.userID,
-              content
+            if (type === 'customer') {
+              this.redirectToForm(type, merchantOwner, content)
+            } else {
+              if (this.user.linked_account === null || parseInt(merchantOwner) !== parseInt(this.user.linked_account.owner)) {
+                this.alertMessage = {
+                  type: 'warning',
+                  message: 'Sorry, you are not linked to this branch'
+                }
+                this.hideModal('send_form')
+                $('#loading').css({display: 'none'})
+              } else {
+                this.redirectToForm(type, merchantOwner, content)
+              }
             }
 
-            this.APIRequest('health_declarations/create', hdrParam).then(response => {
-              if (response.data) {
-                this.alertMessage = {
-                  type: 'success',
-                  message: 'Requested form successfully. Please check your notification to view the form you requested. If the notification does not show up, please try refreshing the page.'
-                }
-                this.hideModal('request_form')
-              } else {
-                this.alertMessage = {
-                  type: 'danger',
-                  message: 'Error requesting form. Please try again.'
-                }
-                this.hideModal('request_form')
-              }
-              $('#loading').css({display: 'none'})
-            })
           } else {
             this.alertMessage = {
               type: 'danger',
-              message: 'Sorry, you cannot request HDR form to this address'
+              message: 'Sorry, you cannot request Heath Declaration Form to this address'
             }
-            this.hideModal('request_form')
+            this.hideModal('send_form')
             $('#loading').css({display: 'none'})
           }
         })
       } else {
         this.alertMessage = {
           type: 'danger',
-          message: 'Sorry, you cannot request HDR form to this address'
+          message: 'Sorry, you cannot request Heath Declaration Form form to this address'
         }
+        this.hideModal('send_form')
+        $('#loading').css({display: 'none'})
       }
     }
   }
