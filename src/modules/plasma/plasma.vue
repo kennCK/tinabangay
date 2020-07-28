@@ -89,7 +89,7 @@
     }
    
     .alert-box {
-        width: 50%;
+        width: 55%;
         background: white;
         display: inline-block;
         margin-top: 180px;
