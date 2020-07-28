@@ -67,16 +67,39 @@
           <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
           <td>{{item.remarks}}</td>
           <td>{{item.locality}}</td>
-          <td>{{ item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
+          <td>{{item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
           <td>
             <button class="btn btn-success" style="margin: .5% 0;" @click="showModal('place', item.account_id, item.id)">Add Visited Place</button>
             <button class="btn btn-primary" style="margin: .5% 0;" @click="showModal('patient', null, null, item)"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger" style="margin: .5% 0;" @click="removeItem(item.id)"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-danger" style="margin: .5% 0;"  @click="selectItemToDelete(item.id)" data-toggle="modal" data-target="#confirm-delete"><i class="fas fa-trash"></i></button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!--MODAL FOR DELETE CONFIRMATION -->
+    <div class="modal fade right" id="confirm-delete" tabindex="1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Are you sure?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4" >
+            <p>Do you really want to delete this record?</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button class="btn btn-danger btn-ok" data-dismiss="modal" @click="isLocationDelete ? deletePlace() : removeItem()">Delete</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
     
     <!--MODAL FOR VISITED PLACES-->
     <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -106,7 +129,7 @@
                 <td>{{item.route}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
-                <td><button class="btn btn-danger" type="button" @click="deletePlace(item)"><i class="fa fa-trash"></i></button></td>
+                <td><button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i class="fa fa-trash"></i></button></td>
               </tr>
              </tbody>
             </table>
@@ -122,6 +145,11 @@
 @import "~assets/style/colors.scss";
 .bg-primary{
   background: $primary !important;
+  color: $white !important;
+}
+
+.bg-gray{
+  background-color: $gray !important;
   color: $white !important;
 }
 
@@ -158,6 +186,9 @@ export default {
   },
   data(){
     return {
+      isLocationDelete: false,
+      itemIdToDeleteID: null,
+      placeToDeleteID: null,
       numPages: null,
       activePage: 1,
       limit: 5,
@@ -485,9 +516,13 @@ export default {
         }
       }
     },
-    removeItem(id){
+    selectItemToDelete(id){
+      this.isLocationDelete = false
+      this.itemIdToDeleteID = id
+    },
+    removeItem(){
       let parameter = {
-        id: id
+        id: this.itemIdToDeleteID
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('patients/delete', parameter).then(response => {
@@ -721,10 +756,16 @@ export default {
         // console.log('dead end for now')
       }
     },
-    deletePlace(item){
-      console.log(this.selectedItem)
+
+    deleteSelectedPlace(id){
+      $('#visited_places').modal('hide')
+      this.isLocationDelete = true
+      this.placeToDeleteID = id
+    },
+
+    deletePlace(){
       let params = {
-        id: item.id
+        id: this.placeToDeleteID
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('visited_places/delete', params).then(response => {
