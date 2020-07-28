@@ -1,7 +1,7 @@
 <template>
   <div class="holder w-100">
     <div class="nav-buttons row">
-      <button class="btn btn-primary" data-toggle="modal" data-target="#add_location" @click="googleProperty.placeholder = 'Type Location', locality = null">Add</button>
+      <button class="btn btn-primary" data-toggle="modal" data-target="#add_location" @click="googleProperty.placeholder = 'Type Location', locality = null, selectedBranch = null">Add</button>
     </div>
     <div class="row w-100 m-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
@@ -46,8 +46,8 @@
             </div>
             <div class="form-group">
               <label>Barangay</label>
-              <div class="text-danger font-weight-bold" v-if="!selectedBranch || (selectedBranch.brgy_info === null && locality === null)">Please <span class="link" data-toggle="modal" data-target="#addAddress">assign a barangay</span> to this branch.</div>
-              <div v-else-if="selectedBranch.brgy_info && !locality">
+              <div class="text-danger font-weight-bold" v-if="(!selectedBranch || !selectedBranch.brgy_info) && locality === null">Please <span class="link" data-toggle="modal" data-target="#addAddress">assign a barangay</span> to this branch.</div>
+              <div v-else-if="selectedBranch && selectedBranch.brgy_info && !locality">
                 <span class="font-weight-bold text-danger">({{selectedBranch.brgy_info.code}})</span> {{selectedBranch.brgy_info.route}}, {{selectedBranch.brgy_info.locality}} <span class="link" data-toggle="modal" data-target="#addAddress"><i class="fa fa-edit"></i></span>
               </div>
               <div v-else>
@@ -83,7 +83,7 @@
                 </div>
               </div>
               <pin-location @onSelect="getLocation($event)" :property="{
-                height: '400px'
+                height: '300px'
               }"></pin-location>
             </div>
           </div>
@@ -146,7 +146,7 @@
                     </label>
                   </td>
                   <td>
-                    <button class="btn btn-primary" @click="assignAddress(item)">{{ (selectedBranch && selectedBranch.brgy_info !== null) || locality === null ? 'Update' : 'Assign'}}</button>
+                    <button class="btn btn-primary" @click="assignAddress(item)">{{ (selectedBranch && selectedBranch.brgy_info !== null) || locality !== null ? 'Update' : 'Assign'}}</button>
                   </td>
                 </tr>
               </tbody>
@@ -407,7 +407,9 @@ export default {
     hideModal(id) {
       if(id === 'add_location') {
         $('#add_location .error-msg').remove()
-        this.$refs.location.onCancel()
+        if(this.$refs.location) {
+          this.$refs.location.onCancel()
+        }
         this.location = null
         $('#branch').val('')
         this.selectedBranch = null
@@ -423,7 +425,6 @@ export default {
       $('#addAddress').modal('hide')
     },
     addNew() {
-      console.log('adding new')
       let branchName = $('#branch').val()
       let error = false
       $('#add_location .error-msg').remove()
