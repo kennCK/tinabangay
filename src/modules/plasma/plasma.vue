@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-     <div v-if="data.length > 0" class="container"><br>
+     <div class="container"><br>
         <div class="row">
             <div class="col-sm-3 column" v-if="showField">
                 <div class="card cards">
@@ -32,7 +32,7 @@
                     <i class="add-post fa fa-plus"></i>
                 </div>
             </div>
-            <div class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
+            <div v-if="data.length > 0" class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
                 <div class="card cards">
                     <div class="card-header d-flex justify-content-between">
                         <div>

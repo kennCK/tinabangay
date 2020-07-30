@@ -35,19 +35,13 @@
 
 
     <div class="form-group">
-      <!-- <label style="width: 100%;">Get summary per locality:</label> -->
-      <!-- <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px;" v-model="localitySearch" placeholder="Locality">
-      <button class="btn btn-primary" @click="retrieveLocality()">Search</button> -->
       <p v-if="summary !== null">
         Positive: {{summary.positive}}, Deceased: {{summary.death}}, Recovered: {{summary.recovered}}, Negative: {{summary.negative}}
       </p>
     </div>
 
     <basic-filter 
-      v-bind:category="category" 
-      :activeCategoryIndex="0"
-      :activeSortingIndex="0"
-      @changeSortEvent="retrieve($event.sort, $event.filter)"
+      v-bind:category="category" :activeCategoryIndex="0" :activeSortingIndex="0" @changeSortEvent="retrieve($event.sort, $event.filter)"
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']"></basic-filter>
 
@@ -104,6 +98,7 @@
                 <td>{{item.date_human}}</td>
                 <td>{{item.time}}</td>
                 <td>{{item.route}}</td>
+                <td>{{item.locate}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
                 <td><button class="btn btn-danger" type="button" @click="deletePlace(item)"><i class="fa fa-trash"></i></button></td>
@@ -210,7 +205,8 @@ export default {
       offset: 0,
       showSummaryFlag: false,
       localitySearch: null,
-      summary: null
+      summary: null,
+      storage: []
     }
   },
   components: {
@@ -225,16 +221,16 @@ export default {
     },
     retrieveLocality(){
       if(this.user.location === null){
-        return
+        let parameter = {
+          locality: this.user.location.code
+        }
+        $('#loading').css({display: 'block'})
+        this.APIRequest('patients/summary', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          this.summary = response.data
+          console.log(this.summary)
+        })
       }
-      let parameter = {
-        locality: this.user.location.code
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('patients/summary', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        this.summary = response.data
-      })
     },
     exportPatients(){
       let parameter = {
@@ -334,7 +330,6 @@ export default {
                 $('#loading').css({display: 'block'})
                 this.APIRequest('patients/linking', parameter).then(response => {
                   $('#loading').css({display: 'none'})
-                  // console.log(response)
                 })
               }
             }
@@ -346,6 +341,8 @@ export default {
       return '#page=' + pageNum
     },
     retrieve(sort, filter){
+      console.log(sort)
+      console.log(filter)
       if(sort !== null){
         this.sort = sort
       }
@@ -397,6 +394,7 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
+      console.log(parameter)
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
