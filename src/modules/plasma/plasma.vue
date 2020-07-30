@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false &&  data.length > 0" @click="showTextField()" >
+            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false " @click="showTextField()" >
                <div class="card cards">
                     <i class="add-post fa fa-plus"></i>
                 </div>
@@ -59,7 +59,7 @@
                         <i class="far fa-user-circle profile-icon i-style-modal"></i>
                         <p class="date-posted-modal">{{plasmaData.created_at}}</p>
                     </div><hr>
-                    <p class="contentMessage">{{plasmaData.content}}</p><hr>
+                    <p>{{plasmaData.content}}</p><hr>
                     <button class="btn btn-content-Message" @click="hide">OK</button>
                 </div>
             </div>
@@ -98,6 +98,7 @@
         font-size: 15px;
         padding: 20px;
         transition: .2s;
+        overflow-y: auto;
     }
      @media screen and (max-width: 600px) {
     .alert-box {
@@ -114,6 +115,8 @@
     }
     .contentMessage{
         text-align: left;
+        height: 70%;
+
     }
     .add-post-btn-card :hover{
         cursor: pointer;
