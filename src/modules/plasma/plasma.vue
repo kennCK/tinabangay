@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false &&  data.length > 0" @click="showTextField()" >
+            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()" >
                <div class="card cards">
                     <i class="add-post fa fa-plus"></i>
                 </div>
@@ -329,6 +329,7 @@ export default{
           }
         }
       })
+      console.log(this.data)
     },
     posts(){
       $('#loading').css({display: 'block'})
