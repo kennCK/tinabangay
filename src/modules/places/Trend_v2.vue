@@ -2,7 +2,7 @@
   <div>
     <topAffectedPlaces v-if="data !== null" ref="realtimeChart" height="500" type="bar" :options="options" :series="series"></topAffectedPlaces>
     <empty v-else :title="'There\'s currently no hot spots logged.'" :action="'Stay Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
-  </div>
+    </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
@@ -67,6 +67,7 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          console.log('Affected ', response.data)
           let series = [[], [], []]
           for(var i = 0; i < 5; ++i){
             // let routes = response.data[i].route.split(',')

@@ -1,44 +1,75 @@
 <template>
-  <!-- <div class="ledger-summary-container">
-    <button class="btn btn-primary pull-right" style="margin-bottom: 25px;" @click="showModal('create')">New Report</button>
-    <table class="table table-bordered table-responsive" v-if="data !== null">
-      <thead class="bg-primary">
-        <tr>
-          <td>Date</td>
-          <td>Type</td>
-          <td>Remarks</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.date_human}}</td>
-          <td>
-            <label class="text-uppercase">{{item.type}}</label>
-          </td>
-          <td>{{item.remarks}}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <increment-modal :property="propertyModal"></increment-modal>
-    <empty v-if="data === null" :title="'No symptoms reported!'" :action="'Stay safe and report your symptoms to help us flatten the curve againts covid19.'"></empty>
-  </div> -->
   <div>
-    <div>
-      <div class="row symptomsD">
-        <div class="col-sm-6 feelings" v-for="(feelin, index) in symptoms" :key="feelin.name">
-          <button 
-            type="button" 
-            v-bind:class="feelings[index].clicked ? 'btn feelingStyler' : 'btn btnfeeling'"
-            @click="feelingsEvent(index)"
-            :data-toggle=" feelings[index].clicked ? 'modal' : '' "
-            data-target="#confirmation"
-          >
-            {{feelin.name}}
-          </button>
+    <div v-if="$route.name !== 'symptomsReporting'" class="row symptomsD">
+      <div class="col-sm-6 feelings" v-for="(feelin, index) in symptoms" :key="feelin.value">
+        <button 
+          type="button" 
+          v-bind:class="feelings[index].clicked ? 'btn feelingStyler' : 'btn btnfeeling'"
+          @click="feelingsEvent(index)"
+          :data-toggle=" feelings[index].clicked ? 'modal' : '' "
+          data-target="#confirmation"
+        >
+          {{feelin.label}}
+        </button>
+      </div>
+    </div>
+    <div v-if="$route.name === 'symptomsReporting'" class="container">
+      <br>
+      <br>
+      <br>
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="col-sm-12 symptomsView">
+              <br>
+              <br>
+              <p>
+                Hi, <b>{{user.username}}!</b> How are you feeling today?
+              </p>
+              <br>
+              <div class="col-sm-12 feelings " v-for="(feelin, index) in symptoms" :key="feelin.value">
+                <button 
+                  type="button" 
+                  v-bind:class="feelings[index].clicked ? 'btn feelingStyler' : 'btn btnfeeling'"
+                  @click="feelingsEvent(index)"
+                  :data-toggle=" feelings[index].clicked ? 'modal' : '' "
+                  data-target="#confirmation"
+                >
+                  {{feelin.label}}
+                </button>
+              </div>
+              <br>
+            </div>
+          </div>
+          <div class="col-sm-9 summaryS">
+            <div class="ledger-summary-container summaryS symptomsView">
+              <table class="table table-bordered table-responsive" v-if="data !== null">
+                <thead class="bg-primary">
+                  <tr>
+                    <td>Date</td>
+                    <td>Type</td>
+                    <td>Remarks</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in data" :key="index">
+                    <td>{{item.date_human}}</td>
+                    <td>
+                      <label class="text-uppercase">{{item.type}}</label>
+                    </td>
+                    <td>{{item.remarks}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <increment-modal :property="propertyModal"></increment-modal>
+              <empty v-if="data === null" :title="'No symptoms reported!'" :action="'Stay safe and report your symptoms to help us flatten the curve againts covid19.'"></empty>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
     <div class="modal"
       id="confirmation"
       role="dialog" 
@@ -48,9 +79,9 @@
       <div class="modal-dialog"> 
         <div class="modal-content"> 
           <div class="modal-body data"> 
-            <button class="close" data-dismiss="modal"> 
-                × 
-              </button>  
+            <button class="close" data-dismiss="modal" @click="cancelReport"> 
+              × 
+            </button>  
             <br>
             <br>
             <div class="row">
@@ -69,7 +100,7 @@
             <div class="row">
               <div class="col-sm-12">
                 <p>Remarks:</p>
-                <textarea class="form-control" rows="4" id="comment"></textarea>
+                <textarea v-model="remarks" class="form-control" rows="4" id="comment"></textarea>
               </div>
             </div>
           </div>
@@ -78,18 +109,61 @@
             type="button" 
             class="btn symptomsSubmit" 
             :data-dismiss=" validReport ? 'modal' : ''"
-            @click="symptomsSubmit"
+            data-toggle="modal" 
+            data-target="#confirm"
             :disabled="valid"
             >submit
             </button>
           </center>
         </div> 
       </div> 
-    </div> 
+    </div>
+
+    <div class="modal fade" id="confirm" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="confirmationHeader">
+                  <center><i class="fas fa-exclamation-circle confirmationIcon"></i></center>
+                  <hr>
+                </div>
+                <div class="modal-body confirmationBody">
+                  <center>Are you sure you want to proceed?</center>
+                  <br>
+                </div>
+                <div class="modal-footer">
+                  <button data-dismiss="modal" class="btn btn-outline-primary confirmYes" @click="symptomsSubmit">Yes</button>
+                  <button data-dismiss="modal" class="btn btn-outline-danger confirmNo">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
+.confirmationIcon{
+  font-size: 70px;
+  color:#bd3a47;
+} 
+.confirmationHeader{
+  padding-top:15px;
+  padding-bottom:15px;
+  text-align: center;
+  margin:0px;
+}
+.confirmationBody{
+  margin:0px;
+  padding-top:0px;
+}
+.confirmYes{
+  width: 70px;
+  outline: none;
+}
+.confirmNo{
+  width: 70px;
+  outline: none;
+}
+
 .mx-datepicker,
 .mx-input-wrapper {
   width: unset;
@@ -104,6 +178,8 @@
   border-radius:20px;
   font-weight:bold;
   background-color:white;
+  white-space: normal; 
+  word-wrap: break-word;
 }
 .btnfeeling:focus{
   box-shadow: none!important;
@@ -121,6 +197,8 @@
   color: white;
   background-color:#bd3a47;
   outline: none !important;
+  white-space: normal; 
+  word-wrap: break-word;
 }
 .feelingStyler:focus{
   box-shadow: none!important;
@@ -144,6 +222,8 @@
   color: white;
   background-color:#bd3a47;
   outline: none !important;
+  white-space: normal; 
+  word-wrap: break-word;
 }
 .feelingStyler:focus{
   box-shadow: none!important;
@@ -154,6 +234,8 @@
   .btnfeeling {
     font-size: 7px;
     padding:1px;
+    white-space: normal; 
+    word-wrap: break-word;
   }
   .feelingStyler{
     width:100%;
@@ -166,6 +248,8 @@
     color: white;
     background-color:#bd3a47;
     outline: none !important;
+    white-space: normal; 
+    word-wrap: break-word;
   }
   .feelingStyler:focus{
     box-shadow: none!important;
@@ -188,6 +272,8 @@
     color: white;
     background-color:#bd3a47;
     outline: none !important;
+    white-space: normal; 
+    word-wrap: break-word;
   }
   .feelingStyler:focus{
     box-shadow: none!important;
@@ -208,6 +294,8 @@
     color: white;
     background-color:#bd3a47;
     outline: none !important;
+    white-space: normal; 
+    word-wrap: break-word;
   }
   .feelingStyler:focus{
     box-shadow: none!important;
@@ -235,7 +323,12 @@
   background-color: #dc3545;
   color: white;
 }
-
+.summaryS{
+  padding:0px;
+}
+.symptomsView{
+  box-shadow: 5px 0px 40px #e0e0e0;
+}
 .bg-primary{
   background: $primary !important;
   color: $white !important;
@@ -246,7 +339,7 @@
   float: left;
   height: auto;
   margin-bottom: 100px;
-  margin-top: 25px;
+  padding: 0px;
 }
 
 .ledger-summary-container-header{
@@ -264,6 +357,10 @@
   border: solid 1px #ddd;
   margin-top: 10px;
   padding-left: 10px;
+}
+
+.table{
+  margin-top:0px;
 }
 
 td i {
@@ -286,7 +383,14 @@ import PropertyModal from './CreateSymptom.js'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 export default{
+  created(){
+    this.feelings = COMMON.symptomsHealthDec.map((element, index) => {
+      element['clicked'] = false
+      return element
+    })
+  },
   mounted(){
+    let initialData = []
     this.retrieve()
   },
   data(){
@@ -295,32 +399,13 @@ export default{
       data: null,
       auth: AUTH,
       date: null,
+      remarks: null,
       validReport: true,
       index: null,
       config: CONFIG,
       propertyModal: PropertyModal,
-      feelings: [
-        {
-          name: 'Fever',
-          clicked: false
-        },
-        {
-          name: 'Diarrhea',
-          clicked: false
-        },
-        {
-          name: 'Sore Throat',
-          clicked: false
-        },
-        {
-          name: 'Colds',
-          clicked: false
-        },
-        {
-          name: 'Loss of sense of taste/smell',
-          clicked: false
-        }
-      ]
+      modalShow: true,
+      feelings: []
     }
   },
   components: {
@@ -340,6 +425,9 @@ export default{
         validator = !this.validReport
       }
       return validator
+    },
+    show(){
+      return this.modalShow
     }
   },
   methods: {
@@ -347,25 +435,32 @@ export default{
       ROUTER.push(params)
     },
     feelingsEvent(index){
-      this.feelings.filter((el, i) => {
+      this.feelings = this.feelings.filter((el, i) => {
         if (index === i) {
           el.clicked = !el.clicked
           this.index = index
-          return el
         }
+        return el
+      })
+    },
+    cancelReport(){
+      this.feelings = this.feelings.filter((el, i) => {
+        if (this.index === i) {
+          el.clicked = !el.clicked
+        }
+        return el
       })
     },
     symptomsSubmit(){
       let parameters = {
         account_id: this.user.userID,
         date: this.date,
-        remarks: '',
-        type: this.feelings[this.index].name
+        remarks: this.remarks,
+        type: this.feelings[this.index].value
       }
       if(this.feelings[this.index].clicked){
         if(this.date !== null){
           this.APIRequest('symptoms/create', parameters).then(response => {
-            console.log(response)
           })
         }else{
           this.validReport = !this.validReport
@@ -385,7 +480,6 @@ export default{
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('symptoms/retrieve', parameter).then(response => {
-        console.log(response.data)
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
@@ -393,6 +487,9 @@ export default{
           this.data = null
         }
       })
+    },
+    testing(){
+      this.modalShow = !this.modalShow
     },
     showModal(action, item = null){
       switch(action){
