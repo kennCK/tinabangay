@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()">
+            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false &&  data.length > 0" @click="showTextField()" >
                <div class="card cards">
                     <i class="add-post fa fa-plus"></i>
                 </div>
@@ -362,14 +362,6 @@ export default{
           }
         }
       })
-    //   this.data.forEach(element => {
-    //     console.log(element.id)
-    //     if(element.id === id){
-    //       this.showTextField()
-    //       this.post = element.content
-    //       this.editID = element.id
-    //     }
-    //   })
     },
     deletePost(postID){
       console.log('data', postID)
