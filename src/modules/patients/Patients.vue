@@ -148,11 +148,11 @@ import { ExportToCsv } from 'export-to-csv'
 import moment from 'moment'
 export default {
   mounted(){
-   // this.retrieve()
+  //  this.retrieve()
+    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'AGENCY_DOH' && this.user.type !== 'AGENCY_BRGY'){
       ROUTER.push('/dashboard')
     }
-    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     this.retrieveLocality()
     this.date = moment().format('MM-DD-YYYY-HH-mm-ss')
   },
@@ -503,7 +503,7 @@ export default {
           $('<button>', {
             class: 'btn btn-primary mt-3 w-25 ml-auto',
             id: 'search-username',
-            html: 'Search Account',
+            html: `<i class="fas fa-search"></i>&nbsp;&nbsp;Search Username`,
             click: () => {
               let userParams = {
                 condition: [{
