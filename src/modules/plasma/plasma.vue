@@ -362,14 +362,6 @@ export default{
           }
         }
       })
-    //   this.data.forEach(element => {
-    //     console.log(element.id)
-    //     if(element.id === id){
-    //       this.showTextField()
-    //       this.post = element.content
-    //       this.editID = element.id
-    //     }
-    //   })
     },
     deletePost(postID){
       console.log('data', postID)
