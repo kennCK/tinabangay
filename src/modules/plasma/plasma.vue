@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-     <div v-if="data.length > 0" class="container"><br>
+     <div class="container"><br>
         <div class="row">
             <div class="col-sm-3 column" v-if="showField">
                 <div class="card cards">
@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()">
+            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false &&  data.length > 0" @click="showTextField()" >
                <div class="card cards">
                     <i class="add-post fa fa-plus"></i>
                 </div>
