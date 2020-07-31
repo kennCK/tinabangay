@@ -1,8 +1,8 @@
 export default {
   sidebarMenu: [
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
-    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Plasma Posts', icon: 'fas fa-diagnoses', path: 'plasma/posts', flag: false, subMenu: null},
+    // {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fa fa-tachometer', path: 'dashboard', flag: false, subMenu: null},
     {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Dashboard', icon: 'fas fa-tachometer-alt', path: 'dashboard', flag: false, subMenu: null},
+    {accountType: 'ALL', accountStatus: 'ALL', showOnAdmin: true, description: 'Plasma Posts', icon: 'fas fa-diagnoses', path: 'plasma/posts', flag: false, subMenu: null},
 //
 //
 //
@@ -33,7 +33,7 @@ export default {
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Contract Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: false, description: 'Locations', icon: 'fa fa-sitemap', path: 'business/location/', flag: false, subMenu: null},
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: false, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business/settings', flag: false, subMenu: null},
-    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Sanitary Schedule', icon: 'far fa-calendar', path: 'business/schedule', flag: false, subMenu: null},
+    // {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Sanitary Schedule', icon: 'far fa-calendar', path: 'business/schedule', flag: false, subMenu: null},
 //
 //
 //
