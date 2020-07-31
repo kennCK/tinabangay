@@ -110,7 +110,7 @@ export default {
     variable: 'locality',
     placeholder: 'Enter locality',
     value: null,
-    required: false,
+    required: true,
     id: 'locality',
     type: 'input',
     inputType: 'text',
