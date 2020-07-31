@@ -515,13 +515,12 @@ export default {
     sendForm(type, answerForm = false) {
       $('#loading').css({display: 'block'})
       const merchantOwner = this.user.linked_account.owner
-
       if (this.user.assigned_location === null) {
         this.alertMessage = {
           type: 'warning',
           message: 'Sorry, you do not have assigned location. Please contact your merchant'
         }
-        this.hideModal('send_form')
+        this.hideModal('answer_form')
         $('#loading').css({display: 'none'})
         return
       }

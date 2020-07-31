@@ -282,14 +282,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/refer_register/:email/:code',
+    name: 'Schedule',
+    component: resolve => require(['components/increment/basic/Referral.vue'], resolve),
+    meta: {
+      tokenRequired: false
+    }
   }
-  // {
-  //   path: '/business/schedule',
-  //   name: 'Schedule',
-  //   component: resolve => require(['modules/business/SanitarySchedule.vue'], resolve),
-  //   meta: {
-  //     tokenRequired: true
-  //   }
-  // }
   ]
 }

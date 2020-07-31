@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-     <div class="container"><br>
+     <!-- <div class="container"><br> -->
         <div class="row">
-            <div class="col-sm-3 column" v-if="showField">
+            <div class="column" v-if="showField">
                 <div class="card cards">
                     <div class="card-header d-flex justify-content-between">
                         <div>
@@ -27,12 +27,12 @@
                 </div>
             </div>
 
-            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()" >
+            <div class="add-post-btn-card column" v-if="showField===false" @click="showTextField()" >
                <div class="card cards">
                     <i class="add-post fa fa-plus"></i>
                 </div>
             </div>
-            <div  class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
+            <div  class="column" v-for="(datus, index) in data" :key="index">
                 <div class="card cards">
                     <div class="card-header d-flex justify-content-between">
                         <div>
@@ -67,7 +67,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
     <empty v-if="data.length <=0" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
@@ -134,7 +134,11 @@
         transform: translate(-50%, -50%)
     }
     .container .container {
-        margin-top:40px
+        margin-top:40px;
+        width:100%;
+    }
+    .container{
+        width: 100%;
     }
     .column {
         float: left;
@@ -185,14 +189,14 @@
         font-family: Arial, Helvetica, sans-serif;
     } 
     /* Remove extra left and right margins, due to padding */
-    .row {margin: 10px;}
+    .row {width: 100%;}
 
     /* Clear floats after the columns */
-    .row:after {
+    /* .row:after {
         content: "";
         display: table;
         clear: both;
-    }
+    } */
     /* Responsive columns */
     @media screen and (max-width: 600px) {
     .column {
