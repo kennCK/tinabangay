@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-     <div v-if="data.length > 0" class="container"><br>
+     <div class="container"><br>
         <div class="row">
             <div class="col-sm-3 column" v-if="showField">
                 <div class="card cards">
@@ -27,12 +27,12 @@
                 </div>
             </div>
 
-            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()">
+            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()" >
                <div class="card cards">
                     <i class="add-post fa fa-plus"></i>
                 </div>
             </div>
-            <div class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
+            <div  class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
                 <div class="card cards">
                     <div class="card-header d-flex justify-content-between">
                         <div>
@@ -59,7 +59,10 @@
                         <i class="far fa-user-circle profile-icon i-style-modal"></i>
                         <p class="date-posted-modal">{{plasmaData.created_at}}</p>
                     </div><hr>
-                    <p class="contentMessage">{{plasmaData.content}}</p><hr>
+                    <div style="margin:0 auto;padding:12px;overflow-wrap:break-word">
+                        {{plasmaData.content}}
+                    </div>
+                    <hr>
                     <button class="btn btn-content-Message" @click="hide">OK</button>
                 </div>
             </div>
@@ -98,6 +101,7 @@
         font-size: 15px;
         padding: 20px;
         transition: .2s;
+
     }
      @media screen and (max-width: 600px) {
     .alert-box {
@@ -105,15 +109,17 @@
         background: white;
         display: inline-block;
         margin-top: 180px;
-        /* font-weight: lighter; */
         border-radius: 3px;
         font-size: 15px;
         padding: 20px;
         transition: .2s;
+        
     }
     }
     .contentMessage{
         text-align: left;
+        height: 70%;
+
     }
     .add-post-btn-card :hover{
         cursor: pointer;
@@ -329,6 +335,7 @@ export default{
           }
         }
       })
+      console.log(this.data)
     },
     posts(){
       $('#loading').css({display: 'block'})
@@ -362,14 +369,6 @@ export default{
           }
         }
       })
-    //   this.data.forEach(element => {
-    //     console.log(element.id)
-    //     if(element.id === id){
-    //       this.showTextField()
-    //       this.post = element.content
-    //       this.editID = element.id
-    //     }
-    //   })
     },
     deletePost(postID){
       console.log('data', postID)

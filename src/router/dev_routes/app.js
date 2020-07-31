@@ -282,14 +282,14 @@ export default{
     meta: {
       tokenRequired: true
     }
-  },
-  {
-    path: '/business/schedule',
-    name: 'Schedule',
-    component: resolve => require(['modules/business/SanitarySchedule.vue'], resolve),
-    meta: {
-      tokenRequired: true
-    }
   }
+  // {
+  //   path: '/business/schedule',
+  //   name: 'Schedule',
+  //   component: resolve => require(['modules/business/SanitarySchedule.vue'], resolve),
+  //   meta: {
+  //     tokenRequired: true
+  //   }
+  // }
   ]
 }
