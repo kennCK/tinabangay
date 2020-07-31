@@ -390,7 +390,7 @@ export default {
         filter = this.filter
       }
       let parameter = null
-      if(this.user.type === 'ADMIN'){ 
+      if(this.user.type === 'ADMIN'){
         if(filter.column !== 'locality'){
           parameter = {
             condition: [{
