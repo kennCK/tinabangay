@@ -10,7 +10,7 @@ export default {
     variable: 'date',
     placeholder: 'Enter date',
     value: null,
-    required: false,
+    required: true,
     id: 'date',
     type: 'date',
     inputType: 'date',

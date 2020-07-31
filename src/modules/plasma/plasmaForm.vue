@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div class="card">
         <div class="card-header plasma-header">
         </div>
@@ -6,6 +6,7 @@
             <div class="card plasma-card-content">
                 <div class="card-body">
                     <div class="form-group">
+                        <!-- <label for="comment" id="content">Content:</label> -->
                         <textarea class="form-control" placeholder="Type your POST here... Please Include Your Address" rows="15" id="comment"></textarea>
                     </div>
                 </div>
@@ -19,14 +20,14 @@
 </template>
 
 <script>
-export default {
-  data(){
-    return {
+    export default {
+        data(){
+            return {
+            }
+        },
+        methods: {
+        }
     }
-  },
-  methods: {
-  }
-}
 </script>
 
 <style scoped>

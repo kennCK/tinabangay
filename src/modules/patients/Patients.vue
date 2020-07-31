@@ -35,19 +35,13 @@
 
 
     <div class="form-group">
-      <!-- <label style="width: 100%;">Get summary per locality:</label> -->
-      <!-- <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px;" v-model="localitySearch" placeholder="Locality">
-      <button class="btn btn-primary" @click="retrieveLocality()">Search</button> -->
       <p v-if="summary !== null">
         Positive: {{summary.positive}}, Deceased: {{summary.death}}, Recovered: {{summary.recovered}}, Negative: {{summary.negative}}
       </p>
     </div>
 
     <basic-filter 
-      v-bind:category="category" 
-      :activeCategoryIndex="0"
-      :activeSortingIndex="0"
-      @changeSortEvent="retrieve($event.sort, $event.filter)"
+      v-bind:category="category" :activeCategoryIndex="0" :activeSortingIndex="0" @changeSortEvent="retrieve($event.sort, $event.filter)"
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']"></basic-filter>
 
@@ -67,16 +61,39 @@
           <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
           <td>{{item.remarks}}</td>
           <td>{{item.locality}}</td>
-          <td>{{ item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
+          <td>{{item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
           <td>
             <button class="btn btn-success" style="margin: .5% 0;" @click="showModal('place', item.account_id, item.id)">Add Visited Place</button>
             <button class="btn btn-primary" style="margin: .5% 0;" @click="showModal('patient', null, null, item)"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger" style="margin: .5% 0;" @click="removeItem(item.id)"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-danger" style="margin: .5% 0;"  @click="selectItemToDelete(item.id)" data-toggle="modal" data-target="#confirm-delete"><i class="fas fa-trash"></i></button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!--MODAL FOR DELETE CONFIRMATION -->
+    <div class="modal fade right" id="confirm-delete" tabindex="1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+      <div class="modal-dialog modal-side modal-notify modal-primary " role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Are you sure?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" class="white-text">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4" >
+            <p>Do you really want to delete this record?</p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button class="btn btn-danger btn-ok" data-dismiss="modal" @click="isLocationDelete ? deletePlace() : removeItem()">Delete</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
     
     <!--MODAL FOR VISITED PLACES-->
     <div class="modal fade right" id="visited_places" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -104,9 +121,10 @@
                 <td>{{item.date_human}}</td>
                 <td>{{item.time}}</td>
                 <td>{{item.route}}</td>
+                <td>{{item.locate}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
-                <td><button class="btn btn-danger" type="button" @click="deletePlace(item)"><i class="fa fa-trash"></i></button></td>
+                <td><button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i class="fa fa-trash"></i></button></td>
               </tr>
              </tbody>
             </table>
@@ -122,6 +140,11 @@
 @import "~assets/style/colors.scss";
 .bg-primary{
   background: $primary !important;
+  color: $white !important;
+}
+
+.bg-gray{
+  background-color: $gray !important;
   color: $white !important;
 }
 
@@ -148,16 +171,19 @@ import { ExportToCsv } from 'export-to-csv'
 import moment from 'moment'
 export default {
   mounted(){
-   // this.retrieve()
+  //  this.retrieve()
+    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'AGENCY_DOH' && this.user.type !== 'AGENCY_BRGY'){
       ROUTER.push('/dashboard')
     }
-    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
     this.retrieveLocality()
     this.date = moment().format('MM-DD-YYYY-HH-mm-ss')
   },
   data(){
     return {
+      isLocationDelete: false,
+      itemIdToDeleteID: null,
+      placeToDeleteID: null,
       numPages: null,
       activePage: 1,
       limit: 5,
@@ -210,7 +236,8 @@ export default {
       offset: 0,
       showSummaryFlag: false,
       localitySearch: null,
-      summary: null
+      summary: null,
+      storage: []
     }
   },
   components: {
@@ -225,16 +252,16 @@ export default {
     },
     retrieveLocality(){
       if(this.user.location === null){
-        return
+        let parameter = {
+          locality: this.user.location.code
+        }
+        $('#loading').css({display: 'block'})
+        this.APIRequest('patients/summary', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          this.summary = response.data
+          console.log(this.summary)
+        })
       }
-      let parameter = {
-        locality: this.user.location.code
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('patients/summary', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        this.summary = response.data
-      })
     },
     exportPatients(){
       let parameter = {
@@ -334,7 +361,6 @@ export default {
                 $('#loading').css({display: 'block'})
                 this.APIRequest('patients/linking', parameter).then(response => {
                   $('#loading').css({display: 'none'})
-                  // console.log(response)
                 })
               }
             }
@@ -346,6 +372,8 @@ export default {
       return '#page=' + pageNum
     },
     retrieve(sort, filter){
+      console.log(sort)
+      console.log(filter)
       if(sort !== null){
         this.sort = sort
       }
@@ -397,6 +425,7 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
+      console.log(parameter)
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
@@ -485,9 +514,13 @@ export default {
         }
       }
     },
-    removeItem(id){
+    selectItemToDelete(id){
+      this.isLocationDelete = false
+      this.itemIdToDeleteID = id
+    },
+    removeItem(){
       let parameter = {
-        id: id
+        id: this.itemIdToDeleteID
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('patients/delete', parameter).then(response => {
@@ -503,7 +536,7 @@ export default {
           $('<button>', {
             class: 'btn btn-primary mt-3 w-25 ml-auto',
             id: 'search-username',
-            html: 'Search Account',
+            html: `<i class="fas fa-search"></i>&nbsp;&nbsp;Search Username`,
             click: () => {
               let userParams = {
                 condition: [{
@@ -721,10 +754,16 @@ export default {
         // console.log('dead end for now')
       }
     },
-    deletePlace(item){
-      console.log(this.selectedItem)
+
+    deleteSelectedPlace(id){
+      $('#visited_places').modal('hide')
+      this.isLocationDelete = true
+      this.placeToDeleteID = id
+    },
+
+    deletePlace(){
       let params = {
-        id: item.id
+        id: this.placeToDeleteID
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('visited_places/delete', params).then(response => {
