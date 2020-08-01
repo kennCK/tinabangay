@@ -50,16 +50,16 @@
           <td v-if="user.type !== 'USER'">
             <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
             <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
-            <button class="btn btn-primary" v-if="item.assigned_location === null" @click="show('branch', item)">
+            <button class="btn btn-primary" v-if="item.assigned_location === null" @click="show('branch', item, 'add')">
               Assign branch
             </button>
-            <button class="btn btn-primary" v-if="item.assigned_location !== null" @click="show('branch', item)">
+            <button class="btn btn-primary" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">
               Edit branch
             </button>
-            <button class="btn btn-warning" v-if="item.address === null" @click="show('brgy', item)">
+            <button class="btn btn-warning" v-if="item.address === null" @click="show('brgy', item, 'add')">
               Assign address
             </button>
-            <button class="btn btn-warning" v-if="item.address !== null" @click="show('brgy', item)">
+            <button class="btn btn-warning" v-if="item.address !== null" @click="show('brgy', item, 'edit')">
               Edit address
             </button>
             <button type="button" @click="show('unlink', item)" class="btn btn-secondary">
@@ -152,7 +152,7 @@
             </table>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" @click="hideModal('assisgn')">Close</button>
+            <button type="button" class="btn btn-danger" @click="hideModal('assign')">Close</button>
           </div>
         </div>
       </div>
@@ -219,20 +219,41 @@ export default {
     'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
-    show(params, item){
-      if(params === 'brgy') {
-        this.selectedItem = item
-        this.params = params
-        this.brgys = null
-        $('#addAddress').modal('show')
-      } else if(params === 'branch') {
-        this.locality = null
-        this.selectedItem = item
-        this.branches = null
-        $('#assign').modal('show')
-      } else {
-        this.selectedItem = item
-        $('#unlink').modal('show')
+    show(params, item, operation){
+      // console.log(item)
+      if(operation === 'add'){
+        if(params === 'brgy') {
+          this.selectedItem = item
+          this.params = params
+          this.brgys = null
+          $('#addAddress').modal('show')
+        } else if(params === 'branch') {
+          this.locality = null
+          this.selectedItem = item
+          this.branches = null
+          this.branch = null
+          $('#assign').modal('show')
+        } else {
+          this.selectedItem = item
+          $('#unlink').modal('show')
+        }
+      }else{
+        if(params === 'brgy') {
+          this.selectedItem = item
+          this.params = params
+          this.brgys = null
+          this.locality = item.assigned_location.locality
+          $('#addAddress').modal('show')
+        } else if(params === 'branch') {
+          this.locality = item.assigned_location.locality
+          this.selectedItem = item
+          this.branches = null
+          this.branch = item.assigned_location.route
+          $('#assign').modal('show')
+        } else {
+          this.selectedItem = item
+          $('#unlink').modal('show')
+        }
       }
     },
     unlink() {
@@ -267,6 +288,7 @@ export default {
       }
     },
     hideModal(id){
+      console.log(id)
       if(id === 'addAddress') {
         this.selectedItem = null
         this.locality = null
