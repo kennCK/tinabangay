@@ -24,17 +24,7 @@
     </div>
   </div> -->
   <div class="col-sm-12">
-    <br>
-    <br>
-    <br>
-    <center>
-      <h1>
-        This is just a layout page no API request yet!!
-      </h1>
-    </center>
-    <br>
-    <br>
-      <div class="row flex-column-reverse flex-sm-row">
+      <div class="row flex-column-reverse flex-sm-row" v-if="businessInfo !== null">
         <div class="col-sm-9">
           <topAffectedPlaces 
             v-if="data !== null" 
@@ -54,20 +44,21 @@
         </div>
         <div class="col-sm-3">
           <center>
-            <img 
-              :src="require('../../../static/favicon.png')"
+            <img v-if="businessInfo.logo !== null"
+              :src="backend + businessInfo.logo"
               alt="logo"
               class="business-logo"
             >
+            <i v-else class="fa fa-image business-logo"></i>
           </center>
           <p>
-            Business Name
+            {{businessInfo.name}}
           </p>
           <p>
-            Business Address, Street, City, Province
+            {{businessInfo.address}}
           </p>
           <p>
-            Business Email Address
+            {{businessInfo.email}}
           </p>
           <qr-code-scanner 
             :btnWidth="'col-sm-12'" 
@@ -76,6 +67,13 @@
           </qr-code-scanner>
         </div>
       </div>
+      <empty v-else 
+        :title="'Whoops!'" 
+        :action="'Seems like you haven\'t setup your business information! Please head over to Business Settings to do so.'" 
+        :icon="'far fa-frown'" 
+        :iconColor="'text-danger'"
+      >
+      </empty>
   </div>
 </template>
 <style scoped lang="scss">
@@ -99,8 +97,9 @@
   .business-logo{
     width: 100%;
     height: auto;
+    font-size: 15rem;
   }
-  
+
   // until here
   @media (min-width: 768px) {  
     .logo {
@@ -133,6 +132,7 @@ export default {
       common: COMMON,
       backend: CONFIG.BACKEND_URL,
       businessInfo: null,
+      branches: null,
       qrScannerState: false,
       affectedEmp: null,
       data: '',
@@ -169,7 +169,7 @@ export default {
         }]
       }
       this.APIRequest('merchants/retrieve', par).then(response => {
-        console.log('business Info ', response)
+        // console.log('business Info ', response)
         if(response.data.length > 0) {
           this.businessInfo = response.data[0]
         }
@@ -187,7 +187,7 @@ export default {
           id: 'topAffected'
         },
         title: {
-          text: 'TOP AFFECTED PLACES',
+          text: 'TOP AFFECTED BRANCHES',
           align: 'center',
           margin: 10,
           offsetX: 0,
@@ -227,7 +227,7 @@ export default {
             offsetY: 0
           }
         },
-        colors: ['#007be0', 'rgba(0, 227, 150, 0.85)', 'rgba(255, 69, 96, 0.85)']
+        colors: ['#dc3545', '#28a745', '#343a40']
       }
 
       this.series = [
@@ -244,6 +244,27 @@ export default {
           data: series[2]
         }
       ]
+    },
+    retrieveBranches() {
+      let parameter = {
+        condition: [{
+          value: this.user.userID,
+          clause: '=',
+          column: 'account_id'
+        }],
+        sort: {
+          route: 'asc'
+        }
+      }
+
+      let series = [[], [], []]
+      this.APIRequest('locations/retrieve', parameter).then(response => {
+        if(response.data.length > 0) {
+          this.brances = response.data
+        } else {
+          this.branches = null
+        }
+      })
     },
     retrieveEmployees() {
       let par = {
