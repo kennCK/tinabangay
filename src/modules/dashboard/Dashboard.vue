@@ -1,8 +1,8 @@
 <template>
-  <div style="margin-bottom: 50px;">
-    <!-- <business v-if="dashType === 'BUSINESS'"></business> -->
-    <!-- <user v-else-if="dashType === 'USER'"></user> -->
-    <div class="row" style="margin-top: 25px;">
+  <!-- <div style="margin-bottom: 50px;"> -->
+    <business v-if="dashType === 'BUSINESS'"></business>
+    <user v-else-if="dashType === 'USER'"></user>
+    <!-- <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
           <i class="text-lowercase">{{
@@ -16,9 +16,9 @@
           Your Status
         </div>
         <label class="text-uppercase" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null">
-          <i class="fas fa-square" style="margin-right: 5px;"></i>
+          <i class="fas fa-square" style="margin-right: 5px;"></i> -->
           <!-- Person Under Investigation(PUI) -->
-          {{status.status_label}}
+          <!-- {{status.status_label}}
         </label>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
           Current Data
@@ -27,10 +27,10 @@
         <data-summary></data-summary>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
           QR Code
-        </div>
+        </div> -->
 
         <!-- QR CODE SCANNER -->
-        <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
+        <!-- <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
 
         <p>
           Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
@@ -41,10 +41,9 @@
       </div>
       <trend></trend>
     </div>
-    <increment-modal refs="modal" :property="modalProperty"></increment-modal>
+    <increment-modal refs="modal" :property="modalProperty"></increment-modal> -->
     <!--MODAL FOR NO BRGY ERROR-->
-    <!-- ♥ AES ECB 128 bit key: birdseyeeyesdrib msg: FNzIRo4HlSyS++5O8Q8UopjlQTLuB9/NWyGz2y65RKbJQctH99glWcMsSDUKrRdl ♥ -->
-    <div class="modal fade right" id="no_code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    <!-- <div class="modal fade right" id="no_code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
         <div class="modal-content">
@@ -63,7 +62,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";

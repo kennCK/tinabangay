@@ -1,8 +1,7 @@
 <template>
   <div class="container">
-     <div v-if="data.length > 0" class="container"><br>
+     <div class="container"><br>
         <div class="row">
-
             <div class="col-sm-3 column" v-if="showField">
                 <div class="card cards">
                     <div class="card-header d-flex justify-content-between">
@@ -28,13 +27,12 @@
                 </div>
             </div>
 
-            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()">
+            <div class="add-post-btn-card col-sm-3 column" v-if="showField===false" @click="showTextField()" >
                <div class="card cards">
                     <i class="add-post fa fa-plus"></i>
                 </div>
             </div>
-
-            <div class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
+            <div  class="col-sm-3 column" v-for="(datus, index) in data" :key="index">
                 <div class="card cards">
                     <div class="card-header d-flex justify-content-between">
                         <div>
@@ -48,19 +46,81 @@
                             </div>
                         </div>   
                     </div>
-                    <p class="date-posted">{{time}}</p>
+                    <p class="date-posted">{{datus.created_at}}</p>
                     <div class="card-body">
                         {{datus.content}}
                     </div>
+                    <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="tooltip" data-placement="bottom" title="See more">See more</button>
                 </div>
             </div>
-            
+            <div v-if="modalShow" class="blurred-background">
+                <div class="alert-box">
+                    <div>
+                        <i class="far fa-user-circle profile-icon i-style-modal"></i>
+                        <p class="date-posted-modal">{{plasmaData.created_at}}</p>
+                    </div><hr>
+                    <div style="margin:0 auto;padding:12px;overflow-wrap:break-word">
+                        {{plasmaData.content}}
+                    </div>
+                    <hr>
+                    <button class="btn btn-content-Message" @click="hide">OK</button>
+                </div>
+            </div>
         </div>
     </div>
     <empty v-if="data.length <=0" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style scoped>
+    .btn-content-Message{
+        margin-top: 10px;
+        background-color: #005b96;
+        width: 100px;
+        color: white;
+    }
+    .blurred-background {
+        position: fixed;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        z-index: 1!important;
+        top: 0;
+        left: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        background: rgb(54, 54, 54, .7)!important;
+    }
+   
+    .alert-box {
+        width: 55%;
+        background: white;
+        display: inline-block;
+        margin-top: 180px;
+        /* font-weight: lighter; */
+        border-radius: 3px;
+        font-size: 15px;
+        padding: 20px;
+        transition: .2s;
+
+    }
+     @media screen and (max-width: 600px) {
+    .alert-box {
+        width: 80%;
+        background: white;
+        display: inline-block;
+        margin-top: 180px;
+        border-radius: 3px;
+        font-size: 15px;
+        padding: 20px;
+        transition: .2s;
+        
+    }
+    }
+    .contentMessage{
+        text-align: left;
+        height: 70%;
+
+    }
     .add-post-btn-card :hover{
         cursor: pointer;
     }   
@@ -85,7 +145,7 @@
     .cards {
         padding: 16px;
         padding-top:2px;
-        height:200px
+        height:200px;
     }
     .card-header{
         padding:0px;
@@ -101,6 +161,9 @@
         font-size:8px;
         margin-left:10px;
     }
+    .date-posted-modal{
+        font-size:10px;
+    }
     .dropdown-menu{
         margin-top:-25px;
         margin-left:-131px;
@@ -110,14 +173,17 @@
         transition: margin 300ms;
         font-size:30px;
     }
+    .i-style-modal {
+        padding: 5px;
+        transition: margin 300ms;
+        font-size:50px;
+    }
     * {
         box-sizing: border-box;
     }
-
     body {
         font-family: Arial, Helvetica, sans-serif;
-    }
-
+    } 
     /* Remove extra left and right margins, due to padding */
     .row {margin: 10px;}
 
@@ -172,6 +238,17 @@
         background-color:white !important;
         box-shadow:none !important;
     }
+    .showSize{
+        background-color: transparent;
+        color: #005b96;;
+    }
+    .showSize:focus{
+        box-shadow: none;
+    }
+    .eyeSize{
+        font-size: 25px;
+        color: #005b96;
+    }
     .textarea{
         height:70%;
         border:none;
@@ -205,9 +282,12 @@ export default{
       post: '',
       editID: null,
       menushow: false,
+      modalShow: false,
       plasmaBtnColor: 'background-color:white;',
       data: [],
-      time: '7/23/2020'
+      plasmaData: [],
+      time: '7/23/2020',
+      showWholeMessage: ''
     }
   },
   components: {
@@ -215,13 +295,23 @@ export default{
     'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue')
   },
   mounted(){
-    if(this.user.type !== 'ADMIN'){
-      ROUTER.push('/dashboard')
-    }
     $('#loading').css({display: 'block'})
     this.retrieve()
   },
   methods: {
+    getId(id){
+      this.APIRequest('posts/retrieve').then(response => {
+        for(let i = 0; i < response.data.length; i++){
+          if(response.data[i].id === id){
+            this.plasmaData = response.data[i]
+            this.modalShow = true
+          }
+        }
+      })
+    },
+    hide(){
+      this.modalShow = false
+    },
     addPost(){
       ROUTER.push('/plasma/add-post')
     },
@@ -236,9 +326,16 @@ export default{
       $('#loading').css({display: 'none'})
       this.APIRequest('posts/retrieve').then(response => {
         console.log('resposes', response.data)
-        this.data = response.data
-        this.time = response.request_timestamp
+        this.data = response.data.reverse()
+        for(let i = 0; i < this.data.length; i++){
+          if(this.data[i].content.length > 100){
+            this.data[i].content = this.data[i].content.slice(0, 110) + '....'
+          }else{
+            this.data[i].content = this.data[i].content
+          }
+        }
       })
+      console.log(this.data)
     },
     posts(){
       $('#loading').css({display: 'block'})
@@ -263,12 +360,13 @@ export default{
     },
     edit(id){
       this.isEdit = true
-      this.data.forEach(element => {
-        console.log(element.id)
-        if(element.id === id){
-          this.showTextField()
-          this.post = element.content
-          this.editID = element.id
+      this.APIRequest('posts/retrieve').then(response => {
+        for(let i = 0; i < response.data.length; i++){
+          if(response.data[i].id === id){
+            this.showTextField()
+            this.post = response.data[i].content
+            this.editID = response.data[i].id
+          }
         }
       })
     },

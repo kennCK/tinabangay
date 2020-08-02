@@ -56,7 +56,6 @@
         </transition>
       </div>
     </div>
-  </div>  
 </template>
 <style lang="scss">
 @import "~assets/style/colors.scss";

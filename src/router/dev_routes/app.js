@@ -290,6 +290,14 @@ export default{
     meta: {
       tokenRequired: true
     }
+  },
+  {
+    path: '/refer_register/:email/:code',
+    name: 'referRegister',
+    component: resolve => require(['components/increment/basic/Referral.vue'], resolve),
+    meta: {
+      tokenRequired: false
+    }
   }
   ]
 }

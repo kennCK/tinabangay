@@ -1,47 +1,8 @@
 <template>
-  <div class="col-lg-7" style="margin-bottom: 25px;">
-    <div v-if="data !== null">
-      <div class="row m-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 justify-content-between align-items-center">
-        <span>Top Affected Places</span>
-        <button class="btn btn-light" @click="redirect('places/trend')">View more</button>
-      </div>
-      <div class="card" v-for="(item, index) in (data.length > 5 ? 5 : data.length)" :key="index" style="margin-bottom: 10px;">  
-        <div>
-          <div class="card-block px-2">
-            <h6 class="card-title" style="margin-top:15px">
-              {{data[index].route}} , {{data[index].locality === 'testin' ? 'true' : data[index].locality}}
-            </h6>
-            <h6 class="card-title " style="font-size: 15px; margin-top:15px; ">{{data[index].country}}</h6>
-            <div class="col-12">
-            <!-- Card for positive -->
-            <span class="card-title col-4 p-1">
-              <span class="card text-white bg-danger" style="max-width: 9rem;">
-                <span class="card-header"><h5 class="card-title text-center" v-if="data[index].positive_size > 0">{{data[index].positive_size}}</h5></span>
-                <span class="card-body p-0 mx-auto">Positive</span>
-              </span>
-            </span>               
-            <!-- Card for recovered -->
-            <span class="card-title col-4 p-1">
-              <span class="card text-white bg-success" style="max-width: 9rem;">
-                <span class="card-header"><h5 class="card-title text-center" v-if="data[index].recovered_size > 0">{{data[index].recovered_size}}</h5></span>
-                <span class="card-body p-0 mx-auto">Recovered</span>
-              </span>
-            </span>
-            <!-- Card for deaths -->
-            <span class="card-title col-4 p-1">
-              <span class="card text-white bg-dark" style="max-width: 9rem;">
-                <span class="card-header"><h5 class="card-title text-center" v-if="data[index].death_size > 0">{{data[index].death_size}}</h5></span>
-                <span class="card-body p-0 mx-auto" v-if="data[index].death_size > 1 || data[index].death_size == 0">Deaths</span>
-                <span class="card-body p-0 mx-auto" v-if="data[index].death_size == 1">Death</span>
-              </span>
-            </span>
-            </div>          
-          </div> 
-        </div> 
-      </div>
-    </div>
+  <div>
+    <topAffectedPlaces v-if="data !== null" ref="realtimeChart" height="500" type="bar" :options="options" :series="series"></topAffectedPlaces>
     <empty v-else :title="'There\'s currently no hot spots logged.'" :action="'Stay Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
-  </div>
+    </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
@@ -60,6 +21,7 @@
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import topAffectedPlaces from 'vue-apexcharts'
 export default {
   mounted(){
     this.retrieve()
@@ -68,11 +30,29 @@ export default {
     return {
       common: COMMON,
       user: AUTH.user,
-      data: null
+      data: null,
+      chart: null,
+      data_categories: [],
+      options: {},
+      series: [
+        {
+          name: 'positive',
+          data: []
+        },
+        {
+          name: 'recovered',
+          data: []
+        },
+        {
+          name: 'death',
+          data: []
+        }
+      ]
     }
   },
   components: {
-    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
+    topAffectedPlaces
   },
   methods: {
     redirect(parameter){
@@ -87,6 +67,79 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          console.log('Affected ', response.data)
+          let series = [[], [], []]
+          for(var i = 0; i < 5; ++i){
+            // let routes = response.data[i].route.split(',')
+            // routes.push(response.data[i].locality)
+            // console.log(routes)
+            this.data_categories.push([response.data[i].route + ', ', response.data[i].locality])
+            series[0].push(response.data[i].positive_size)
+            series[1].push(response.data[i].recovered_size)
+            series[2].push(response.data[i].death_size)
+          }
+          this.options = {
+            chart: {
+              id: 'topAffected'
+            },
+            title: {
+              text: 'TOP AFFECTED PLACES',
+              align: 'center',
+              margin: 10,
+              offsetX: 0,
+              offsetY: 0,
+              floating: false,
+              style: {
+                fontSize: '25px',
+                fontWeight: 'bold',
+                fontFamily: undefined,
+                color: '#007be0'
+              }
+            },
+            dataLabels: {
+              enabled: false
+            },
+            xaxis: {
+              type: 'category',
+              categories: this.data_categories,
+              maxHeight: 500,
+              labels: {
+                show: true,
+                rotate: -45,
+                rotateAlways: true,
+                hideOverlappingLabels: false,
+                showDuplicates: false,
+                trim: true,
+                minHeight: undefined,
+                maxHeight: 120,
+                style: {
+                  colors: [],
+                  fontSize: '12px',
+                  fontFamily: 'Helvetica, Arial, sans-serif',
+                  fontWeight: 400,
+                  cssClass: 'apexcharts-xaxis-label'
+                },
+                offsetX: 0,
+                offsetY: 0
+              }
+            },
+            colors: ['#007be0', 'rgba(0, 227, 150, 0.85)', 'rgba(255, 69, 96, 0.85)']
+          }
+
+          this.series = [
+            {
+              name: 'positive',
+              data: series[0]
+            },
+            {
+              name: 'recovered',
+              data: series[1]
+            },
+            {
+              name: 'death',
+              data: series[2]
+            }
+          ]
         }else{
           this.data = null
         }

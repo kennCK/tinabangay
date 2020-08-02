@@ -152,7 +152,7 @@
             </table>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Close</button>
+            <button type="button" class="btn btn-danger" @click="hideModal('assisgn')">Close</button>
           </div>
         </div>
       </div>
