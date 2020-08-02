@@ -810,7 +810,7 @@ export default {
         })
       }
       window.Echo.channel(COMMON.pusher.channel)
-      .listen('call', e => {
+      .listen('Call', e => {
         console.log(e)
       })
       .listen(COMMON.pusher.notifications, e => {
