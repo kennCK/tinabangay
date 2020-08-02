@@ -24,56 +24,83 @@
     </div>
   </div> -->
   <div class="col-sm-12">
-      <div class="row flex-column-reverse flex-sm-row" v-if="businessInfo !== null">
-        <div class="col-sm-9">
-          <topAffectedPlaces 
-            v-if="data !== null" 
-            ref="realtimeChart" 
-            height="500" type="bar" 
-            :options="options" 
-            :series="series"
-          >
-          </topAffectedPlaces>
-          <empty v-else 
-            :title="'There\'s currently no hot spots logged.'" 
-            :action="'Stay Home!'" 
-            :icon="'far fa-smile'" 
-            :iconColor="'text-danger'"
-          >
-          </empty>
+    <div class="row flex-column-reverse flex-sm-row" v-if="businessInfo !== null">
+      <div class="col-sm-9">
+        <div v-if="branches !== null && branches.length > 0">
+          <h3>BRANCHES</h3>
+          <div class="border my-3" v-for="(branch, index) in branches" :key="index">
+            <div class="card-body">
+              <h5 class="card-title">{{ `${branch.route} ${branch.locality}` }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">{{ branch.region }}</h6>
+              <div class="d-flex">
+                <span class="card text-white bg-danger mr-2" style="width: 150px">
+                  <span class="card-header">
+                    <h5 class="card-title text-center">
+                      {{ branch.positive_size != null ? branch.positive_size : 0 }}
+                    </h5>
+                  </span>
+                  <span class="card-body p-0 mx-auto">Positive</span>
+                </span>
+                <span class="card text-white bg-success mx-2" style="width: 150px">
+                  <span class="card-header">
+                    <h5 class="card-title text-center">
+                      {{ branch.recovered_size != null ? branch.recovered_size : 0 }}
+                    </h5>
+                  </span>
+                  <span class="card-body p-0 mx-auto">Recovered</span>
+                </span>
+                <span class="card text-white bg-dark mx-2" style="width: 150px">
+                  <span class="card-header">
+                    <h5 class="card-title text-center">
+                      {{ branch.death_size != null ? branch.death_size : 0 }}
+                    </h5>
+                  </span>
+                  <span class="card-body p-0 mx-auto">Death</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-sm-3">
-          <center>
-            <img v-if="businessInfo.logo !== null"
-              :src="backend + businessInfo.logo"
-              alt="logo"
-              class="business-logo"
-            >
-            <i v-else class="fa fa-image business-logo"></i>
-          </center>
-          <p>
-            {{businessInfo.name}}
-          </p>
-          <p>
-            {{businessInfo.address}}
-          </p>
-          <p>
-            {{businessInfo.email}}
-          </p>
-          <qr-code-scanner 
-            :btnWidth="'col-sm-12'" 
-            :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
-          >
-          </qr-code-scanner>
-        </div>
+        <empty v-else 
+          :title="'There\'s currently no hot spots logged.'" 
+          :action="'Stay Home!'" 
+          :icon="'far fa-smile'" 
+          :iconColor="'text-danger'"
+        >
+        </empty>
       </div>
-      <empty v-else 
-        :title="'Whoops!'" 
-        :action="'Seems like you haven\'t setup your business information! Please head over to Business Settings to do so.'" 
-        :icon="'far fa-frown'" 
-        :iconColor="'text-danger'"
-      >
-      </empty>
+      <div class="col-sm-3">
+        <center>
+          <img v-if="businessInfo.logo !== null"
+            :src="backend + businessInfo.logo"
+            alt="logo"
+            class="business-logo"
+          >
+          <i v-else class="fa fa-image business-logo"></i>
+        </center>
+        <p>
+          {{businessInfo.name}}
+        </p>
+        <p>
+          {{businessInfo.address}}
+        </p>
+        <p>
+          {{businessInfo.email}}
+        </p>
+        <qr-code-scanner 
+          :btnWidth="'col-sm-12'" 
+          :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
+        >
+        </qr-code-scanner>
+      </div>
+    </div>
+    <empty v-else 
+      :title="'Whoops!'" 
+      :action="'Seems like you haven\'t setup your business information! Please head over to Business Settings to do so.'" 
+      :icon="'far fa-frown'" 
+      :iconColor="'text-danger'"
+    >
+    </empty>
   </div>
 </template>
 <style scoped lang="scss">
@@ -120,11 +147,11 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
 import ComplaintProperty from './Complaint.js'
-import topAffectedPlaces from 'vue-apexcharts'
 export default {
   mounted(){
     this.retrieveBusinessInfo()
     this.retrieveEmployees()
+    this.retrieveBranches()
   },
   data(){
     return {
@@ -132,32 +159,15 @@ export default {
       common: COMMON,
       backend: CONFIG.BACKEND_URL,
       businessInfo: null,
-      branches: null,
       qrScannerState: false,
       affectedEmp: null,
-      data: '',
-      data_categories: [],
-      options: {},
-      series: [
-        {
-          name: 'positive',
-          data: []
-        },
-        {
-          name: 'recovered',
-          data: []
-        },
-        {
-          name: 'death',
-          data: []
-        }
-      ]
+      data: null,
+      branches: []
     }
   },
   components: {
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
-    'empty': require('./Empty.vue'),
-    topAffectedPlaces
+    'empty': require('./Empty.vue')
   },
   methods: {
     retrieveBusinessInfo() {
@@ -169,84 +179,13 @@ export default {
         }]
       }
       this.APIRequest('merchants/retrieve', par).then(response => {
-        // console.log('business Info ', response)
         if(response.data.length > 0) {
           this.businessInfo = response.data[0]
         }
       })
-
-      let series = [[], [], []]
-      for(var i = 0; i < 5; ++i){
-        this.data_categories.push(['Business Route' + ', ', 'Business location'])
-        series[0].push(23)
-        series[1].push(12)
-        series[2].push(100)
-      }
-      this.options = {
-        chart: {
-          id: 'topAffected'
-        },
-        title: {
-          text: 'TOP AFFECTED BRANCHES',
-          align: 'center',
-          margin: 10,
-          offsetX: 0,
-          offsetY: 0,
-          floating: false,
-          style: {
-            fontSize: '25px',
-            fontWeight: 'bold',
-            fontFamily: undefined,
-            color: '#007be0'
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        xaxis: {
-          type: 'category',
-          categories: this.data_categories,
-          maxHeight: 500,
-          labels: {
-            show: true,
-            rotate: -45,
-            rotateAlways: true,
-            hideOverlappingLabels: false,
-            showDuplicates: false,
-            trim: true,
-            minHeight: undefined,
-            maxHeight: 120,
-            style: {
-              colors: [],
-              fontSize: '12px',
-              fontFamily: 'Helvetica, Arial, sans-serif',
-              fontWeight: 400,
-              cssClass: 'apexcharts-xaxis-label'
-            },
-            offsetX: 0,
-            offsetY: 0
-          }
-        },
-        colors: ['#dc3545', '#28a745', '#343a40']
-      }
-
-      this.series = [
-        {
-          name: 'positive',
-          data: series[0]
-        },
-        {
-          name: 'recovered',
-          data: series[1]
-        },
-        {
-          name: 'death',
-          data: series[2]
-        }
-      ]
     },
     retrieveBranches() {
-      let parameter = {
+      const parameter = {
         condition: [{
           value: this.user.userID,
           clause: '=',
@@ -257,12 +196,30 @@ export default {
         }
       }
 
-      let series = [[], [], []]
-      this.APIRequest('locations/retrieve', parameter).then(response => {
+      this.APIRequest('locations/retrieve', parameter).then((response) => {
         if(response.data.length > 0) {
-          this.brances = response.data
-        } else {
-          this.branches = null
+          const data = [...response.data]
+          response.data.forEach((branch, idx) => {
+            const param = {
+              status: 'positive',
+              locality: branch.locality + '%',
+              route: branch.route + '%'
+            }
+            this.APIRequest('tracing_places/places', param).then(res => {
+              if (res.data.length > 0) {
+                if (data[idx].route === res.data[0].route) {
+                  console.log({ dataRoute: data[idx].route, resRoute: res.data[0].route, param })
+                  data[idx].death_size = res.data[0].death_size != null ? res.data[0].death_size : 0
+                  data[idx].negative_size = res.data[0].negative_size != null ? res.data[0].negative_size : 0
+                  data[idx].positive_size = res.data[0].positive_size != null ? res.data[0].positive_size : 0
+                  data[idx].pui_size = res.data[0].pui_size != null ? res.data[0].pui_size : 0
+                  data[idx].pum_size = res.data[0].pum_size != null ? res.data[0].pum_size : 0
+                  data[idx].recovered_size = res.data[0].recovered_size != null ? res.data[0].recovered_size : 0
+                }
+              }
+              this.branches.push(data[idx])
+            }).fail(err => console.log({ err, param }))
+          })
         }
       })
     },
@@ -276,7 +233,7 @@ export default {
       }
 
       this.APIRequest('linked_accounts/retrieve_tracing', par).then(response => {
-        console.log('linked-Accounts ', response.data)
+        // console.log('linked-Accounts ', response.data)
       })
     }
   }
