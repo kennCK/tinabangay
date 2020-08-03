@@ -265,7 +265,7 @@
 
             <div class="form-group col-md-4">
               <label for="birthday" class="required">Date of Birth</label>
-              <input type="date" name="birth_date" id="birthday" class="form-control" v-model="healthDec.personalInformation.birth_date" required>
+              <input type="date" name="birth_date" id="birthday" class="form-control" :max="dateLimit" v-model="healthDec.personalInformation.birth_date" required>
             </div>
 
             <div class="form-group col-md-4">
@@ -742,6 +742,7 @@ export default {
   },
   data() {
     return{
+      dateLimit: moment(new Date(), 'YYYY-MM-DD').format('YYYY-MM-DD'),
       user: AUTH.user,
       modeOfTransportation: [...COMMON.vehicleTypes],
       symptomsOption: [...COMMON.symptomsHealthDec],
