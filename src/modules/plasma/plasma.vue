@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid">
-     <!-- <div class="container"><br> -->
         <div class="row">
             <div class="column" v-if="showField">
                 <div class="card cards">
@@ -67,7 +66,6 @@
                 </div>
             </div>
         </div>
-    <!-- </div> -->
     <empty v-if="data.length <=0" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
