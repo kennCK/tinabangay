@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
      <!-- <div class="container"><br> -->
         <div class="row">
             <div class="column" v-if="showField">
@@ -133,12 +133,8 @@
         margin-right: -50%;
         transform: translate(-50%, -50%)
     }
-    .container .container {
-        margin-top:40px;
-        width:100%;
-    }
-    .container{
-        width: 100%;
+    .container-fluid{
+        margin-top:20px
     }
     .column {
         float: left;
