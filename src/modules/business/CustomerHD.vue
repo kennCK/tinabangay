@@ -250,7 +250,7 @@
         <div id="transportations" class="row">
           <div class="form-group col-md-3">
             <label for="arrivalDate">Arrival Date</label>
-            <input type="date" name="arrivalDate" id="arrivalDate" class="form-control">
+            <input type="date" name="arrivalDate" :max="dateLimit" id="arrivalDate" class="form-control">
           </div>
           
           <div class="form-group col-md-3">
@@ -519,6 +519,7 @@ export default {
   },
   data() {
     return{
+      dateLimit: moment(new Date(), 'YYYY-MM-DD').format('YYYY-MM-DD'),
       user: AUTH.user,
       symptomsOption: [...COMMON.symptomsHealthDec],
       healthDec: JSON.parse(JSON.stringify(COMMON.healthDec)),
