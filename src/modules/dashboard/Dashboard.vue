@@ -1,7 +1,8 @@
 <template>
   <div style="margin-bottom: 50px;">
-    <!-- <business v-if="dashType === 'BUSINESS'"></business> -->
-    <!-- <user v-else-if="dashType === 'USER'"></user> -->
+    <business v-if="dashType === 'BUSINESS'"></business>
+    <user v-else-if="dashType === 'USER'"></user>
+    <div v-else-if="dashType === 'ADMIN'">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
@@ -17,7 +18,7 @@
         </div>
         <label class="text-uppercase" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null">
           <i class="fas fa-square" style="margin-right: 5px;"></i>
-          <!-- Person Under Investigation(PUI) -->
+          Person Under Investigation(PUI)
           {{status.status_label}}
         </label>
         <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
@@ -40,6 +41,7 @@
         </div>
       </div>
       <trend></trend>
+    </div>
     </div>
     <increment-modal refs="modal" :property="modalProperty"></increment-modal>
     <!--MODAL FOR NO BRGY ERROR-->
