@@ -265,7 +265,7 @@
 
             <div class="form-group col-md-4">
               <label for="birthday" class="required">Date of Birth</label>
-              <input type="date" name="birth_date" id="birthday" class="form-control" :max="dateLimit" v-model="healthDec.personalInformation.birth_date" required>
+              <input type="date" name="birth_date" id="birthday" class="form-control" :max="getMaxDate()" v-model="healthDec.personalInformation.birth_date" required>
             </div>
 
             <div class="form-group col-md-4">
@@ -767,6 +767,13 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    getMaxDate() {
+      return moment().format('YYYY-MM-DD')
+    },
+    isNotValidDate(date) {
+      const today = moment().format('YYYY-MM-DD')
+      return moment(date).isAfter(today)
+    },
     getRelativeTime(time) {
       return moment(time).fromNow()
     },
@@ -983,6 +990,12 @@ export default {
           if($(input).val() === null || $(input).val() === undefined || $(input).val().trim() === '') {
             $(input).addClass('is-invalid')
             valid = false
+          }
+          if($(input).attr('id') === 'birthday') {
+            if (this.isNotValidDate($(input).val())) {
+              $(input).addClass('is-invalid')
+              valid = false
+            }
           }
         }
       })
