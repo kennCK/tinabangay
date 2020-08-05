@@ -30,7 +30,7 @@ export default {
 //
 //
 //
-    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Contract Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
+    {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Contact Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: false, description: 'Locations', icon: 'fa fa-sitemap', path: 'business/location/', flag: false, subMenu: null},
     {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: false, description: 'Business Settings', icon: 'fa fa-sitemap', path: 'business/settings', flag: false, subMenu: null},
     // {accountType: 'BUSINESS', accountStatus: 'ALL', showOnAdmin: true, description: 'Sanitary Schedule', icon: 'far fa-calendar', path: 'business/schedule', flag: false, subMenu: null},
