@@ -20,7 +20,7 @@
       :class="['text-center', 'font-weight-bold', {'text-danger': formParameters.status === 'danger', 'text-success': formParameters.status === 'clear'}]">
       Status: {{formParameters.status}}{{formParameters.statusLabel !== 'clear' ? ` [${formParameters.statusLabel}]` : ''}}
     </h5>
-    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ getRelativeTime(data.updated_at) }}</h5>
+    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ data.updated_at_human }}</h5>
     <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
       <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
     </div>
@@ -546,9 +546,6 @@ export default {
     isNotValidDate(date) {
       const today = moment().format('YYYY-MM-DD')
       return moment(date).isAfter(today)
-    },
-    getRelativeTime(time) {
-      return moment(time).fromNow()
     },
     addTranspo() {
       let flag = this.checkTranspo()
