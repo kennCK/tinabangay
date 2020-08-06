@@ -260,6 +260,14 @@ export default{
     }
   },
   {
+    path: '/business/vehicles',
+    name: 'bVehicles',
+    component: resolve => require(['modules/rides/Vehicles.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
     path: '/lgu/location',
     name: 'bLocations',
     component: resolve => require(['modules/location/List.vue'], resolve),
