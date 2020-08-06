@@ -6,8 +6,6 @@
     </div>
     <div class="mx-auto text-center mb-4">
       <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
-      <span class="text-secondary">{{data.merchant.address}}</span>
-      <br>
       <span class="text-secondary">
         {{`
             ${formParameters.location ? formParameters.location.route ? `${formParameters.location.route}` : '' : ''}
