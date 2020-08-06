@@ -6,8 +6,6 @@
     </div>
     <div class="mx-auto text-center mb-4">
       <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
-      <span class="text-secondary">{{data.merchant.address}}</span>
-      <br>
       <span class="text-secondary">
         {{`
             ${formParameters.location ? formParameters.location.route ? `${formParameters.location.route},` : '' : ''}
@@ -194,7 +192,7 @@
 
             <div class="form-group col-md-4">
               <label for="birthday" class="required">Date of Birth</label>
-              <input type="date" name="birth_date" id="birthday" class="form-control" v-model="healthDec.personalInformation.birth_date" required>
+              <input type="date" name="birth_date" id="birthday" class="form-control" :max="getMaxDate()" v-model="healthDec.personalInformation.birth_date" required>
             </div>
 
             <div class="form-group col-md-4">
@@ -250,7 +248,7 @@
         <div id="transportations" class="row">
           <div class="form-group col-md-3">
             <label for="arrivalDate">Arrival Date</label>
-            <input type="date" name="arrivalDate" id="arrivalDate" class="form-control">
+            <input type="date" name="arrivalDate" id="arrivalDate" class="form-control" :max="getMaxDate()">
           </div>
           
           <div class="form-group col-md-3">
@@ -542,6 +540,13 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    getMaxDate() {
+      return moment().format('YYYY-MM-DD')
+    },
+    isNotValidDate(date) {
+      const today = moment().format('YYYY-MM-DD')
+      return moment(date).isAfter(today)
+    },
     getRelativeTime(time) {
       return moment(time).fromNow()
     },
@@ -558,6 +563,12 @@ export default {
           flight: $('#flight').val(),
           seat: $('#seat').val()
         }
+
+        if (this.isNotValidDate(info.date)) {
+          $(`#arrivalDate`).addClass('is-invalid')
+          return
+        }
+
         $('<div>', {
           id: 'transpo-list',
           class: 'row list-group-item w-100 my-0 mx-4',
@@ -788,6 +799,12 @@ export default {
           if($(input).val() === null || $(input).val() === undefined || $(input).val().trim() === '') {
             $(input).addClass('is-invalid')
             valid = false
+          }
+          if($(input).attr('id') === 'birthday') {
+            if (this.isNotValidDate($(input).val())) {
+              $(input).addClass('is-invalid')
+              valid = false
+            }
           }
         }
       })
