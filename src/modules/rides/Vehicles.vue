@@ -13,8 +13,7 @@ import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import QrcodeVue from 'qrcode.vue'
-import showQrCode from './ShowMore.vue'
+// import showQrCode from './ShowMore.vue'
 export default {
-  
 }
 </script>
