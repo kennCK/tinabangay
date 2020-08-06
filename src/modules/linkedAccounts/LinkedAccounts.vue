@@ -19,6 +19,9 @@
           Assigned Branch
         </th>
         <th scope="col" v-if="user.type !== 'USER'">
+          Assigned As
+        </th>
+        <th scope="col" v-if="user.type !== 'USER'">
           Actions
         </th>
       </thead>
@@ -48,8 +51,46 @@
             </label>
           </td>
           <td v-if="user.type !== 'USER'">
-            <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
-            <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
+            <i v-if="item.account.account_type === 'USER'">No assignment</i>
+            <label v-if="item.account.account_type !== 'USER'">
+              <b>{{item.account.account_type}}</b>
+            </label>
+          </td>
+          <td v-if="user.type !== 'USER'">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">{{item.account.account_type === 'DRIVER' || item.account.account_type === 'TEMP_SCANNER' ? 'Reassign' : 'Assign'}}</button>
+              <!-- The Modal -->
+            <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Assign as:</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body" style="justify-content:center; margin-left:auto;margin-right:auto">
+                    <div class="row">
+                       <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'DRIVER'">Remove assignment</button>
+                    </div>
+                    <div class="row">
+                    or CHANGE TO
+                    </div>
+                    <div class="row">
+                    <button class="btn btn-primary" @click="updateType(item, 'DRIVER')" v-if="item.account.account_type !== 'DRIVER'" style="margin-right:10px;" data-dismiss='modal'>DRIVER</button>
+                    <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'" data-dismiss='modal'>SCANNER</button>
+                    </div>
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
             <button class="btn btn-primary" v-if="item.assigned_location === null" @click="show('branch', item, 'add')">
               Assign branch
             </button>

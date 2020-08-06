@@ -1,36 +1,33 @@
 <template>
   <div class="container-fluid">
-        <div class="row">
-            <div class="column" v-if="showField">
-                <div class="card cards">
-                    <div class="card-header d-flex justify-content-between">
-                        <div>
-                            <i class="far fa-user-circle profile-icon i-style"></i>
-                        </div>
-                        <div>
-                            <button class="btn plasma-cancel-btn" @click="showTextField()"><i class="fas fa-times"></i></button>    
-                        </div> 
-                    </div>
-                    <div class="card-body textarea-card">
-                        <textarea 
-                            class="form-control textarea" 
-                            v-model="post" 
-                            placeholder="Type your POST here... Please Include Your Address"  
-                            id="comment"
-                        >
-                        </textarea>
-                        <div class="d-flex justify-content-center">
-                            <button v-bind:disabled="post===''" class="btn plasma-post-btn" @click="posts">POST</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <input 
+                    class="form-control textarea" 
+                    placeholder="What's on your mind?"  
+                    id="comment"
+                    style="width:50%; height:70px;"
+                    data-toggle="modal" data-target="#myModal"
+                    />
+                    <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
 
-            <div class="add-post-btn-card column" v-if="showField===false" @click="showTextField()" >
-               <div class="card cards">
-                    <i class="add-post fa fa-plus"></i>
-                </div>
-            </div>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body">
+                                <textarea v-model="post"  class="form-control textarea" 
+                                placeholder="Type your POST here... " style="border-bottom-style:none"></textarea>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-block btn-primary" :data-dismiss="modalHide ? 'modal' : ''" @click="posts">Post</button>
+                            </div>
+
+                            </div>
+                        </div>
+                    </div>
+            <div class="row" style="margin-top:20px">
             <div  class="column" v-for="(datus, index) in data" :key="index">
                 <div class="card cards">
                     <div class="card-header d-flex justify-content-between">
@@ -40,7 +37,7 @@
                         <div class="dropdown" v-if="user.type === 'ADMIN'">
                             <button class="btn plasma-option-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>  
                             <div class="dropdown-menu float-left">
-                                <a class="dropdown-item" @click="edit(datus.id)">Edit</a>
+                                <a class="dropdown-item" data-toggle="modal" data-target="#myModal" @click="edit(datus.id)">Edit</a>
                                 <a class="dropdown-item" @click="deletePost(datus.id)">Delete</a>
                             </div>
                         </div>   
@@ -49,10 +46,10 @@
                     <div class="card-body">
                         {{datus.content}}
                     </div>
-                    <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="tooltip" data-placement="bottom" title="See more">See more</button>
+                    <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="modal" data-target="#seeMoreModal" title="See more">See more</button>
                 </div>
             </div>
-            <div v-if="modalShow" class="blurred-background">
+            <!-- <div v-if="modalShow" class="blurred-background">
                 <div class="alert-box">
                     <div>
                         <i class="far fa-user-circle profile-icon i-style-modal"></i>
@@ -64,12 +61,38 @@
                     <hr>
                     <button class="btn btn-content-Message" @click="hide">OK</button>
                 </div>
-            </div>
+            </div> -->
+             <div class="modal fade" id="seeMoreModal" data-backdrop="static" data-keyboard="false">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                            <div class="modal-header">
+                                <div>
+                                    <i class="far fa-user-circle profile-icon i-style-modal"></i>
+                                    <p class="date-posted-modal">{{plasmaData.created_at}}</p>
+                                </div>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <div class="modal-body" style="margin:0 auto;padding:12px;word-break:break-all;">
+                                <p>{{plasmaData.content}}</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                 <button class="btn btn-content-Message"  data-dismiss='modal'>OK</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
         </div>
     <empty v-if="data.length <=0" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style scoped>
+
+    #comment:active{
+        box-shadow: 5px 4px 8px 1px rgba(204, 204, 204, 0.4)
+    }
     .btn-content-Message{
         margin-top: 10px;
         background-color: #005b96;
@@ -119,20 +142,8 @@
         height: 70%;
 
     }
-    .add-post-btn-card :hover{
-        cursor: pointer;
-    }   
-    .add-post{
-        font-size:40px;
-        color:#005b96;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-right: -50%;
-        transform: translate(-50%, -50%)
-    }
     .container-fluid{
-        margin-top:20px
+        margin-top:30px
     }
     .column {
         float: left;
@@ -176,21 +187,10 @@
         transition: margin 300ms;
         font-size:50px;
     }
-    * {
-        box-sizing: border-box;
+     
+    .row{
+        margin-left:-5px
     }
-    body {
-        font-family: Arial, Helvetica, sans-serif;
-    } 
-    /* Remove extra left and right margins, due to padding */
-    .row {width: 100%;}
-
-    /* Clear floats after the columns */
-    /* .row:after {
-        content: "";
-        display: table;
-        clear: both;
-    } */
     /* Responsive columns */
     @media screen and (max-width: 600px) {
     .column {
@@ -285,7 +285,8 @@ export default{
       data: [],
       plasmaData: [],
       time: '7/23/2020',
-      showWholeMessage: ''
+      showWholeMessage: '',
+      modalHide: false
     }
   },
   components: {
@@ -295,6 +296,11 @@ export default{
   mounted(){
     $('#loading').css({display: 'block'})
     this.retrieve()
+  },
+  computed: {
+    hideModal(){
+      return this.modalHide
+    }
   },
   methods: {
     getId(id){
@@ -333,7 +339,6 @@ export default{
           }
         }
       })
-      console.log(this.data)
     },
     posts(){
       $('#loading').css({display: 'block'})
@@ -341,18 +346,22 @@ export default{
         let params = {
           content: this.post
         }
+        this.modalHide = !this.modalHide
         this.APIRequest('posts/create', params).then(response => {
           this.retrieve()
           this.post = ''
+          this.post = null
         })
       }else{
         let params = {
           id: this.editID,
           content: this.post
         }
+        this.modalHide = !this.modalHide
         this.APIRequest('posts/update', params).then(response => {
           this.retrieve()
           this.post = ''
+          this.isEdit = false
         })
       }
     },

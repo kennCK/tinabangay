@@ -145,6 +145,7 @@ export default{
       let parameter = {
         id: this.user.userID
       }
+      console.log(this.user.location.code)
       // $('#loading').css({display: 'block'})
       this.APIRequest('tracings/status', parameter).then(response => {
         // $('#loading').css({display: 'none'})
