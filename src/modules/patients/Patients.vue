@@ -121,7 +121,7 @@
                 <td>{{item.date_human}}</td>
                 <td>{{item.time}}</td>
                 <td>{{item.route}}</td>
-                <td>{{item.locate}}</td>
+                <!-- <td>{{item.locate}}</td> -->
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
                 <td><button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i class="fa fa-trash"></i></button></td>

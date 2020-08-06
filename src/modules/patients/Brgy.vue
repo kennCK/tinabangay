@@ -97,7 +97,7 @@ import moment from 'moment'
 export default {
   mounted(){
    // this.retrieve()
-    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_DOH'){
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'AGENCY_GOV'){
       ROUTER.push('/dashboard')
     }
     this.retrieve()
