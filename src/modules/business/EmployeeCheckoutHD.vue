@@ -50,7 +50,7 @@
               </tr>
               <tr>
                 <th scope="row">Date of Birth</th>
-                <td>{{healthDec.personalInformation.birth_date}}</td>
+                <td>{{healthDec.personalInformation.birth_date || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Tel./Mobile No.</th>
