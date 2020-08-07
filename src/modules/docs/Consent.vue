@@ -95,6 +95,8 @@ ul li{
           $('#loading').css({display: 'none'})
           $('#consentModal').modal('hide')
           this.summary = response.data
+
+          ROUTER.push('/profile')
         })
       }
     }

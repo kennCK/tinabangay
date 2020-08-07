@@ -214,7 +214,7 @@ export default{
   {
     path: '/lgu/settings',
     name: 'lguSettings',
-    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirectOld.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -222,7 +222,7 @@ export default{
   {
     path: '/barangay/settings',
     name: 'barangaySettings',
-    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirectOld.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -230,7 +230,7 @@ export default{
   {
     path: '/business/settings',
     name: 'businessSettings',
-    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirectOld.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -255,6 +255,14 @@ export default{
     path: '/business/location',
     name: 'bLocations',
     component: resolve => require(['modules/location/List.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/business/vehicles',
+    name: 'bVehicles',
+    component: resolve => require(['modules/rides/Vehicles.vue'], resolve),
     meta: {
       tokenRequired: true
     }
