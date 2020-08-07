@@ -37,7 +37,7 @@
               </tr>
               <tr>
                 <th scope="row">Sex</th>
-                <td>{{healthDec.personalInformation.gender}}</td>
+                <td>{{healthDec.personalInformation.gender || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Date of Birth</th>
@@ -49,11 +49,11 @@
               </tr>
               <tr>
                 <th scope="row">Occupation</th>
-                <td>{{healthDec.personalInformation.occupation}}</td>
+                <td>{{healthDec.personalInformation.occupation || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Tel./Mobile No.</th>
-                <td>{{healthDec.personalInformation.contact_number}}</td>
+                <td>{{healthDec.personalInformation.contact_number || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Email</th>
@@ -61,7 +61,7 @@
               </tr>
               <tr>
                 <th scope="row">Address in the Philippines</th>
-                <td>{{healthDec.personalInformation.address}}</td>
+                <td>{{healthDec.personalInformation.address || 'Not specified'}}</td>
               </tr>
             </tbody>
           </table>
@@ -217,13 +217,13 @@
 
           <div class="row">
             <div class="form-group col-md-4">
-              <label for="occupation" class="required">Occupation</label>
-              <input v-model="healthDec.personalInformation.occupation" type="text" name="occupation" id="occupation" class="form-control" placeholder="Enter Occupation" required>
+              <label for="occupation">Occupation</label>
+              <input v-model="healthDec.personalInformation.occupation" type="text" name="occupation" id="occupation" class="form-control" placeholder="Enter Occupation">
             </div>
 
             <div class="form-group col-md-4">
-              <label for="contactNum" class="required">Tel./Mobile No.</label>
-              <input v-model="healthDec.personalInformation.contact_number" type="text" name="contact_number" id="contactNum" class="form-control" placeholder="Enter Contact Information" required>
+              <label for="contactNum">Tel./Mobile No.</label>
+              <input v-model="healthDec.personalInformation.contact_number" type="text" name="contact_number" id="contactNum" class="form-control" placeholder="Enter Contact Information">
             </div>
 
             <div class="form-group col-md-4">
@@ -234,8 +234,8 @@
 
           <div class="row">
             <div class="form-group col-12">
-              <label for="address" class="required">Address in the Philippines</label>
-              <input  v-model="healthDec.personalInformation.address" type="text" name="address" id="address" class="form-control" placeholder="Enter Address" required>
+              <label for="address">Address in the Philippines</label>
+              <input  v-model="healthDec.personalInformation.address" type="text" name="address" id="address" class="form-control" placeholder="Enter Address">
             </div>
           </div>
         </div>

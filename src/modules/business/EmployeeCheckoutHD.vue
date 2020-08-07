@@ -46,7 +46,7 @@
               </tr>
               <tr>
                 <th scope="row">Sex</th>
-                <td>{{healthDec.personalInformation.gender}}</td>
+                <td>{{healthDec.personalInformation.gender || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Date of Birth</th>
@@ -54,7 +54,7 @@
               </tr>
               <tr>
                 <th scope="row">Tel./Mobile No.</th>
-                <td>{{healthDec.personalInformation.contact_number}}</td>
+                <td>{{healthDec.personalInformation.contact_number || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Email</th>
@@ -62,7 +62,7 @@
               </tr>
               <tr>
                 <th scope="row">Address in the Philippines</th>
-                <td>{{healthDec.personalInformation.address}}</td>
+                <td>{{healthDec.personalInformation.address || 'Not specified'}}</td>
               </tr>
             </tbody>
           </table>
@@ -172,8 +172,8 @@
 
           <div class="row">
             <div class="form-group col-12">
-              <label for="address" class="required">Address in the Philippines</label>
-              <input  v-model="healthDec.personalInformation.address" type="text" name="address" id="address" class="form-control" placeholder="Enter Address" required>
+              <label for="address">Address in the Philippines</label>
+              <input  v-model="healthDec.personalInformation.address" type="text" name="address" id="address" class="form-control" placeholder="Enter Address">
             </div>
           </div>
         </div>
@@ -507,13 +507,13 @@ export default {
         {
           question: 'Where do you intend to go after here?',
           translate: '(Asa imong plano moadto moadto gikan diri?)',
-          required: true,
+          required: false,
           answer: []
         },
         {
           question: 'Did you notice something irregular/unusual in your work or coworkers in terms of health/safety condition today? Please specify.',
           translate: '(Naa ka ba`y naobserbahan nga kalahian sa normal nga health and safety condisyon sa trabaho o sa imong mga kauban? I-detalye)',
-          required: true,
+          required: false,
           answer: []
         }
       ]
@@ -674,7 +674,7 @@ export default {
           return valid
         }
         this.healthDec.company.related_questions.map((question, index) => {
-          if (question.answer.length === 0) {
+          if (question.answer.length === 0 && question.required === true) {
             valid = false
             setTimeout(() => $('body,html').animate({ scrollTop: $(`#company-related-question-${index}`).offset().top - 350 }, 500), 500)
             setTimeout(() => $(`#company-related-question-${index} h6`).css({ 'color': 'red' }),
