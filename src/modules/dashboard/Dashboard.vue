@@ -2,6 +2,7 @@
   <div style="margin-bottom: 50px;">
     <business v-if="dashType === 'BUSINESS'"></business>
     <user v-else-if="dashType === 'USER'"></user>
+    <AgencyBrgy v-else-if="dashType === 'AGENCY_BRGY'"></AgencyBrgy> 
     <div v-else-if="dashType === 'ADMIN'">
       <data-summary></data-summary>
       <br>
@@ -214,7 +215,8 @@ export default{
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
     'business': require('./Business.vue'),
-    'user': require('./User.vue')
+    'user': require('./User.vue'),
+    'AgencyBrgy': require('./Agency_brgy.vue')
   },
   computed: {
     QRsizerGetter(){
@@ -275,6 +277,9 @@ export default{
         this.qrSize = 220
       }
     }
+  },
+  destroy(){
+    window.removeEventListener('resize', this.QRResizer)
   }
 }
 </script>

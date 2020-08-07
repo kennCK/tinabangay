@@ -67,7 +67,6 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          console.log('Affected ', response.data)
           let series = [[], [], []]
           for(var i = 0; i < 5; ++i){
             // let routes = response.data[i].route.split(',')
