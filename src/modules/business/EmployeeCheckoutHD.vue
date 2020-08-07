@@ -211,7 +211,7 @@
         <section id="person-in-contact-12h">
           <div class="mt-4">
             <h6 class="font-weight-bold required">
-              Kindly list down at least 5 names of co-workers you had transact with today.
+              Kindly list down at least 1 name of co-workers you had transact with today.
             </h6>
             <p style="font-size: 12px">(Ilista ang mga taw nga imong close in contact/ka trabaho karong adlawa)</p>
           </div>
@@ -605,8 +605,6 @@ export default {
             content: JSON.stringify(this.healthDec),
             payload: `form_submitted/${this.healthDec.format}`
           }
-
-          console.log({ param })
           this.APIRequest('health_declarations/create', param).then(response => {
             ROUTER.push(`/form/${response.generated_code}`)
           }).fail(() => {
@@ -669,7 +667,7 @@ export default {
       })
 
       if (valid) {
-        if (this.healthDec.company.person_in_contact.length < 5) {
+        if (this.healthDec.company.person_in_contact.length < 1) {
           valid = false
           setTimeout(() => $('body,html').animate({ scrollTop: $('#person-in-contact-12h').offset().top - 350 }, 500), 500)
           setTimeout(() => $(`#person-in-contact-12h h6`).css({ 'color': 'red' }), 1200)
