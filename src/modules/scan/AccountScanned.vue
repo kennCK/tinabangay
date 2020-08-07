@@ -189,9 +189,13 @@
             </button>
           </div>
           <div class="modal-body p-3 px-5">
-              <p v-if="scannedUserData.id === user.userID">You cannot link your own account.</p>
+              <p v-if="scannedUserData.id === user.userID">You cannot link your own account</p>
               <!-- CAN ONLY LINK ONCE -->
-              <p v-else-if="scannedUserData.linked_account !== null">Account has already been linked.</p>
+              <p v-else-if="scannedUserData.linked_account !== null">
+                Account is already been linked to a merchant
+                <br>
+                <small class="color-primary">Account can only be linked once</small>
+              </p>
               <!--  -->
               <p v-else-if="scannedUserData.linked_account === null">Are you sure you want to link this account?</p>
           </div>
@@ -304,6 +308,9 @@
     -webkit-transform: scale(1.0);
     transform: scale(1.0);
   }
+}
+.color-primary {
+  color: $primary;
 }
 </style>
 <script>
