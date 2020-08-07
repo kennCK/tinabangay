@@ -372,9 +372,9 @@
         <section id="person-in-contact-12h">
           <div class="mt-4">
             <h6 class="font-weight-bold required">
-              Name at least 5 people you were within the last 12 hours and state relation.
+              Name at least 1 person you were in close contact within the last 12 hours and state relation.
             </h6>
-            <p style="font-size: 12px">(Pag hingan ug lima (5) ka taw nga imong nakuyog sulod sa 12 ka oras og relasyon nimo matag usa)</p>
+            <p style="font-size: 12px">(Pag hingan ug isa (1) ka taw nga imong nakuyog sulod sa 12 ka oras og relasyon nimo matag usa)</p>
           </div>
 
           <div class="row my-2 ml-2">
@@ -926,8 +926,6 @@ export default {
             content: JSON.stringify(this.healthDec),
             payload: `form_submitted/${this.healthDec.format}`
           }
-
-          console.log({ param })
           this.APIRequest('health_declarations/create', param).then(response => {
             ROUTER.push(`/form/${response.generated_code}`)
           }).fail(() => {
@@ -995,7 +993,7 @@ export default {
       })
 
       if (valid) {
-        if (this.healthDec.company.person_in_contact.length < 5) {
+        if (this.healthDec.company.person_in_contact.length < 1) {
           valid = false
           setTimeout(() => $('body,html').animate({ scrollTop: $('#person-in-contact-12h').offset().top - 350 }, 500), 500)
           setTimeout(() => $(`#person-in-contact-12h h6`).css({ 'color': 'red' }), 1200)

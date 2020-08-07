@@ -740,7 +740,6 @@ export default {
             content: JSON.stringify(this.healthDec),
             payload: `form_submitted/${this.healthDec.format}`
           }
-          console.log({ param })
           this.APIRequest('health_declarations/create', param).then(response => {
             ROUTER.push(`/form/${response.generated_code}`)
           }).fail(() => {

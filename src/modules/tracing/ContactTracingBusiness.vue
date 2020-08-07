@@ -379,7 +379,7 @@ export default {
                     format: parsedContent.format,
                     status: parsedContent.status,
                     statusLabel: parsedContent.statusLabel,
-                    submitted_on: data.updated_at
+                    submitted_on: data.updated_at_human
                   }
                   this.healthDecList.push(details)
                 }
