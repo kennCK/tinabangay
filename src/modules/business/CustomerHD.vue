@@ -37,11 +37,11 @@
               </tr>
               <tr>
                 <th scope="row">Sex</th>
-                <td>{{healthDec.personalInformation.gender}}</td>
+                <td>{{healthDec.personalInformation.gensder}}</td>
               </tr>
               <tr>
                 <th scope="row">Date of Birth</th>
-                <td>{{healthDec.personalInformation.birth_date}}</td>
+                <td>{{healthDec.personalInformation.birth_date || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Civil Status</th>
@@ -191,8 +191,8 @@
             </div>
 
             <div class="form-group col-md-4">
-              <label for="birthday" class="required">Date of Birth</label>
-              <input type="date" name="birth_date" id="birthday" class="form-control" :max="getMaxDate()" v-model="healthDec.personalInformation.birth_date" required>
+              <label for="birthday">Date of Birth</label>
+              <input type="date" name="birth_date" id="birthday" class="form-control" :max="getMaxDate()" v-model="healthDec.personalInformation.birth_date">
             </div>
 
             <div class="form-group col-md-4">

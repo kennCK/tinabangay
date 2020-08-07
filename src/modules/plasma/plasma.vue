@@ -29,39 +29,31 @@
                     </div>
             <div class="row" style="margin-top:20px">
             <div  class="column" v-for="(datus, index) in data" :key="index">
-                <div class="card cards">
-                    <div class="card-header d-flex justify-content-between">
-                        <div>
-                            <i class="far fa-user-circle profile-icon i-style"></i>
-                        </div>
-                        <div class="dropdown" v-if="user.type === 'ADMIN'">
-                            <button class="btn plasma-option-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>  
-                            <div class="dropdown-menu float-left">
-                                <a class="dropdown-item" data-toggle="modal" data-target="#myModal" @click="edit(datus.id)">Edit</a>
-                                <a class="dropdown-item" @click="deletePost(datus.id)">Delete</a>
+                <div class="card" style="height:220px;">
+                    <div class="card-header" style="padding-left:10px;padding-right:10px">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <p style="padding-top:15px">{{datus.created_at}}</p>
                             </div>
-                        </div>   
+                            <div class="col-sm-3">
+                                <div class="dropdown" v-if="user.type === 'ADMIN'">
+                                    <button class="btn plasma-option-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>  
+                                    <div class="dropdown-menu float-left">
+                                        <a class="dropdown-item" data-toggle="modal" data-target="#myModal" @click="edit(datus.id)">Edit</a>
+                                        <a class="dropdown-item" @click="deletePost(datus.id)">Delete</a>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
                     </div>
-                    <p class="date-posted">{{datus.created_at}}</p>
-                    <div class="card-body">
-                        {{datus.content}}
+                    <div class="card-content" style="padding-left:10px; padding-right:10px">
+                        <p>{{datus.content}}</p>
                     </div>
-                    <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="modal" data-target="#seeMoreModal" title="See more">See more</button>
+                    <div class="card-action">
+                        <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="modal" data-target="#seeMoreModal" title="See more">See more</button>
+                    </div>
                 </div>
             </div>
-            <!-- <div v-if="modalShow" class="blurred-background">
-                <div class="alert-box">
-                    <div>
-                        <i class="far fa-user-circle profile-icon i-style-modal"></i>
-                        <p class="date-posted-modal">{{plasmaData.created_at}}</p>
-                    </div><hr>
-                    <div style="margin:0 auto;padding:12px;overflow-wrap:break-word">
-                        {{plasmaData.content}}
-                    </div>
-                    <hr>
-                    <button class="btn btn-content-Message" @click="hide">OK</button>
-                </div>
-            </div> -->
              <div class="modal fade" id="seeMoreModal" data-backdrop="static" data-keyboard="false">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -124,20 +116,20 @@
         transition: .2s;
 
     }
-     @media screen and (max-width: 600px) {
-    .alert-box {
-        width: 80%;
-        background: white;
-        display: inline-block;
-        margin-top: 180px;
-        border-radius: 3px;
-        font-size: 15px;
-        padding: 20px;
-        transition: .2s;
-        
+    .column {
+        float: left;
+        width: 25%;
+        padding: 10px;
+        height: 250px; 
     }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
     }
-    .contentMessage{
+
+     .contentMessage{
         text-align: left;
         height: 70%;
 
@@ -150,6 +142,12 @@
         width: 25%;
         padding: 0 5px;
         margin-bottom:2vh
+    }
+    .col-sm-8{
+        width: 85%;
+    }
+    .col-sm-3{
+        width: 20%
     }
     .cards {
         padding: 16px;
@@ -164,10 +162,9 @@
         padding:0px;
         padding-left:10px;
         padding-right:10px;
-        font-size:12px;
     }
     .date-posted{
-        font-size:8px;
+        /* font-size:8px; */
         margin-left:10px;
     }
     .date-posted-modal{
@@ -188,17 +185,6 @@
         font-size:50px;
     }
      
-    .row{
-        margin-left:-5px
-    }
-    /* Responsive columns */
-    @media screen and (max-width: 600px) {
-    .column {
-        width: 100%;
-        display: block;
-        margin-bottom: 20px;
-    }
-    }
     .plasma-option-btn{
         margin-top: 10px;
         background: white !important ;
@@ -210,42 +196,13 @@
         box-shadow:none !important;
         border: none !important;
     }
-    .plasma-post-btn{
-        height:30px;
-        width:40%;
-        background-color:#005b96;
-        color:white;
-        padding:0px;
-        position:relative;
-        bottom:0px;
-        margin-top:10px;
-    }
-    .plasma-post-btn:focus{
-        box-shadow: none;
-    }
-    .plasma-cancel-btn{
-        margin-top:8px;
-        color:#e92424;
-        background-color:white;
-        border-radius:20px;
-        border-color:#e92424;
-    }
-    .plasma-cancel-btn:focus{
-        border-radius:20px !important;
-        border-color:#e92424 !important;
-        background-color:white !important;
-        box-shadow:none !important;
-    }
+    
     .showSize{
         background-color: transparent;
         color: #005b96;;
     }
     .showSize:focus{
         box-shadow: none;
-    }
-    .eyeSize{
-        font-size: 25px;
-        color: #005b96;
     }
     .textarea{
         height:70%;
@@ -255,12 +212,26 @@
         padding-left:10px;
         padding-right:10px;
     }
-    .textarea-card{
-        padding:0px;
+    
+
+     @media screen and (max-width: 600px) {
+    .alert-box {
+        width: 80%;
+        background: white;
+        display: inline-block;
+        margin-top: 180px;
+        border-radius: 3px;
+        font-size: 15px;
+        padding: 20px;
+        transition: .2s;
+        
     }
-    .addNewBtn{
-        float:right
+
+    .column {
+        width: 100%;
     }
+    }
+   
 
 </style>
 <script>
