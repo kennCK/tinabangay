@@ -374,12 +374,12 @@ export default {
               if (data.updated_at !== null) {
                 if ((data.content !== null && typeof data.content !== 'undefined') && this.isValidForm(data.content)) {
                   const parsedContent = JSON.parse(data.content)
-                  const details = {
+                  const details = { 
                     code: data.code,
                     format: parsedContent.format,
                     status: parsedContent.status,
                     statusLabel: parsedContent.statusLabel,
-                    submitted_on: data.updated_at
+                    submitted_on: data.updated_at_human
                   }
                   this.healthDecList.push(details)
                 }
