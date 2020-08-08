@@ -1,41 +1,39 @@
 <template>
   <div class="container-fluid">
-                <input 
-                    class="form-control textarea" 
-                    placeholder="What's on your mind?"  
-                    id="comment"
-                    style="width:50%; height:70px;"
-                    data-toggle="modal" data-target="#myModal"
-                    />
-                    <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-
-                            <div class="modal-body">
-                                <textarea v-model="post"  class="form-control textarea" 
-                                placeholder="Type your POST here... " style="border-bottom-style:none"></textarea>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-block btn-primary" :data-dismiss="modalHide ? 'modal' : ''" @click="posts">Post</button>
-                            </div>
-
-                            </div>
+            <input 
+                class="form-control textarea" 
+                placeholder="Are You Looking For Plasma? "  
+                id="comment"
+                data-toggle="modal" data-target="#myModal"
+            />
+            <!-- Modal For Add New Post -->
+            <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea v-model="post"  class="form-control textarea" 
+                            placeholder="Please type here" style="border-bottom-style:none"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-block btn-primary" :disabled="post == ''" :data-dismiss="modalHide ? 'modal' : ''" @click="posts">Post</button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Loop For Each cards -->
             <div class="row" style="margin-top:20px">
             <div  class="column" v-for="(datus, index) in data" :key="index">
                 <div class="card" style="height:220px;">
-                    <div class="card-header" style="padding-left:10px;padding-right:10px">
+                    <div class="card-headers" style="padding-left:10px;padding-right:10px;">
                         <div class="row">
-                            <div class="col-sm-8">
-                                <p style="padding-top:15px">{{datus.created_at}}</p>
+                            <div class="col-sm-9">
+                                <div class="card-title"><p style="padding-top:15px">{{datus.created_at}}</p></div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="dropdown" v-if="user.type === 'ADMIN'">
                                     <button class="btn plasma-option-btn" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></button>  
                                     <div class="dropdown-menu float-left">
@@ -44,23 +42,24 @@
                                     </div>
                                 </div> 
                             </div>
-                        </div>
+                        </div><hr style="margin-top:2px"/>
                     </div>
                     <div class="card-content" style="padding-left:10px; padding-right:10px">
-                        <p>{{datus.content}}</p>
+                        <label id="postContent" style="width: 200px; overflow: hidden;display: inline-block;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;text-overflow:ellipsis;">{{datus.content}}</label>
                     </div>
                     <div class="card-action">
                         <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="modal" data-target="#seeMoreModal" title="See more">See more</button>
                     </div>
                 </div>
             </div>
-             <div class="modal fade" id="seeMoreModal" data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog">
+
+            <!-- Modal For See More -->
+            <div class="modal fade" id="seeMoreModal" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog">
                             <div class="modal-content">
 
                             <div class="modal-header">
                                 <div>
-                                    <i class="far fa-user-circle profile-icon i-style-modal"></i>
                                     <p class="date-posted-modal">{{plasmaData.created_at}}</p>
                                 </div>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -74,17 +73,21 @@
                                  <button class="btn btn-content-Message"  data-dismiss='modal'>OK</button>
                             </div>
                             </div>
-                        </div>
                     </div>
+            </div>
         </div>
     <empty v-if="data.length <=0" :title="'No post available.'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
   </div>
 </template>
 <style scoped>
+   
 
-    #comment:active{
-        box-shadow: 5px 4px 8px 1px rgba(204, 204, 204, 0.4)
+    #comment:active{box-shadow: 5px 4px 8px 1px rgba(204, 204, 204, 0.4)}
+
+    #comment{
+        width:50%; height:70px;
     }
+    
     .btn-content-Message{
         margin-top: 10px;
         background-color: #005b96;
@@ -143,12 +146,7 @@
         padding: 0 5px;
         margin-bottom:2vh
     }
-    .col-sm-8{
-        width: 85%;
-    }
-    .col-sm-3{
-        width: 20%
-    }
+   
     .cards {
         padding: 16px;
         padding-top:2px;
@@ -166,9 +164,6 @@
     .date-posted{
         /* font-size:8px; */
         margin-left:10px;
-    }
-    .date-posted-modal{
-        font-size:10px;
     }
     .dropdown-menu{
         margin-top:-25px;
@@ -224,12 +219,16 @@
         font-size: 15px;
         padding: 20px;
         transition: .2s;
-        
     }
 
-    .column {
-        width: 100%;
+    .column {width: 100%;}
+    .col-sm-9{width: 80%;}
+    .col-sm-2{width: 20%}
+
+    #comment{
+        width: 100%
     }
+
     }
    
 
@@ -298,19 +297,17 @@ export default{
       console.log('testing')
     },
     retrieve(){
-      $('#loading').css({display: 'none'})
+      $('#loading').css({display: 'block'})
       this.APIRequest('posts/retrieve').then(response => {
         console.log('resposes', response.data)
+        $('#loading').css({display: 'none'})
         this.data = response.data.reverse()
         for(let i = 0; i < this.data.length; i++){
-          if(this.data[i].content.length > 100){
-            this.data[i].content = this.data[i].content.slice(0, 110) + '....'
-          }else{
-            this.data[i].content = this.data[i].content
-          }
+          this.data[i].content = this.data[i].content
         }
       })
     },
+    // https://stackoverflow.com/questions/25881293/how-to-use-text-overflow-ellipsis-with-a-label-element/25881321----
     posts(){
       $('#loading').css({display: 'block'})
       if(this.isEdit === false){

@@ -1,229 +1,264 @@
 <template>
  <div style="margin-top: 25px;">
- <div class="form-group" v-if="user.type !== 'USER'">
- <label>You can assign address to your employees for address status verification:</label>
- </div>
- <table class="table table-bordered table-responsive" v-if="data !== null">
- <thead class="bg-primary">
- <!-- <th scope="col">Owner</th> -->
- <th scope="col">Employee</th>
- <!-- <th scope="col">Name</th> -->
- <th scope="col">Date</th>
- <!-- <th scope="col" v-if="user.type !== 'USER'">
- User Type
- </th> -->
- <th scope="col" v-if="user.type !== 'USER'">
- Home Address
- </th>
- <th scope="col" v-if="user.type !== 'USER'">
- Assigned Branch
- </th>
- <th scope="col" v-if="user.type !== 'USER'">
- Assigned As
- </th>
- <th scope="col" v-if="user.type !== 'USER'">
- Actions
- </th>
- </thead>
- <tbody>
- <tr v-for="(item, index) in data" :key="index">
- <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
- <td>
- <span v-if="item.account.information.first_name !== null">{{item.account.information.first_name}}</span> 
- <span v-if="item.account.information.last_name !== null">{{item.account.information.last_name}}</span> 
- <small class="text-uppercase font-weight-bold text-primary">({{item.account.username}})</small>
- </td>
- <td class="text-uppercase">{{item.created_at_human}}</td>
- <!-- <td v-if="user.type !== 'USER'">
- <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
- <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
- </td> -->
- <td v-if="user.type !== 'USER'">
- <i v-if="item.address === null">No address recorded</i>
- <label v-if="item.address !== null">
- <b class="text-danger">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
- </label>
- </td>
- <td v-if="user.type !== 'USER'">
- <i v-if="item.assigned_location === null">Not assigned</i>
- <label v-if="item.assigned_location !== null">
- <b>{{item.assigned_location.route}}</b> <span class="badge badge-pill badge-dark" :title=" item.assigned_location.locality + ', ' + item.assigned_location.region + ', ' + item.assigned_location.country"><i class="fa fa-question pr-0"></i></span>
- </label>
- </td>
- <td v-if="user.type !== 'USER'">
- <i v-if="item.account.account_type === 'USER'">No assignment</i>
- <label v-if="item.account.account_type !== 'USER'">
- <b>{{item.account.account_type}}</b>
- </label>
- </td>
- <td v-if="user.type !== 'USER'">
- <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">{{item.account.account_type === 'DRIVER' || item.account.account_type === 'TEMP_SCANNER' ? 'Reassign' : 'Assign'}}</button>
- <!-- The Modal -->
- <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
- <div class="modal-dialog">
- <div class="modal-content">
+    <div class="form-group" v-if="user.type !== 'USER'">
+      <label>You can assign address to your employees for address status verification:</label>
+    </div>
+    <table class="table table-bordered table-responsive" v-if="data !== null" style="overflow:inherit">
+        <thead class="bg-primary">
+            <!-- <th scope="col">Owner</th> -->
+            <th scope="col">Employee</th>
+            <!-- <th scope="col">Name</th> -->
+            <th scope="col">Date</th>
+            <!-- <th scope="col" v-if="user.type !== 'USER'">
+            User Type
+            </th> -->
+            <th scope="col" v-if="user.type !== 'USER'">Home Address</th>
+            <th scope="col" v-if="user.type !== 'USER'">Assigned Branch</th>
+            <th scope="col" v-if="user.type !== 'USER'">Assigned As</th>
+            <th scope="col" v-if="user.type !== 'USER'">Actions</th>
+        </thead>
+        <tbody>
+            <tr v-for="(item, index) in data" :key="index">
+            <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
+              <td>
+                  <span v-if="item.account.information.first_name !== null">{{item.account.information.first_name}}</span> 
+                  <span v-if="item.account.information.last_name !== null">{{item.account.information.last_name}}</span> 
+                  <small class="text-uppercase font-weight-bold text-primary">({{item.account.username}})</small>
+              </td>
+              <td class="text-uppercase">{{item.created_at_human}}</td>
+            <!-- <td v-if="user.type !== 'USER'">
+            <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
+            <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
+            </td> -->
+              <td v-if="user.type !== 'USER'">
+                  <i v-if="item.address === null">No address recorded</i>
+                  <label v-if="item.address !== null">
+                  <b class="text-danger">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
+                  </label>
+              </td>
+              <td v-if="user.type !== 'USER'">
+                  <i v-if="item.assigned_location === null">Not assigned</i>
+                  <label v-if="item.assigned_location !== null">
+                  <b>{{item.assigned_location.route}}</b> <span class="badge badge-pill badge-dark" :title=" item.assigned_location.locality + ', ' + item.assigned_location.region + ', ' + item.assigned_location.country"><i class="fa fa-question pr-0"></i></span>
+                  </label>
+              </td>
+              <td v-if="user.type !== 'USER'">
+                  <i v-if="item.account.account_type === 'USER'">No assignment</i>
+                  <label v-if="item.account.account_type !== 'USER'">
+                  <b>{{item.account.account_type}}</b>
+                  </label>
+              </td>
+              <td v-if="user.type !== 'USER'">
 
- <!-- Modal Header -->
- <div class="modal-header">
- <h4 class="modal-title">Assign as:</h4>
- <button type="button" class="close" data-dismiss="modal">&times;</button>
- </div>
-
- <!-- Modal body -->
- <div class="modal-body" style="justify-content:center; display:flex">
- <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'DRIVER'">Remove assignment</button>
- &nbsp;&nbsp;
- <h5>OR Change to:</h5>&nbsp;&nbsp;
- <button class="btn btn-primary" @click="updateType(item, 'DRIVER')" v-if="item.account.account_type !== 'DRIVER'" style="margin-right:10px;" data-dismiss='modal'>DRIVER</button>
- <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'" data-dismiss='modal'>SCANNER</button>
- </div>
-
- <!-- Modal footer -->
- <div class="modal-footer">
- <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
- </div>
-
- </div>
- </div>
- </div>
- <button class="btn btn-primary" v-if="item.assigned_location === null" @click="show('branch', item, 'add')">
- Assign branch
- </button>
- <button class="btn btn-primary" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">
- Edit branch
- </button>
- <button class="btn btn-warning" v-if="item.address === null" @click="show('brgy', item, 'add')">
- Assign address
- </button>
- <button class="btn btn-warning" v-if="item.address !== null" @click="show('brgy', item, 'edit')">
- Edit address
- </button>
- <button type="button" @click="show('unlink', item)" class="btn btn-secondary">
- <i class="fa fa-trash p-0"></i>
- </button>
- </td>
- </tr>
- </tbody>
+                <div class="dropdownn">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    Actions
+                  </button>
+                  <div class="dropdown-menu" role="menu">
+                      <a class="dropdown-item"  @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'DRIVER'" style="color:red">Remove Assign</a>
+                      <a class="dropdown-item" @click="updateType(item, 'DRIVER')" v-if="item.account.account_type !== 'DRIVER'">Assign as Driver</a>
+                      <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign Scanner</a>
+                      <a class="dropdown-item" v-if="item.assigned_location === null" @click="show('branch', item, 'add')">Assign branch</a>
+                      <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">Edit branch</a>
+                      <a class="dropdown-item" v-if="item.address === null" @click="show('brgy', item, 'add')">Assign address</a>
+                      <a class="dropdown-item" v-if="item.address !== null" @click="show('brgy', item, 'edit')">Edit address</a>
+                      <a class="dropdown-item" @click="show('unlink', item)" style="color:red">Delete</a>
+                  </div>
+                </div>
+                <!-- The Modal -->
+                <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Assign as:</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body" style="justify-content:center; display:flex">
+                                <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'DRIVER'">Remove assignment</button>
+                                &nbsp;&nbsp;
+                                <h5>OR Change to:</h5>&nbsp;&nbsp;
+                                <button class="btn btn-primary" @click="updateType(item, 'DRIVER')" v-if="item.account.account_type !== 'DRIVER'" style="margin-right:10px;" data-dismiss='modal'>DRIVER</button>
+                                <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'" data-dismiss='modal'>SCANNER</button>
+                            </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                </td>
+            </tr>
+        </tbody>
  </table>
  <empty v-if="data === null" :title="'No linked accounts.'" :action="' You can link your account with your family, friends and company!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
 
+        <!-- Assign Address Modal -->
+        <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="addAddressHeader" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAddressHeader">Assign Address</h5>
+                        <button type="button" class="close" @click="hideModal('addAddress')" aria-label="Close">
+                          <span aria-hidden="true" class="text-primary">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label style="width: 100%; float: left;">Filter</label>
+                            <input type="text" class="form-control form-control-custom" v-model="locality" placeholder="Town, Lungsod or locality" style="width: 80%; float:left; margin-right: 5px;" />
+                            <button type="button" class="btn btn-primary pull-right" @click="search('brgy')">Search</button>
+                        </div>
+                        <table class="table table-borderless table-responsive">
+                            <thead>
+                                <th>Address</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in brgys" :key="index">
+                                  <td>
+                                    <label>
+                                        <b class="text-danger">({{item.code}})</b>{{' ' + item.route + ', ' + item.locality + ', ' + item.country}}
+                                    </label>
+                                  </td>
+                                  <td>
+                                    <button class="btn btn-primary" v-if="selectedItem.address === null" @click="createAddress('brgy', item)">Assign</button>
+                                    <button class="btn btn-primary" v-if="selectedItem.address !== null" @click="updateAddress('brgy', item)">Update</button>
+                                  </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
- <!-- Assign Address Modal -->
- <div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="addAddressHeader" aria-hidden="true">
- <div class="modal-dialog" role="document">
- <div class="modal-content">
- <div class="modal-header">
- <h5 class="modal-title" id="addAddressHeader">Assign Address</h5>
- <button type="button" class="close" @click="hideModal('addAddress')" aria-label="Close">
- <span aria-hidden="true" class="text-primary">&times;</span>
- </button>
- </div>
- <div class="modal-body">
- <div class="form-group">
- <label style="width: 100%; float: left;">Filter</label>
- <input type="text" class="form-control form-control-custom" v-model="locality" placeholder="Town, Lungsod or locality" style="width: 80%; float:left; margin-right: 5px;" />
- <button type="button" class="btn btn-primary pull-right" @click="search('brgy')">Search</button>
- </div>
- <table class="table table-borderless table-responsive">
- <thead>
- <th>Address</th>
- <th>Action</th>
- </thead>
- <tbody>
- <tr v-for="(item, index) in brgys" :key="index">
- <td>
- <label>
- <b class="text-danger">({{item.code}})</b>{{' ' + item.route + ', ' + item.locality + ', ' + item.country}}
- </label>
- </td>
- <td>
- <button class="btn btn-primary" v-if="selectedItem.address === null" @click="createAddress('brgy', item)">Assign</button>
- <button class="btn btn-primary" v-if="selectedItem.address !== null" @click="updateAddress('brgy', item)">Update</button>
- </td>
- </tr>
- </tbody>
- </table>
- </div>
- <div class="modal-footer">
- <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Close</button>
- </div>
- </div>
- </div>
- </div>
+        <!-- Assign Branch Modal -->
+        <div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="assignHeader" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assignHeader">Assign Branch</h5>
+                        <button type="button" class="close" @click="hideModal('assign')" aria-label="Close">
+                          <span aria-hidden="true" class="text-primary">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label style="width: 100%; float: left;">Filter</label>
+                            <input type="text" class="form-control form-control-custom" v-model="branch" placeholder="Branch" style="width: 80%; float:left; margin-right: 5px;" />
+                            <button type="button" class="btn btn-primary pull-right" @click="search('branch')">Search</button>
+                        </div>
+                        <table class="table table-borderless table-responsive">
+                            <thead>
+                                <th>Branch</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in branches" :key="index">
+                                  <td>
+                                    <label>
+                                    <b>{{item.route}}</b> <span class="badge badge-pill badge-dark" :title="item.locality + ', ' + item.country"><i class="fa fa-question pr-0"></i></span>
+                                    </label>
+                                  </td>
+                                  <td>
+                                    <button class="btn btn-primary" v-if="selectedItem.assigned_location === null" @click="createAddress('branch', item)">Assign</button>
+                                    <button class="btn btn-primary" v-if="selectedItem.assigned_location !== null" @click="updateAddress('branch', item)">Reassign</button>
+                                  </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" @click="hideModal('assign')">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
- <!-- Assign Branch Modal -->
- <div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="assignHeader" aria-hidden="true">
- <div class="modal-dialog" role="document">
- <div class="modal-content">
- <div class="modal-header">
- <h5 class="modal-title" id="assignHeader">Assign Branch</h5>
- <button type="button" class="close" @click="hideModal('assign')" aria-label="Close">
- <span aria-hidden="true" class="text-primary">&times;</span>
- </button>
- </div>
- <div class="modal-body">
- <div class="form-group">
- <label style="width: 100%; float: left;">Filter</label>
- <input type="text" class="form-control form-control-custom" v-model="branch" placeholder="Branch" style="width: 80%; float:left; margin-right: 5px;" />
- <button type="button" class="btn btn-primary pull-right" @click="search('branch')">Search</button>
- </div>
- <table class="table table-borderless table-responsive">
- <thead>
- <th>Branch</th>
- <th>Action</th>
- </thead>
- <tbody>
- <tr v-for="(item, index) in branches" :key="index">
- <td>
- <label>
- <b>{{item.route}}</b> <span class="badge badge-pill badge-dark" :title="item.locality + ', ' + item.country"><i class="fa fa-question pr-0"></i></span>
- </label>
- </td>
- <td>
- <button class="btn btn-primary" v-if="selectedItem.assigned_location === null" @click="createAddress('branch', item)">Assign</button>
- <button class="btn btn-primary" v-if="selectedItem.assigned_location !== null" @click="updateAddress('branch', item)">Reassign</button>
- </td>
- </tr>
- </tbody>
- </table>
- </div>
- <div class="modal-footer">
- <button type="button" class="btn btn-danger" @click="hideModal('assign')">Close</button>
- </div>
- </div>
- </div>
- </div>
+        <!-- Unlink Account Modal -->
+        <div class="modal fade" id="unlink" tabindex="-1" role="dialog" aria-labelledby="unlinkHeader" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title" id="unlinkHeader">Unlink Account</div>
+                        <button type="button" class="close" @click="hideModal('unlink')" aria-label="Close">
+                            <span aria-hidden="true" class="text-primary">&times;</span>
+                        </button>
+                    </div>
 
- <!-- Unlink Account Modal -->
- <div class="modal fade" id="unlink" tabindex="-1" role="dialog" aria-labelledby="unlinkHeader" aria-hidden="true">
- <div class="modal-dialog" role="document">
- <div class="modal-content">
- <div class="modal-header">
- <div class="modal-title" id="unlinkHeader">Unlink Account</div>
- <button type="button" class="close" @click="hideModal('unlink')" aria-label="Close">
- <span aria-hidden="true" class="text-primary">&times;</span>
- </button>
- </div>
+                    <div class="modal-body">
+                    Are you sure you want to unlink this account?
+                    </div>
 
- <div class="modal-body">
- Are you sure you want to unlink this account?
- </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="hideModal('unlink')">Cancel</button>
+                        <button type="button" class="btn btn-success" @click="unlink()">Unlink</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
- <div class="modal-footer">
- <button type="button" class="btn btn-secondary" @click="hideModal('unlink')">Cancel</button>
- <button type="button" class="btn btn-success" @click="unlink()">Unlink</button>
- </div>
- </div>
- </div>
- </div>
-
- </div>
+        </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
 .bg-primary{
   background: $primary !important;
   color: $white !important;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: -80%;
+    margin-top: -6px;
+    margin-left: -130px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: left;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: 100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
 }
 
 </style>
@@ -278,13 +313,11 @@ export default {
           this.selectedItem = item
           this.params = params
           this.brgys = null
-          this.locality = item.assigned_location.locality
           $('#addAddress').modal('show')
         } else if(params === 'branch') {
-          this.locality = item.assigned_location.locality
+          this.locality = null
           this.selectedItem = item
           this.branches = null
-          this.branch = item.assigned_location.route
           $('#assign').modal('show')
         } else {
           this.selectedItem = item

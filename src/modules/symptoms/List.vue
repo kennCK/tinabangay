@@ -491,6 +491,7 @@ export default{
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('symptoms/retrieve', parameter).then(response => {
+        console.log('sysmtoms', response)
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
