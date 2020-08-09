@@ -209,13 +209,13 @@ export default {
       locality: null,
       region: null,
       options: [{
-        title: 'Linked Accounts',
-        value: 'linked_accounts'
-      }, {
         title: 'Customers',
         value: 'customers'
+      }, {
+        title: 'Employees',
+        value: 'linked_accounts'
       }],
-      selectedOption: 'linked_accounts',
+      selectedOption: 'customers',
       data: [],
       healthDecList: [],
       selectedCountry: 'Philippines',

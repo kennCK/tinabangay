@@ -32,7 +32,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ `${branch.route} ${branch.locality}` }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ branch.region }}</h6>
-              <div class="d-flex">
+              <!-- <div class="d-flex">
                 <span class="card text-white bg-danger mr-2" style="width: 150px">
                   <span class="card-header">
                     <h5 class="card-title text-center">
@@ -57,7 +57,7 @@
                   </span>
                   <span class="card-body p-0 mx-auto">Death</span>
                 </span>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -213,28 +213,29 @@ export default {
 
       this.APIRequest('locations/retrieve', parameter).then((response) => {
         if(response.data.length > 0) {
-          const data = [...response.data]
-          response.data.forEach((branch, idx) => {
-            const param = {
-              status: 'positive',
-              locality: branch.locality + '%',
-              route: branch.route + '%'
-            }
-            this.APIRequest('tracing_places/places', param).then(res => {
-              if (res.data.length > 0) {
-                if (data[idx].route === res.data[0].route) {
-                  console.log({ dataRoute: data[idx].route, resRoute: res.data[0].route, param })
-                  data[idx].death_size = res.data[0].death_size != null ? res.data[0].death_size : 0
-                  data[idx].negative_size = res.data[0].negative_size != null ? res.data[0].negative_size : 0
-                  data[idx].positive_size = res.data[0].positive_size != null ? res.data[0].positive_size : 0
-                  data[idx].pui_size = res.data[0].pui_size != null ? res.data[0].pui_size : 0
-                  data[idx].pum_size = res.data[0].pum_size != null ? res.data[0].pum_size : 0
-                  data[idx].recovered_size = res.data[0].recovered_size != null ? res.data[0].recovered_size : 0
-                }
-              }
-              this.branches.push(data[idx])
-            }).fail(err => console.log({ err, param }))
-          })
+          this.branches = response.data
+          // let data = [...response.data]
+          // response.data.forEach((branch, idx) => {
+          //   const param = {
+          //     status: 'positive',
+          //     locality: branch.locality + '%',
+          //     route: branch.route + '%'
+          //   }
+          //   this.APIRequest('tracing_places/places', param).then(res => {
+          //     if (res.data.length > 0) {
+          //       if (data[idx].route === res.data[0].route) {
+          //         console.log({ dataRoute: data[idx].route, resRoute: res.data[0].route, param })
+          //         data[idx].death_size = res.data[0].death_size != null ? res.data[0].death_size : 0
+          //         data[idx].negative_size = res.data[0].negative_size != null ? res.data[0].negative_size : 0
+          //         data[idx].positive_size = res.data[0].positive_size != null ? res.data[0].positive_size : 0
+          //         data[idx].pui_size = res.data[0].pui_size != null ? res.data[0].pui_size : 0
+          //         data[idx].pum_size = res.data[0].pum_size != null ? res.data[0].pum_size : 0
+          //         data[idx].recovered_size = res.data[0].recovered_size != null ? res.data[0].recovered_size : 0
+          //       }
+          //     }
+          //     this.branches.push(data[idx])
+          //   }).fail(err => console.log({ err, param }))
+          // })
         }
       })
     },

@@ -3,7 +3,7 @@
     <div class="form-group" v-if="user.type !== 'USER'">
       <label>You can assign address to your employees for address status verification:</label>
     </div>
-    <table class="table table-bordered table-responsive" v-if="data !== null" style="overflow:inherit">
+    <table class="table table-bordered table-responsive" v-if="data !== null">
         <thead class="bg-primary">
             <!-- <th scope="col">Owner</th> -->
             <th scope="col">Employee</th>
