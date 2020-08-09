@@ -192,7 +192,7 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN'){
+    if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
       ROUTER.push('/dashboard')
     }
     this.getDate()
@@ -243,7 +243,7 @@ export default {
     getLocation(){
       const parameter = {
         condition: [{
-          value: this.user.userID,
+          value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID,
           column: 'account_id',
           clause: '='
         }, {
@@ -300,7 +300,7 @@ export default {
       if(this.selectedOption === 'linked_accounts'){
         let parameter = {
           condition: [{
-            value: this.user.userID,
+            value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID,
             clause: '=',
             column: 'owner'
           }]
