@@ -360,6 +360,10 @@ export default {
             column: 'account_id',
             value: item.account_id
           }, {
+            clause: '=',
+            column: 'owner',
+            value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID
+          }, {
             clause: '!=',
             column: 'updated_at',
             value: null
