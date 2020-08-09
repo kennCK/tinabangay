@@ -24,7 +24,7 @@
     </div>
   </div> -->
   <div class="col-sm-12">
-    <div class="row flex-column-reverse flex-sm-row" v-if="businessInfo !== null">
+    <div class="row flex-column-reverse flex-sm-row">
       <div class="col-sm-9">
         <div v-if="branches !== null && branches.length > 0">
           <h3>BRANCHES</h3>
@@ -65,42 +65,54 @@
           :title="'There\'s currently no hot spots logged.'" 
           :action="'Stay Home!'" 
           :icon="'far fa-smile'" 
-          :iconColor="'text-danger'"
+          :iconColor="'text-success'"
         >
         </empty>
       </div>
       <div class="col-sm-3">
-        <center>
-          <img v-if="businessInfo.logo !== null"
-            :src="backend + businessInfo.logo"
-            alt="logo"
-            class="business-logo"
-          >
-          <i v-else class="fa fa-image business-logo"></i>
-        </center>
-        <p>
-          {{businessInfo.name}}
-        </p>
-        <p>
-          {{businessInfo.address}}
-        </p>
-        <p>
-          {{businessInfo.email}}
-        </p>
-        <qr-code-scanner 
-          :btnWidth="'col-sm-12'" 
-          :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
+        <empty v-if="fetchingBusinessInfo"
+          :title="'Please wait a moment...'" 
+          :action="'We are fetching your data...'" 
+          :icon="'far fa-smile'" 
+          :iconColor="'text-success'"
         >
-        </qr-code-scanner>
+        </empty>
+        <div v-if="businessInfo !== null" style="margin-top: 25px;">
+          <center>
+            <img v-if="businessInfo.logo !== null"
+              :src="backend + businessInfo.logo"
+              alt="logo"
+              class="business-logo"
+            >
+            <i v-else class="fa fa-image business-logo"></i>
+          </center>
+          <p class="mt-3">
+            Name: <b>{{ businessInfo.name || 'No information' }}</b>
+          </p>
+          <p>
+            Address: <b>{{ businessInfo.address || 'No information' }}</b>
+          </p>
+          <p>
+            Email: <b>{{ businessInfo.email || 'No information' }}</b>
+          </p>
+        </div>
+        <empty v-if="businessInfo === null && fetchingBusinessInfo === false"
+          :title="'Whoops!'" 
+          :action="'Seems like you haven\'t setup your business information! Please head over to Business Settings to do so.'" 
+          :icon="'far fa-frown'" 
+          :iconColor="'text-warning'"
+        >
+        </empty>
+        <div class="mt-3">
+          <qr-code-scanner
+            :btnWidth="'col-sm-12'"
+            :state="qrScannerState"
+            @toggleState="(newState) => qrScannerState = newState"
+          >
+          </qr-code-scanner>
+        </div>
       </div>
     </div>
-    <empty v-else 
-      :title="'Whoops!'" 
-      :action="'Seems like you haven\'t setup your business information! Please head over to Business Settings to do so.'" 
-      :icon="'far fa-frown'" 
-      :iconColor="'text-danger'"
-    >
-    </empty>
   </div>
 </template>
 <style scoped lang="scss">
@@ -150,7 +162,7 @@ import ComplaintProperty from './Complaint.js'
 export default {
   mounted(){
     this.retrieveBusinessInfo()
-    this.retrieveEmployees()
+    // this.retrieveEmployees()
     this.retrieveBranches()
   },
   data(){
@@ -162,7 +174,8 @@ export default {
       qrScannerState: false,
       affectedEmp: null,
       data: null,
-      branches: []
+      branches: [],
+      fetchingBusinessInfo: true
     }
   },
   components: {
@@ -171,6 +184,7 @@ export default {
   },
   methods: {
     retrieveBusinessInfo() {
+      this.fetchingBusinessInfo = true
       let par = {
         condition: [{
           value: this.user.userID,
@@ -182,6 +196,7 @@ export default {
         if(response.data.length > 0) {
           this.businessInfo = response.data[0]
         }
+        this.fetchingBusinessInfo = false
       })
     },
     retrieveBranches() {
