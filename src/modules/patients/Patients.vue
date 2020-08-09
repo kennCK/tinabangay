@@ -121,7 +121,6 @@
                 <td>{{item.date_human}}</td>
                 <td>{{item.time}}</td>
                 <td>{{item.route}}</td>
-                <td>{{item.locate}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
                 <td><button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i class="fa fa-trash"></i></button></td>
@@ -168,7 +167,7 @@ import PatientModalProperty from 'src/modules/patients/CreatePatients.js'
 import PlaceModalProperty from 'src/modules/patients/AddPlace.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import { ExportToCsv } from 'export-to-csv'
-import moment from 'moment'
+import moment, { locale } from 'moment'
 export default {
   mounted(){
   //  this.retrieve()
@@ -193,7 +192,7 @@ export default {
       patientProperty: PatientModalProperty,
       placeProperty: PlaceModalProperty,
       selectedItem: null,
-      data: null,
+      data: [],
       date: null,
       config: CONFIG,
       accounts: [],
@@ -237,7 +236,9 @@ export default {
       showSummaryFlag: false,
       localitySearch: null,
       summary: null,
-      storage: []
+      storage: [],
+      lastId: [],
+      deletedId: []
     }
   },
   components: {
@@ -425,10 +426,10 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
-      console.log(parameter)
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
+        console.log(this.data)
         if(response.data.length > 0){
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
@@ -736,6 +737,7 @@ export default {
         this.placeProperty = {...PlaceModalProperty}
         if(this.placeProperty.params[this.placeProperty.params.length - 1].variable === 'account_id') {
           this.placeProperty.params.pop()
+          console.log(this.placeProperty.params)
         }
         let inputs = this.placeProperty.inputs
         this.$refs.modal.$refs.location[0].onCancel()

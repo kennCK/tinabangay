@@ -740,6 +740,7 @@ export default {
   },
   data() {
     return{
+      dateLimit: moment(new Date(), 'YYYY-MM-DD').format('YYYY-MM-DD'),
       user: AUTH.user,
       modeOfTransportation: [...COMMON.vehicleTypes],
       symptomsOption: [...COMMON.symptomsHealthDec],

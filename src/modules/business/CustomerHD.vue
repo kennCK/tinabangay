@@ -517,6 +517,7 @@ export default {
   },
   data() {
     return{
+      dateLimit: moment(new Date(), 'YYYY-MM-DD').format('YYYY-MM-DD'),
       user: AUTH.user,
       symptomsOption: [...COMMON.symptomsHealthDec],
       healthDec: JSON.parse(JSON.stringify(COMMON.healthDec)),
