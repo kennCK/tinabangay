@@ -1,11 +1,5 @@
 <template>
   <div class="container-fluid">
-            <input 
-                class="form-control textarea" 
-                placeholder="Are You Looking For Plasma? "  
-                id="comment"
-                data-toggle="modal" data-target="#myModal"
-            />
             <!-- Modal For Add New Post -->
             <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog">
@@ -26,12 +20,18 @@
 
             <!-- Loop For Each cards -->
             <div class="row" style="margin-top:20px">
-            <div  class="column" v-for="(datus, index) in data" :key="index">
-                <div class="card" style="height:220px;">
-                    <div class="card-headers" style="padding-left:10px;padding-right:10px;">
-                        <div class="row">
-                            <div class="col-sm-9">
-                                <div class="card-title"><p style="padding-top:15px">{{datus.created_at}}</p></div>
+                <div class="column" style="width:50%;">
+                    <input 
+                        class="form-control textarea" 
+                        placeholder="Are You Looking For Plasma? "  
+                        id="comment"
+                        data-toggle="modal" data-target="#myModal"
+                        /><br/>
+                    <div>
+                        <div class="card p-2 border align-self-start" v-for="(datus, index) in data" :key="index" style="margin-bottom:5px">
+                            <div class="row">
+                            <div class="col-sm-10">
+                                <div class="card-title"><p style="padding-top:15px; margin-left:10px"><i class="fas fa-clock"></i> &nbsp;{{datus.created_at_human}}</p></div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="dropdown" v-if="user.type === 'ADMIN'">
@@ -42,16 +42,21 @@
                                     </div>
                                 </div> 
                             </div>
-                        </div><hr style="margin-top:2px"/>
-                    </div>
-                    <div class="card-content" style="padding-left:10px; padding-right:10px">
-                        <label id="postContent" style="width: 200px; overflow: hidden;display: inline-block;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;text-overflow:ellipsis;">{{datus.content}}</label>
-                    </div>
-                    <div class="card-action">
-                        <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="modal" data-target="#seeMoreModal" title="See more">See more</button>
+                        </div><hr style="margin-top:1px;"/>
+                            <div class="card-content" style="padding-left:10px; padding-right:10px">
+                                <label id="postContent" style="width: 200px; overflow: hidden;display: inline-block;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;text-overflow:ellipsis;">{{datus.content}}</label>
+                            </div>
+                            <div class="card-action">
+                                <button @click="getId(datus.id)" v-if="datus.content.length>110" class="btn showSize" data-toggle="modal" data-target="#seeMoreModal" title="See more">See more</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="column" style="width:50%;">
+                    <div class="container" style="width:100%">
+                         <empty :title="'Coming Soon'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
+                    </div>
+                </div>
 
             <!-- Modal For See More -->
             <div class="modal fade" id="seeMoreModal" data-backdrop="static" data-keyboard="false">
@@ -60,7 +65,7 @@
 
                             <div class="modal-header">
                                 <div>
-                                    <p class="date-posted-modal">{{plasmaData.created_at}}</p>
+                                    <p class="date-posted-modal">{{plasmaData.created_at_human}}</p>
                                 </div>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
@@ -85,7 +90,11 @@
     #comment:active{box-shadow: 5px 4px 8px 1px rgba(204, 204, 204, 0.4)}
 
     #comment{
-        width:50%; height:70px;
+        width:100%; height:70px;
+    }
+
+    .card{
+        
     }
     
     .btn-content-Message{
@@ -122,14 +131,9 @@
     .column {
         float: left;
         width: 25%;
+        padding-top: -20px;
         padding: 10px;
-        height: 250px; 
-    }
-
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
+        /* height: 200px;  */
     }
 
      .contentMessage{
@@ -140,18 +144,7 @@
     .container-fluid{
         margin-top:30px
     }
-    .column {
-        float: left;
-        width: 25%;
-        padding: 0 5px;
-        margin-bottom:2vh
-    }
-   
-    .cards {
-        padding: 16px;
-        padding-top:2px;
-        height:200px;
-    }
+    
     .card-header{
         padding:0px;
         background-color:white;
@@ -194,7 +187,7 @@
     
     .showSize{
         background-color: transparent;
-        color: #005b96;;
+        color: #005b96;
     }
     .showSize:focus{
         box-shadow: none;
@@ -209,7 +202,7 @@
     }
     
 
-     @media screen and (max-width: 600px) {
+     /* @media screen and (max-width: 600px) {
     .alert-box {
         width: 80%;
         background: white;
@@ -229,7 +222,7 @@
         width: 100%
     }
 
-    }
+    } */
    
 
 </style>
@@ -237,6 +230,7 @@
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
+import moment from 'moment'
 // import COMMON from 'src/common.js'
 // import PropertyModal from './CreateSymptom.js'
 export default{
@@ -274,9 +268,12 @@ export default{
   },
   methods: {
     getId(id){
+      $('#loading').css({display: 'block'})
       this.APIRequest('posts/retrieve').then(response => {
+        $('#loading').css({display: 'none'})
         for(let i = 0; i < response.data.length; i++){
           if(response.data[i].id === id){
+            response.data[i].created_at_human = moment(response.data[i].created_at_human).fromNow()
             this.plasmaData = response.data[i]
             this.modalShow = true
           }
@@ -304,6 +301,7 @@ export default{
         this.data = response.data.reverse()
         for(let i = 0; i < this.data.length; i++){
           this.data[i].content = this.data[i].content
+          this.data[i].created_at_human = moment(this.data[i].created_at_human).fromNow()
         }
       })
     },
@@ -341,6 +339,7 @@ export default{
             this.showTextField()
             this.post = response.data[i].content
             this.editID = response.data[i].id
+
           }
         }
       })
