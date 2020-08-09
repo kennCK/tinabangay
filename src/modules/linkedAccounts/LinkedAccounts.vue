@@ -55,13 +55,23 @@
                     Actions
                   </button>
                   <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item"  @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'DRIVER'" style="color:red">Remove Assign</a>
-                      <a class="dropdown-item" @click="updateType(item, 'DRIVER')" v-if="item.account.account_type !== 'DRIVER'">Assign as Driver</a>
-                      <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign Scanner</a>
+                      <a class="dropdown-item"  @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'BUSINESS_AUTHORIZED'" style="color:red">Remove assign as {{item.account.account_type}}</a>
+                      <a class="dropdown-item" @click="updateType(item, 'BUSINESS_AUTHORIZED')" v-if="item.account.account_type !== 'BUSINESS_AUTHORIZED'">Assign as business authorized</a>
+                      <div v-if="item.account.account_type === 'TEMP_SCANNER'">
+                      <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign as scanner</a>
                       <a class="dropdown-item" v-if="item.assigned_location === null" @click="show('branch', item, 'add')">Assign branch</a>
                       <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">Edit branch</a>
                       <a class="dropdown-item" v-if="item.address === null" @click="show('brgy', item, 'add')">Assign address</a>
                       <a class="dropdown-item" v-if="item.address !== null" @click="show('brgy', item, 'edit')">Edit address</a>
+                      </div>
+                      <div v-if="item.account.account_type === 'BUSINESS_AUTHORIZED'">
+                      <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign as scanner</a>
+                      <a class="dropdown-item" v-if="item.assigned_location === null" @click="show('vehicle', item, 'add')">Assign vehicle</a>
+                      <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">Edit branch</a>
+                      <!-- <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('vehicle', item, 'edit')">Edit vehicle</a> -->
+                      <a class="dropdown-item" v-if="item.address === null" @click="show('brgy', item, 'add')">Assign address</a>
+                      <a class="dropdown-item" v-if="item.address !== null" @click="show('brgy', item, 'edit')">Edit address</a>
+                      </div>
                       <a class="dropdown-item" @click="show('unlink', item)" style="color:red">Delete</a>
                   </div>
                 </div>
@@ -76,10 +86,10 @@
                             </div>
                             <!-- Modal body -->
                             <div class="modal-body" style="justify-content:center; display:flex">
-                                <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'DRIVER'">Remove assignment</button>
+                                <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'BUSINESS_AUTHORIZED'">Remove assignment</button>
                                 &nbsp;&nbsp;
                                 <h5>OR Change to:</h5>&nbsp;&nbsp;
-                                <button class="btn btn-primary" @click="updateType(item, 'DRIVER')" v-if="item.account.account_type !== 'DRIVER'" style="margin-right:10px;" data-dismiss='modal'>DRIVER</button>
+                                <button class="btn btn-primary" @click="updateType(item, 'BUSINESS_AUTHORIZED')" v-if="item.account.account_type !== 'BUSINESS_AUTHORIZED'" style="margin-right:10px;" data-dismiss='modal'>BUSINESS_AUTHORIZED</button>
                                 <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'" data-dismiss='modal'>SCANNER</button>
                             </div>
                                 <!-- Modal footer -->
@@ -213,52 +223,17 @@
   color: $white !important;
 }
 
-.dropdown-submenu {
-    position: relative;
+.dropdown-menu{
+  margin-right: 40px
 }
 
-.dropdown-submenu>.dropdown-menu {
-    top: 0;
-    left: -80%;
-    margin-top: -6px;
-    margin-left: -130px;
-    -webkit-border-radius: 0 6px 6px 6px;
-    -moz-border-radius: 0 6px 6px;
-    border-radius: 0 6px 6px 6px;
+.dropdown-menu:hover{
+    cursor: pointer;
 }
 
-.dropdown-submenu:hover>.dropdown-menu {
-    display: block;
-}
 
-.dropdown-submenu>a:after {
-    display: block;
-    content: " ";
-    float: left;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
-    border-width: 5px 0 5px 5px;
-    border-left-color: #ccc;
-    margin-top: 5px;
-    margin-right: -10px;
-}
-
-.dropdown-submenu:hover>a:after {
-    border-left-color: #fff;
-}
-
-.dropdown-submenu.pull-left {
-    float: none;
-}
-
-.dropdown-submenu.pull-left>.dropdown-menu {
-    left: 100%;
-    margin-left: 10px;
-    -webkit-border-radius: 6px 0 6px 6px;
-    -moz-border-radius: 6px 0 6px 6px;
-    border-radius: 6px 0 6px 6px;
+.dropdown-menu:hover ~ a{
+  background-color: aliceblue
 }
 
 </style>
