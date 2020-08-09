@@ -806,11 +806,12 @@ export default {
           wsHost: CONFIG.PUSHER.wsHost,
           wsPort: CONFIG.PUSHER.wsPort,
           disableStats: true,
-          enabledTransports: ['ws', 'wss']
+          enabledTransports: ['ws', 'wss'],
+          encrypted: true
         })
       }
       window.Echo.channel(COMMON.pusher.channel)
-      .listen('call', e => {
+      .listen('Call', e => {
         console.log(e)
       })
       .listen(COMMON.pusher.notifications, e => {

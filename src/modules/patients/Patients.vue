@@ -48,7 +48,7 @@
     <table class="table table-responsive table-bordered" id="myTable">
       <tr class="bg-primary">
         <th scope="col">Status</th>
-        <th scope="col">Patient's Username / Patient Code<i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></th>
+        <th scope="col">Patient's Code<i class="fa fa-caret-down float-right" style="margin-top:-17px; margin-left: 10  px" @click="sortTable(1)"></i></th>
         <th scope="col">Remarks</th>
         <th scope="col">Locality</th>
         <th scope="col">Contact Number</th>
@@ -58,15 +58,15 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td class="text-uppercase" :class="{'alert-info': item.status === 'symptoms', 'bg-danger': item.status === 'positive', 'bg-warning': item.status === 'pum', 'bg-primary': item.status === 'pui', 'bg-success': item.status === 'tested'}">{{item.status}}</td>
-          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
+          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.code}}</td>
           <td>{{item.remarks}}</td>
           <td>{{item.locality}}</td>
           <td>{{item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
           <td>
             <button class="btn btn-success" style="margin: .5% 0;" @click="showModal('place', item.account_id, item.id)">Add Visited Place</button>
-            <button class="btn btn-primary" style="margin: .5% 0;" @click="showModal('patient', null, null, item)"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger" style="margin: .5% 0;"  @click="selectItemToDelete(item.id)" data-toggle="modal" data-target="#confirm-delete"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-primary" style="margin: .5% 0; width: 50px;" @click="showModal('patient', null, null, item)"><i class="fas fa-edit" style="padding: 0;"></i></button>
+            <button class="btn btn-danger" style="margin: .5% 0; width: 50px;"  @click="selectItemToDelete(item.id)" data-toggle="modal" data-target="#confirm-delete"><i class="fas fa-trash" style="padding: 0"></i></button>
           </td>
         </tr>
       </tbody>
@@ -123,7 +123,7 @@
                 <td>{{item.route}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
-                <td><button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i class="fa fa-trash"></i></button></td>
+                <td><button class="btn btn-danger" style="width: 50px;" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i style="padding: 0px" class="fa fa-trash"></i></button></td>
               </tr>
              </tbody>
             </table>
@@ -426,6 +426,7 @@ export default {
         }
       }
       $('#loading').css({display: 'block'})
+      console.log(parameter)
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data

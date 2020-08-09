@@ -6,8 +6,6 @@
     </div>
     <div class="mx-auto text-center mb-4">
       <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
-      <span class="text-secondary">{{data.merchant.address}}</span>
-      <br>
       <span class="text-secondary">
         {{`
             ${formParameters.location ? formParameters.location.route ? `${formParameters.location.route},` : '' : ''}
@@ -22,7 +20,7 @@
       :class="['text-center', 'font-weight-bold', {'text-danger': formParameters.status === 'danger', 'text-success': formParameters.status === 'clear'}]">
       Status: {{formParameters.status}}{{formParameters.statusLabel !== 'clear' ? ` [${formParameters.statusLabel}]` : ''}}
     </h5>
-    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ getRelativeTime(data.updated_at) }}</h5>
+    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ data.updated_at_human }}</h5>
     <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
       <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
     </div>
@@ -43,7 +41,7 @@
               </tr>
               <tr>
                 <th scope="row">Date of Birth</th>
-                <td>{{healthDec.personalInformation.birth_date}}</td>
+                <td>{{healthDec.personalInformation.birth_date || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Civil Status</th>
@@ -193,8 +191,8 @@
             </div>
 
             <div class="form-group col-md-4">
-              <label for="birthday" class="required">Date of Birth</label>
-              <input type="date" name="birth_date" id="birthday" class="form-control" v-model="healthDec.personalInformation.birth_date" required>
+              <label for="birthday">Date of Birth</label>
+              <input type="date" name="birth_date" id="birthday" class="form-control" :max="getMaxDate()" v-model="healthDec.personalInformation.birth_date">
             </div>
 
             <div class="form-group col-md-4">
@@ -250,7 +248,7 @@
         <div id="transportations" class="row">
           <div class="form-group col-md-3">
             <label for="arrivalDate">Arrival Date</label>
-            <input type="date" name="arrivalDate" :max="dateLimit" id="arrivalDate" class="form-control">
+            <input type="date" name="arrivalDate" id="arrivalDate" class="form-control" :max="getMaxDate()">
           </div>
           
           <div class="form-group col-md-3">
@@ -543,8 +541,12 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
-    getRelativeTime(time) {
-      return moment(time).fromNow()
+    getMaxDate() {
+      return moment().format('YYYY-MM-DD')
+    },
+    isNotValidDate(date) {
+      const today = moment().format('YYYY-MM-DD')
+      return moment(date).isAfter(today)
     },
     addTranspo() {
       let flag = this.checkTranspo()
@@ -559,6 +561,12 @@ export default {
           flight: $('#flight').val(),
           seat: $('#seat').val()
         }
+
+        if (this.isNotValidDate(info.date)) {
+          $(`#arrivalDate`).addClass('is-invalid')
+          return
+        }
+
         $('<div>', {
           id: 'transpo-list',
           class: 'row list-group-item w-100 my-0 mx-4',
@@ -789,6 +797,12 @@ export default {
           if($(input).val() === null || $(input).val() === undefined || $(input).val().trim() === '') {
             $(input).addClass('is-invalid')
             valid = false
+          }
+          if($(input).attr('id') === 'birthday') {
+            if (this.isNotValidDate($(input).val())) {
+              $(input).addClass('is-invalid')
+              valid = false
+            }
           }
         }
       })

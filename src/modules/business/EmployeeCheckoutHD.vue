@@ -6,8 +6,6 @@
     </div>
     <div class="mx-auto text-center mb-4">
       <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
-      <span class="text-secondary">{{data.merchant.address}}</span>
-      <br>
       <span class="text-secondary">
         {{`
             ${formParameters.location ? formParameters.location.route ? `${formParameters.location.route},` : '' : ''}
@@ -22,7 +20,7 @@
       :class="['text-center', 'font-weight-bold', {'text-danger': formParameters.status === 'danger', 'text-success': formParameters.status === 'clear'}]">
       Status: {{formParameters.status}}{{formParameters.statusLabel !== 'clear' ? ` [${formParameters.statusLabel}]` : ''}}
     </h5>
-    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ getRelativeTime(data.updated_at) }}</h5>
+    <h5 class="text-center font-weight-bold" v-if="!form">Completed on: {{ data.updated_at_human }}</h5>
     <div class="border border-2 my-4 mx-auto p-3 rounded" v-if="form">
       <b>IMPORTANT REMINDER:</b> Kindly complete this health declaration form honestly. Failure to answer or giving of false information is punishable in accordance with Philippine laws.
     </div>
@@ -52,7 +50,7 @@
               </tr>
               <tr>
                 <th scope="row">Date of Birth</th>
-                <td>{{healthDec.personalInformation.birth_date}}</td>
+                <td>{{healthDec.personalInformation.birth_date || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Tel./Mobile No.</th>
@@ -540,9 +538,6 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
-    getRelativeTime(time) {
-      return moment(time).fromNow()
-    },
     addPerson() {
       const name = $('#person_in_contact_name').val().trim()
       const department = $('#person_in_contact_department').val().trim()
