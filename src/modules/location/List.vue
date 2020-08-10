@@ -6,8 +6,9 @@
     <div class="row w-100 m-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
         <div class="qr-code-container p-2">
-          <div class="qr-code" v-if="item.code !== null" @click="setCode('location/' + item.code)">
-            <QrcodeVue :value="'location/' + item.code" :size="100"></QrcodeVue>
+          <div class="qr-code" v-if="item.code !== null" @click="setCode('https://birds-eye.org/#/location/' + item.code)">
+            <button @click="redirect('location/' + item.code)">redirect nimal</button>
+            <QrcodeVue :value="'https://birds-eye.org/#/location/' + item.code" :size="100"></QrcodeVue>
           </div>
           <div class="details" :class="item.code === null ? 'ml-4' : ''">
             <label class="card-title">
@@ -370,7 +371,7 @@ export default {
   },
   methods: {
     redirect(parameter){
-      ROUTER.push(parameter)
+      this.$router.push(`/${parameter}`)
     },
     setCode(code){
       this.$refs.imageView.setCode(code)
