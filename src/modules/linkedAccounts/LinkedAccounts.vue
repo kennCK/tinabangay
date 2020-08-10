@@ -70,21 +70,21 @@
                   <div class="dropdown-menu" role="menu">
                       <a class="dropdown-item"  @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'BUSINESS_AUTHORIZED'" style="color:red">Remove assign as {{item.account.account_type}}</a>
                       <a class="dropdown-item" @click="updateType(item, 'BUSINESS_AUTHORIZED')" v-if="item.account.account_type !== 'BUSINESS_AUTHORIZED'">Assign as business authorized</a>
-                      <div v-if="item.account.account_type === 'TEMP_SCANNER'">
+                      <!-- <div v-if="item.account.account_type === 'TEMP_SCANNER'"> -->
                       <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign as scanner</a>
                       <a class="dropdown-item" v-if="item.assigned_location === null" @click="show('branch', item, 'add')">Assign branch</a>
                       <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">Edit branch</a>
                       <a class="dropdown-item" v-if="item.address === null" @click="show('brgy', item, 'add')">Assign address</a>
                       <a class="dropdown-item" v-if="item.address !== null" @click="show('brgy', item, 'edit')">Edit address</a>
-                      </div>
-                      <div v-if="item.account.account_type === 'BUSINESS_AUTHORIZED'">
+                      <!-- </div> -->
+                      <!-- <div v-if="item.account.account_type === 'BUSINESS_AUTHORIZED'">
                       <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign as scanner</a>
                       <a class="dropdown-item" v-if="item.assigned_location === null" @click="show('vehicle', item, 'add')">Assign vehicle</a>
                       <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">Edit branch</a>
-                      <!-- <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('vehicle', item, 'edit')">Edit vehicle</a> -->
+                      <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('vehicle', item, 'edit')">Edit vehicle</a>
                       <a class="dropdown-item" v-if="item.address === null" @click="show('brgy', item, 'add')">Assign address</a>
                       <a class="dropdown-item" v-if="item.address !== null" @click="show('brgy', item, 'edit')">Edit address</a>
-                      </div>
+                      </div> -->
                       <a class="dropdown-item" @click="show('unlink', item)" style="color:red">Delete</a>
                   </div>
                 </div>

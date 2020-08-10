@@ -20,7 +20,7 @@
 
             <!-- Loop For Each cards -->
             <div class="row" style="margin-top:20px">
-                <div class="column" style="width:50%;">
+                <div class="column">
                     <input 
                         class="form-control textarea" 
                         placeholder="Are You Looking For Plasma? "  
@@ -42,7 +42,7 @@
                                     </div>
                                 </div> 
                             </div>
-                        </div><hr style="margin-top:1px;"/>
+                        </div>
                             <div class="card-content" style="padding-left:10px; padding-right:10px">
                                 <label id="postContent" style="width: 200px; overflow: hidden;display: inline-block;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;text-overflow:ellipsis;">{{datus.content}}</label>
                             </div>
@@ -52,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="column" style="width:50%;">
+                <div class="column column2">
                     <div class="container" style="width:100%">
                          <empty :title="'Coming Soon'" :action="'Please be back soon!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
                     </div>
@@ -65,7 +65,7 @@
 
                             <div class="modal-header">
                                 <div>
-                                    <p class="date-posted-modal">{{plasmaData.created_at_human}}</p>
+                                    <p class="date-posted-modal"><i class="fas fa-clock"></i> &nbsp;{{plasmaData.created_at_human}}</p>
                                 </div>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
@@ -200,9 +200,13 @@
         padding-left:10px;
         padding-right:10px;
     }
+
+    .column{
+        width: 50%;
+    }
     
 
-     /* @media screen and (max-width: 600px) {
+     @media screen and (max-width: 600px) {
     .alert-box {
         width: 80%;
         background: white;
@@ -215,14 +219,14 @@
     }
 
     .column {width: 100%;}
-    .col-sm-9{width: 80%;}
+    /* .col-sm-9{width: 80%;}
     .col-sm-2{width: 20%}
 
     #comment{
         width: 100%
-    }
-
     } */
+
+    }
    
 
 </style>
