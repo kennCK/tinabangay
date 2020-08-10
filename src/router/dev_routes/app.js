@@ -306,6 +306,14 @@ export default{
     meta: {
       tokenRequired: false
     }
+  },
+  {
+    path: '/location/:code',
+    name: 'unregisteredCustomerHD',
+    component: resolve => require(['modules/business/UnregisteredCustomerHD.vue'], resolve),
+    meta: {
+      tokenRequired: false
+    }
   }
   ]
 }
