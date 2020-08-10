@@ -64,7 +64,4 @@
   animation-name: flip-with-scale;
 }
 
-#loading{
-  background-color: white
-}
 </style>

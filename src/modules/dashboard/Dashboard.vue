@@ -1,7 +1,7 @@
 <template>
   <div style="margin-bottom: 50px;">
     <business v-if="dashType === 'BUSINESS'"></business>
-    <user v-else-if="dashType === 'USER'"></user>
+    <user v-else-if="dashType === 'USER' || dashType === 'BUSINESS_AUTHORIZED' || dashType === 'TEMP_SCANNER'"></user>
     <div v-else-if="dashType === 'ADMIN'">
     <div class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
@@ -145,6 +145,7 @@ export default{
       let parameter = {
         id: this.user.userID
       }
+      console.log(this.user.location.code)
       // $('#loading').css({display: 'block'})
       this.APIRequest('tracings/status', parameter).then(response => {
         // $('#loading').css({display: 'none'})

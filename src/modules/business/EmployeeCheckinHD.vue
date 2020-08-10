@@ -50,11 +50,11 @@
               </tr>
               <tr>
                 <th scope="row">Immediate Superior</th>
-                <td>{{healthDec.personalInformation.immediate_superior}}</td>
+                <td>{{healthDec.personalInformation.immediate_superior || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Sex</th>
-                <td>{{healthDec.personalInformation.gender}}</td>
+                <td>{{healthDec.personalInformation.gender || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Date of Birth</th>
@@ -66,11 +66,11 @@
               </tr>
               <tr>
                 <th scope="row">Occupation</th>
-                <td>{{healthDec.personalInformation.occupation}}</td>
+                <td>{{healthDec.personalInformation.occupation || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Tel./Mobile No.</th>
-                <td>{{healthDec.personalInformation.contact_number}}</td>
+                <td>{{healthDec.personalInformation.contact_number || 'Not specified'}}</td>
               </tr>
               <tr>
                 <th scope="row">Email</th>
@@ -78,7 +78,7 @@
               </tr>
               <tr>
                 <th scope="row">Address in the Philippines</th>
-                <td>{{healthDec.personalInformation.address}}</td>
+                <td>{{healthDec.personalInformation.address || 'Not specified'}}</td>
               </tr>
             </tbody>
           </table>
@@ -224,8 +224,8 @@
             </div>
 
             <div class="form-group col-md-3">
-              <label for="immediateSuperior" class="required">Immediate Superior:</label>
-              <input class="form-control" type="text" name="immediate_superior" id="immediateSuperior" placeholder="Enter Immediate Superior" v-model="healthDec.personalInformation.immediate_superior" required>
+              <label for="immediateSuperior">Immediate Superior:</label>
+              <input class="form-control" type="text" name="immediate_superior" id="immediateSuperior" placeholder="Enter Immediate Superior" v-model="healthDec.personalInformation.immediate_superior">
             </div>
           </div>
 
@@ -288,13 +288,13 @@
 
           <div class="row">
             <div class="form-group col-md-4">
-              <label for="occupation" class="required">Occupation</label>
-              <input v-model="healthDec.personalInformation.occupation" type="text" name="occupation" id="occupation" class="form-control" placeholder="Enter Occupation" required>
+              <label for="occupation">Occupation</label>
+              <input v-model="healthDec.personalInformation.occupation" type="text" name="occupation" id="occupation" class="form-control" placeholder="Enter Occupation">
             </div>
 
             <div class="form-group col-md-4">
-              <label for="contactNum" class="required">Tel./Mobile No.</label>
-              <input v-model="healthDec.personalInformation.contact_number" type="text" name="contact_number" id="contactNum" class="form-control" placeholder="Enter Contact Information" required>
+              <label for="contactNum">Tel./Mobile No.</label>
+              <input v-model="healthDec.personalInformation.contact_number" type="text" name="contact_number" id="contactNum" class="form-control" placeholder="Enter Contact Information">
             </div>
 
             <div class="form-group col-md-4">
@@ -305,8 +305,8 @@
 
           <div class="row">
             <div class="form-group col-12">
-              <label for="address" class="required">Address in the Philippines</label>
-              <input  v-model="healthDec.personalInformation.address" type="text" name="address" id="address" class="form-control" placeholder="Enter Address" required>
+              <label for="address">Address in the Philippines</label>
+              <input  v-model="healthDec.personalInformation.address" type="text" name="address" id="address" class="form-control" placeholder="Enter Address">
             </div>
           </div>
         </div>
@@ -372,9 +372,9 @@
         <section id="person-in-contact-12h">
           <div class="mt-4">
             <h6 class="font-weight-bold required">
-              Name at least 5 people you were within the last 12 hours and state relation.
+              Name at least 1 person you were in close contact within the last 12 hours and state relation.
             </h6>
-            <p style="font-size: 12px">(Pag hingan ug lima (5) ka taw nga imong nakuyog sulod sa 12 ka oras og relasyon nimo matag usa)</p>
+            <p style="font-size: 12px">(Pag hingan ug isa (1) ka taw nga imong nakuyog sulod sa 12 ka oras og relasyon nimo matag usa)</p>
           </div>
 
           <div class="row my-2 ml-2">
@@ -732,7 +732,7 @@ export default {
           label: 'Transactions:',
           question: 'Aside from your own work area/section, do you plan to transact with other dept/ section today? To whom in particular?',
           translate: '(Gawas sa imong section, naa ka bay plano mo transact sa lain nga departamento o section? Kang kinsa imong katuyuan?)',
-          required: true,
+          required: false,
           answer: []
         }
       ]
@@ -927,8 +927,6 @@ export default {
             content: JSON.stringify(this.healthDec),
             payload: `form_submitted/${this.healthDec.format}`
           }
-
-          console.log({ param })
           this.APIRequest('health_declarations/create', param).then(response => {
             ROUTER.push(`/form/${response.generated_code}`)
           }).fail(() => {
@@ -996,7 +994,7 @@ export default {
       })
 
       if (valid) {
-        if (this.healthDec.company.person_in_contact.length < 5) {
+        if (this.healthDec.company.person_in_contact.length < 1) {
           valid = false
           setTimeout(() => $('body,html').animate({ scrollTop: $('#person-in-contact-12h').offset().top - 350 }, 500), 500)
           setTimeout(() => $(`#person-in-contact-12h h6`).css({ 'color': 'red' }), 1200)
