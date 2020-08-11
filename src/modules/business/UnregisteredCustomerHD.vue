@@ -11,10 +11,7 @@
     <div v-if="errorFetching === false">
       <div v-if="submittedHDF" class="my-5 form-wrapper">
         <h2 class="text-primary text-center text-success font-weight-bold">Form Submitted Successfully!</h2>
-        <p class="text-center">
-          You are also now registered to the application.
-          <a href="javascript:void(0)" @click="redirect('/login')" class="font-weight-bold">Click here</a> to sign in.
-        </p>
+        <h4 class="text-primary text-center font-weight-bold">Signing in...</h4>
       </div>
       <div v-if="data !== null && selectedOption === null && submittedHDF === false" class="my-5 form-wrapper d-flex align-items-center flex-column">
         <h1 class="text-primary text-center font-weight-bold">Customer Health Declaration Form</h1>
@@ -221,12 +218,18 @@
               <!-- PASSOWRD -->
               <div class="input-group form-group col-sm-12 col-md-6">
                 <span class="input-group-addon" id="addon-2"><i class="fa fa-key"></i></span>
-                <input id="password" type="password" class="form-control form-control-login" placeholder="Password" aria-describedby="addon-2" v-model="password" required>
+                <input id="password" :type="showPassword ? 'text' : 'password'" class="form-control form-control-login" placeholder="Password" aria-describedby="addon-2" v-model="password" required>
+                <span class="input-group-addon showPassword" @click="showPassword = !showPassword">
+                  <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                </span>
               </div>
               <!-- CPASSOWRD -->
               <div class="input-group form-group col-sm-12 col-md-6">
                 <span class="input-group-addon" id="addon-2"><i class="fa fa-key"></i></span>
-                <input id="password" type="password" class="form-control form-control-login" placeholder="Confirm Password" aria-describedby="addon-2" v-model="cpassword" required>
+                <input id="password" :type="showPassword ? 'text' : 'password'" class="form-control form-control-login" placeholder="Confirm Password" aria-describedby="addon-2" v-model="cpassword" required>
+                <span class="input-group-addon showPassword" @click="showPassword = !showPassword">
+                  <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                </span>
               </div>
             </div>
           </div>
@@ -577,7 +580,7 @@
     background-color: $primary;
   }
 
-  .terms-agreement label b:hover {
+  .terms-agreement label b:hover, .showPassword {
     cursor: pointer;
   }
 </style>
@@ -590,8 +593,12 @@ import CONFIG from 'src/config.js'
 
 export default {
   mounted() {
-    this.form = true
+    localStorage.removeItem('location_code')
+    if (this.tokenData.token !== null && parseInt(this.user.userID) > 0) {
+      ROUTER.push(`/scanned/location/${this.$route.params.code}`)
+    }
     this.code = this.$route.params.code
+    this.form = true
     this.retrieve(this.code)
   },
   data() {
@@ -624,6 +631,7 @@ export default {
       email: '',
       password: '',
       cpassword: '',
+      showPassword: false,
       type: 'USER',
       errorMessage: null,
       tokenData: AUTH.tokenData,
@@ -634,6 +642,7 @@ export default {
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
     redirect(param) {
+      localStorage.setItem('location_code', this.code)
       ROUTER.push(param)
     },
     retrieve(code) {
@@ -814,10 +823,6 @@ export default {
         this.errorMessage = 'Password must be atleast ' + COMMON.passwordLimit + ' characters.'
         $('#password').addClass('is-invalid')
         return false
-      }else if(/^[a-zA-Z0-9]+$/.test(this.password)){
-        this.errorMessage = 'Password must be alphanumeric characters. It should contain 1 number, 1 special character and letters.'
-        $('#password').addClass('is-invalid')
-        return false
       }else if(this.password.localeCompare(this.cpassword) !== 0){
         $('#password').addClass('is-invalid')
         this.errorMessage = 'Password did not match.'
@@ -991,6 +996,11 @@ export default {
           this.APIRequest('health_declarations/create', hdfParam).then(response => {
             this.submittedHDF = true
             $('#loading').css({display: 'none'})
+            AUTH.authenticate(this.username, this.password, (response) => {
+              $('#loading').css({'display': 'none'})
+            }, () => {
+              $('#loading').css({'display': 'none'})
+            })
           }).fail(() => {
             $('<div>', {
               id: 'error',
