@@ -7,7 +7,7 @@
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
         <div class="qr-code-container p-2">
           <div class="qr-code" v-if="item.code !== null" @click="setCode('https://birds-eye.org/#/location/' + item.code)">
-            <button @click="redirect('location/' + item.code)">redirect nimal</button>
+            <!-- <button @click="redirect('location/' + item.code)">redirect nimal</button> -->
             <QrcodeVue :value="'https://birds-eye.org/#/location/' + item.code" :size="100"></QrcodeVue>
           </div>
           <div class="details" :class="item.code === null ? 'ml-4' : ''">

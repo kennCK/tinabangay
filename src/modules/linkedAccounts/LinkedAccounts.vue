@@ -3,7 +3,7 @@
     <div class="form-group" v-if="user.type !== 'USER'">
       <label>You can assign address to your employees for address status verification:</label>
     </div>
-    <button class="btn pull-right mr-3" :class="[{'btn-success': !importFlag}, {'btn-danger': importFlag}]" style="margin: .5% 0;" @click="importFlag = !importFlag, googleId = googleSheetNumber = null">{{importFlag ? 'Cancel Import' : 'Import Accounts'}}</button>
+    <!-- <button class="btn pull-right mr-3" :class="[{'btn-success': !importFlag}, {'btn-danger': importFlag}]" style="margin: .5% 0;" @click="importFlag = !importFlag, googleId = googleSheetNumber = null">{{importFlag ? 'Cancel Import' : 'Import Accounts'}}</button>
     <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="show('accounts')">New Account</button>
     <div class="form-group" v-if="importFlag">
       <label style="width: 100%;">Using google sheet
@@ -12,7 +12,7 @@
       <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button class="btn btn-success" @click="importData()">Import Accounts</button>
-    </div>
+    </div> -->
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
