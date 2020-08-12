@@ -192,7 +192,7 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN'){
+    if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
       ROUTER.push('/dashboard')
     }
     this.getDate()
@@ -209,13 +209,13 @@ export default {
       locality: null,
       region: null,
       options: [{
-        title: 'Linked Accounts',
-        value: 'linked_accounts'
-      }, {
         title: 'Customers',
         value: 'customers'
+      }, {
+        title: 'Employees',
+        value: 'linked_accounts'
       }],
-      selectedOption: 'linked_accounts',
+      selectedOption: 'customers',
       data: [],
       healthDecList: [],
       selectedCountry: 'Philippines',
@@ -243,7 +243,7 @@ export default {
     getLocation(){
       const parameter = {
         condition: [{
-          value: this.user.userID,
+          value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID,
           column: 'account_id',
           clause: '='
         }, {
@@ -300,7 +300,7 @@ export default {
       if(this.selectedOption === 'linked_accounts'){
         let parameter = {
           condition: [{
-            value: this.user.userID,
+            value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID,
             clause: '=',
             column: 'owner'
           }]
@@ -360,6 +360,10 @@ export default {
             column: 'account_id',
             value: item.account_id
           }, {
+            clause: '=',
+            column: 'owner',
+            value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID
+          }, {
             clause: '!=',
             column: 'updated_at',
             value: null
@@ -379,7 +383,7 @@ export default {
                     format: parsedContent.format,
                     status: parsedContent.status,
                     statusLabel: parsedContent.statusLabel,
-                    submitted_on: data.updated_at
+                    submitted_on: data.updated_at_human
                   }
                   this.healthDecList.push(details)
                 }

@@ -156,7 +156,7 @@ import axios from 'axios'
 import CONFIG from 'src/config.js'
 export default {
   mounted(){
-    if(this.user.type !== 'USER' && this.user.type !== 'Barangay' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'AGENCY_BRGY'){
+    if(this.user.type !== 'ADMIN' && this.user.type !== 'Barangay' && this.user.type !== 'AGENCY_GOV' && this.user.type !== 'AGENCY_BRGY'){
       ROUTER.push('/dashboard')
     }
     $('#loading').css({display: 'block'})

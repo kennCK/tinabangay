@@ -63,4 +63,5 @@
   box-shadow: none !important;
   animation-name: flip-with-scale;
 }
+
 </style>

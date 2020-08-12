@@ -352,7 +352,13 @@ export default {
     let linkedAccount = data[0].linked_account
     let assignedLocation = data[0].assigned_location
     this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation)
-    ROUTER.push('/dashboard')
+
+    const locationCode = localStorage.getItem('location_code')
+    if (locationCode) {
+      ROUTER.push(`/scanned/location/${locationCode}`)
+    } else {
+      ROUTER.push('/dashboard')
+    }
   },
   setGoogleCode(code, scope){
     localStorage.setItem('google_code', code)

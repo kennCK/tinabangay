@@ -76,7 +76,10 @@
     > 
       <div class="modal-dialog"> 
         <div class="modal-content"> 
-          <div class="modal-body data"> 
+          <div class="modal-body data">
+            <span class="error text-danger" v-if="errorMessage !== null">
+            <b>Oops!</b> {{errorMessage}}
+            </span>
             <button class="close" data-dismiss="modal" @click="cancelReport"> 
               × 
             </button>  
@@ -406,7 +409,8 @@ export default{
       config: CONFIG,
       propertyModal: PropertyModal,
       modalShow: true,
-      feelings: []
+      feelings: [],
+      errorMessage: null
     }
   },
   components: {
@@ -419,11 +423,18 @@ export default{
       return this.feelings
     },
     valid(){
+      let d = new Date()
+      d = new Date(d.getTime() - 3000000)
+      var date = d.getFullYear().toString() + '-' + ((d.getMonth() + 1).toString().length === 2 ? (d.getMonth() + 1).toString() : '0' + (d.getMonth() + 1).toString()) + '-' + (d.getDate().toString().length === 2 ? d.getDate().toString() : '0' + d.getDate().toString())
       let validator = false
       if(this.date === null){
         validator = this.validReport
+      }else if(this.date > date){
+        this.errorMessage = 'Date is Advance!'
+        validator = this.validReport
       }else{
         validator = !this.validReport
+        this.errorMessage = null
       }
       return validator
     },
@@ -481,6 +492,7 @@ export default{
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('symptoms/retrieve', parameter).then(response => {
+        console.log('sysmtoms', response)
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
