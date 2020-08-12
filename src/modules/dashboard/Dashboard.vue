@@ -2,117 +2,8 @@
   <div style="margin-bottom: 50px;">
     <business v-if="dashType === 'BUSINESS'"></business>
     <user v-else-if="dashType === 'USER'"></user>
-    <AgencyBrgy v-else-if="['AGENCY_BRGY', 'LGU'].includes(dashType)"></AgencyBrgy> 
+    <lguBrgy v-else-if="['AGENCY_BRGY', 'LGU'].includes(dashType)"></lguBrgy> 
     <Admin v-else-if="dashType === 'ADMIN'"></Admin>
-    <!-- <div v-else-if="dashType === 'ADMIN'">
-      <data-summary></data-summary>
-      <br>
-      <br>
-      <div class="row flex-column-reverse flex-sm-row">
-        <div class="col-sm-8 affectedSection">
-          <div class="card">
-            <div class="card-body">
-              <trend></trend>
-              <center>
-                <button 
-                  type="button" 
-                  class="btn viewMoreTestBtn" 
-                  @click="redirect('places/trend')"
-                  v-if="this.disableShowMore"
-                >view more</button>
-              </center>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4 QRSection">
-          <div 
-              :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null"
-              class="col-sm-12 alert alert-info"
-            >STATUS : {{status.status_label}}</div>
-          <div class="card">
-            <div class="card-header QRReminderSection">
-              Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
-            </div>
-            <div class="card-body">
-              <div v-if="user.code !== null" class="row justify-content-center pt-5">
-                <QrcodeVue :value="`account/${user.code}`" :size="QRsizerGetter"></QrcodeVue>
-              </div>
-            </div>
-            <div class="card-action">
-              <center>
-                <qr-code-scanner 
-                  :state="qrScannerState" 
-                  @toggleState="(newState) => qrScannerState = newState"
-                ></qr-code-scanner>
-              </center>
-              <br>
-            </div>
-          </div>
-        </div>
-        <br>
-        <br>
-      </div>
-    </div> -->
-    <!-- <div v-else class="row" style="margin-top: 25px;">
-      <div class="col-lg-6" style="margin-bottom: 25px;">
-        <p>
-          <i class="text-lowercase">{{
-            'Data from ' + common.implementedLocality
-          }}</i>
-        </p>
-        <div class="row w-100 mx-0 justify-content-end mb-3 align-items-center" v-if="user.type === 'USER'">
-          <span>Having issues with your barangay?</span> <button class="ml-3 btn btn-primary" @click="showModal()">Send Feedback</button>
-        </div>
-        <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
-          Your Status
-        </div>
-        <label class="text-uppercase" :class="{'text-black': status.status === 'death', 'text-danger': status.status === 'positive', 'text-warning': status.status === 'pum', 'text-primary': status.status === 'pui', 'text-success': status.status === 'negative'}" v-if="status !== null">
-          <i class="fas fa-square" style="margin-right: 5px;"></i> -->
-          <!-- Person Under Investigation(PUI) -->
-          <!-- {{status.status_label}}
-        </label>
-        <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3 mt-4">
-          Current Data
-        </div>
-        <div class="alert alert-info">This information is not updated as some users are not registered yet</div>
-        <data-summary></data-summary>
-        <div class="row mx-0 bg-primary py-2 px-3 text-light font-weight-bold mb-3">
-          QR Code
-        </div> -->
-
-        <!-- QR CODE SCANNER -->
-        <!-- <qr-code-scanner :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"></qr-code-scanner>
-
-        <p>
-          Hi <b>{{user.username}}</b>! Below is your qr code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
-        </p>
-        <div v-if="user.code !== null" class="row justify-content-center pt-5">
-          <QrcodeVue :value="`account/${user.code}`" :size="300"></QrcodeVue>
-        </div>
-      </div>
-      <trend></trend>
-    </div>
-    <increment-modal refs="modal" :property="modalProperty"></increment-modal> -->
-    <!--MODAL FOR NO BRGY ERROR-->
-    <!-- <div class="modal fade right" id="no_code" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-      <div class="modal-dialog modal-side modal-notify modal-primary modal-md" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-danger">Oops!</h5>
-            <button type="button" class="close" aria-label="Close" @click="hideModal('no_code')">
-              <span aria-hidden="true" class="white-text">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body p-4">
-            You're not assigned to a barangay yet. Please contact your barangay office to activate your account.
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-primary" @click="hideModal('no_code')">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -217,7 +108,7 @@ export default{
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
     'business': require('./Business.vue'),
     'user': require('./User.vue'),
-    'AgencyBrgy': require('./Agency_brgy.vue'),
+    'lguBrgy': require('./lguBrgy.vue'),
     'Admin': require('./Admin.vue')
   },
   computed: {
