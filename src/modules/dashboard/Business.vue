@@ -249,7 +249,7 @@ export default {
       }
 
       this.APIRequest('linked_accounts/retrieve_tracing', par).then(response => {
-        // console.log('linked-Accounts ', response.data)
+        console.log('linked-Accounts ', response.data)
       })
     }
   }

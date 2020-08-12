@@ -158,7 +158,8 @@ export default {
     value: 'sore_throat'
   }, {
     label: 'Cough',
-    translate: 'Ubo'
+    translate: 'Ubo',
+    value: 'cough'
   }, {
     label: 'Difficulty of Breathing',
     translate: 'Kahirapan sa paghinga',

@@ -17,12 +17,10 @@
       <br>
       <br>
       <br>
-      <div class="col-sm-12">
+      <div class="col-sm-12 symptomsReportingView">
         <div class="row">
           <div class="col-sm-3">
-            <div class="col-sm-12 symptomsView">
-              <br>
-              <br>
+            <div class="col-sm-12 feelingsBTNgroup">
               <p>
                 Hi, <b>{{user.username}}!</b> How are you feeling today?
               </p>
@@ -42,7 +40,7 @@
             </div>
           </div>
           <div class="col-sm-9 summaryS">
-            <div class="ledger-summary-container summaryS symptomsView">
+            <div class="ledger-summary-container summaryS">
               <table class="table table-bordered table-responsive" v-if="data !== null">
                 <thead class="bg-primary">
                   <tr>
@@ -206,6 +204,9 @@
 .feelingStyler:focus{
   box-shadow: none!important;
 }
+.feelingsBTNgroup{
+  padding:0px;
+}
 .symptomsD{
   padding-right: 11px;
   padding-left: 11px;
@@ -329,8 +330,8 @@
 .summaryS{
   padding:0px;
 }
-.symptomsView{
-  box-shadow: 5px 0px 40px #e0e0e0;
+.symptomsReportingView{
+  padding:0px;
 }
 .bg-primary{
   background: $primary !important;
