@@ -124,7 +124,6 @@ export default{
       let parameter = {
         id: this.user.userID
       }
-<<<<<<< HEAD
       // For HIDING and SHOWING the VIEW MORE BUTTON //
       let forShowMore = {
         status: 'positive'
@@ -142,14 +141,6 @@ export default{
         }
       })
       // Ends Here //
-=======
-      // console.log(this.user.location.code)
-      // $('#loading').css({display: 'block'})
-      // this.APIRequest('tracings/status', parameter).then(response => {
-      //   // $('#loading').css({display: 'none'})
-      //   this.status = response.data
-      // })
->>>>>>> a4046028d58e0244d938665eb47ebb24cbaf3a3f
     },
     showModal() {
       if(!this.user.location || !this.user.location.code) {
