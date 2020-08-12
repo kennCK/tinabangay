@@ -1,5 +1,5 @@
 <template>
-    <div style="margin-bottom: 50px;">
+    <div>
         <data-summary></data-summary>
         <br>
         <br>
@@ -18,7 +18,7 @@
                           </select>
                         </div>
                         <div class="col-sm-3 affectedSearchAreaFilter">
-                          <select class="form-control Affectedfilter" v-model="filterYear" @change="filterby">
+                          <select class="form-control Affectedfilter" v-model="filterYear" @change="yearFilter">
                             <option v-for="(item, key) in returnFilterYear" :key="key" class="AffectedfilterOption">
                               {{item}}
                             </option>
@@ -66,13 +66,19 @@
                                 alt="logo"
                                 class="AgencyLogo"
                             >
-                            <i v-else class="fa fa-image AgencyLogo"></i>
+                            <empty v-else 
+                              :title="'There\'s currently no hot spots logged.'" 
+                              :action="'Stay Home!'" 
+                              :icon="'far fa-smile'" 
+                              :iconColor="'text-danger'"
+                            >
+                            </empty>
                         </center>
                     </div>
-                    <div class="card-body">
-                        <p class="Binfo" v-if="agencyInfo.name !== null">{{agencyInfo.name}}</p>
-                        <p class="Binfo" v-if="agencyInfo.address !== null">{{agencyInfo.address}}</p>
-                        <p class="Binfo" v-if="agencyInfo.email !== null">{{agencyInfo.email}}</p>
+                    <div class="card-body Binfo-body">
+                        <p class="Binfo1" v-if="agencyInfo.name !== null">{{agencyInfo.name}}</p>
+                        <p class="Binfo2" v-if="agencyInfo.address !== null">{{agencyInfo.address}}</p>
+                        <p class="Binfo3" v-if="agencyInfo.email !== null">{{agencyInfo.email}}</p>
                     </div>
                     <div class="card-action">
                         <center>
@@ -96,14 +102,41 @@
   height:200px !important;
   width:200px !important;
 }
-.affectedSection{
-  padding-right:0px;
-}
 .Affectedfilter{
   width:100%;
   padding-bottom:0px;
   padding-top:0px;
   font-size: 13px !important;
+}
+.affectedSection{
+  padding-right: 0px;
+}
+.Binfo-body{
+  border-left: 7px solid #005b96;
+  padding-left: 3px;
+  padding-right: 3px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.Binfo1{
+  margin: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+}
+.Binfo2{
+  margin: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0e0e0;
+}.Binfo3{
+  margin: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0e0e0;
 }
 .bg-primary{
   background: $primary !important;
@@ -178,6 +211,7 @@
   }
   .affectedFilters{
     padding-left:20px;
+    padding-right:20px;
   }
   .affectedSearchAreaFilter{
     padding:0px;
@@ -252,6 +286,11 @@
       width:200px !important;
     }
   }
+  @media (max-width:575px) {
+    .affectedSection{
+      padding-right: 15px;
+    }
+  }
 </style>
 <script>
 import QrcodeVue from 'qrcode.vue'
@@ -261,8 +300,10 @@ import CONFIG from 'src/config.js'
 import ComplaintProperty from './Complaint.js'
 import ROUTER from 'src/router'
 import topAffectedPlaces from 'vue-apexcharts'
+import Filtering from './Filters.js'
 export default{
   mounted(){
+    console.log('type ', this.user)
     this.retrieve()
     if(this.userTypes.indexOf(this.user.type) > -1) {
       this.dashType = 'USER'
@@ -438,7 +479,9 @@ export default{
           column: 'locality'
         }]
       }
+      $('#loading').css({display: 'block'})
       this.APIRequest('patients/retrieve', forLineGraphCondition).then(response => {
+        $('#loading').css({display: 'none'})
         // patients/retrieve 07-22-30
         /*
           let infoCondition = {
@@ -452,9 +495,18 @@ export default{
         this.filterYear = new Date().getFullYear()
         this.lineGraphData = response.data
         this.filter = 'daily'
-        this.filteringData(response.data)
         this.lineGraphLastIndex = 0
         this.lineGraphStartIndex = 0
+        let filteredData = new Filtering(response.data, this.filterYear)
+        filteredData.filteredDaily()
+        filteredData.filteredWeekly()
+        filteredData.filteredMonthly()
+        filteredData.filteredYearly()
+        this.filteredDailyData = filteredData.getDailyData()
+        this.filteredDataWeekly = filteredData.getWeeklyData()
+        this.filteredMonthlyData = filteredData.getMonthlyData()
+        this.filteredYearlyData = filteredData.getYearlyData()
+        this.filteredYears = filteredData.getYears()
         switch(this.filter){
           case 'daily':
             this.lineGraphLastIndex = (this.filteredDailyData.length >= 7) ? 7 : this.filteredDailyData.length
@@ -577,7 +629,6 @@ export default{
       }
     },
     filterby(){
-      this.filteringData(this.lineGraphData)
       this.lineGraphLastIndex = 0
       this.lineGraphStartIndex = 0
       switch(this.filter){
@@ -599,308 +650,21 @@ export default{
           break
       }
     },
-    filteringData(data){
-      let weeklyData = []
-      let monthlyData = []
-      let dailyData = []
-      let YearlyData = []
-      let databyMonths = [
-        {'January': [], 'weeks': null},
-        {'February': [], 'weeks': null},
-        {'March': [], 'weeks': null},
-        {'April': [], 'weeks': null},
-        {'May': [], 'weeks': null},
-        {'June': [], 'weeks': null},
-        {'July': [], 'weeks': null},
-        {'August': [], 'weeks': null},
-        {'September': [], 'weeks': null},
-        {'October': [], 'weeks': null},
-        {'November': [], 'weeks': null},
-        {'December': [], 'weeks': null}
-      ]
-      data.forEach(element => {
-        element.places.forEach(affectedPlaces => {
-          if(new Date(affectedPlaces.date).getFullYear() === this.filterYear){
-            affectedPlaces['status'] = element.status
-            databyMonths[new Date(affectedPlaces.date).getMonth()][this.months[new Date(affectedPlaces.date).getMonth()]].push(affectedPlaces)
-            if(databyMonths[new Date(affectedPlaces.date).getMonth()]['weeks'] === null){
-              let year = new Date(affectedPlaces.date).getFullYear()
-              let month = new Date(affectedPlaces.date).getMonth()
-              var weeks = []
-              let firstDate = new Date(year, month, 1)
-              let lastDate = new Date(year, month + 1, 0)
-              let numDays = lastDate.getDate()
-              var start = 1
-              var end = 7 - firstDate.getDay()
-              while(start <= numDays){
-                weeks.push({start: start, end: end})
-                start = end + 1
-                end = end + 7
-                if(end > numDays){
-                  end = numDays
-                }
-              }
-              databyMonths[new Date(affectedPlaces.date).getMonth()]['weeks'] = weeks
-            }
-          }
-        })
-      })
-      databyMonths.forEach((element, index) => {
-        if(!element[this.months[index]].length < 1){
-          /* code block for daily data */
-          element[this.months[index]].forEach(values => {
-            switch(values.status.toLowerCase()){
-              case 'positive':
-                values.positive_size = 1
-                values.recovered_size = 0
-                values.death_size = 0
-                values.pum = 0
-                values.pui = 0
-                values.tested = 0
-                values.lsi = 0
-                values.symptoms = 0
-                values.rofw = 0
-                break
-              case 'recovered':
-                values.positive_size = 0
-                values.recovered_size = 1
-                values.death_size = 0
-                values.pum = 0
-                values.pui = 0
-                values.tested = 0
-                values.lsi = 0
-                values.symptoms = 0
-                values.rofw = 0
-                break
-              case 'death':
-                values.positive_size = 0
-                values.recovered_size = 0
-                values.death_size = 1
-                values.pum = 0
-                values.pui = 0
-                values.tested = 0
-                values.lsi = 0
-                values.symptoms = 0
-                values.rofw = 0
-                break
-              case 'pum':
-                values.positive_size = 0
-                values.recovered_size = 0
-                values.death_size = 0
-                values.pum = 1
-                values.pui = 0
-                values.tested = 0
-                values.lsi = 0
-                values.symptoms = 0
-                values.rofw = 0
-                break
-              case 'pui':
-                values.positive_size = 0
-                values.recovered_size = 0
-                values.death_size = 0
-                values.pum = 0
-                values.pui = 1
-                values.tested = 0
-                values.lsi = 0
-                values.symptoms = 0
-                values.rofw = 0
-                break
-              case 'tested':
-                values.positive_size = 0
-                values.recovered_size = 0
-                values.death_size = 0
-                values.pum = 0
-                values.pui = 0
-                values.tested = 1
-                values.lsi = 0
-                values.symptoms = 0
-                values.rofw = 0
-                break
-              case 'lsi':
-                values.positive_size = 0
-                values.recovered_size = 0
-                values.death_size = 0
-                values.pum = 0
-                values.pui = 0
-                values.tested = 0
-                values.lsi = 1
-                values.symptoms = 0
-                values.rofw = 0
-                break
-              case 'symptoms':
-                values.positive_size = 0
-                values.recovered_size = 0
-                values.death_size = 0
-                values.pum = 0
-                values.pui = 0
-                values.tested = 0
-                values.lsi = 0
-                values.symptoms = 1
-                values.rofw = 0
-                break
-              case 'rofw':
-                values.positive_size = 0
-                values.recovered_size = 0
-                values.death_size = 0
-                values.pum = 0
-                values.pui = 0
-                values.tested = 0
-                values.lsi = 0
-                values.symptoms = 0
-                values.rofw = 1
-                break
-            }
-            if(!this.filteredYears.includes(new Date(values.date).getFullYear())){
-              this.filteredYears.push(new Date(values.date).getFullYear())
-            }
-            values.month = this.months[index]
-            dailyData.push(values)
-          })
-          /* daily data ends here */
-          /*
-          *
-          *
-          */
-          /* code block for weekly data */
-          element['weeks'].forEach((within, x) => {
-            let init = {
-              positive_size: 0,
-              recovered_size: 0,
-              death_size: 0,
-              pum: 0,
-              pui: 0,
-              lsi: 0,
-              tested: 0,
-              symptoms: 0,
-              rofw: 0,
-              month: this.months[index],
-              weekNo: x + 1
-            }
-            let tracker = false
-            for(var i = within.start; i < within.end + 1; i++){
-              element[this.months[index]].forEach(cases => {
-                if(new Date(cases.date).getDate() === i && new Date(cases.date).getMonth() === index){
-                  switch(cases.status){
-                    case 'positive':
-                      init.positive_size++
-                      break
-                    case 'recovered':
-                      init.recovered_size++
-                      break
-                    case 'death':
-                      init.death_size++
-                      break
-                    case 'pui':
-                      init.pui++
-                      break
-                    case 'pum':
-                      init.pum++
-                      break
-                    case 'lsi':
-                      init.lsi++
-                      break
-                    case 'tested':
-                      init.tested++
-                      break
-                    case 'rofw':
-                      init.rofw++
-                      break
-                    case 'symptoms':
-                      init.symptoms++
-                      break
-                  }
-                  tracker = true
-                  init['date'] = cases.date
-                }
-              })
-            }
-            if (tracker) weeklyData.push(init)
-          })
-          /* weekly data ends here */
-          /*
-          *
-          *
-          */
-          /* code block for montly data */
-          let initMonthly = {
-            positive_size: 0,
-            recovered_size: 0,
-            death_size: 0,
-            pui: 0,
-            pum: 0,
-            lsi: 0,
-            tested: 0,
-            symptoms: 0,
-            rofw: 0,
-            month: this.months[index]
-          }
-          element[this.months[index]].forEach((daily, i) => {
-            switch(daily.status){
-              case 'positive':
-                initMonthly.positive_size++
-                break
-              case 'recovered':
-                initMonthly.recovered_size++
-                break
-              case 'death':
-                initMonthly.death_size++
-                break
-              case 'pui':
-                initMonthly.pui++
-                break
-              case 'pum':
-                initMonthly.pum++
-                break
-              case 'lsi':
-                initMonthly.lsi++
-                break
-              case 'tested':
-                initMonthly.tested++
-                break
-              case 'rofw':
-                initMonthly.rofw++
-                break
-              case 'symptoms':
-                initMonthly.symptoms++
-            }
-            initMonthly.date = daily.date
-          })
-          monthlyData.push(initMonthly)
-          /* monthly data ends here */
-        }
-      })
-      /* code block for yearly data */
-      let initYearly = [{
-        positive_size: 0,
-        recovered_size: 0,
-        death_size: 0,
-        pui: 0,
-        pum: 0,
-        lsi: 0,
-        tested: 0,
-        symptoms: 0,
-        rofw: 0
-      }]
-      monthlyData.forEach(monthly => {
-        initYearly[0].positive_size += monthly.positive_size
-        initYearly[0].recovered_size += monthly.recovered_size
-        initYearly[0].death_size += monthly.death_size
-        initYearly[0].pui += monthly.pui
-        initYearly[0].pum += monthly.pum
-        initYearly[0].lsi += monthly.lsi
-        initYearly[0].tested += monthly.tested
-        initYearly[0].symptoms += monthly.symptoms
-        initYearly[0].rofw += monthly.rofw
-        initYearly[0].year = this.filterYear
-      })
-      this.filteredYearlyData = initYearly
-      /* yearly data until here */
-      /*
-      *
-      */
-      this.filteredDataWeekly = weeklyData
-      this.filteredMonthlyData = monthlyData
-      this.filteredDailyData = dailyData
+    yearFilter(){
+      console.log('---- another year -----')
+      let newFilter = new Filtering(this.lineGraphData, this.filterYear)
+      newFilter.filteredDaily()
+      newFilter.filteredWeekly()
+      newFilter.filteredMonthly()
+      newFilter.filteredYearly()
+      this.filteredDailyData = newFilter.getDailyData()
+      this.filteredDataWeekly = newFilter.getWeeklyData()
+      this.filteredMonthlyData = newFilter.getMonthlyData()
+      this.filteredYearlyData = newFilter.getYearlyData()
+      this.filteredYears = newFilter.getYears()
+      console.log('------ ', newFilter.getDailyData())
+      console.log(' tttt ', this.lineGraphData)
+      this.filterby()
     },
     initializeLineGraph(start, stopper, datas){
       let series = [[], [], [], [], [], [], [], [], []]
@@ -912,13 +676,13 @@ export default{
               dataCategory.push(this.months[new Date(datas[i].date).getMonth()] + ' ' + new Date(datas[i].date).getDate())
               break
             case 'weekly':
-              dataCategory.push([String(datas[i].month), 'week ' + String(datas[i].weekNo)])
+              dataCategory.push('week ' + String(i + 1))
               break
             case 'monthly':
-              dataCategory.push(datas[i].month)
+              dataCategory.push(this.months[new Date(datas[i].date).getMonth()])
               break
             case 'yearly':
-              dataCategory.push(datas[i].year)
+              dataCategory.push(new Date(datas[i].date).getFullYear())
           }
         }
         if(datas[i].positive_size !== null || datas[i].positive_size !== undefined){
@@ -954,7 +718,7 @@ export default{
           id: 'topAffected'
         },
         title: {
-          text: ['AFFECTED BRGY'],
+          text: ['AFFECTED SITIOS'],
           align: 'left',
           margin: 10,
           offsetX: 0,

@@ -2,8 +2,9 @@
   <div style="margin-bottom: 50px;">
     <business v-if="dashType === 'BUSINESS'"></business>
     <user v-else-if="dashType === 'USER'"></user>
-    <AgencyBrgy v-else-if="dashType === 'AGENCY_BRGY'"></AgencyBrgy> 
-    <div v-else-if="dashType === 'ADMIN'">
+    <AgencyBrgy v-else-if="['AGENCY_BRGY', 'LGU'].includes(dashType)"></AgencyBrgy> 
+    <Admin v-else-if="dashType === 'ADMIN'"></Admin>
+    <!-- <div v-else-if="dashType === 'ADMIN'">
       <data-summary></data-summary>
       <br>
       <br>
@@ -51,7 +52,7 @@
         <br>
         <br>
       </div>
-    </div>
+    </div> -->
     <!-- <div v-else class="row" style="margin-top: 25px;">
       <div class="col-lg-6" style="margin-bottom: 25px;">
         <p>
@@ -216,7 +217,8 @@ export default{
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
     'business': require('./Business.vue'),
     'user': require('./User.vue'),
-    'AgencyBrgy': require('./Agency_brgy.vue')
+    'AgencyBrgy': require('./Agency_brgy.vue'),
+    'Admin': require('./Admin.vue')
   },
   computed: {
     QRsizerGetter(){
