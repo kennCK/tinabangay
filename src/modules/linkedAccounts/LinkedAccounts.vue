@@ -297,7 +297,18 @@ import Vue from 'vue'
 
 export default {
   mounted(){
-    this.retrieve()
+    let data = JSON.parse(localStorage.getItem('linked_accounts/' + this.user.code))
+    if(data){
+      if(data.data.length > 0){
+        this.data = data.data
+      }else{
+        this.data = null
+      }
+      this.retrieve(false)
+    }else{
+      this.data = null
+      this.retrieve(true)
+    }
   },
   data(){
     return {
@@ -550,7 +561,7 @@ export default {
         })
       }
     },
-    retrieve(){
+    retrieve(flag = false){
       let parameter = null
       if(this.user.type === 'USER'){
         parameter = {
@@ -573,9 +584,10 @@ export default {
           }]
         }
       }
-      $('#loading').css({display: 'block'})
+      $('#loading').css({display: flag ? 'block' : 'none'})
       this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
         }else{

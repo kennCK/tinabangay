@@ -79,10 +79,6 @@ export default {
     {
       value: 'rofw',
       label: 'Returning Overseas Filipino Workers'
-    },
-    {
-      value: 'others',
-      label: 'Others'
     }],
     validation: {
       size: 1,
@@ -105,15 +101,15 @@ export default {
     }
   },
   {
-    row: 'full',
+    // row: 'full',
     label: 'Locality',
     variable: 'locality',
     placeholder: 'Enter locality',
     value: null,
-    required: true,
+    required: false,
     id: 'locality',
-    type: 'input',
-    inputType: 'text',
+    type: 'hidden',
+    inputType: 'hidden',
     validation: {
       size: 0,
       type: 'text'

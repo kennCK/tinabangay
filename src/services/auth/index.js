@@ -19,8 +19,8 @@ export default {
     location: null,
     assigned_location: null,
     profile: null,
-    amount: null,
     subAccount: null,
+    information: null,
     notifications: {
       data: null,
       current: null,
@@ -30,10 +30,6 @@ export default {
     messages: {
       data: null,
       totalUnreadMessages: 0
-    },
-    ledger: {
-      amount: 0,
-      currency: 'PHP'
     }
   },
   messenger: {
@@ -66,7 +62,7 @@ export default {
   },
   echo: null,
   currentPath: false,
-  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code, location, linkedAccount, assignedLocation){
+  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code, location, linkedAccount, assignedLocation, information){
     if(userID === null){
       username = null
       email = null
@@ -92,7 +88,9 @@ export default {
     this.user.location = location
     this.user.linked_account = linkedAccount
     this.user.assigned_location = assignedLocation
+    this.user.information = information
     localStorage.setItem('account_id', this.user.userID)
+    localStorage.setItem('account/' + code, JSON.stringify(this.user))
     if(this.user.userID > 0){
       this.checkConsent(this.user.userID)
     }
@@ -168,7 +166,8 @@ export default {
           let location = response.data[0].location
           let linkedAccount = response.data[0].linked_account
           let assignedLocation = response.data[0].assigned_location
-          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation)
+          let information = response.data[0].account_information
+          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information)
         }).done(response => {
           this.tokenData.verifyingToken = false
           let location = window.location.href
@@ -351,7 +350,8 @@ export default {
     let location = data[0].location
     let linkedAccount = data[0].linked_account
     let assignedLocation = data[0].assigned_location
-    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation)
+    let information = data[0].account_information
+    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information)
 
     const locationCode = localStorage.getItem('location_code')
     if (locationCode) {
@@ -370,15 +370,6 @@ export default {
     this.google.code = localStorage.getItem('google_code')
     this.google.scope = localStorage.getItem('google_scope')
   },
-  displayAmount(amount){
-    // amount.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '1,')
-    // console.log(amount)
-    var formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'PHP'
-    })
-    return formatter.format(amount)
-  },
   checkConsent(userID){
     let vue = new Vue()
     let parameter = {
@@ -395,21 +386,5 @@ export default {
         $('#consentModal').modal('show')
       }
     })
-  },
-  displayAmountWithCurrency(amount, currency){
-    var formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency
-    })
-    return formatter.format(amount)
-  },
-  showRequestType(type){
-    switch(parseInt(type)){
-      case 1: return 'Send'
-      case 2: return 'Withdrawal'
-      case 3: return 'Deposit'
-      case 101: return 'Lending'
-      case 102: return 'Installment'
-    }
   }
 }

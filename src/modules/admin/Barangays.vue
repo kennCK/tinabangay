@@ -189,8 +189,18 @@ export default{
     if(this.user.type !== 'ADMIN'){
       ROUTER.push('/dashboard')
     }
-    $('#loading').css({display: 'block'})
-    this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''})
+    let data = JSON.parse(localStorage.getItem('brgy_codes/' + this.user.code))
+    if(data){
+      if(data.data.length > 0){
+        this.data = data.data
+      }else{
+        this.data = null
+      }
+      this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''}, false)
+    }else{
+      this.data = null
+      this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''}, true)
+    }
   },
   data(){
     return {
@@ -251,7 +261,7 @@ export default{
     redirect(params){
       ROUTER.push(params)
     },
-    retrieve(sort, filter){
+    retrieve(sort, filter, flag = true){
       if(sort !== null){
         this.sort = sort
       }
@@ -272,8 +282,10 @@ export default{
         }],
         sort: sort
       }
+      $('#loading').css({display: flag ? 'block' : 'none'})
       this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('brgy_codes/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
