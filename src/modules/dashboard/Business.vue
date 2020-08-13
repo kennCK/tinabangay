@@ -175,7 +175,7 @@ export default {
       affectedEmp: null,
       data: null,
       branches: [],
-      fetchingBusinessInfo: true
+      fetchingBusinessInfo: false
     }
   },
   components: {
@@ -184,7 +184,18 @@ export default {
   },
   methods: {
     retrieveBusinessInfo() {
-      this.fetchingBusinessInfo = true
+      let data = JSON.parse(localStorage.getItem('merchants/' + this.user.code))
+      if(data){
+        if(data.data.length > 0){
+          this.businessInfo = data.data[0]
+        }else{
+          this.businessInfo = null
+        }
+        return
+      }else{
+        this.businessInfo = null
+      }
+      // this.fetchingBusinessInfo = true
       let par = {
         condition: [{
           value: this.user.userID,
@@ -193,6 +204,7 @@ export default {
         }]
       }
       this.APIRequest('merchants/retrieve', par).then(response => {
+        localStorage.setItem('merchants/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0) {
           this.businessInfo = response.data[0]
         }
@@ -200,6 +212,17 @@ export default {
       })
     },
     retrieveBranches() {
+      let data = JSON.parse(localStorage.getItem('locations/' + this.user.code))
+      if(data){
+        if(data.data.length > 0){
+          this.branches = data.data
+        }else{
+          this.branches = null
+        }
+        return
+      }else{
+        this.branches = null
+      }
       const parameter = {
         condition: [{
           value: this.user.userID,
@@ -213,6 +236,7 @@ export default {
 
       this.APIRequest('locations/retrieve', parameter).then((response) => {
         if(response.data.length > 0) {
+          localStorage.setItem('invitations/' + this.user.code, JSON.stringify(response))
           this.branches = response.data
           // let data = [...response.data]
           // response.data.forEach((branch, idx) => {
