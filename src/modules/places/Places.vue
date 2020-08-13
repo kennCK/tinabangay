@@ -120,9 +120,9 @@ export default {
       $('#loading').css({display: flag ? 'block' : 'none'})
       this.APIRequest('visited_places/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('visited_places/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0) {
           this.data = response.data
-          localStorage.setItem('visited_places/' + this.user.code, JSON.stringify(response))
         }
       })
     },

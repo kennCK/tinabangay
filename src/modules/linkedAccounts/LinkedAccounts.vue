@@ -583,9 +583,9 @@ export default {
       $('#loading').css({display: flag ? 'block' : 'none'})
       this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
-          localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         }else{
           this.data = null
         }

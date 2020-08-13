@@ -281,10 +281,10 @@ export default{
       $('#loading').css({display: flag ? 'block' : 'none'})
       this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('brgy_codes/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
-          localStorage.setItem('brgy_codes/' + this.user.code, JSON.stringify(response))
         }else{
           this.data = null
           this.numPages = null

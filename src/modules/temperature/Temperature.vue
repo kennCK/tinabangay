@@ -95,9 +95,9 @@ export default {
       $('#loading').css({display: flag ? 'block' : 'none'})
       this.APIRequest('temperatures/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('temperatures/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
-          localStorage.setItem('temperatures/' + this.user.code, JSON.stringify(response))
         }else{
           this.data = null
         }
