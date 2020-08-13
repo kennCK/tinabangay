@@ -67,7 +67,6 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          console.log('Affected ', response.data)
           let series = [[], [], []]
           for(var i = 0; i < 5; ++i){
             // let routes = response.data[i].route.split(',')
@@ -93,7 +92,7 @@ export default {
                 fontSize: '25px',
                 fontWeight: 'bold',
                 fontFamily: undefined,
-                color: '#007be0'
+                color: '#005b96'
               }
             },
             dataLabels: {
@@ -123,7 +122,7 @@ export default {
                 offsetY: 0
               }
             },
-            colors: ['#007be0', 'rgba(0, 227, 150, 0.85)', 'rgba(255, 69, 96, 0.85)']
+            colors: ['#DC3545', '#28a745', '#343a40']
           }
 
           this.series = [

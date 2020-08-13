@@ -163,6 +163,10 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 export default {
   mounted() {
+    const locationCode = localStorage.getItem('location_code')
+    if (locationCode) {
+      localStorage.removeItem('location_code')
+    }
     this.retrieve(this.code)
   },
   data() {

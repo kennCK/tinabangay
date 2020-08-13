@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
       <br>
       <br>
       <div class="row">
@@ -54,11 +54,10 @@
   .viewMoreTestBtn{
     border:1px solid #dc3545;
     background-color:white;
-    height:30px;
-    width:120px;
+    height:40px;
+    width:140px;
     padding:0px;
     padding-bottom:2px;
-    border-radius:20px;
   }
   .viewMoreTestBtn:focus{
     box-shadow:none !important;
