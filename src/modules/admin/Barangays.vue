@@ -191,7 +191,11 @@ export default{
     }
     let data = JSON.parse(localStorage.getItem('brgy_codes/' + this.user.code))
     if(data){
-      this.data = data.data
+      if(data.data.length > 0){
+        this.data = data.data
+      }else{
+        this.data = null
+      }
       this.retrieve({created_at: 'desc'}, {column: 'created_at', value: ''}, false)
     }else{
       this.data = null

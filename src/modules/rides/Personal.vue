@@ -85,7 +85,11 @@ export default {
   mounted(){
     let data = JSON.parse(localStorage.getItem('rides/' + this.user.code))
     if(data){
-      this.data = data.data
+      if(data.data.length > 0){
+        this.data = data.data
+      }else{
+        this.data = null
+      }
       this.retrieve(false)
     }else{
       this.data = null
