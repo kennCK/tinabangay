@@ -10,7 +10,7 @@ Vue.mixin({
     APIRequest(link, parameter, callback, errorCallback){
       let tokenStringParam = (AUTH.tokenData.token) ? '?token=' + AUTH.tokenData.token : ''
       let request = jQuery.post(CONFIG.API_URL + link + tokenStringParam, parameter, (response) => {
-        if(respose.data !== undefined){
+        if(response.data !== undefined){
           localStorage.setItem(link + JSON.stringify(parameter), response.data)
         }
         this.APISuccessRequestHandler(response, callback)

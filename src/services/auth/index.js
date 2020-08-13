@@ -93,6 +93,7 @@ export default {
     this.user.linked_account = linkedAccount
     this.user.assigned_location = assignedLocation
     localStorage.setItem('account_id', this.user.userID)
+    localStorage.setItem('account/' + code, this.user)
     if(this.user.userID > 0){
       this.checkConsent(this.user.userID)
     }
