@@ -1,64 +1,66 @@
 <template>
-   <div class="row">
-     <div class="col-sm-12 alert alert-info">&nbsp;&nbsp;This information is not updated as some users are not registered yet</div>
-      <div class="col-sm-7">
-        <div class="row">
-          <div class="col-sm-4 positiveSection">
-            <div class="card positive">
-              <div class="card-header positive-header">
-                <i class="fas fa-user-injured sumIcon"></i> POSITIVE
-              </div>
-              <div class="card-body positive-body d-flex align-items-center">
-                {{data.positive}}
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 pumSection">
-            <div class="card pum">
-              <div class="card-header pum-header">
-                <i class="fas fa-address-book sumIcon"></i> PUM
-              </div>
-              <div class="card-body pum-body d-flex align-items-center">
-                {{data.pum}}
+   <div class="container-fluid">
+     <div class="row">
+       <div class="col-sm-12 alert alert-info">&nbsp;&nbsp;This information is not updated as some users are not registered yet</div>
+        <div class="col-sm-7">
+          <div class="row">
+            <div class="col-sm-4 positiveSection">
+              <div class="card positive">
+                <div class="card-header positive-header">
+                  <i class="fas fa-user-injured sumIcon"></i> POSITIVE
+                </div>
+                <div class="card-body positive-body d-flex align-items-center">
+                  {{data.positive}}
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-4 puiSection">
-            <div class="card pui">
-              <div class="card-header pui-header">
-                <i class="fas fa-id-card-alt sumIcon"></i> PUI
-              </div>
-              <div class="card-body pui-body d-flex align-items-center">
-                {{data.pui}}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-5">
-        <div class="row">
-          <div class="col-sm-6 recoveredSection">
-            <div class="card recovered">
-              <div class="card-header recovered-header">
-                <i class="fas fa-hand-holding-medical sumIcon"></i> RECOVERED
-              </div>
-              <div class="card-body recovered-body d-flex align-items-center">
-                {{data.recovered}}
+            <div class="col-sm-4 pumSection">
+              <div class="card pum">
+                <div class="card-header pum-header">
+                  <i class="fas fa-address-book sumIcon"></i> PUM
+                </div>
+                <div class="card-body pum-body d-flex align-items-center">
+                  {{data.pum}}
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-6 deathSection">
-            <div class="card death">
-              <div class="card-header death-header">
-                <i class="fas fa-book-dead sumIcon"></i> DEATH
-              </div>
-              <div class="card-body death-body d-flex align-items-center">
-                {{data.death}}
+            <div class="col-sm-4 puiSection">
+              <div class="card pui">
+                <div class="card-header pui-header">
+                  <i class="fas fa-id-card-alt sumIcon"></i> PUI
+                </div>
+                <div class="card-body pui-body d-flex align-items-center">
+                  {{data.pui}}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        <div class="col-sm-5">
+          <div class="row">
+            <div class="col-sm-6 recoveredSection">
+              <div class="card recovered">
+                <div class="card-header recovered-header">
+                  <i class="fas fa-hand-holding-medical sumIcon"></i> RECOVERED
+                </div>
+                <div class="card-body recovered-body d-flex align-items-center">
+                  {{data.recovered}}
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 deathSection">
+              <div class="card death">
+                <div class="card-header death-header">
+                  <i class="fas fa-book-dead sumIcon"></i> DEATH
+                </div>
+                <div class="card-body death-body d-flex align-items-center">
+                  {{data.death}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+     </div>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -92,7 +94,8 @@ label{
   border: 2px solid #dc3545!important;
 }
 .positiveSection{
-  padding-right:5px;
+  padding-right:2px;
+  padding-left: 2px;
   padding-bottom:10px;
 }
 .positive-header{
@@ -111,8 +114,8 @@ label{
   border: 2px solid #e09304 !important;
 }
 .pumSection{
-  padding-right:5px;
-  padding-left:5px;
+  padding-right: 2px;
+  padding-left: 2px;
   padding-bottom:10px;
 }
 .pum-header{
@@ -131,8 +134,8 @@ label{
   border: 2px solid #005b96;
 }
 .puiSection{
-  padding-right:5px;
-  padding-left:5px;
+  padding-right: 2px;
+  padding-left: 2px;
   padding-bottom:10px;
 }
 .pui-header{
@@ -160,8 +163,8 @@ label{
   height: 45px;
 }
 .recoveredSection{
-  padding-right:5px;
-  padding-left:5px;
+  padding-right: 2px;
+  padding-left: 2px;
   padding-bottom:10px;
 }
 .sumIcon{
@@ -184,7 +187,8 @@ label{
   height: 45px;
 }
 .deathSection{
-  padding-left:5px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 @media (min-width: 576px){
   .card-header{

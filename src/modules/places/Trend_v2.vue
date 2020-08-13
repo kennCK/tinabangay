@@ -2,7 +2,7 @@
   <div>
     <topAffectedPlaces v-if="data !== null" ref="realtimeChart" height="500" type="bar" :options="options" :series="series"></topAffectedPlaces>
     <empty v-else :title="'There\'s currently no hot spots logged.'" :action="'Stay Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
-    </div>
+  </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
@@ -72,10 +72,12 @@ export default {
             // let routes = response.data[i].route.split(',')
             // routes.push(response.data[i].locality)
             // console.log(routes)
-            this.data_categories.push([response.data[i].route + ', ', response.data[i].locality])
-            series[0].push(response.data[i].positive_size)
-            series[1].push(response.data[i].recovered_size)
-            series[2].push(response.data[i].death_size)
+            if(response.data[i] !== undefined){
+              this.data_categories.push([response.data[i].route + ', ', response.data[i].locality])
+              series[0].push(response.data[i].positive_size)
+              series[1].push(response.data[i].recovered_size)
+              series[2].push(response.data[i].death_size)
+            }
           }
           this.options = {
             chart: {
