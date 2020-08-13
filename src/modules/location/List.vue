@@ -153,7 +153,7 @@
             </table>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Close</button>
+            <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Cancel</button>
           </div>
         </div>
       </div>
@@ -408,6 +408,7 @@ export default {
       if(id === 'add_location') {
         $('#add_location .error-msg').remove()
         this.$refs.location.onCancel()
+        this.customLocation = false
         this.location = null
         $('#branch').val('')
         this.selectedBranch = null
@@ -415,7 +416,6 @@ export default {
         this.brgys = null
         this.searchBrgy = null
       }
-
       $(`#${id}`).modal('hide')
     },
     assignAddress(brgy) {

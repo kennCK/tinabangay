@@ -4,9 +4,8 @@
     <table class="table table-responsive table-bordered" id="myTable">
       <tr class="bg-primary">
         <th scope="col">Status</th>
-        <th scope="col">Patient's Username / Patient Code<i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></th>
+        <th scope="col">Patient's Code<i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></th>
         <th scope="col">Remarks</th>
-        <th scope="col">Locality</th>
         <th scope="col">Contact Number</th>
         <th scope="col">Date Recorded</th>
         <th scope="col">Actions</th>
@@ -16,7 +15,6 @@
           <td class="text-uppercase" :class="{'alert-info': item.status === 'symptoms', 'bg-danger': item.status === 'positive', 'bg-warning': item.status === 'pum', 'bg-primary': item.status === 'pui', 'bg-success': item.status === 'tested'}">{{item.status}}</td>
           <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
           <td>{{item.remarks}}</td>
-          <td>{{item.locality}}</td>
           <td>{{ item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
           <td>
