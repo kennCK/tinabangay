@@ -6,7 +6,7 @@
     </div>
     <div class="row m-0 justify-content-end">
    
-        <button class="btn btn-primary" style="margin-right: 5px;" @click="showModal('patient')">New</button>
+        <button class="btn btn-primary" style="margin-right: 5px; padding-top: 10px; padding-bottom: 27px;" @click="showModal('patient')">New</button>
         <!-- <button class="btn btn-warning" style="margin-right: 5px;" @click="importFlag = true">Import</button> -->
         <!-- <button class="btn btn-danger pull-right" style="margin: .5% 0;" @click="exportPatients()">Export Patients</button> -->
         <!-- <button class="btn btn-primary" style="margin-right: 5px;" @click="showSummaryFlag = true">Summary</button> -->
@@ -48,9 +48,8 @@
     <table class="table table-responsive table-bordered" id="myTable">
       <tr class="bg-primary">
         <th scope="col">Status</th>
-        <th scope="col">Patient's Username / Patient Code<i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></th>
+        <th scope="col">Patient's Code<i class="fa fa-caret-down float-right" @click="sortTable(1)"></i></th>
         <th scope="col">Remarks</th>
-        <th scope="col">Locality</th>
         <th scope="col">Contact Number</th>
         <th scope="col">Date Recorded</th>
         <th scope="col">Actions</th>
@@ -58,15 +57,17 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td class="text-uppercase" :class="{'alert-info': item.status === 'symptoms', 'bg-danger': item.status === 'positive', 'bg-warning': item.status === 'pum', 'bg-primary': item.status === 'pui', 'bg-success': item.status === 'tested'}">{{item.status}}</td>
-          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.account ? item.account.username : item.code}}</td>
+          <td><i class="fa fa-map-marker text-primary" @click="selectedItem = item" data-toggle="modal" data-target="#visited_places" title="Visited Places" alt="Visited Places" ></i> {{item.code}}</td>
           <td>{{item.remarks}}</td>
-          <td>{{item.locality}}</td>
-          <td>{{item.account === null ? 'Not Specified' : item.account.information.contact_number ? item.account.information.contact_number : 'Not Specified'}}</td>
+          <td>{{item.account === null ? 'Not Specified' : item.account.information.cellular_number ? item.account.information.cellular_number : 'Not Specified'}}</td>
           <td>{{item.created_at_human}}</td>
           <td>
-            <button class="btn btn-success" style="margin: .5% 0;" @click="showModal('place', item.account_id, item.id)">Add Visited Place</button>
-            <button class="btn btn-primary" style="margin: .5% 0;" @click="showModal('patient', null, null, item)"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-danger" style="margin: .5% 0;"  @click="selectItemToDelete(item.id)" data-toggle="modal" data-target="#confirm-delete"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
+            <div class="dropdown-menu">
+              <button class="dropdown-item" @click="showModal('place', item.account_id, item.id)">Add Visited Place</button>
+              <button class="dropdown-item" @click="showModal('patient', null, null, item)">Edit</button>
+              <button class="dropdown-item" style="color: red" @click="selectItemToDelete(item.id)" data-toggle="modal" data-target="#confirm-delete">Delete</button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -123,7 +124,7 @@
                 <td>{{item.route}}</td>
                 <td>{{item.locality}}</td>
                 <td>{{item.country}}</td>
-                <td><button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i class="fa fa-trash"></i></button></td>
+                <td><button class="btn btn-danger" style="width: 50px;" type="button" data-toggle="modal" data-target="#confirm-delete" @click="deleteSelectedPlace(item.id)"><i style="padding: 0px" class="fa fa-trash"></i></button></td>
               </tr>
              </tbody>
             </table>
@@ -199,14 +200,6 @@ export default {
       category: [{
         title: 'Sort by',
         sorting: [{
-          title: 'Locality ascending',
-          payload: 'locality',
-          payload_value: 'asc'
-        }, {
-          title: 'Locality descending',
-          payload: 'locality',
-          payload_value: 'desc'
-        }, {
           title: 'Status ascending',
           payload: 'status',
           payload_value: 'asc'
@@ -243,7 +236,7 @@ export default {
   },
   components: {
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
-    'basic-filter': require('components/increment/generic/filter/Basic.vue'),
+    'basic-filter': require('components/increment/generic/filter/BasicVersion2.vue'),
     'empty': require('components/increment/generic/empty/Empty.vue'),
     Pager
   },
@@ -260,7 +253,6 @@ export default {
         this.APIRequest('patients/summary', parameter).then(response => {
           $('#loading').css({display: 'none'})
           this.summary = response.data
-          console.log(this.summary)
         })
       }
     },
@@ -352,10 +344,8 @@ export default {
                 alert('Error on line ' + counter)
                 break
               }else{
-                // add to backend
                 let entries = []
                 entries.push(object)
-                // console.log(entries)
                 let parameter = {
                   entries: entries
                 }
@@ -373,8 +363,6 @@ export default {
       return '#page=' + pageNum
     },
     retrieve(sort, filter){
-      console.log(sort)
-      console.log(filter)
       if(sort !== null){
         this.sort = sort
       }
@@ -398,7 +386,7 @@ export default {
             }],
             sort: sort,
             limit: this.limit,
-            offset: (this.activePage > 0) ? this.activePage - 1 : this.activePage
+            offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
           }
         }else{
           parameter = {
@@ -429,7 +417,6 @@ export default {
       this.APIRequest('patients/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         this.data = response.data
-        console.log(this.data)
         if(response.data.length > 0){
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
@@ -737,7 +724,6 @@ export default {
         this.placeProperty = {...PlaceModalProperty}
         if(this.placeProperty.params[this.placeProperty.params.length - 1].variable === 'account_id') {
           this.placeProperty.params.pop()
-          console.log(this.placeProperty.params)
         }
         let inputs = this.placeProperty.inputs
         this.$refs.modal.$refs.location[0].onCancel()
@@ -753,7 +739,6 @@ export default {
           this.placeProperty.params.push({variable: 'account_id', value: account})
         }
         $('#createPlacesModal').modal('show')
-        // console.log('dead end for now')
       }
     },
 

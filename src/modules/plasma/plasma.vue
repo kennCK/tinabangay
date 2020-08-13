@@ -92,10 +92,6 @@
     #comment{
         width:100%; height:70px;
     }
-
-    .card{
-        
-    }
     
     .btn-content-Message{
         margin-top: 10px;
