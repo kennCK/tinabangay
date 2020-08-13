@@ -36,8 +36,27 @@
             :class="[this.scannedUserData.temperature.value > 38 ? 'text-danger' : 'text-success']">
             {{ this.scannedUserData.temperature.value }}
             <br>
-            <span class="text-secondary font-italic text-lowercase">
+            <span class="text-secondary font-italic text-capitalize">
               last updated: {{ this.scannedUserData.temperature.created_at_human }}
+            </span>
+          </span>
+        </div>
+        <div class="temperature text-center mb-2">
+          Health Declaration:
+          <span 
+            v-if="this.scannedUserData.health_declaration === null || typeof (this.scannedUserData.health_declaration) === 'undefined'"
+            class="text-warning"
+          >
+            No data
+          </span>
+          <span
+            v-else
+            :class="[this.scannedUserData.health_declaration.status === 'clear' ? 'text-success' : 'text-danger']"
+          >
+            {{ this.scannedUserData.health_declaration.statusLabel }}
+            <br>
+            <span class="text-secondary font-italic text-capitalize">
+              last submitted: {{ this.scannedUserData.health_declaration_submitted }}
             </span>
           </span>
         </div>
@@ -359,40 +378,24 @@ export default {
       this.loading = true
       this.scannedUserData = null
 
-      $('#loading').css({display: 'none'})
+      const merchantId = this.user.linked_account ? this.user.linked_account.owner : 0
+      const parameter = {
+        code,
+        merchant_id: merchantId
+      }
 
-      let parameter = {
-        'condition': [{
-          'value': code,
-          'clause': '=',
-          'column': 'code'
-        }]
-      }
-      this.APIRequest('accounts/retrieve', parameter).then(async response => {
-        if (response.data.length > 0) {
-          this.scannedUserData = response.data[0]
-          await this.getTemperature(response.data[0].id)
-        }
+      $('#loading').css({display: 'none'})
+      this.APIRequest('customs/getScannedAccountStatus', parameter).then(response => {
+        this.scannedUserData = response.account
+        this.scannedUserData.account_information = response.account_information
+        this.scannedUserData.temperature = response.temperature
+        this.scannedUserData.health_declaration = response.health_declaration !== null ? JSON.parse(response.health_declaration.content) : null
+        this.scannedUserData.health_declaration_submitted = response.health_declaration !== null ? response.health_declaration.updated_at_human : null
+        this.scannedUserData.location = response.location
+        this.scannedUserData.overall_status = response.overall_status
+        this.scannedUserData.linked_account = response.linked_account
+
         this.loading = false
-      })
-    },
-    async getTemperature(id) {
-      let parameter = {
-        condition: [{
-          clause: '=',
-          column: 'account_id',
-          value: id
-        }],
-        sort: {
-          created_at: 'desc'
-        }
-      }
-      await this.APIRequest('temperatures/retrieve', parameter).then(response => {
-        if (response.data.length > 0) {
-          this.scannedUserData.temperature = response.data[0]
-        } else {
-          this.scannedUserData.temperature = null
-        }
       })
     },
     showModal(name) {
