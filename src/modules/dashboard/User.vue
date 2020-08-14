@@ -9,7 +9,7 @@
           </p>
           <symptoms></symptoms>
           <br>
-          <p>
+          <p class="notif">
             Hi <b>{{user.username}}</b>! Below is your QR code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
           </p>
           <div class="user_status_container">
@@ -43,6 +43,9 @@
 
 <style scoped lang="scss">
   @import "~assets/style/colors.scss";
+    .user_qr_hide {
+    display: none;
+  }
   .user_status_container{
     text-align: center;
     background:#facf32;
