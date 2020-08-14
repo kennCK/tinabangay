@@ -45,9 +45,9 @@
               <input type="text" name="branch" id="branch" class="form-control" placeholder="Enter Branch Name" :value="selectedBranch ? selectedBranch.route : ''">
             </div>
             <div class="form-group">
-              <label>Barangay</label>
-              <div class="text-danger font-weight-bold" v-if="!selectedBranch || (selectedBranch.brgy_info === null && locality === null)">Please <span class="link" data-toggle="modal" data-target="#addAddress">assign a barangay</span> to this branch.</div>
-              <div v-else-if="selectedBranch.brgy_info && !locality">
+              <label>Location should have assigned UACS Code</label>
+              <div class="text-danger font-weight-bold" v-if="!selectedBranch || (selectedBranch.brgy_info === null && locality === null)"><span class="link" data-toggle="modal" data-target="#addAddress">Click here!</span></div>
+              <div v-else-if="selectedBranch.brgy_info && locality === null">
                 <span class="font-weight-bold text-danger">({{selectedBranch.brgy_info.code}})</span> {{selectedBranch.brgy_info.route}}, {{selectedBranch.brgy_info.locality}} <span class="link" data-toggle="modal" data-target="#addAddress"><i class="fa fa-edit"></i></span>
               </div>
               <div v-else>
@@ -146,7 +146,7 @@
                     </label>
                   </td>
                   <td>
-                    <button class="btn btn-primary" @click="assignAddress(item)">{{ (selectedBranch && selectedBranch.brgy_info !== null) || locality === null ? 'Update' : 'Assign'}}</button>
+                    <button class="btn btn-primary" @click="assignAddress(item)">{{ selectedBranch === null ? 'Assign' : 'Update'}}</button>
                   </td>
                 </tr>
               </tbody>
@@ -530,6 +530,7 @@ export default {
           $('#loading').css({display: 'none'})
           if(response.data.length > 0){
             this.brgys = response.data
+            console.log(response.data)
           }else{
             this.brgys = []
           }
