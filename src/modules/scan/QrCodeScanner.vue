@@ -100,7 +100,7 @@ export default {
           type = splitCode[0]
         }
 
-        if (type === 'account' || type === 'location') {
+        if (type === 'account' || type === 'location' || type === 'transportation') {
           this.$emit('toggleState', false)
           ROUTER.push(`/scanned/${type}/${payload}`)
         } else {
