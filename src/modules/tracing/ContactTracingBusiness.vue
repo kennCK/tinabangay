@@ -3,27 +3,34 @@
     <div class="form-group" v-if="user.location !== null">
       <label>Assigned address: <b class="text-primary">{{user.location.route + ',' + user.location.locality + ',' + user.location.region + ',' + user.location.country}}</b></label>
     </div>
-    <div class="form-group">
-      <select class="form-control" v-model="selectedOption" @change="chageOption()">
-        <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
-      </select>
-      <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null && selectedOption === 'customers'">
-        <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
-      </select>
-      <select class="form-control" v-model="selectedWeek" @change="getDate()" v-if="selectedOption === 'customers'">
-        <option v-for="(item, index) in 8" :key="index" :value="item">Last {{item > 1 ? item + ' Weeks' : item + ' Week'}}</option>
-      </select>
-      <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
-      <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
+    <div class="row">
+      <div class="col-sm-10">
+        <div class="form-group">
+          <select class="form-control" v-model="selectedOption" @change="chageOption()">
+            <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
+          </select>
+          <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null && selectedOption === 'customers'">
+            <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
+          </select>
+          <select class="form-control" v-model="selectedWeek" @change="getDate()" v-if="selectedOption === 'customers'">
+            <option v-for="(item, index) in 8" :key="index" :value="item">Last {{item > 1 ? item + ' Weeks' : item + ' Week'}}</option>
+          </select>
+          <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
+          <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
+        </div>
+      </div>
+      <div class="col-sm-2 text-right">
+        <button class="btn btn-custom btn-primary" @click="exportData" v-show="isSearch" :disabled="this.sortedData.length < 1" >Export Data&nbsp;<i class="fa fa-download"></i></button>
+      </div>
     </div>
 
-    <!-- Results for Visited Places -->
+    <!-- Results for Linked Accounts -->
     <table v-if="data.length > 0 && selectedOption === 'linked_accounts'" class="table table-bordered table-responsive">
       <thead class="bg-primary">
         <td>
           Employee
         </td>
-        <td>Status 
+        <td>Status
           <i class="fa fa-chevron-down pull-right" v-if="statusFlag === false" @click="manageSort('status_label', 'desc', true)"></i>
           <i class="fa fa-chevron-up pull-right" v-if="statusFlag === true" @click="manageSort('status_label', 'asc', false)"></i>
         </td>
@@ -45,7 +52,7 @@
     </table>
 
 
-    <!-- Results for Visited Places -->
+    <!-- Results for Customers -->
     <table v-if="data.length > 0 && selectedOption === 'customers'" class="table table-bordered table-responsive">
       <thead class="bg-primary">
         <td>
@@ -55,7 +62,7 @@
         <td>
           Customer Name
         </td>
-        <td>Status 
+        <td>Status
           <i class="fa fa-chevron-down pull-right" v-if="statusFlag === false" @click="manageSort('status_label', 'desc', true)"></i>
           <i class="fa fa-chevron-up pull-right" v-if="statusFlag === true" @click="manageSort('status_label', 'asc', false)"></i>
         </td>
@@ -122,6 +129,7 @@
                     </td>
                     <td>
                       <button @click="redirect(`/form/${item.code}`)" class="btn btn-primary">View Form</button>
+                      <button @click="exportPDF(item.code)" class="btn btn-primary">Export as PDF</button>
                     </td>
                   </tr>
                 </tbody>
@@ -190,6 +198,10 @@ import moment from 'moment'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import PdfPrinter from 'pdfmake'
+import vfsFonts from 'pdfmake/build/vfs_fonts'
+import CONFIG from 'src/config.js'
+import TemplatePDF from './TemplatePDF'
 export default {
   mounted(){
     if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
@@ -197,9 +209,13 @@ export default {
     }
     this.getDate()
     this.getLocation()
+    const {vfs} = vfsFonts.pdfMake
+    PdfPrinter.vfs = vfs
   },
   data(){
     return {
+      convertDocument: TemplatePDF,
+      config: CONFIG,
       common: COMMON,
       user: AUTH.user,
       country: [{
@@ -229,7 +245,9 @@ export default {
       selectedRadius: 0.1,
       typeFlag: false,
       selectedLocationIndex: null,
-      locations: null
+      locations: null,
+      isSearch: false,
+      userInfo: []
     }
   },
   components: {
@@ -237,6 +255,65 @@ export default {
     'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue')
   },
   methods: {
+    exportPDF(code){
+      const hdfParams = {
+        condition: [ {
+          value: code,
+          column: 'code',
+          clause: '='
+        }]
+      }
+      this.APIRequest('health_declarations/retrieve', hdfParams).then(response => {
+        this.userInfo = response.data[0]
+        let merchant = {
+          logo: this.config.BACKEND_URL + response.data[0].merchant.logo,
+          name: response.data[0].merchant.name
+        }
+        let parsedContent = JSON.parse(this.userInfo.content)
+        this.convertDocument.getData(parsedContent, merchant)
+      })
+    },
+    exportData(){
+      if(this.selectedOption === 'customers'){
+        if(!this.sortedData.length < 1){
+          const customerData = []
+          this.sortedData.forEach(col => {
+            let columns = {
+              date_posted: col.created_at_human,
+              date_visited: col.date_human,
+              customer_name: col.account.username,
+              status: col.status
+            }
+            customerData.push(columns)
+          })
+          let csvContent = 'data:text/csv;charset=utf-8,'
+          csvContent += [Object.keys(customerData[0]).join(','), ...customerData.map(item => Object.values(item).join(','))].join('\n').replace(/(^\[)|(\]$)/gm, ' ')
+          const data = encodeURI(csvContent)
+          const link = document.createElement('a')
+          link.setAttribute('href', data)
+          link.setAttribute('download', 'customer.csv')
+          link.click()
+        }
+      }else if(this.selectedOption === 'linked_accounts'){
+        if(!this.sortedData.length < 1){
+          const linkedAccountsData = []
+          this.sortedData.forEach(col => {
+            let columns = {
+              employee: col.account.username,
+              status: col.status_label
+            }
+            linkedAccountsData.push(columns)
+          })
+          let csvContent = 'data:text/csv;charset=utf-8,'
+          csvContent += [Object.keys(linkedAccountsData[0]).join(','), ...linkedAccountsData.map(item => Object.values(item).join(','))].join('\n').replace(/(^\[)|(\]$)/gm, '')
+          const data = encodeURI(csvContent)
+          const link = document.createElement('a')
+          link.setAttribute('href', data)
+          link.setAttribute('download', 'linked_accounts.csv')
+          link.click()
+        }
+      }
+    },
     getRelativeTime(time) {
       return moment(time).fromNow()
     },
@@ -275,6 +352,7 @@ export default {
       this.selectedDays = moment().subtract(this.selectedWeek * 7, 'days').format('YYYY-MM-DD')
     },
     chageOption(){
+      this.isSearch = false
       this.sortedData = []
       this.data = []
     },
@@ -294,9 +372,6 @@ export default {
       })
     },
     retrieve(){
-      // if(this.user.location === null){
-      //   return
-      // }
       if(this.selectedOption === 'linked_accounts'){
         let parameter = {
           condition: [{
@@ -333,6 +408,7 @@ export default {
         $('#loading').css({display: 'block'})
         this.APIRequest('visited_places/retrieve_customers', parameter).then(response => {
           $('#loading').css({display: 'none'})
+          this.isSearch = true
           this.data = response.data
           this.sortedData = response.data
         })
@@ -341,7 +417,6 @@ export default {
     isValidForm(data) {
       const parsedContent = JSON.parse(data)
       if (parsedContent === null || typeof parsedContent === 'undefined') return false
-
       const { format, status, statusLabel } = parsedContent
       return (
         (format !== null && typeof format !== 'undefined') &&
@@ -353,7 +428,6 @@ export default {
       if (item) {
         $('#loading').css({display: 'block'})
         this.healthDecList = []
-
         const parameter = {
           condition: [{
             clause: '=',
