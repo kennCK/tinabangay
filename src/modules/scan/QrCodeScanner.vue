@@ -90,7 +90,8 @@ export default {
     onDecode (code) {
       if (code !== '') {
         const payload = code.split('/')[0]
-        if (payload === 'account' || payload === 'location') {
+        console.log(payload)
+        if (payload === 'account' || payload === 'location' || payload === 'transportation') {
           this.$emit('toggleState', false)
           ROUTER.push(`/scanned/${code}`)
         } else {

@@ -24,6 +24,17 @@
     >
     </location-scanned>
 
+    <!-- TRANSPORTATION QR CODE RESULT -->
+    <transportation-scanned
+      v-if="payload === 'transportation'"
+      :code="code"
+      :qrScannerState="qrScannerState"
+      @toggleState="(newState) => qrScannerState = newState"
+    >
+    </transportation-scanned>
+
+    
+
   </div>
 </template>
 <style scoped lang="scss">
@@ -56,7 +67,8 @@ export default {
   components: {
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
     'account-scanned': require('./AccountScanned'),
-    'location-scanned': require('./LocationScanned')
+    'location-scanned': require('./LocationScanned'),
+    'transportation-scanned': require('./VehicleScanned')
   },
   computed: {
     getFullPath() {

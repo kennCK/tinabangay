@@ -6,8 +6,8 @@
     <div class="row w-100 m-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
         <div class="qr-code-container p-2">
-          <div class="qr-code" v-if="item.code !== null">
-            <QrcodeVue :value="common.APP_URL + '/#/transportations/' + item.code" :size="100"></QrcodeVue>
+          <div class="qr-code" v-if="item.code !== null" @click="setCode('transportation/' + item.code)">
+            <QrcodeVue :value="`transportation/${item.code}`" :size="100"></QrcodeVue>
           </div>
           <div class="details">
             <label class="card-title">
@@ -25,6 +25,7 @@
         </div>
       </div>
     </div>
+    <showQrCode ref="imageView"></showQrCode>
     <empty v-if="data === null" :title="'No vehicles added!'" :action="'Add a vehicle.'" :icon="'far fa-building'" :iconColor="'text-danger'"></empty>
       <div class="modal fade right" id="delete" tabindex="-1" role="dialog" aria-labelledby="deleteHeader"
      aria-hidden="true">
@@ -219,6 +220,7 @@ import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
 import Pager from 'src/components/increment/generic/pager/Pager.vue'
 import QrcodeVue from 'qrcode.vue'
+import showQrCode from 'modules/location/ShowMore.vue'
 export default {
   mounted(){
     if(this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS' && this.user.type !== 'AGENCY_BRGY' && this.user.type !== 'AGENCY_GOV'){
@@ -239,11 +241,15 @@ export default {
     'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
     'increment-modal': require('components/increment/generic/modal/Modal.vue'),
     Pager,
-    QrcodeVue
+    QrcodeVue,
+    showQrCode
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    setCode(code){
+      this.$refs.imageView.setCode(code)
     },
     showModal(action, item = null){
       if(action === 'create') {
