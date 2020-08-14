@@ -89,11 +89,20 @@ export default {
     },
     onDecode (code) {
       if (code !== '') {
-        const payload = code.split('/')[0]
-        console.log(payload)
-        if (payload === 'account' || payload === 'location' || payload === 'transportation') {
+        const splitCode = code.split('/')
+        let payload = null
+        let type = null
+        if (splitCode.length > 2) {
+          payload = splitCode[5]
+          type = splitCode[4]
+        } else if (splitCode.length > 0 && splitCode.length <= 2) {
+          payload = splitCode[1]
+          type = splitCode[0]
+        }
+
+        if (type === 'account' || type === 'location' || type === 'transportation') {
           this.$emit('toggleState', false)
-          ROUTER.push(`/scanned/${code}`)
+          ROUTER.push(`/scanned/${type}/${payload}`)
         } else {
           this.qrScannerError = 'Invalid QR Code'
         }

@@ -214,7 +214,7 @@ export default{
   {
     path: '/lgu/settings',
     name: 'lguSettings',
-    component: resolve => require(['components/increment/settings/MerchantDirectOld.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -222,7 +222,7 @@ export default{
   {
     path: '/barangay/settings',
     name: 'barangaySettings',
-    component: resolve => require(['components/increment/settings/MerchantDirectOld.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -230,7 +230,7 @@ export default{
   {
     path: '/business/settings',
     name: 'businessSettings',
-    component: resolve => require(['components/increment/settings/MerchantDirectOld.vue'], resolve),
+    component: resolve => require(['components/increment/settings/MerchantDirect.vue'], resolve),
     meta: {
       tokenRequired: true
     }
@@ -303,6 +303,14 @@ export default{
     path: '/refer_register/:email/:code',
     name: 'referRegister',
     component: resolve => require(['components/increment/basic/Referral.vue'], resolve),
+    meta: {
+      tokenRequired: false
+    }
+  },
+  {
+    path: '/location/:code',
+    name: 'unregisteredCustomerHD',
+    component: resolve => require(['modules/business/UnregisteredCustomerHD.vue'], resolve),
     meta: {
       tokenRequired: false
     }

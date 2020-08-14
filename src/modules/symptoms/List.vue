@@ -1,39 +1,39 @@
 <template>
-  <div>
-    <div v-if="$route.name !== 'symptomsReporting'" class="row symptomsD">
+  <div class="container-fluid">
+    <div v-if="$route.name !== 'symptomsReporting'" class="row">
       <div class="col-sm-6 feelings" v-for="(feelin, index) in symptoms" :key="feelin.value">
         <button 
           type="button" 
-          v-bind:class="feelings[index].clicked ? 'btn feelingStyler' : 'btn btnfeeling'"
+          v-bind:class="feelin.clicked ? 'btn feelingStyler' : 'btn btnfeeling'"
           @click="feelingsEvent(index)"
-          :data-toggle=" feelings[index].clicked ? 'modal' : '' "
+          :data-toggle=" symptoms[index].clicked ? 'modal' : '' "
           data-target="#confirmation"
+          :title="feelin.label"
+          v-b-popover.hover.right="feelin.description"
         >
           {{feelin.label}}
         </button>
       </div>
     </div>
-    <div v-if="$route.name === 'symptomsReporting'" class="container">
+    <div v-if="$route.name === 'symptomsReporting'" class="container-fluid symptomsReportingViewContainer">
       <br>
       <br>
-      <br>
-      <div class="col-sm-12">
+      <div class="col-sm-12 symptomsReportingView">
         <div class="row">
-          <div class="col-sm-3">
-            <div class="col-sm-12 symptomsView">
-              <br>
-              <br>
-              <p>
+          <div class="col-sm-3 symptoms">
+            <div class="col-sm-12 feelingsBTNgroup">
+              <p class="col-sm-12 alert alert-info symptomsQuest">
                 Hi, <b>{{user.username}}!</b> How are you feeling today?
               </p>
-              <br>
               <div class="col-sm-12 feelings " v-for="(feelin, index) in symptoms" :key="feelin.value">
                 <button 
                   type="button" 
-                  v-bind:class="feelings[index].clicked ? 'btn feelingStyler' : 'btn btnfeeling'"
+                  v-bind:class="feelin.clicked ? 'btn feelingStyler' : 'btn btnfeeling'"
                   @click="feelingsEvent(index)"
                   :data-toggle=" feelings[index].clicked ? 'modal' : '' "
                   data-target="#confirmation"
+                  :title="feelin.label"
+                  v-b-popover.hover.right="feelin.description"
                 >
                   {{feelin.label}}
                 </button>
@@ -42,8 +42,8 @@
             </div>
           </div>
           <div class="col-sm-9 summaryS">
-            <div class="ledger-summary-container summaryS symptomsView">
-              <table class="table table-bordered table-responsive" v-if="data !== null">
+            <div class="ledger-summary-container summaryS tabledSummary" id="symptomsScroll">
+              <table class="table table-bordered table-responsive " v-if="data !== null">
                 <thead class="bg-primary">
                   <tr>
                     <td>Date</td>
@@ -75,10 +75,15 @@
       role="dialog" 
       aria-labelledby="myModalLabel"
       aria-hidden="true"
+      data-keyboard="false"
+      data-backdrop="static"
     > 
       <div class="modal-dialog"> 
         <div class="modal-content"> 
-          <div class="modal-body data"> 
+          <div class="modal-body data">
+            <span class="error text-danger" v-if="errorMessage !== null">
+            <b>Oops!</b> {{errorMessage}}
+            </span>
             <button class="close" data-dismiss="modal" @click="cancelReport"> 
               × 
             </button>  
@@ -107,7 +112,7 @@
           <center>
             <button 
             type="button" 
-            class="btn symptomsSubmit" 
+            class="btn btn-primary symptomsSubmit" 
             :data-dismiss=" validReport ? 'modal' : ''"
             data-toggle="modal" 
             data-target="#confirm"
@@ -131,8 +136,8 @@
                   <br>
                 </div>
                 <div class="modal-footer">
+                  <button data-dismiss="modal" class="btn btn-outline-danger confirmNo" @click="cancelReport">No</button>
                   <button data-dismiss="modal" class="btn btn-outline-primary confirmYes" @click="symptomsSubmit">Yes</button>
-                  <button data-dismiss="modal" class="btn btn-outline-danger confirmNo">No</button>
                 </div>
             </div>
         </div>
@@ -163,7 +168,9 @@
   width: 70px;
   outline: none;
 }
-
+.popover {
+  white-space: pre-wrap;    
+}
 .mx-datepicker,
 .mx-input-wrapper {
   width: unset;
@@ -172,10 +179,10 @@
 }
 .btnfeeling{
   width:100%;
-  border:1px solid #bd3a47;
+  border:1px solid #005b96;
   font-size:12px;
-  height:35px;
-  border-radius:20px;
+  height:45px;
+  border-radius: 0px;
   font-weight:bold;
   background-color:white;
   white-space: normal; 
@@ -185,17 +192,17 @@
   box-shadow: none!important;
 }
 .feelings{
-  padding:2px;
+  padding: 1px;
 }
 .feelingStyler{
   width:100%;
-  border:1px solid #bd3a47;
+  border:1px solid #005b96;
   font-size:12px;
-  height:35px;
-  border-radius:20px;
+  height:45px;
+  border-radius: 0px;
   font-weight:bold;
   color: white;
-  background-color:#bd3a47;
+  background-color:#005b96;
   outline: none !important;
   white-space: normal; 
   word-wrap: break-word;
@@ -203,31 +210,63 @@
 .feelingStyler:focus{
   box-shadow: none!important;
 }
-.symptomsD{
-  padding-right: 11px;
-  padding-left: 11px;
+.feelingsBTNgroup{
+  padding:0px !important;
+}
+.reference{
+  margin:0px;
+}
+.referenceSection{
+  padding: 0px;
+}
+.tabledSummary{
+  max-height: 500px;
+  overflow-y: scroll;
+}
+.symptoms{
+  padding-left: 0px;
+}
+#symptomsScroll::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: white;
 }
 
+#symptomsScroll::-webkit-scrollbar
+{
+	width: 5px;
+	background-color: white;
+}
+
+#symptomsScroll::-webkit-scrollbar-thumb
+{
+	background-color: #b0b0b0;
+}
 @media (min-width:575px) {
   .btnfeeling {
     font-size: 13px;
   }
   .feelingStyler{
-  width:100%;
-  border:1px solid #bd3a47;
-  font-size:12px;
-  height:35px;
-  border-radius:20px;
-  font-weight:bold;
-  color: white;
-  background-color:#bd3a47;
-  outline: none !important;
-  white-space: normal; 
-  word-wrap: break-word;
+    width:100%;
+    border:1px solid #005b96;
+    font-size:12px;
+    height:45px;
+    border-radius: 0px;
+    font-weight:bold;
+    color: white;
+    background-color:#005b96;
+    outline: none !important;
+    white-space: normal; 
+    word-wrap: break-word;
+  }
+  .feelingStyler:focus{
+    box-shadow: none!important;
+  }
 }
-.feelingStyler:focus{
-  box-shadow: none!important;
-}
+@media(max-width: 575px){
+  .symptoms{
+    padding-left: 15px;
+  }
 }
 
 @media (min-width:576px) {
@@ -239,14 +278,14 @@
   }
   .feelingStyler{
     width:100%;
-    border:1px solid #bd3a47;
+    border:1px solid #005b96;
     font-size: 7px;
     padding:1px;
-    height:35px;
-    border-radius:20px;
+    height:45px;
+    border-radius: 0px;
     font-weight:bold;
     color: white;
-    background-color:#bd3a47;
+    background-color:#005b96;
     outline: none !important;
     white-space: normal; 
     word-wrap: break-word;
@@ -263,14 +302,14 @@
   }
   .feelingStyler{
     width:100%;
-    border:1px solid #bd3a47;
+    border:1px solid #005b96;
     font-size: 9px;
     padding:1px;
-    height:35px;
-    border-radius:20px;
+    height:45px;
+    border-radius: 0px;
     font-weight:bold;
     color: white;
-    background-color:#bd3a47;
+    background-color:#005b96;
     outline: none !important;
     white-space: normal; 
     word-wrap: break-word;
@@ -286,13 +325,13 @@
   }
   .feelingStyler{
     width:100%;
-    border:1px solid #bd3a47;
+    border:1px solid #005b96;
     font-size: 10px;
-    height:35px;
-    border-radius:20px;
+    height:45px;
+    border-radius: 0px;
     font-weight:bold;
     color: white;
-    background-color:#bd3a47;
+    background-color:#005b96;
     outline: none !important;
     white-space: normal; 
     word-wrap: break-word;
@@ -306,28 +345,25 @@
 }
 
 .symptomsSubmit{
-  width: 170px;
+  width: 200px;
   outline: none;
-  border-radius: 20px;
-  margin-bottom: 40px;
-  box-shadow: 0px 0px 70px #bfbfbf;
-  border: 1px solid #dc3545;
+  margin-bottom: 20px;
 }
 .symptomsSubmit:focus{
-  width: 170px;
+  width: 200px;
   outline: none;
-  border: 1px solid #dc3545;
-  box-shadow: 0px 0px 30px #bfbfbf;
-  border-radius: 20px;
-  margin-bottom: 40px;
-  background-color: #dc3545;
+  margin-bottom: 20px;
   color: white;
 }
 .summaryS{
   padding:0px;
+  width: 100% !important;
 }
-.symptomsView{
-  box-shadow: 5px 0px 40px #e0e0e0;
+.symptomsReportingView{
+  padding:0px;
+}
+.symptomsReportingViewContainer{
+  padding: 0px !important;
 }
 .bg-primary{
   background: $primary !important;
@@ -335,7 +371,7 @@
 }
 
 .ledger-summary-container{
-  width: 100%;
+  width: 100% !important;
   float: left;
   height: auto;
   margin-bottom: 100px;
@@ -383,14 +419,12 @@ import PropertyModal from './CreateSymptom.js'
 import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 export default{
-  created(){
+  mounted(){
+    let initialData = []
     this.feelings = COMMON.symptomsHealthDec.map((element, index) => {
       element['clicked'] = false
       return element
     })
-  },
-  mounted(){
-    let initialData = []
     this.retrieve()
   },
   data(){
@@ -405,7 +439,8 @@ export default{
       config: CONFIG,
       propertyModal: PropertyModal,
       modalShow: true,
-      feelings: []
+      feelings: [],
+      errorMessage: null
     }
   },
   components: {
@@ -418,11 +453,18 @@ export default{
       return this.feelings
     },
     valid(){
+      let d = new Date()
+      d = new Date(d.getTime() - 3000000)
+      var date = d.getFullYear().toString() + '-' + ((d.getMonth() + 1).toString().length === 2 ? (d.getMonth() + 1).toString() : '0' + (d.getMonth() + 1).toString()) + '-' + (d.getDate().toString().length === 2 ? d.getDate().toString() : '0' + d.getDate().toString())
       let validator = false
       if(this.date === null){
         validator = this.validReport
+      }else if(this.date > date){
+        this.errorMessage = 'Date is Advance!'
+        validator = this.validReport
       }else{
         validator = !this.validReport
+        this.errorMessage = null
       }
       return validator
     },
@@ -444,6 +486,8 @@ export default{
       })
     },
     cancelReport(){
+      this.date = null
+      this.remarks = null
       this.feelings = this.feelings.filter((el, i) => {
         if (this.index === i) {
           el.clicked = !el.clicked
@@ -461,6 +505,16 @@ export default{
       if(this.feelings[this.index].clicked){
         if(this.date !== null){
           this.APIRequest('symptoms/create', parameters).then(response => {
+            // let temp = JSON.parse(localStorage.getItem('symptoms'))
+            // temp.date = 'Today'
+            // temp.push(parameters)
+            // localStorage.setItem('symptoms', JSON.stringify(temp))
+            // console.log('date ', this.date)
+            // this.data = JSON.parse(localStorage.getItem('symptoms'))
+            this.date = null
+            this.remarks = null
+            this.retrieve()
+            // console.log(' saving local ', JSON.parse(localStorage.getItem('symptoms')))
           })
         }else{
           this.validReport = !this.validReport
@@ -478,15 +532,21 @@ export default{
           date: 'desc'
         }
       }
+      // if(localStorage.getItem('symptoms') === null || localStorage.getItem('symptoms') === undefined){
       $('#loading').css({display: 'block'})
       this.APIRequest('symptoms/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          // localStorage.setItem('symptoms', JSON.stringify(response.data))
         }else{
           this.data = null
+          // localStorage.setItem('symptoms', JSON.stringify([]))
         }
       })
+      // }else{
+      //   this.data = (JSON.parse(localStorage.getItem('symptoms')).length < 1) ? null : JSON.parse(localStorage.getItem('symptoms'))
+      // }
     },
     testing(){
       this.modalShow = !this.modalShow

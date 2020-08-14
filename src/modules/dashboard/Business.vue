@@ -24,7 +24,7 @@
     </div>
   </div> -->
   <div class="col-sm-12">
-    <div class="row flex-column-reverse flex-sm-row" v-if="businessInfo !== null">
+    <div class="row flex-column-reverse flex-sm-row">
       <div class="col-sm-9">
         <div v-if="branches !== null && branches.length > 0">
           <h3>BRANCHES</h3>
@@ -32,7 +32,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ `${branch.route} ${branch.locality}` }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ branch.region }}</h6>
-              <div class="d-flex">
+              <!-- <div class="d-flex">
                 <span class="card text-white bg-danger mr-2" style="width: 150px">
                   <span class="card-header">
                     <h5 class="card-title text-center">
@@ -57,7 +57,7 @@
                   </span>
                   <span class="card-body p-0 mx-auto">Death</span>
                 </span>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -65,42 +65,54 @@
           :title="'There\'s currently no hot spots logged.'" 
           :action="'Stay Home!'" 
           :icon="'far fa-smile'" 
-          :iconColor="'text-danger'"
+          :iconColor="'text-success'"
         >
         </empty>
       </div>
       <div class="col-sm-3">
-        <center>
-          <img v-if="businessInfo.logo !== null"
-            :src="backend + businessInfo.logo"
-            alt="logo"
-            class="business-logo"
-          >
-          <i v-else class="fa fa-image business-logo"></i>
-        </center>
-        <p>
-          {{businessInfo.name}}
-        </p>
-        <p>
-          {{businessInfo.address}}
-        </p>
-        <p>
-          {{businessInfo.email}}
-        </p>
-        <qr-code-scanner 
-          :btnWidth="'col-sm-12'" 
-          :state="qrScannerState" @toggleState="(newState) => qrScannerState = newState"
+        <empty v-if="fetchingBusinessInfo"
+          :title="'Please wait a moment...'" 
+          :action="'We are fetching your data...'" 
+          :icon="'far fa-smile'" 
+          :iconColor="'text-success'"
         >
-        </qr-code-scanner>
+        </empty>
+        <div v-if="businessInfo !== null" style="margin-top: 25px;">
+          <center>
+            <img v-if="businessInfo.logo !== null"
+              :src="backend + businessInfo.logo"
+              alt="logo"
+              class="business-logo"
+            >
+            <i v-else class="fa fa-image business-logo"></i>
+          </center>
+          <p class="mt-3">
+            Name: <b>{{ businessInfo.name || 'No information' }}</b>
+          </p>
+          <p>
+            Address: <b>{{ businessInfo.address || 'No information' }}</b>
+          </p>
+          <p>
+            Email: <b>{{ businessInfo.email || 'No information' }}</b>
+          </p>
+        </div>
+        <empty v-if="businessInfo === null && fetchingBusinessInfo === false"
+          :title="'Whoops!'" 
+          :action="'Seems like you haven\'t setup your business information! Please head over to Business Settings to do so.'" 
+          :icon="'far fa-frown'" 
+          :iconColor="'text-warning'"
+        >
+        </empty>
+        <div class="mt-3">
+          <qr-code-scanner
+            :btnWidth="'col-sm-12'"
+            :state="qrScannerState"
+            @toggleState="(newState) => qrScannerState = newState"
+          >
+          </qr-code-scanner>
+        </div>
       </div>
     </div>
-    <empty v-else 
-      :title="'Whoops!'" 
-      :action="'Seems like you haven\'t setup your business information! Please head over to Business Settings to do so.'" 
-      :icon="'far fa-frown'" 
-      :iconColor="'text-danger'"
-    >
-    </empty>
   </div>
 </template>
 <style scoped lang="scss">
@@ -150,7 +162,7 @@ import ComplaintProperty from './Complaint.js'
 export default {
   mounted(){
     this.retrieveBusinessInfo()
-    this.retrieveEmployees()
+    // this.retrieveEmployees()
     this.retrieveBranches()
   },
   data(){
@@ -162,7 +174,8 @@ export default {
       qrScannerState: false,
       affectedEmp: null,
       data: null,
-      branches: []
+      branches: [],
+      fetchingBusinessInfo: false
     }
   },
   components: {
@@ -171,6 +184,18 @@ export default {
   },
   methods: {
     retrieveBusinessInfo() {
+      let data = JSON.parse(localStorage.getItem('merchants/' + this.user.code))
+      if(data){
+        if(data.data.length > 0){
+          this.businessInfo = data.data[0]
+        }else{
+          this.businessInfo = null
+        }
+        return
+      }else{
+        this.businessInfo = null
+      }
+      // this.fetchingBusinessInfo = true
       let par = {
         condition: [{
           value: this.user.userID,
@@ -179,12 +204,25 @@ export default {
         }]
       }
       this.APIRequest('merchants/retrieve', par).then(response => {
+        localStorage.setItem('merchants/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0) {
           this.businessInfo = response.data[0]
         }
+        this.fetchingBusinessInfo = false
       })
     },
     retrieveBranches() {
+      let data = JSON.parse(localStorage.getItem('locations/' + this.user.code))
+      if(data){
+        if(data.data.length > 0){
+          this.branches = data.data
+        }else{
+          this.branches = null
+        }
+        return
+      }else{
+        this.branches = null
+      }
       const parameter = {
         condition: [{
           value: this.user.userID,
@@ -198,28 +236,30 @@ export default {
 
       this.APIRequest('locations/retrieve', parameter).then((response) => {
         if(response.data.length > 0) {
-          const data = [...response.data]
-          response.data.forEach((branch, idx) => {
-            const param = {
-              status: 'positive',
-              locality: branch.locality + '%',
-              route: branch.route + '%'
-            }
-            this.APIRequest('tracing_places/places', param).then(res => {
-              if (res.data.length > 0) {
-                if (data[idx].route === res.data[0].route) {
-                  console.log({ dataRoute: data[idx].route, resRoute: res.data[0].route, param })
-                  data[idx].death_size = res.data[0].death_size != null ? res.data[0].death_size : 0
-                  data[idx].negative_size = res.data[0].negative_size != null ? res.data[0].negative_size : 0
-                  data[idx].positive_size = res.data[0].positive_size != null ? res.data[0].positive_size : 0
-                  data[idx].pui_size = res.data[0].pui_size != null ? res.data[0].pui_size : 0
-                  data[idx].pum_size = res.data[0].pum_size != null ? res.data[0].pum_size : 0
-                  data[idx].recovered_size = res.data[0].recovered_size != null ? res.data[0].recovered_size : 0
-                }
-              }
-              this.branches.push(data[idx])
-            }).fail(err => console.log({ err, param }))
-          })
+          localStorage.setItem('invitations/' + this.user.code, JSON.stringify(response))
+          this.branches = response.data
+          // let data = [...response.data]
+          // response.data.forEach((branch, idx) => {
+          //   const param = {
+          //     status: 'positive',
+          //     locality: branch.locality + '%',
+          //     route: branch.route + '%'
+          //   }
+          //   this.APIRequest('tracing_places/places', param).then(res => {
+          //     if (res.data.length > 0) {
+          //       if (data[idx].route === res.data[0].route) {
+          //         console.log({ dataRoute: data[idx].route, resRoute: res.data[0].route, param })
+          //         data[idx].death_size = res.data[0].death_size != null ? res.data[0].death_size : 0
+          //         data[idx].negative_size = res.data[0].negative_size != null ? res.data[0].negative_size : 0
+          //         data[idx].positive_size = res.data[0].positive_size != null ? res.data[0].positive_size : 0
+          //         data[idx].pui_size = res.data[0].pui_size != null ? res.data[0].pui_size : 0
+          //         data[idx].pum_size = res.data[0].pum_size != null ? res.data[0].pum_size : 0
+          //         data[idx].recovered_size = res.data[0].recovered_size != null ? res.data[0].recovered_size : 0
+          //       }
+          //     }
+          //     this.branches.push(data[idx])
+          //   }).fail(err => console.log({ err, param }))
+          // })
         }
       })
     },
@@ -233,7 +273,7 @@ export default {
       }
 
       this.APIRequest('linked_accounts/retrieve_tracing', par).then(response => {
-        // console.log('linked-Accounts ', response.data)
+        console.log('linked-Accounts ', response.data)
       })
     }
   }

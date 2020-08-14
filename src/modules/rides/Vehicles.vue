@@ -7,7 +7,7 @@
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
         <div class="qr-code-container p-2">
           <div class="qr-code" v-if="item.code !== null" @click="setCode('transportation/' + item.code)">
-            <QrcodeVue :value="`transportation/${item.code}`" :size="100"></QrcodeVue>
+            <QrcodeVue :value="common.APP_URL + '#/transportation/' + item.code" :size="100"></QrcodeVue>
           </div>
           <div class="details">
             <label class="card-title">
