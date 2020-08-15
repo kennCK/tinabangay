@@ -121,6 +121,9 @@ export default{
       ROUTER.push(parameter)
     },
     retrieve(){
+      if(this.user.type !== 'USER' && this.user.type !== 'BUSINESS_AUTHORIZED' && this.user.type !== 'TEMP_SCANNER'){
+        return
+      }
       let parameter = {
         id: this.user.userID
       }

@@ -96,7 +96,6 @@ export default {
       this.checkConsent(this.user.userID)
     }
     if(flag === true){
-      console.log('redirectRoute')
       this.redirectRoute()
     }
     setTimeout(() => {
@@ -139,9 +138,14 @@ export default {
         }
         vue.APIRequest('accounts/retrieve', parameter).then(response => {
           if(response.data.length > 0){
-            this.otpDataHolder.userInfo = userInfo
-            this.otpDataHolder.data = response.data
-            this.checkOtp(response.data[0].notification_settings)
+            let profile = response.data[0].account_profile
+            let notifSetting = response.data[0].notification_settings
+            let subAccount = response.data[0].sub_account
+            let location = response.data[0].location
+            let linkedAccount = response.data[0].linked_account
+            let assignedLocation = response.data[0].assigned_location
+            let information = response.data[0].account_information
+            this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information, false)
           }
         })
         this.retrieveNotifications(userInfo.id)
@@ -341,42 +345,11 @@ export default {
       return true
     }
   },
-  checkOtp(setting){
-    if(setting !== null){
-      if(parseInt(setting.email_otp) === 1 || parseInt(setting.sms_otp) === 1){
-        // ask otp code here
-        $('#otpModal').modal({
-          backdrop: 'static',
-          keyboard: true,
-          show: true
-        })
-      }else{
-        this.proceedToLogin()
-      }
-    }else{
-      this.proceedToLogin()
-    }
-  },
-  proceedToLogin(){
-    this.setToken(this.tokenData.token)
-    let userInfo = this.otpDataHolder.userInfo
-    let data = this.otpDataHolder.data
-    let profile = data[0].account_profile
-    let notifSetting = data[0].notification_settings
-    let subAccount = data[0].sub_account
-    let location = data[0].location
-    let linkedAccount = data[0].linked_account
-    let assignedLocation = data[0].assigned_location
-    let information = data[0].account_information
-    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information, false)
-    // this.redirectRoute()
-  },
   redirectRoute(){
     const locationCode = localStorage.getItem('location_code')
     if (locationCode) {
       ROUTER.push(`/scanned/location/${locationCode}`)
     } else {
-      console.log('dashboard')
       ROUTER.push('/dashboard')
     }
   },
@@ -392,6 +365,9 @@ export default {
   },
   checkConsent(userID){
     let vue = new Vue()
+    if(this.user.type !== 'USER' && this.user.type !== 'BUSINESS_AUTHORIZED' && this.user.type !== 'TEMP_SCANNER'){
+      return
+    }
     let parameter = {
       condition: [{
         value: userID,
