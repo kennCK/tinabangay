@@ -388,7 +388,6 @@ export default {
   computed: {
     filteredAccount(){
       return this.data.filter(post => {
-        // console.log('post', post.assigned_location.route)
         if(this.groupBy.toLowerCase() === 'employee'){
           return post.account.username.toLowerCase().includes(this.searchedAccount.toLowerCase())
         }else if(this.groupBy.toLowerCase() === 'account type'){
@@ -405,7 +404,6 @@ export default {
   },
   methods: {
     show(params, item, operation){
-      // console.log(item)
       if(operation === 'add'){
         if(params === 'brgy') {
           this.selectedItem = item
@@ -475,7 +473,6 @@ export default {
       }
     },
     hideModal(id){
-      console.log(id)
       if(id === 'addAddress') {
         this.selectedItem = null
         this.locality = null
@@ -670,8 +667,6 @@ export default {
         localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
-          console.log(this.data.length)
-          console.log('mao ni', this.data)
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
           this.totalSize = response.size
@@ -682,7 +677,6 @@ export default {
           this.data = null
         }
       })
-      console.log('gawas ni', this.data)
     },
     create() {
       if(!this.username || !this.email) {
