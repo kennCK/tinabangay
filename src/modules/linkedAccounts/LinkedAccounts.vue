@@ -13,6 +13,11 @@
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button class="btn btn-success" @click="importData()">Import Accounts</button>
     </div> -->
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+    />
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
@@ -294,6 +299,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import Vue from 'vue'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 
 export default {
   mounted(){
@@ -301,6 +307,9 @@ export default {
   },
   data(){
     return {
+      numPages: null,
+      activePage: 1,
+      limit: 5,
       common: COMMON,
       user: AUTH.user,
       data: null,
@@ -320,7 +329,8 @@ export default {
     }
   },
   components: {
-    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
+    Pager
   },
   methods: {
     show(params, item, operation){
@@ -562,7 +572,9 @@ export default {
             clause: 'or',
             column: 'owner',
             value: this.user.userID
-          }]
+          }],
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
         }
       }else{
         parameter = {
@@ -578,10 +590,19 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          console.log(this.data.length)
+          console.log('mao ni', this.data)
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+          this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
+          this.totalSize = response.size
         }else{
+          this.numPages = null
+          this.totalSize = null
+          this.numPagesExport = null
           this.data = null
         }
       })
+      console.log('gawas ni', this.data)
     },
     create() {
       if(!this.username || !this.email) {
