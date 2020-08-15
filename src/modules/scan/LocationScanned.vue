@@ -167,7 +167,20 @@ export default {
     if (locationCode) {
       localStorage.removeItem('location_code')
     }
-    this.retrieve(this.code)
+    let data = JSON.parse(localStorage.getItem('scanned/location/' + this.code))
+    if(data){
+      if(data.data.length > 0){
+        this.scannedLocationData = data.data[0]
+        this.loading = false
+        this.addedToVisitedPlaces = false
+      }else{
+        this.scannedLocationData = null
+        this.retrieve(this.code, false)
+      }
+    }else{
+      this.scannedLocationData = null
+      this.retrieve(this.code, true)
+    }
   },
   data() {
     return {
@@ -198,8 +211,8 @@ export default {
     showScanner() {
       this.$emit('toggleState', true)
     },
-    retrieve(code) {
-      this.loading = true
+    retrieve(code, flag) {
+      this.loading = flag
       this.scannedLocationData = null
       this.addedToVisitedPlaces = false
       $('#loading').css({display: 'block'})
@@ -210,9 +223,8 @@ export default {
           column: 'code'
         }]
       }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('locations/retrieve', parameter).then(response => {
-        $('#loading').css({display: 'none'})
+      this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
+        localStorage.setItem('scanned/location/' + code, JSON.stringify(response))
         if(response.data.length > 0){
           this.scannedLocationData = response.data[0]
         }
