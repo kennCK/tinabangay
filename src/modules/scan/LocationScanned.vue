@@ -270,53 +270,77 @@ export default {
       const merchantOwner = this.scannedLocationData.account_id
 
       if (merchantOwner && this.scannedLocationData.payload === null) {
-        const parameter = {
-          condition: [{
-            value: merchantOwner,
-            column: 'account_id',
-            clause: '='
-          }]
-        }
-        this.APIRequest('merchants/retrieve', parameter).then(response => {
-          if (response.data.length) {
-            const location = {...this.scannedLocationData}
-            location.account_id = null
-            location.id = null
-            const content = JSON.stringify({
-              format: type,
-              status: null,
-              statusLabel: null,
-              location
-            })
+        const location = {...this.scannedLocationData}
+        location.account_id = null
+        location.id = null
+        const content = JSON.stringify({
+          format: type,
+          status: null,
+          statusLabel: null,
+          location
+        })
 
-            if (type === 'customer') {
-              this.redirectToForm(type, merchantOwner, content)
-            } else {
-              if (this.user.linked_account === null || parseInt(merchantOwner) !== parseInt(this.user.linked_account.owner)) {
-                this.alertMessage = {
-                  type: 'warning',
-                  message: 'Sorry, you are not linked to this branch'
-                }
-                this.hideModal('send_form')
-                $('#loading').css({display: 'none'})
-              } else {
-                this.redirectToForm(type, merchantOwner, content)
-              }
-            }
-
-          } else {
+        if (type === 'customer') {
+          this.redirectToForm(type, merchantOwner, content)
+        } else {
+          if (this.user.linked_account === null || parseInt(merchantOwner) !== parseInt(this.user.linked_account.owner)) {
             this.alertMessage = {
-              type: 'danger',
-              message: 'Sorry, you cannot request Heath Declaration Form to this address'
+              type: 'warning',
+              message: 'Sorry, you are not linked to this branch'
             }
             this.hideModal('send_form')
             $('#loading').css({display: 'none'})
+          } else {
+            this.redirectToForm(type, merchantOwner, content)
           }
-        })
+        }
+        // const parameter = {
+        //   condition: [{
+        //     value: merchantOwner,
+        //     column: 'account_id',
+        //     clause: '='
+        //   }]
+        // }
+        // this.APIRequest('merchants/retrieve', parameter).then(response => {
+        //   if (response.data.length) {
+        //     const location = {...this.scannedLocationData}
+        //     location.account_id = null
+        //     location.id = null
+        //     const content = JSON.stringify({
+        //       format: type,
+        //       status: null,
+        //       statusLabel: null,
+        //       location
+        //     })
+
+        //     if (type === 'customer') {
+        //       this.redirectToForm(type, merchantOwner, content)
+        //     } else {
+        //       if (this.user.linked_account === null || parseInt(merchantOwner) !== parseInt(this.user.linked_account.owner)) {
+        //         this.alertMessage = {
+        //           type: 'warning',
+        //           message: 'Sorry, you are not linked to this branch'
+        //         }
+        //         this.hideModal('send_form')
+        //         $('#loading').css({display: 'none'})
+        //       } else {
+        //         this.redirectToForm(type, merchantOwner, content)
+        //       }
+        //     }
+
+        //   } else {
+        //     this.alertMessage = {
+        //       type: 'danger',
+        //       message: 'Sorry, you cannot request Heath Declaration Form to this address'
+        //     }
+        //     this.hideModal('send_form')
+        //     $('#loading').css({display: 'none'})
+        //   }
+        // })
       } else {
         this.alertMessage = {
           type: 'danger',
-          message: 'Sorry, you cannot request Heath Declaration Form form to this address'
+          message: 'Sorry, you cannot request Heath Declaration Form to this address'
         }
         this.hideModal('send_form')
         $('#loading').css({display: 'none'})
