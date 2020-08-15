@@ -21,15 +21,14 @@
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
-    <form class="form-inline">
+<!--     <form class="form-inline">
         <select class="form-control mb-2" v-model="groupBy" style="border: 2px solid #007bff; height:40px;">
-          <!-- <option class="form-control" disabled>Group By: </option> -->
           <option class="form-control">Account type</option>
           <option class="form-control">Employee</option>
           <option class="form-control">Assigned branch</option>
         </select>
         <input type="text" v-model="searchedAccount" :placeholder="`Search by ${groupBy}`" class="form-control mb-2" style="width:50%;height:40px">
-    </form>
+    </form> -->
     <table class="table table-responsive table-hover table-fixed" v-if="data !== null" >
         <thead class="bg-primary" style="table-layout:fixed">
             <!-- <th scope="col">Owner</th> -->
@@ -646,7 +645,10 @@ export default {
             value: this.user.userID
           }],
           limit: this.limit,
-          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage,
+          sort: {
+            created_at: 'desc'
+          }
         }
       }else{
         parameter = {
@@ -654,11 +656,16 @@ export default {
             clause: '=',
             column: 'owner',
             value: this.user.userID
-          }]
+          }],
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage,
+          sort: {
+            created_at: 'desc'
+          }
         }
       }
       $('#loading').css({display: flag ? 'block' : 'none'})
-      this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
+      this.APIRequest('linked_accounts/retrieve_employees', parameter).then(response => {
         $('#loading').css({display: 'none'})
         localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){

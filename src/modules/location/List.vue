@@ -392,7 +392,7 @@ export default {
         }]
       }
       $('#loading').css({display: flag ? 'block' : 'none'})
-      this.APIRequest('locations/retrieve', parameter).then(response => {
+      this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
         $('#loading').css({display: 'none'})
         localStorage.setItem('locations/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){

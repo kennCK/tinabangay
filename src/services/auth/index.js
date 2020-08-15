@@ -50,7 +50,8 @@ export default {
   tokenData: {
     token: null,
     tokenTimer: false,
-    verifyingToken: false
+    verifyingToken: false,
+    loading: false
   },
   otpDataHolder: {
     userInfo: null,
@@ -62,7 +63,7 @@ export default {
   },
   echo: null,
   currentPath: false,
-  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code, location, linkedAccount, assignedLocation, information){
+  setUser(userID, username, email, type, status, profile, notifSetting, subAccount, code, location, linkedAccount, assignedLocation, information, flag){
     if(userID === null){
       username = null
       email = null
@@ -94,6 +95,13 @@ export default {
     if(this.user.userID > 0){
       this.checkConsent(this.user.userID)
     }
+    if(flag === true){
+      console.log('redirectRoute')
+      this.redirectRoute()
+    }
+    setTimeout(() => {
+      this.tokenData.loading = false
+    }, 1000)
   },
   setToken(token){
     this.tokenData.token = token
@@ -118,7 +126,10 @@ export default {
     }
     vue.APIRequest('authenticate', credentials, (response) => {
       this.tokenData.token = response.token
+      this.setToken(response.token)
       vue.APIRequest('authenticate/user', {}, (userInfo) => {
+        this.tokenData.loading = true
+        this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, null, null, null, userInfo.code, null, null, null, null, true)
         let parameter = {
           'condition': [{
             'value': userInfo.id,
@@ -145,13 +156,17 @@ export default {
       }
     })
   },
-  checkAuthentication(callback){
+  checkAuthentication(callback, flag = false){
     this.tokenData.verifyingToken = true
     let token = localStorage.getItem('usertoken')
     if(token){
+      if(flag === false){
+        this.tokenData.loading = true
+      }
       this.setToken(token)
       let vue = new Vue()
       vue.APIRequest('authenticate/user', {}, (userInfo) => {
+        this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, null, null, null, userInfo.code, null, null, null, null, false)
         let parameter = {
           'condition': [{
             'value': userInfo.id,
@@ -167,9 +182,10 @@ export default {
           let linkedAccount = response.data[0].linked_account
           let assignedLocation = response.data[0].assigned_location
           let information = response.data[0].account_information
-          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information)
+          this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information, false)
         }).done(response => {
           this.tokenData.verifyingToken = false
+          this.tokenData.loading = false
           let location = window.location.href
           if(this.currentPath){
             // ROUTER.push(this.currentPath)
@@ -196,6 +212,7 @@ export default {
 
   },
   deaunthenticate(){
+    this.tokenData.loading = true
     localStorage.removeItem('usertoken')
     localStorage.removeItem('account_id')
     localStorage.removeItem('google_code')
@@ -351,12 +368,15 @@ export default {
     let linkedAccount = data[0].linked_account
     let assignedLocation = data[0].assigned_location
     let information = data[0].account_information
-    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information)
-
+    this.setUser(userInfo.id, userInfo.username, userInfo.email, userInfo.account_type, userInfo.status, profile, notifSetting, subAccount, userInfo.code, location, linkedAccount, assignedLocation, information, false)
+    // this.redirectRoute()
+  },
+  redirectRoute(){
     const locationCode = localStorage.getItem('location_code')
     if (locationCode) {
       ROUTER.push(`/scanned/location/${locationCode}`)
     } else {
+      console.log('dashboard')
       ROUTER.push('/dashboard')
     }
   },
