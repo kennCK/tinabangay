@@ -57,7 +57,8 @@
                     <td>
                       <label class="text-uppercase">{{item.type}}</label>
                     </td>
-                    <td>{{item.remarks}}</td>
+                    <td v-if="item.remarks.length < 51">{{item.remarks}}</td>
+                    <td v-else-if="item.remarks.length > 50" title="Remarks" v-b-popover.hover.top="item.remarks">{{item.remarks.substring(0, 51)}}...</td>
                   </tr>
                 </tbody>
               </table>
