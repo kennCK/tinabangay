@@ -21,16 +21,16 @@
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
-<!--     <form class="form-inline">
+    <form class="form-inline">
         <select class="form-control mb-2" v-model="groupBy" style="border: 2px solid #007bff; height:40px;">
           <option class="form-control">Account type</option>
           <option class="form-control">Employee</option>
           <option class="form-control">Assigned branch</option>
         </select>
         <input type="text" v-model="searchedAccount" :placeholder="`Search by ${groupBy}`" class="form-control mb-2" style="width:50%;height:40px">
-    </form> -->
+    </form>
     <table class="table table-responsive table-hover table-fixed" v-if="data !== null" >
-        <thead class="bg-primary" style="table-layout:fixed">
+        <thead class="bg-primary">
             <!-- <th scope="col">Owner</th> -->
             <th scope="col">Employee</th>
             <!-- <th scope="col">Name</th> -->
@@ -43,7 +43,7 @@
             <th scope="col" v-if="user.type !== 'USER'">Assigned As</th>
             <th scope="col" v-if="user.type !== 'USER'">Actions</th>
         </thead>
-        <tbody style="overflow:auto">
+        <tbody>
             <tr v-for="(item, index) in filteredAccount" :key="index">
             <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
               <td>
@@ -312,26 +312,6 @@ thead, tbody tr {
     table-layout:fixed;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
-  border-radius: 5px;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #007bff; 
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: $primary; 
-}
 
 </style>
 <script>
