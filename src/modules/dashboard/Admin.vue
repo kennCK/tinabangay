@@ -1,66 +1,63 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid" style="padding: 0px;">
         <div class="col-sm-12 alert alert-info">&nbsp;&nbsp;<h3>PAGE UNDER CONSTRUCTION</h3></div>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="col-sm-12">
-                            User
-                        </div>
-                        <div class="col-sm-12">
-                            <i class="fas fa-users"></i> 3287498
-                        </div>
+        <div class="row">
+            <div class="col-sm-3 countCards" v-for="(element, index) in users" :key="index">
+                <div class="card">
+                    <div class="card-header countHeader text-center">
+                        <i :class="element.icon"></i>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="col-sm-12">
-                            Business
-                        </div>
-                        <div class="col-sm-12">
-                            <i class="fas fa-fax"></i> 989283791
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="col-sm-12">
-                            Barangay
-                        </div>
-                        <div class="col-sm-12">
-                            <i class="fas fa-users"></i> 3287498
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="col-sm-12">
-                            LGU
-                        </div>
-                        <div class="col-sm-12">
-                            <i class="fas fa-building"></i> 934890
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="col-sm-12">
-                            GOV
-                        </div>
-                        <div class="col-sm-12">
-                            <i class="fas fa-building"></i> 23999
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="col-sm-12">
-                            Total
-                        </div>
-                        <div class="col-sm-12">
-                            <i class="fas fa-chart-pie"></i> 12123
-                        </div>
+                    <div class="card-body text-center">
+                        <p class="userSUm">{{element.count}}</p>
+                        <p class="userType">{{element.user_type}}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
-<style>
-
+<style scoped>
+.countSummary{
+    height: 400px;
+}
+.countBody{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+.countSection{
+    height: 130px;
+}
+.countIcon{
+    font-size: 45px;
+}
+.countIconContainer{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-top: 10px;
+}
+.countHeader{
+    background-color: white;
+    border: none;
+    margin-bottom: 70px;
+    padding-top: 30px;
+}
+.userSUm{
+    font-size: 30px;
+    font-weight: bold;
+    border-bottom: 2px solid #005b96;
+    color: #005b96;
+}
+.countCards{
+    margin-bottom: 10px;
+}
+.userType{
+    color: #005b96;
+}
 </style>
 <script>
 import QrcodeVue from 'qrcode.vue'
@@ -74,7 +71,29 @@ export default {
     return{
       user: AUTH.user,
       dashType: AUTH.user.type,
-      backend: CONFIG.BACKEND_URL
+      backend: CONFIG.BACKEND_URL,
+      users: [
+        {
+          icon: 'fas fa-users countIcon',
+          user_type: 'USER',
+          count: 0
+        },
+        {
+          icon: 'fas fa-fax countIcon',
+          user_type: 'BUSINESS',
+          count: 0
+        },
+        {
+          icon: 'fas fa-building countIcon',
+          user_type: 'GOV',
+          count: 0
+        },
+        {
+          icon: 'fas fa-building countIcon',
+          user_type: 'BRGY',
+          count: 0
+        }
+      ]
     }
   }
 }
