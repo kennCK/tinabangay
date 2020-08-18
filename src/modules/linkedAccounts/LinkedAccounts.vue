@@ -59,7 +59,7 @@
               <td v-if="user.type !== 'USER'">
                   <i v-if="item.address === null">No address recorded</i>
                   <label v-if="item.address !== null">
-                  <b class="text-danger">({{item.address.assigned_code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
+                  <b class="text-danger" style="overflow:hiddden">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
                   </label>
               </td>
               <td v-if="user.type !== 'USER'">
@@ -569,6 +569,7 @@ export default {
         }
         $('#loading').css({display: 'block'})
         this.APIRequest('brgy_codes/retrieve', parameter).then(response => {
+          console.log('brgy retrieve', response)
           $('#loading').css({display: 'none'})
           if(response.data.length > 0){
             this.brgys = response.data
@@ -599,6 +600,7 @@ export default {
 
         $('#loading').css({display: 'block'})
         this.APIRequest('locations/retrieve', parameter).then(response => {
+          console.log('location retrieve', response)
           $('#loading').css({display: 'none'})
           if(response.data.length > 0) {
             this.branches = response.data
