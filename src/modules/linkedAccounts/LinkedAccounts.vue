@@ -3,7 +3,7 @@
     <div class="form-group" v-if="user.type !== 'USER'">
       <label>You can assign address to your employees for address status verification:</label>
     </div>
-    <button class="btn pull-right mr-3" :class="[{'btn-success': !importFlag}, {'btn-danger': importFlag}]" style="margin: .5% 0;" @click="importFlag = !importFlag, googleId = googleSheetNumber = null">{{importFlag ? 'Cancel Import' : 'Import Accounts'}}</button>
+    <!-- <button class="btn pull-right mr-3" :class="[{'btn-success': !importFlag}, {'btn-danger': importFlag}]" style="margin: .5% 0;" @click="importFlag = !importFlag, googleId = googleSheetNumber = null">{{importFlag ? 'Cancel Import' : 'Import Accounts'}}</button>
     <button class="btn btn-primary pull-right mr-3" style="margin: .5% 0;" @click="show('accounts')">New Account</button>
     <div class="form-group" v-if="importFlag">
       <label style="width: 100%;">Using google sheet
@@ -12,12 +12,25 @@
       <input type="text" class="form-control" style="width: 30% !important; float: left;" v-model="googleId" placeholder="Google Sheet Id">
       <input type="text" class="form-control" style="width: 30% !important; float: left; margin-right: 5px; margin-left: 5px;" placeholder="sheet number" v-model="googleSheetNumber">
       <button class="btn btn-success" @click="importData()">Import Accounts</button>
-    </div>
+    </div> -->
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+    />
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
-    <table class="table table-bordered table-responsive" v-if="data !== null" >
-        <thead class="bg-primary">
+<!--     <form class="form-inline">
+        <select class="form-control mb-2" v-model="groupBy" style="border: 2px solid #007bff; height:40px;">
+          <option class="form-control">Account type</option>
+          <option class="form-control">Employee</option>
+          <option class="form-control">Assigned branch</option>
+        </select>
+        <input type="text" v-model="searchedAccount" :placeholder="`Search by ${groupBy}`" class="form-control mb-2" style="width:50%;height:40px">
+    </form> -->
+    <table class="table table-responsive table-hover table-fixed" v-if="data !== null" >
+        <thead class="bg-primary" style="table-layout:fixed">
             <!-- <th scope="col">Owner</th> -->
             <th scope="col">Employee</th>
             <!-- <th scope="col">Name</th> -->
@@ -30,8 +43,8 @@
             <th scope="col" v-if="user.type !== 'USER'">Assigned As</th>
             <th scope="col" v-if="user.type !== 'USER'">Actions</th>
         </thead>
-        <tbody>
-            <tr v-for="(item, index) in data" :key="index">
+        <tbody style="overflow:auto">
+            <tr v-for="(item, index) in filteredAccount" :key="index">
             <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
               <td>
                   <span v-if="item.account.information.first_name !== null">{{item.account.information.first_name}}</span> 
@@ -70,21 +83,21 @@
                   <div class="dropdown-menu" role="menu">
                       <a class="dropdown-item"  @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER' || item.account.account_type === 'BUSINESS_AUTHORIZED'" style="color:red">Remove assign as {{item.account.account_type}}</a>
                       <a class="dropdown-item" @click="updateType(item, 'BUSINESS_AUTHORIZED')" v-if="item.account.account_type !== 'BUSINESS_AUTHORIZED'">Assign as business authorized</a>
-                      <div v-if="item.account.account_type === 'TEMP_SCANNER'">
+                      <!-- <div v-if="item.account.account_type === 'TEMP_SCANNER'"> -->
                       <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign as scanner</a>
                       <a class="dropdown-item" v-if="item.assigned_location === null" @click="show('branch', item, 'add')">Assign branch</a>
                       <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">Edit branch</a>
                       <a class="dropdown-item" v-if="item.address === null" @click="show('brgy', item, 'add')">Assign address</a>
                       <a class="dropdown-item" v-if="item.address !== null" @click="show('brgy', item, 'edit')">Edit address</a>
-                      </div>
-                      <div v-if="item.account.account_type === 'BUSINESS_AUTHORIZED'">
+                      <!-- </div> -->
+                      <!-- <div v-if="item.account.account_type === 'BUSINESS_AUTHORIZED'">
                       <a class="dropdown-item" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign as scanner</a>
                       <a class="dropdown-item" v-if="item.assigned_location === null" @click="show('vehicle', item, 'add')">Assign vehicle</a>
                       <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('branch', item, 'edit')">Edit branch</a>
-                      <!-- <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('vehicle', item, 'edit')">Edit vehicle</a> -->
+                      <a class="dropdown-item" v-if="item.assigned_location !== null" @click="show('vehicle', item, 'edit')">Edit vehicle</a>
                       <a class="dropdown-item" v-if="item.address === null" @click="show('brgy', item, 'add')">Assign address</a>
                       <a class="dropdown-item" v-if="item.address !== null" @click="show('brgy', item, 'edit')">Edit address</a>
-                      </div>
+                      </div> -->
                       <a class="dropdown-item" @click="show('unlink', item)" style="color:red">Delete</a>
                   </div>
                 </div>
@@ -288,19 +301,66 @@
   background-color: aliceblue
 }
 
+tbody {
+    display:block;
+    height:70vh;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 5px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #007bff; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $primary; 
+}
+
 </style>
 <script>
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import Vue from 'vue'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 
 export default {
   mounted(){
-    this.retrieve()
+    let data = JSON.parse(localStorage.getItem('linked_accounts/' + this.user.code))
+    if(data){
+      if(data.data.length > 0){
+        this.data = data.data
+      }else{
+        this.data = null
+      }
+      this.retrieve(false)
+    }else{
+      this.data = null
+      this.retrieve(true)
+    }
   },
   data(){
     return {
+      numPages: null,
+      activePage: 1,
+      limit: 5,
       common: COMMON,
       user: AUTH.user,
       data: null,
@@ -316,15 +376,34 @@ export default {
       brgys: [],
       branches: [],
       selectedItem: null,
-      newAccountType: null
+      newAccountType: null,
+      searchedAccount: '',
+      groupBy: ''
     }
   },
   components: {
-    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
+    Pager
+  },
+  computed: {
+    filteredAccount(){
+      return this.data.filter(post => {
+        if(this.groupBy.toLowerCase() === 'employee'){
+          return post.account.username.toLowerCase().includes(this.searchedAccount.toLowerCase())
+        }else if(this.groupBy.toLowerCase() === 'account type'){
+          return post.account.account_type.toLowerCase().includes(this.searchedAccount.toLowerCase())
+        }else if(this.groupBy.toLowerCase() === 'assigned branch'){
+          if(post.assigned_location !== null){
+            return post.assigned_location.locality.toLowerCase().includes(this.searchedAccount.toLowerCase())
+          }
+        }else{
+          return post
+        }
+      })
+    }
   },
   methods: {
     show(params, item, operation){
-      // console.log(item)
       if(operation === 'add'){
         if(params === 'brgy') {
           this.selectedItem = item
@@ -394,7 +473,6 @@ export default {
       }
     },
     hideModal(id){
-      console.log(id)
       if(id === 'addAddress') {
         this.selectedItem = null
         this.locality = null
@@ -550,7 +628,7 @@ export default {
         })
       }
     },
-    retrieve(){
+    retrieve(flag = false){
       let parameter = null
       if(this.user.type === 'USER'){
         parameter = {
@@ -562,7 +640,12 @@ export default {
             clause: 'or',
             column: 'owner',
             value: this.user.userID
-          }]
+          }],
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage,
+          sort: {
+            created_at: 'desc'
+          }
         }
       }else{
         parameter = {
@@ -570,15 +653,27 @@ export default {
             clause: '=',
             column: 'owner',
             value: this.user.userID
-          }]
+          }],
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage,
+          sort: {
+            created_at: 'desc'
+          }
         }
       }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
+      $('#loading').css({display: flag ? 'block' : 'none'})
+      this.APIRequest('linked_accounts/retrieve_employees', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+          this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
+          this.totalSize = response.size
         }else{
+          this.numPages = null
+          this.totalSize = null
+          this.numPagesExport = null
           this.data = null
         }
       })

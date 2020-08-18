@@ -1,51 +1,62 @@
 <template>
-  <div class="container">
-      <br>
-      <br>
-      <div class="row">
-        <div class="col-sm-5 feelingsGroup">
-          <p>
-            Hi, <b>{{user.username}}!</b> How are you feeling today?
-          </p>
-          <symptoms></symptoms>
-          <br>
-          <p class="notif">
-            Hi <b>{{user.username}}</b>! Below is your QR code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
-          </p>
-          <div class="user_status_container">
-            <p>{{status.status_label}}</p>
-          </div>
-          <div v-if="user.code !== null" class="user_qrcode row justify-content-center pt-5">
-            <QrcodeVue :value="`account/${user.code}`" :size="200"></QrcodeVue>
-          </div>
-          <br>
-          <center>
-            <qr-code-scanner 
-            :state="qrScannerState" 
-            @toggleState="(newState) => qrScannerState = newState"
-            >
-            </qr-code-scanner>
-          </center>
-          <br>
+  <div class="container-fluid">
+    <div class="row" style="padding: 0px;">
+      <data-summary></data-summary>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-sm-5" style="padding: 3px;">
+        <div class="card symptomsCard">
+          <div class="card-body">
+            <div class="col-sm-12 feelingsGroup">
+              <p class="col-sm-12 alert alert-info">
+                Hi, <b>{{user.username}}!</b> How are you feeling today?
+              </p>
+              <symptoms></symptoms>
+              <div class="col-sm-12 d-flex justify-content-sm-start symptomsStatus" v-if="status !== null">
+                <div class="statusIcon">
+                  <i :class="status.icon"></i>
+                </div>
+                <div>
+                  STATUS : {{status.status_label}}
+                </div>
+              </div>
+            </div>
+          </div> 
         </div>
-        <div class="col-sm-7">
-          <trending></trending>
-          <br>
-          <center>
-            <button type="button" class="btn viewMoreTestBtn" @click="redirect('places/trend')">view more</button>
-          </center>
-          <br>
-          <br>
+      </div>
+      <div class="col-sm-7" style="padding: 3px;">
+        <div class="card qrCard">
+          <div class="card-body">
+            <p class="col-sm-12 alert  alert-info notif">
+              Hi <b>{{user.username}}</b>! Below is your QR code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
+            </p>
+            <div v-if="user.code !== null" class="user_qrcode row justify-content-center pt-5">
+              <QrcodeVue :value="`account/${user.code}`" :size="200"></QrcodeVue>
+            </div>
+            <br>
+            <center>
+              <qr-code-scanner 
+              :state="qrScannerState" 
+              @toggleState="(newState) => qrScannerState = newState"
+              >
+              </qr-code-scanner>
+            </center>
+          </div>
         </div>
+      </div>
     </div>
   </div>  
 </template>
 
 <style scoped lang="scss">
   @import "~assets/style/colors.scss";
-    .user_qr_hide {
-    display: none;
+  .feelingsGroup{
+    padding: 0px;
   }
+   .user_qr_hide {
+    display: none;
+   }
   .user_status_container{
     text-align: center;
     background:#facf32;
@@ -54,24 +65,61 @@
     margin-bottom:-10px;
     margin-top:30px;
   }
-  .viewMoreTestBtn{
-    border:1px solid #dc3545;
-    background-color:white;
-    height:30px;
-    width:120px;
-    padding:0px;
-    padding-bottom:2px;
-    border-radius:20px;
-  }
-  .viewMoreTestBtn:focus{
-    box-shadow:none !important;
-    outline:none !important;
-  }
-  .viewMoreTestBtn:hover{
-    background-color: #dc3545;
-    color:white;
-    box-shadow: 0px 0px 30px #bfbfbf;
-  }
+  .symptomsStatus{
+  margin-top: 20px;
+  border: 1px solid #f5f5f5;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+.statusIcon{
+  margin-right: 10px;
+  padding-left: 10px;
+}
+.symptomsQuest{
+  margin-bottom: 3px;
+}
+.noSymptoms{
+  font-size: 50px;
+  color: #0e44e6;
+}
+.symptoms12{
+  font-size: 50px;
+  color: #28a100;
+}
+.symptoms34{
+  font-size: 50px;
+  color: #f2db0f;
+}
+.symptoms56{
+  font-size: 50px;
+  color: #d6a40d;
+}
+.symptoms78{
+  font-size: 50px;
+  color: #d90202;
+}
+.trend{
+  padding: 0px;
+}
+.viewMoreTestBtn{
+  height:40px;
+  width:100%;
+  padding:0px;
+  padding-bottom:2px;
+}
+.viewMoreTestBtn:focus{
+  box-shadow:none !important;
+  outline:none !important;
+}
+.user_qrcode{
+  padding-top: 5px !important;
+}
 </style>
 <script>
 import QrcodeVue from 'qrcode.vue'
@@ -113,13 +161,10 @@ export default {
   components: {
     QrcodeVue,
     'qr-code-scanner': require('modules/scan/QrCodeScanner.vue'),
-    'trending': require('modules/places/Trend_v2.vue'),
-    'symptoms': require('modules/symptoms/List.vue')
+    'symptoms': require('modules/symptoms/List.vue'),
+    'data-summary': require('modules/dashboard/Summary.vue')
   },
   methods: {
-    redirect(parameter){
-      ROUTER.push(parameter)
-    },
     feelingsEvent(index){
       this.feelings.filter((el, i) => {
         if (index === i) {
@@ -135,9 +180,20 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('tracings/status', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.status = response.data
+        let status = response.data
+        if(status.status === 'negative'){
+          status.icon = 'fas fa-smile noSymptoms'
+        }else if(status.status === 'recovered'){
+          status.icon = 'far fa-smile symptoms12'
+        }else if(status.status === 'lsi'){
+          status.icon = 'fas fa-meh symptoms34'
+        }else if(status.status === 'pum'){
+          status.icon = 'fas fa-frown symptoms56'
+        }else if(status.status === 'positive'){
+          status.icon = 'fas fa-sad-tear symptoms78'
+        }
+        this.status = status
         this.createLabel()
-        console.log(this.status)
       })
     },
     createLabel(){

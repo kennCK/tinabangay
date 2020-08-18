@@ -1,7 +1,7 @@
 <template>
   <div class="holder">
     <div class="form-group" v-if="user.location !== null">
-      <label>Assigned address:  <b class="text-danger">({{user.location.code}})</b>{{user.location.route + ',' + user.location.locality + ',' + user.location.region + ',' + user.location.country}}</label>
+      <label>Assigned address:  <b class="text-danger">({{user.location.code}})</b>{{user.location.route + ', ' + user.location.locality + ', ' + user.location.region + ', ' + user.location.country}}</label>
     </div>
     <div class="form-group">
       <select class="form-control" v-model="selectedOption" @change="chageOption()">

@@ -2,7 +2,7 @@
   <div>
     <topAffectedPlaces v-if="data !== null" ref="realtimeChart" height="500" type="bar" :options="options" :series="series"></topAffectedPlaces>
     <empty v-else :title="'There\'s currently no hot spots logged.'" :action="'Stay Home!'" :icon="'far fa-smile'" :iconColor="'text-danger'"></empty>
-    </div>
+  </div>
 </template>
 <style lang="scss" scoped> 
 @import "~assets/style/colors.scss";
@@ -67,16 +67,17 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
-          console.log('Affected ', response.data)
           let series = [[], [], []]
           for(var i = 0; i < 5; ++i){
             // let routes = response.data[i].route.split(',')
             // routes.push(response.data[i].locality)
             // console.log(routes)
-            this.data_categories.push([response.data[i].route + ', ', response.data[i].locality])
-            series[0].push(response.data[i].positive_size)
-            series[1].push(response.data[i].recovered_size)
-            series[2].push(response.data[i].death_size)
+            if(response.data[i] !== undefined){
+              this.data_categories.push([response.data[i].route + ', ', response.data[i].locality])
+              series[0].push(response.data[i].positive_size)
+              series[1].push(response.data[i].recovered_size)
+              series[2].push(response.data[i].death_size)
+            }
           }
           this.options = {
             chart: {
@@ -93,7 +94,7 @@ export default {
                 fontSize: '25px',
                 fontWeight: 'bold',
                 fontFamily: undefined,
-                color: '#007be0'
+                color: '#005b96'
               }
             },
             dataLabels: {
@@ -123,7 +124,7 @@ export default {
                 offsetY: 0
               }
             },
-            colors: ['#007be0', 'rgba(0, 227, 150, 0.85)', 'rgba(255, 69, 96, 0.85)']
+            colors: ['#DC3545', '#28a745', '#343a40']
           }
 
           this.series = [

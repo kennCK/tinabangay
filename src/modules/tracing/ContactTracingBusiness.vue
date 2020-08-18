@@ -3,27 +3,37 @@
     <div class="form-group" v-if="user.location !== null">
       <label>Assigned address: <b class="text-primary">{{user.location.route + ',' + user.location.locality + ',' + user.location.region + ',' + user.location.country}}</b></label>
     </div>
-    <div class="form-group">
-      <select class="form-control" v-model="selectedOption" @change="chageOption()">
-        <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
-      </select>
-      <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null && selectedOption === 'customers'">
-        <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
-      </select>
-      <select class="form-control" v-model="selectedWeek" @change="getDate()" v-if="selectedOption === 'customers'">
-        <option v-for="(item, index) in 8" :key="index" :value="item">Last {{item > 1 ? item + ' Weeks' : item + ' Week'}}</option>
-      </select>
-      <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
-      <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
+    <div class="row">
+      <div class="col-sm-10">
+        <div class="form-group">
+<!--           <select class="form-control" v-model="selectedOption" @change="chageOption()">
+            <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
+          </select> -->
+          <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null" @change="onChange()">
+            <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
+          </select>
+          <input type="date" class="form-control" v-model="selectedDays" @change="onChange()">
+          <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
+          <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
+        </div>
+      </div>
+      <div class="col-sm-2 text-right">
+        <button class="btn btn-custom btn-primary" @click="exportData" v-show="isSearch" :disabled="this.sortedData.length < 1" >Export Data&nbsp;<i class="fa fa-download"></i></button>
+      </div>
     </div>
 
-    <!-- Results for Visited Places -->
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+    />
+    <!-- Results for Linked Accounts -->
     <table v-if="data.length > 0 && selectedOption === 'linked_accounts'" class="table table-bordered table-responsive">
       <thead class="bg-primary">
         <td>
           Employee
         </td>
-        <td>Status 
+        <td>Status
           <i class="fa fa-chevron-down pull-right" v-if="statusFlag === false" @click="manageSort('status_label', 'desc', true)"></i>
           <i class="fa fa-chevron-up pull-right" v-if="statusFlag === true" @click="manageSort('status_label', 'asc', false)"></i>
         </td>
@@ -45,7 +55,7 @@
     </table>
 
 
-    <!-- Results for Visited Places -->
+    <!-- Results for Customers -->
     <table v-if="data.length > 0 && selectedOption === 'customers'" class="table table-bordered table-responsive">
       <thead class="bg-primary">
         <td>
@@ -55,7 +65,7 @@
         <td>
           Customer Name
         </td>
-        <td>Status 
+        <td>Status
           <i class="fa fa-chevron-down pull-right" v-if="statusFlag === false" @click="manageSort('status_label', 'desc', true)"></i>
           <i class="fa fa-chevron-up pull-right" v-if="statusFlag === true" @click="manageSort('status_label', 'asc', false)"></i>
         </td>
@@ -105,7 +115,7 @@
                 <tbody>
                   <tr v-for="(item, index) in healthDecList" :key="index">
                     <td>{{ item.format.replace('_', ' ').toUpperCase() }}</td>
-                    <td>{{ getRelativeTime(item.submitted_on) }}</td>
+                    <td>{{ item.updated_at_human }}</td>
                     <td :class="[{
                         'text-success': item.status === 'clear' || item.status === null,
                         'text-danger': item.status !== 'clear' && item.status !== null
@@ -122,6 +132,7 @@
                     </td>
                     <td>
                       <button @click="redirect(`/form/${item.code}`)" class="btn btn-primary">View Form</button>
+                      <button @click="exportPDF(item.code)" class="btn btn-primary">Export as PDF</button>
                     </td>
                   </tr>
                 </tbody>
@@ -134,7 +145,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" @click="hideModal('view_health_dec')">Cancel</button>
+            <button type="button" class="btn btn-danger" @click="hideModal('view_health_dec')">Close</button>
           </div>
         </div>
       </div>
@@ -152,7 +163,7 @@
 
 .form-control{
   float: left !important;
-  width: 15% !important;
+  width: 20% !important;
   margin-right: 5px;
   height: 45px !important;
 }
@@ -190,16 +201,25 @@ import moment from 'moment'
 import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
+import PdfPrinter from 'pdfmake'
+import vfsFonts from 'pdfmake/build/vfs_fonts'
+import CONFIG from 'src/config.js'
+import TemplatePDF from './TemplatePDF'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
       ROUTER.push('/dashboard')
     }
-    this.getDate()
+    // this.getDate()
     this.getLocation()
+    const {vfs} = vfsFonts.pdfMake
+    PdfPrinter.vfs = vfs
   },
   data(){
     return {
+      convertDocument: TemplatePDF,
+      config: CONFIG,
       common: COMMON,
       user: AUTH.user,
       country: [{
@@ -229,18 +249,99 @@ export default {
       selectedRadius: 0.1,
       typeFlag: false,
       selectedLocationIndex: null,
-      locations: null
+      locations: null,
+      isSearch: false,
+      userInfo: [],
+      numPages: null,
+      activePage: 1,
+      limit: 5
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
-    'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue')
+    'google-map-modal': require('components/increment/generic/map/ModalGeneric.vue'),
+    Pager
   },
   methods: {
+    exportPDF(code){
+      const hdfParams = {
+        condition: [ {
+          value: code,
+          column: 'code',
+          clause: '='
+        }]
+      }
+      this.APIRequest('health_declarations/retrieve', hdfParams).then(response => {
+        this.userInfo = response.data[0]
+        let merchant = {
+          logo: this.config.BACKEND_URL + response.data[0].merchant.logo,
+          name: response.data[0].merchant.name
+        }
+        let parsedContent = JSON.parse(this.userInfo.content)
+        this.convertDocument.getData(parsedContent, merchant)
+      })
+    },
+    onChange(){
+      this.numPages = null
+      this.limit = 5
+      this.activePage = 1
+    },
+    exportData(){
+      if(this.selectedOption === 'customers'){
+        if(!this.sortedData.length < 1){
+          const customerData = []
+          this.sortedData.forEach(col => {
+            let columns = {
+              date_posted: col.created_at_human,
+              date_visited: col.date_human,
+              customer_name: col.account.username,
+              status: col.status
+            }
+            customerData.push(columns)
+          })
+          let csvContent = 'data:text/csv;charset=utf-8,'
+          csvContent += [Object.keys(customerData[0]).join(','), ...customerData.map(item => Object.values(item).join(','))].join('\n').replace(/(^\[)|(\]$)/gm, ' ')
+          const data = encodeURI(csvContent)
+          const link = document.createElement('a')
+          link.setAttribute('href', data)
+          link.setAttribute('download', 'customer.csv')
+          link.click()
+        }
+      }else if(this.selectedOption === 'linked_accounts'){
+        if(!this.sortedData.length < 1){
+          const linkedAccountsData = []
+          this.sortedData.forEach(col => {
+            let columns = {
+              employee: col.account.username,
+              status: col.status_label
+            }
+            linkedAccountsData.push(columns)
+          })
+          let csvContent = 'data:text/csv;charset=utf-8,'
+          csvContent += [Object.keys(linkedAccountsData[0]).join(','), ...linkedAccountsData.map(item => Object.values(item).join(','))].join('\n').replace(/(^\[)|(\]$)/gm, '')
+          const data = encodeURI(csvContent)
+          const link = document.createElement('a')
+          link.setAttribute('href', data)
+          link.setAttribute('download', 'linked_accounts.csv')
+          link.click()
+        }
+      }
+    },
     getRelativeTime(time) {
       return moment(time).fromNow()
     },
     getLocation(){
+      let data = JSON.parse(localStorage.getItem('locations/' + this.user.code))
+      if(data){
+        if(data.data.length > 0){
+          this.locations = data.data
+          return
+        }else{
+          this.locations = null
+        }
+      }else{
+        this.locations = null
+      }
       const parameter = {
         condition: [{
           value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID,
@@ -250,12 +351,10 @@ export default {
           value: null,
           column: 'payload',
           clause: '='
-        }],
-        sort: {
-          route: 'asc'
-        }
+        }]
       }
-      this.APIRequest('locations/retrieve', parameter).then(response => {
+      this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
+        localStorage.setItem('locations/' + this.user.code, JSON.stringify(response))
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.selectedLocationIndex = 0
@@ -275,6 +374,7 @@ export default {
       this.selectedDays = moment().subtract(this.selectedWeek * 7, 'days').format('YYYY-MM-DD')
     },
     chageOption(){
+      this.isSearch = false
       this.sortedData = []
       this.data = []
     },
@@ -294,16 +394,15 @@ export default {
       })
     },
     retrieve(){
-      // if(this.user.location === null){
-      //   return
-      // }
       if(this.selectedOption === 'linked_accounts'){
         let parameter = {
           condition: [{
             value: this.user.type === 'BUSINESS_AUTHORIZED' ? this.user.linked_account.owner : this.user.userID,
             clause: '=',
             column: 'owner'
-          }]
+          }],
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
         }
         $('#loading').css({display: 'block'})
         this.APIRequest('linked_accounts/retrieve_tracing', parameter).then(response => {
@@ -312,6 +411,9 @@ export default {
           this.sortedData = response.data
         })
       }else if(this.selectedOption === 'customers'){
+        if(this.selectedDays === null || this.selectedDays === ''){
+          return
+        }
         let parameter = {
           condition: [{
             clause: '=',
@@ -324,24 +426,33 @@ export default {
           }, {
             clause: '>=',
             column: 'date',
-            value: this.selectedDays
+            value: this.selectedDays + ' 00:00:00'
+          }, {
+            clause: '<',
+            column: 'date',
+            value: this.selectedDays + ' 23:59:59'
           }],
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage,
           sort: {
             created_at: 'desc'
           }
         }
         $('#loading').css({display: 'block'})
-        this.APIRequest('visited_places/retrieve_customers', parameter).then(response => {
+        this.APIRequest('visited_places/retrieve_customers_limited', parameter).then(response => {
+          response = JSON.parse(response)
           $('#loading').css({display: 'none'})
+          this.isSearch = true
           this.data = response.data
           this.sortedData = response.data
+          this.totalSize = response.size
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
         })
       }
     },
     isValidForm(data) {
       const parsedContent = JSON.parse(data)
       if (parsedContent === null || typeof parsedContent === 'undefined') return false
-
       const { format, status, statusLabel } = parsedContent
       return (
         (format !== null && typeof format !== 'undefined') &&
@@ -353,7 +464,6 @@ export default {
       if (item) {
         $('#loading').css({display: 'block'})
         this.healthDecList = []
-
         const parameter = {
           condition: [{
             clause: '=',
@@ -372,23 +482,24 @@ export default {
             updated_at: 'desc'
           }
         }
-        this.APIRequest('health_declarations/retrieve', parameter).then(response => {
+        this.APIRequest('health_declarations/retrieve_on_basic', parameter).then(response => {
           if (response.data.length > 0) {
-            response.data.map(data => {
-              if (data.updated_at !== null) {
-                if ((data.content !== null && typeof data.content !== 'undefined') && this.isValidForm(data.content)) {
-                  const parsedContent = JSON.parse(data.content)
-                  const details = {
-                    code: data.code,
-                    format: parsedContent.format,
-                    status: parsedContent.status,
-                    statusLabel: parsedContent.statusLabel,
-                    submitted_on: data.updated_at_human
-                  }
-                  this.healthDecList.push(details)
-                }
-              }
-            })
+            this.healthDecList = response.data
+            // response.data.map(data => {
+            //   if (data.updated_at !== null) {
+            //     if ((data.content !== null && typeof data.content !== 'undefined') && this.isValidForm(data.content)) {
+            //       const parsedContent = JSON.parse(data.content)
+            //       const details = {
+            //         code: data.code,
+            //         format: parsedContent.format,
+            //         status: parsedContent.status,
+            //         statusLabel: parsedContent.statusLabel,
+            //         submitted_on: data.updated_at_human
+            //       }
+            //       this.healthDecList.push(details)
+            //     }
+            //   }
+            // })
             $(`#${id}`).modal('show')
           } else {
             $(`#${id}`).modal('show')

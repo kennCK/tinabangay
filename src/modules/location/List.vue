@@ -6,8 +6,8 @@
     <div class="row w-100 m-0" v-if="data !== null">
       <div class="card card-half" v-for="(item, index) in data" :key="index" style="margin-bottom: 10px;" >
         <div class="qr-code-container p-2">
-          <div class="qr-code" v-if="item.code !== null" @click="setCode('location/' + item.code)">
-            <QrcodeVue :value="'location/' + item.code" :size="100"></QrcodeVue>
+          <div class="qr-code" v-if="item.code !== null" @click="setCode('https://birds-eye.org/#/location/' + item.code)">
+            <QrcodeVue :value="'https://birds-eye.org/#/location/' + item.code" :size="100"></QrcodeVue>
           </div>
           <div class="details" :class="item.code === null ? 'ml-4' : ''">
             <label class="card-title">
@@ -45,9 +45,9 @@
               <input type="text" name="branch" id="branch" class="form-control" placeholder="Enter Branch Name" :value="selectedBranch ? selectedBranch.route : ''">
             </div>
             <div class="form-group">
-              <label>Barangay</label>
-              <div class="text-danger font-weight-bold" v-if="!selectedBranch || (selectedBranch.brgy_info === null && locality === null)">Please <span class="link" data-toggle="modal" data-target="#addAddress">assign a barangay</span> to this branch.</div>
-              <div v-else-if="selectedBranch.brgy_info && !locality">
+              <label>Location should have assigned UACS Code</label>
+              <div class="text-danger font-weight-bold" v-if="!selectedBranch || (selectedBranch.brgy_info === null && locality === null)"><span class="link" data-toggle="modal" data-target="#addAddress">Click here!</span></div>
+              <div v-else-if="selectedBranch.brgy_info && locality === null">
                 <span class="font-weight-bold text-danger">({{selectedBranch.brgy_info.code}})</span> {{selectedBranch.brgy_info.route}}, {{selectedBranch.brgy_info.locality}} <span class="link" data-toggle="modal" data-target="#addAddress"><i class="fa fa-edit"></i></span>
               </div>
               <div v-else>
@@ -146,14 +146,14 @@
                     </label>
                   </td>
                   <td>
-                    <button class="btn btn-primary" @click="assignAddress(item)">{{ (selectedBranch && selectedBranch.brgy_info !== null) || locality === null ? 'Update' : 'Assign'}}</button>
+                    <button class="btn btn-primary" @click="assignAddress(item)">{{ selectedBranch === null ? 'Assign' : 'Update'}}</button>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Close</button>
+            <button type="button" class="btn btn-danger" @click="hideModal('addAddress')">Cancel</button>
           </div>
         </div>
       </div>
@@ -334,7 +334,18 @@ export default {
     if(this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS' && this.user.type !== 'AGENCY_BRGY' && this.user.type !== 'AGENCY_GOV'){
       ROUTER.push('/dashboard')
     }
-    this.retrieve()
+    let data = JSON.parse(localStorage.getItem('locations/' + this.user.code))
+    if(data){
+      if(data.data.length > 0){
+        this.data = data.data
+      }else{
+        this.data = null
+      }
+      this.retrieve(false)
+    }else{
+      this.data = null
+      this.retrieve(true)
+    }
   },
   data(){
     return {
@@ -369,13 +380,10 @@ export default {
     showQrCode
   },
   methods: {
-    redirect(parameter){
-      ROUTER.push(parameter)
-    },
     setCode(code){
       this.$refs.imageView.setCode(code)
     },
-    retrieve(){
+    retrieve(flag){
       let parameter = {
         condition: [{
           value: this.user.userID,
@@ -383,9 +391,10 @@ export default {
           column: 'account_id'
         }]
       }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('locations/retrieve', parameter).then(response => {
+      $('#loading').css({display: flag ? 'block' : 'none'})
+      this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        localStorage.setItem('locations/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
         }else{
@@ -408,6 +417,7 @@ export default {
       if(id === 'add_location') {
         $('#add_location .error-msg').remove()
         this.$refs.location.onCancel()
+        this.customLocation = false
         this.location = null
         $('#branch').val('')
         this.selectedBranch = null
@@ -415,7 +425,6 @@ export default {
         this.brgys = null
         this.searchBrgy = null
       }
-
       $(`#${id}`).modal('hide')
     },
     assignAddress(brgy) {
@@ -533,6 +542,7 @@ export default {
           $('#loading').css({display: 'none'})
           if(response.data.length > 0){
             this.brgys = response.data
+            console.log(response.data)
           }else{
             this.brgys = []
           }

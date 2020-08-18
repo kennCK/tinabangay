@@ -50,7 +50,7 @@
       </div>
 
       <div class="content-holder" v-bind:class="hide">
-        <system-notification></system-notification>
+        <!-- <system-notification></system-notification> -->
         <transition >
           <router-view ></router-view>
         </transition>
