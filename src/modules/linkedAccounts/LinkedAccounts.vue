@@ -29,7 +29,7 @@
         </select>
         <input type="text" v-model="searchedAccount" :placeholder="`Search by ${groupBy}`" class="form-control mb-2" style="width:50%;height:40px">
     </form>
-    <table class="table table-responsive table-hover table-fixed" v-if="data !== null" >
+    <table class="table table-responsive table-bordered table-hover table-fixed" v-if="data !== null" >
         <thead class="bg-primary">
             <!-- <th scope="col">Owner</th> -->
             <th scope="col">Employee</th>
@@ -59,7 +59,7 @@
               <td v-if="user.type !== 'USER'">
                   <i v-if="item.address === null">No address recorded</i>
                   <label v-if="item.address !== null">
-                  <b class="text-danger">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
+                  <b class="text-danger">({{item.address.assigned_code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
                   </label>
               </td>
               <td v-if="user.type !== 'USER'">
