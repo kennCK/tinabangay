@@ -26,8 +26,7 @@ export default {
     required: true,
     value: null,
     id: 'date',
-    max: '2020-8-31',
-    type: 'date',
+    type: 'dateLimit',
     inputType: 'date',
     validation: {
       size: 1,

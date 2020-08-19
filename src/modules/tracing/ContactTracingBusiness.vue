@@ -12,7 +12,7 @@
           <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null" @change="onChange()">
             <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
           </select>
-          <input type="date" class="form-control" v-model="selectedDays" @change="onChange()">
+          <input type="date" class="form-control" v-model="selectedDays" @change="onChange()" placeholder="yyyy-mm-dd">
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
         </div>
