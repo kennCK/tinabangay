@@ -58,8 +58,8 @@
             </td> -->
               <td v-if="user.type !== 'USER'">
                   <i v-if="item.address === null">No address recorded</i>
-                  <label v-if="item.address !== null">
-                  <b class="text-danger" style="overflow:hiddden">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
+                  <label v-if="item.address !== null" style="text-overflow:ellipsis; overflow:hidden; max-width:150px; white-space:nowrap">
+                  <b class="text-danger">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
                   </label>
               </td>
               <td v-if="user.type !== 'USER'">
@@ -278,6 +278,21 @@
         </div>
       </div>
     </div>
+      <!-- The Modal -->
+  <div class="modal" id="reloadAlert">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            Reloading of Page is Already 1 minute<br>
+            Click this button to reload the Page <br>
+            <button class="btn btn-primary" @click="reload">Reload</button>
+        </div>
+        
+      </div>
+    </div>
+</div>
 
   </div>
 </template>
@@ -324,6 +339,10 @@ import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     let data = JSON.parse(localStorage.getItem('linked_accounts/' + this.user.code))
+    if(data !== null){
+      this.isLoading = true
+      console.log('data is true')
+    }
     if(data){
       if(data.data.length > 0){
         this.data = data.data
@@ -334,6 +353,7 @@ export default {
     }else{
       this.data = null
       this.retrieve(true)
+      // console.log('retirenve')
     }
   },
   data(){
@@ -358,7 +378,8 @@ export default {
       selectedItem: null,
       newAccountType: null,
       searchedAccount: '',
-      groupBy: ''
+      groupBy: '',
+      isLoading: false
     }
   },
   components: {
@@ -525,8 +546,8 @@ export default {
         let parameter = {
           id: this.selectedItem.address.id,
           code: location.code,
-          longitude: location.longitude,
-          latitude: location.latitude,
+          // longitude: location.longitude,
+          // latitude: location.latitude,
           route: location.route,
           locality: location.locality,
           region: location.region,
@@ -644,11 +665,20 @@ export default {
         }
       }
       $('#loading').css({display: flag ? 'block' : 'none'})
-      this.APIRequest('linked_accounts/retrieve_employees', parameter).then(response => {
+      if(this.isLoading === false){
+        console.log(this.isLoading)
+        setTimeout(function(){
+          $('#loading').css({display: 'none'})
+          $('#reloadAlert').modal('show')
+        }, 60000)
+        return
+      }
+      this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
+          this.isLoading = true
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
           this.totalSize = response.size
@@ -777,6 +807,9 @@ export default {
         )
       }
       return verdict
+    },
+    reload(){
+      window.location.reload()
     }
   }
 }
