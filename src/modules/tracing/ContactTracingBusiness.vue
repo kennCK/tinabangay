@@ -93,16 +93,17 @@
     </table>
 
     <!-- The Modal for Alert 'Reloading page'-->
-  <div class="modal" id="alertModal">
+  <div class="modal" id="alertModal" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog">
       <div class="modal-content">
-        <!-- Modal body -->
+        <div class="modal-header">
+          <h5 class="modal-title">Request time out.</h5>
+        </div>
         <div class="modal-body">
-          Reloading of Page is Already 1 minute<br>
-          Click this button to reload the Page<br>
+          <p>Please be back soon.</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Reload</button>
+          <button type="button" class="btn btn-primary" @click="refreshPage">Reload</button>
         </div>
       </div>
     </div>
@@ -420,6 +421,7 @@ export default {
           limit: this.limit,
           offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
         }
+        $('#loading').css({display: 'block'})
         this.APIRequest('linked_accounts/retrieve_tracing', parameter).then(response => {
           $('#loading').css({display: 'none'})
           this.isSearch = true
@@ -455,9 +457,14 @@ export default {
           }
         }
         $('#loading').css({display: 'block'})
+        setTimeout(() => {
+          if(this.data.length < 1){
+            $('#loading').css({display: 'none'})
+            $('#alertModal').modal('show')
+          }
+        }, 60000)
         this.APIRequest('visited_places/retrieve_customers_limited', parameter).then(response => {
           response = JSON.parse(response)
-          console.log(response)
           $('#loading').css({display: 'none'})
           this.isSearch = true
           this.data = response.data
@@ -527,6 +534,9 @@ export default {
     },
     hideModal(id) {
       $(`#${id}`).modal('hide')
+    },
+    refreshPage(){
+      window.location.reload()
     }
   }
 }
