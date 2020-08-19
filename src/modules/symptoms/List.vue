@@ -42,8 +42,8 @@
             </div>
           </div>
           <div class="col-sm-9 summaryS">
-            <div class="ledger-summary-container summaryS tabledSummary" id="symptomsScroll">
-              <table class="table table-bordered table-responsive " v-if="data !== null">
+            <div class="card symptomsTable" id="symptomsScroll">
+              <table class="table table-bordered" v-if="data !== null">
                 <thead class="bg-primary">
                   <tr>
                     <td>Date</td>
@@ -53,12 +53,11 @@
                 </thead>
                 <tbody>
                   <tr v-for="(item, index) in data" :key="index">
-                    <td>{{item.date_human}}</td>
-                    <td>
+                    <td class="date_human" v-b-popover.hover.top="item.date_human" title="Date Human">{{item.date_human}}</td>
+                    <td class="type" v-b-popover.hover.top="item.type" title="Type">
                       <label class="text-uppercase">{{item.type}}</label>
                     </td>
-                    <td v-if="item.remarks.length < 51">{{item.remarks}}</td>
-                    <td v-else-if="item.remarks.length > 50" title="Remarks" v-b-popover.hover.top="item.remarks">{{item.remarks.substring(0, 51)}}...</td>
+                    <td class="remarks" v-b-popover.hover.top="item.remarks" title="Remarks">{{item.remarks}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -220,9 +219,10 @@
 .referenceSection{
   padding: 0px;
 }
-.tabledSummary{
+.symptomsTable{
   max-height: 500px;
   overflow-y: scroll;
+  border: 1px solid #f5f5f5;
 }
 .symptoms{
   padding-left: 0px;
@@ -371,35 +371,51 @@
   color: $white !important;
 }
 
-.ledger-summary-container{
-  width: 100% !important;
-  float: left;
-  height: auto;
-  margin-bottom: 100px;
-  padding: 0px;
-}
+// .ledger-summary-container{
+//   width: 100% !important;
+//   float: left;
+//   height: auto;
+//   margin-bottom: 100px;
+//   padding: 0px;
+// }
 
-.ledger-summary-container-header{
-  width: 100%;
-  float: left;
-  height: 70px;
-  border: solid 1px #ddd;
-}
-.summary-container-item{
-  width: 100%;
-  float: left;
-  border-radius: 5px;
-  min-height: 50px;
-  overflow-y: hidden;
-  border: solid 1px #ddd;
-  margin-top: 10px;
-  padding-left: 10px;
-}
+// .ledger-summary-container-header{
+//   width: 100%;
+//   float: left;
+//   height: 70px;
+//   border: solid 1px #ddd;
+// }
+// .summary-container-item{
+//   width: 100%;
+//   float: left;
+//   border-radius: 5px;
+//   min-height: 50px;
+//   overflow-y: hidden;
+//   border: solid 1px #ddd;
+//   margin-top: 10px;
+//   padding-left: 10px;
+// }
 
 .table{
+  width: 100% !important;
   margin-top:0px;
+  max-width: 100% !important;
 }
-
+td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+td.date_human {
+  width: 20% !important;
+}
+td.type {
+  width: 30% !important;
+}
+td.remarks {
+  width: 50% !important;
+}
 td i {
   padding-right: 0px !important;
   padding-left: 0px !important;
