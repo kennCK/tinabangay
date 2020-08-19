@@ -21,14 +21,6 @@
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
-    <form class="form-inline">
-        <select class="form-control mb-2" v-model="groupBy" style="border: 2px solid #007bff; height:40px;">
-          <option class="form-control">Account type</option>
-          <option class="form-control">Employee</option>
-          <option class="form-control">Assigned branch</option>
-        </select>
-        <input type="text" v-model="searchedAccount" :placeholder="`Search by ${groupBy}`" class="form-control mb-2" style="width:50%;height:40px">
-    </form>
     <table class="table table-responsive table-bordered table-hover table-fixed" v-if="data !== null" >
         <thead class="bg-primary">
             <!-- <th scope="col">Owner</th> -->
@@ -44,12 +36,10 @@
             <th scope="col" v-if="user.type !== 'USER'">Actions</th>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in filteredAccount" :key="index">
+            <tr v-for="(item, index) in data" :key="index">
             <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
               <td>
-                  <span v-if="item.account.information.first_name !== null">{{item.account.information.first_name}}</span> 
-                  <span v-if="item.account.information.last_name !== null">{{item.account.information.last_name}}</span> 
-                  <small class="text-uppercase font-weight-bold text-primary">({{item.account.username}})</small>
+                  <small class="text-uppercase font-weight-bold text-primary">({{item.account.names}})</small>
               </td>
               <td class="text-uppercase">{{item.created_at_human}}</td>
             <!-- <td v-if="user.type !== 'USER'">
@@ -59,13 +49,13 @@
               <td v-if="user.type !== 'USER'">
                   <i v-if="item.address === null">No address recorded</i>
                   <label v-if="item.address !== null" style="text-overflow:ellipsis; overflow:hidden; max-width:150px; white-space:nowrap">
-                  <b class="text-danger">({{item.address.code}})</b> <span class="badge badge-pill badge-dark" :title="' ' + item.address.route + ', ' + item.address.locality + ', ' + item.address.country"><i class="fa fa-question pr-0"></i></span>
+                  <b class="text-danger">({{item.address.code}})</b>
                   </label>
               </td>
               <td v-if="user.type !== 'USER'">
                   <i v-if="item.assigned_location === null">Not assigned</i>
                   <label v-if="item.assigned_location !== null">
-                  <b>{{item.assigned_location.route}}</b> <span class="badge badge-pill badge-dark" :title=" item.assigned_location.locality + ', ' + item.assigned_location.region + ', ' + item.assigned_location.country"><i class="fa fa-question pr-0"></i></span>
+                  <b>{{item.assigned_location.route}}</b>
                   </label>
               </td>
               <td v-if="user.type !== 'USER'">
@@ -282,14 +272,16 @@
   <div class="modal" id="reloadAlert">
     <div class="modal-dialog">
       <div class="modal-content">
-
+        <div class="modal-header">
+          <h5 class="modal-title">Request timeout.</h5>
+        </div>
         <!-- Modal body -->
         <div class="modal-body">
-            Reloading of Page is Already 1 minute<br>
-            Click this button to reload the Page <br>
-            <button class="btn btn-primary" @click="reload">Reload</button>
+            <p>Please be back soon.</P>
         </div>
-        
+        <div class="modal-footer">
+          <button class="btn btn-primary" @click="reload">Reload</button>
+        </div>
       </div>
     </div>
 </div>
@@ -339,10 +331,6 @@ import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     let data = JSON.parse(localStorage.getItem('linked_accounts/' + this.user.code))
-    if(data !== null){
-      this.isLoading = true
-      console.log('data is true')
-    }
     if(data){
       if(data.data.length > 0){
         this.data = data.data
@@ -353,7 +341,6 @@ export default {
     }else{
       this.data = null
       this.retrieve(true)
-      // console.log('retirenve')
     }
   },
   data(){
@@ -385,23 +372,6 @@ export default {
   components: {
     'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
     Pager
-  },
-  computed: {
-    filteredAccount(){
-      return this.data.filter(post => {
-        if(this.groupBy.toLowerCase() === 'employee'){
-          return post.account.username.toLowerCase().includes(this.searchedAccount.toLowerCase())
-        }else if(this.groupBy.toLowerCase() === 'account type'){
-          return post.account.account_type.toLowerCase().includes(this.searchedAccount.toLowerCase())
-        }else if(this.groupBy.toLowerCase() === 'assigned branch'){
-          if(post.assigned_location !== null){
-            return post.assigned_location.locality.toLowerCase().includes(this.searchedAccount.toLowerCase())
-          }
-        }else{
-          return post
-        }
-      })
-    }
   },
   methods: {
     show(params, item, operation){
@@ -493,7 +463,7 @@ export default {
     },
     updateType(item, status){
       let parameter = {
-        id: item.account.id,
+        id: item.account_id,
         account_type: status
       }
       $('#loading').css({display: 'block'})
@@ -665,20 +635,19 @@ export default {
         }
       }
       $('#loading').css({display: flag ? 'block' : 'none'})
-      if(this.isLoading === false){
-        console.log(this.isLoading)
-        setTimeout(function(){
+      setTimeout(() => {
+        if(this.data === null){
           $('#loading').css({display: 'none'})
           $('#reloadAlert').modal('show')
-        }, 60000)
-        return
-      }
-      this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
+        }
+      }, 60000)
+      this.APIRequest('linked_accounts/retrieve_employees', parameter).then(response => {
         $('#loading').css({display: 'none'})
         localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
           this.data = response.data
           this.isLoading = true
+          console.log('after request', this.data)
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           this.numPagesExport = parseInt(response.size / 100) + (response.size % 100 ? 1 : 0)
           this.totalSize = response.size
