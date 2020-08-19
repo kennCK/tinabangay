@@ -54,7 +54,6 @@
       </tbody>
     </table>
 
-
     <!-- Results for Customers -->
     <table v-if="data.length > 0 && selectedOption === 'customers'" class="table table-bordered table-responsive">
       <thead class="bg-primary">
