@@ -16,6 +16,7 @@ export default {
     statusLabel: null,
     location: null
   },
+  statusColor: '',
   encode: function (url) { // converting image to base 64
     return new Promise((resolve) => {
       var img = new Image()
@@ -38,6 +39,7 @@ export default {
     this.formParameters.format = data.format
     this.formParameters.status = data.status
     this.formParameters.statusLabel = data.statusLabel
+    this.statusColor = data.status === 'danger' ? '#dc3545' : '#5cb85c'
     this.encode(merchant.logo).then(res => {
       this.pdfLogo = res // this is the logo
     })
@@ -647,7 +649,7 @@ export default {
         },
         {
           text: `Status: ${this.formParameters.status} [${this.formParameters.statusLabel}]`,
-          color: '#dc3545',
+          color: `${this.statusColor}`,
           alignment: 'center',
           bold: true,
           margin: [0, 0, 20, 0],

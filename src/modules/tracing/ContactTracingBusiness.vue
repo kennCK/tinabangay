@@ -6,19 +6,20 @@
     <div class="row">
       <div class="col-sm-10">
         <div class="form-group">
-<!--           <select class="form-control" v-model="selectedOption" @change="chageOption()">
+          <!-- <select class="form-control" v-model="selectedOption" @change="chageOption()">
             <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
           </select> -->
           <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null" @change="onChange()">
             <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
           </select>
-          <input type="date" class="form-control" v-model="selectedDays" @change="onChange()">
+          <!-- <input type="date" class="form-control" v-model="selectedDays" @change="onChange()"> -->
+          <input type="date" id="datePicker" class="form-control" v-model="selectedDays" @change="onChange()">
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
         </div>
       </div>
       <div class="col-sm-2 text-right">
-        <button class="btn btn-custom btn-primary" @click="exportData" v-show="isSearch" :disabled="this.sortedData.length < 1" >Export Data&nbsp;<i class="fa fa-download"></i></button>
+        <button class="btn btn-custom btn-primary" @click="exportData" v-show="this.sortedData.length > 1">Export Data&nbsp;<i class="fa fa-download"></i></button>
       </div>
     </div>
 
@@ -81,6 +82,7 @@
           </td>
           <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i>
             <b class="text-danger">{{item.account.information && item.account.information.first_name && item.account.information.last_name ? item.account.information.first_name + ' ' + item.account.information.last_name : item.account.username}}</b>
+            <b class="text-danger">{{item.name}}</b>
           </td>
           <td>
             <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
@@ -91,6 +93,22 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- The Modal for Alert 'Reloading page'-->
+  <div class="modal" id="alertModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <!-- Modal body -->
+        <div class="modal-body">
+          Reloading of Page is Already 1 minute<br>
+          Click this button to reload the Page<br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Reload</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <!--MODAL FOR VIEWING HEALTH DECLARATION -->
     <div class="modal fade" id="view_health_dec" tabindex="-1" role="dialog" aria-labelledby="healthDecModal" aria-hidden="true">
@@ -195,6 +213,16 @@
 #view_health_dec .modal-dialog {
   max-width: 90% !important;
 }
+input[type="date"]
+{
+  display:block;
+  /* Solution 1 */
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  min-height: 1.2em; 
+  /* Solution 2 */
+  /* min-width: 96%; */
+}
 </style>
 <script>
 import moment from 'moment'
@@ -211,6 +239,9 @@ export default {
     if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
       ROUTER.push('/dashboard')
     }
+    // if($('#datePicker').prop('type') !== 'date') {
+    //   $('#datePicker').datepicker()
+    // }
     // this.getDate()
     this.getLocation()
     const {vfs} = vfsFonts.pdfMake
@@ -317,7 +348,7 @@ export default {
             }
             linkedAccountsData.push(columns)
           })
-          let csvContent = 'data:text/csv;charset=utf-8,'
+          let csvContent = 'data:text/csv;charse  t=utf-8,'
           csvContent += [Object.keys(linkedAccountsData[0]).join(','), ...linkedAccountsData.map(item => Object.values(item).join(','))].join('\n').replace(/(^\[)|(\]$)/gm, '')
           const data = encodeURI(csvContent)
           const link = document.createElement('a')
@@ -404,9 +435,9 @@ export default {
           limit: this.limit,
           offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
         }
-        $('#loading').css({display: 'block'})
         this.APIRequest('linked_accounts/retrieve_tracing', parameter).then(response => {
           $('#loading').css({display: 'none'})
+          this.isSearch = true
           this.data = response.data
           this.sortedData = response.data
         })
@@ -439,8 +470,15 @@ export default {
           }
         }
         $('#loading').css({display: 'block'})
+        setTimeout(() => {
+          if(this.data.length < 1){
+            $('#loading').css({display: 'block'})
+            $('#alertModal').modal('show')
+          }
+        }, 10000)
         this.APIRequest('visited_places/retrieve_customers_limited', parameter).then(response => {
           response = JSON.parse(response)
+          console.log(response)
           $('#loading').css({display: 'none'})
           this.isSearch = true
           this.data = response.data
@@ -510,6 +548,11 @@ export default {
     },
     hideModal(id) {
       $(`#${id}`).modal('hide')
+    },
+    refreshPage(){
+      // $('#alertModal').modal('show')
+      alert('test')
+      window.location.reload()
     }
   }
 }
