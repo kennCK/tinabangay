@@ -314,6 +314,14 @@ export default{
     meta: {
       tokenRequired: false
     }
+  },
+  {
+    path: '/hdf',
+    name: 'hdf',
+    component: resolve => require(['modules/tracing/UserTracingHDF.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
   }
   ]
 }
