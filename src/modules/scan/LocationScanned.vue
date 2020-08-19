@@ -63,7 +63,7 @@
       <div class="available-options d-flex">
         <button v-if="addedToVisitedPlaces" class="btn btn-success">Added to visited places</button>
         <button v-if="!addedToVisitedPlaces" class="btn btn-primary" @click="addVisitedPlace()">Add to visited places</button>
-        <button class="btn btn-primary" @click="showModal('send_form')">Send Form</button>
+        <button class="btn btn-primary" @click="showModal('send_form')">Answer Form</button>
         <button class="btn btn-primary" @click="showScanner()">Scan again</button>
       </div>
     </div>
