@@ -386,7 +386,9 @@ export default {
             }],
             sort: sort,
             limit: this.limit,
-            offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
+            offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage,
+            type: this.user.type,
+            localCode: this.user.location.code
           }
         }else{
           parameter = {
@@ -410,7 +412,11 @@ export default {
           }],
           sort: {
             created_at: 'desc'
-          }
+          },
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage,
+          type: this.user.type,
+          localCode: this.user.location.code
         }
       }
       $('#loading').css({display: 'block'})

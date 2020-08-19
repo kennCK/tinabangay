@@ -12,8 +12,7 @@
           <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null" @change="onChange()">
             <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
           </select>
-          <!-- <input type="date" class="form-control" v-model="selectedDays" @change="onChange()"> -->
-          <input type="date" id="datePicker" class="form-control" v-model="selectedDays" @change="onChange()">
+          <input type="date" class="form-control" v-model="selectedDays" @change="onChange()" placeholder="yyyy-mm-dd">
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
         </div>
@@ -82,7 +81,7 @@
           </td>
           <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i>
             <b class="text-danger">{{item.account.information && item.account.information.first_name && item.account.information.last_name ? item.account.information.first_name + ' ' + item.account.information.last_name : item.account.username}}</b>
-            <b class="text-danger">{{item.name}}</b>
+            <!-- <b class="text-danger">{{item.name}}</b> -->
           </td>
           <td>
             <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
@@ -213,16 +212,6 @@
 #view_health_dec .modal-dialog {
   max-width: 90% !important;
 }
-input[type="date"]
-{
-  display:block;
-  /* Solution 1 */
-  -webkit-appearance: textfield;
-  -moz-appearance: textfield;
-  min-height: 1.2em; 
-  /* Solution 2 */
-  /* min-width: 96%; */
-}
 </style>
 <script>
 import moment from 'moment'
@@ -239,9 +228,6 @@ export default {
     if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
       ROUTER.push('/dashboard')
     }
-    // if($('#datePicker').prop('type') !== 'date') {
-    //   $('#datePicker').datepicker()
-    // }
     // this.getDate()
     this.getLocation()
     const {vfs} = vfsFonts.pdfMake
@@ -470,12 +456,6 @@ export default {
           }
         }
         $('#loading').css({display: 'block'})
-        setTimeout(() => {
-          if(this.data.length < 1){
-            $('#loading').css({display: 'block'})
-            $('#alertModal').modal('show')
-          }
-        }, 10000)
         this.APIRequest('visited_places/retrieve_customers_limited', parameter).then(response => {
           response = JSON.parse(response)
           console.log(response)
@@ -548,11 +528,6 @@ export default {
     },
     hideModal(id) {
       $(`#${id}`).modal('hide')
-    },
-    refreshPage(){
-      // $('#alertModal').modal('show')
-      alert('test')
-      window.location.reload()
     }
   }
 }
