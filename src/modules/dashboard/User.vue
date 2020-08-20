@@ -28,7 +28,7 @@
       <div class="col-sm-7" style="padding: 3px;">
         <div class="card qrCard">
           <div class="card-body">
-            <p class="col-sm-12 alert alert-info">
+            <p class="col-sm-12 alert  alert-info notif">
               Hi <b>{{user.username}}</b>! Below is your QR code. Show this to frontliners everytime they read your temperature or show this to DOH authorized personnel.
             </p>
             <div v-if="user.code !== null" class="user_qrcode row justify-content-center pt-5">
@@ -54,6 +54,9 @@
   .feelingsGroup{
     padding: 0px;
   }
+   .user_qr_hide {
+    display: none;
+   }
   .user_status_container{
     text-align: center;
     background:#facf32;
