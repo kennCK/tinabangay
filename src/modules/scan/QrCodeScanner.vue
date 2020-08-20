@@ -12,24 +12,29 @@
       </button>
     </div>
     <qrcode-stream v-if="state && location === 'top'" @init="onInit" @decode="onDecode"></qrcode-stream>
+    <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
     <button 
-      :class="['btn', 'mb-2', 'btn-lg', 'py-1', 'px-2', {'btn-danger': !state}, {'btn-warning': state}, (btnWidth ? btnWidth : '') ]"
+      :class="['btn', 'mb-2', 'btn-lg', 'py-1', 'px-2', {'btn-primary': !state}, {'btn-danger': state}, (btnWidth ? btnWidth : '') ]"
       @click="toggleScanner()"
     >
       <i class="fa" :class="state ? 'fa-ban' : 'fa-expand'"></i>
       <span class="font-weight-bold">{{ state ? 'Cancel' : 'Scan QR' }}</span>
     </button>
-    <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
+  
   </div>
 </template>
 <style lang="scss" scoped> 
   @import "~assets/style/colors.scss";
+  .btn{
+    margin-top: 12px;
+  }
   .btn-danger {
     background-color: $dangerLight !important;
     height: unset !important;
+
   }
 
-  .btn-warning {
+  .btn-primary {
     height: unset !important;
   }
 </style>
@@ -63,6 +68,8 @@ export default {
     toggleScanner() {
       this.$emit('toggleState', !this.state)
       if (!this.state) this.qrScannerError = ''
+      $('.user_qrcode').toggleClass('user_qr_hide')
+      $('p.notif').toggleClass('user_qr_hide')
     },
     async onInit (promise) {
       $('#loading').css({display: 'block'})

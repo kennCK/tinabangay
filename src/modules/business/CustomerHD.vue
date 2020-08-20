@@ -5,7 +5,12 @@
       <span v-else class="fa fa-user-circle-o" style="font-size: 80px"></span>
     </div>
     <div class="mx-auto text-center mb-4">
-      <h3 class="font-weight-bold text-primary">{{data.merchant.name}}</h3>
+      <h3 class="font-weight-bold text-primary">{{contains ? 'Vehicle' : data.merchant.name}}</h3>
+      <div v-if="contains">
+        <h7 class="font-weight-bold text-primary">TYPE: {{this.list[1].type}},</h7>
+        <h7 class="font-weight-bold text-primary">MODEL: {{this.list[2].model}},</h7>
+        <h7 class="font-weight-bold text-primary">NUMBER: {{this.list[0].number}}</h7>
+      </div>
       <span class="text-secondary">
         {{`
             ${formParameters.location ? formParameters.location.route ? `${formParameters.location.route},` : '' : ''}
@@ -503,7 +508,17 @@ export default {
     this.formParameters = this.formParam
     this.form = this.isForm
     this.data = this.dataParam
-
+    const path = this.$route.params.code.split(',')
+    path.forEach(item => {
+      if(item.includes('type') || item.includes('number') || item.includes('model')) {
+        const obj = JSON.parse('{' + item + '}')
+        this.list.push(obj)
+      }
+    })
+    console.log(this.list)
+    if(this.$route.params.code.includes('vehicle')){
+      this.contains = true
+    }
     if (this.form) {
       this.healthDec.personalInformation.first_name = this.userInfoParam.first_name
       this.healthDec.personalInformation.middle_name = this.userInfoParam.middle_name
@@ -527,6 +542,8 @@ export default {
         statusLabel: null,
         location: null
       },
+      list: [],
+      contains: false,
       form: false,
       code: null,
       data: null,
