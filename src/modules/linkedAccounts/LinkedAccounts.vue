@@ -33,7 +33,7 @@
             <th scope="col" v-if="user.type !== 'USER'">Home Address</th>
             <th scope="col" v-if="user.type !== 'USER'">Assigned Branch</th>
             <th scope="col" v-if="user.type !== 'USER'">Assigned As</th>
-            <th scope="col" v-if="user.type !== 'USER'">Actions</th>
+            <th scope="col" v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'">Actions</th>
         </thead>
         <tbody>
             <tr v-for="(item, index) in data" :key="index">
@@ -64,7 +64,7 @@
                   <b>{{item.account.account_type}}</b>
                   </label>
               </td>
-              <td v-if="user.type !== 'USER'">
+              <td v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'">
 
                 <div class="dropdownn">
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -330,6 +330,7 @@ import Pager from 'src/components/increment/generic/pager/Pager.vue'
 
 export default {
   mounted(){
+    console.log(this.user.type)
     let data = JSON.parse(localStorage.getItem('linked_accounts/' + this.user.code))
     if(data){
       if(data.data.length > 0){
@@ -641,7 +642,7 @@ export default {
           $('#reloadAlert').modal('show')
         }
       }, 60000)
-      this.APIRequest('linked_accounts/retrieve_employees', parameter).then(response => {
+      this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
