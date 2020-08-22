@@ -1,6 +1,6 @@
 <template>
  <div style="margin-top: 25px;">
-    <div class="form-group" v-if="user.type !== 'USER'">
+    <div class="form-group" v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'">
       <label>You can assign address to your employees for address status verification:</label>
     </div>
     <!-- <button class="btn pull-right mr-3" :class="[{'btn-success': !importFlag}, {'btn-danger': importFlag}]" style="margin: .5% 0;" @click="importFlag = !importFlag, googleId = googleSheetNumber = null">{{importFlag ? 'Cancel Import' : 'Import Accounts'}}</button>
@@ -24,7 +24,7 @@
     <table class="table table-responsive table-bordered table-hover table-fixed" v-if="data !== null" >
         <thead class="bg-primary">
             <!-- <th scope="col">Owner</th> -->
-            <th scope="col">Employee</th>
+            <th scope="col">{{user.type !== 'USER' ? 'Employee' : 'Employer'}}</th>
             <!-- <th scope="col">Name</th> -->
             <th scope="col">Date</th>
             <!-- <th scope="col" v-if="user.type !== 'USER'">
@@ -39,14 +39,14 @@
             <tr v-for="(item, index) in data" :key="index">
             <!-- <td class="text-uppercase">{{item.owner_account.username}}</td> -->
               <td>
-                  <small class="text-uppercase font-weight-bold text-primary">({{item.account.names}})</small>
+                  <small class="text-uppercase font-weight-bold text-primary">({{user.type === 'USER' ? item.account_owner.names : item.account.names }})</small>
               </td>
               <td class="text-uppercase">{{item.created_at_human}}</td>
             <!-- <td v-if="user.type !== 'USER'">
             <button class="btn btn-primary" @click="updateType(item, 'TEMP_SCANNER')" v-if="item.account.account_type !== 'TEMP_SCANNER'">Assign scanning</button>
             <button class="btn btn-danger" @click="updateType(item, 'USER')" v-if="item.account.account_type === 'TEMP_SCANNER'">Remove scanning</button>
             </td> -->
-              <td v-if="user.type !== 'USER'">
+              <td v-if="user.type !== 'USER'" >
                   <i v-if="item.address === null">No address recorded</i>
                   <label v-if="item.address !== null" style="text-overflow:ellipsis; overflow:hidden; max-width:150px; white-space:nowrap">
                   <b class="text-danger">({{item.address.code}})</b>
@@ -604,7 +604,7 @@ export default {
     },
     retrieve(flag = false){
       let parameter = null
-      if(this.user.type === 'USER'){
+      if(this.user.type === 'USER' || this.user.type === 'TEMP_SCANNER'){
         parameter = {
           condition: [{
             clause: '=',
@@ -642,7 +642,7 @@ export default {
           $('#reloadAlert').modal('show')
         }
       }, 60000)
-      this.APIRequest('linked_accounts/retrieve', parameter).then(response => {
+      this.APIRequest('linked_accounts/retrieve_employees', parameter).then(response => {
         $('#loading').css({display: 'none'})
         localStorage.setItem('linked_accounts/' + this.user.code, JSON.stringify(response))
         if(response.data.length > 0){
