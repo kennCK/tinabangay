@@ -20,7 +20,7 @@
       <i class="fa" :class="state ? 'fa-ban' : 'fa-expand'"></i>
       <span class="font-weight-bold">{{ state ? 'Cancel' : 'Scan QR' }}</span>
     </button>
-  
+
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -49,7 +49,9 @@ export default {
   data(){
     return {
       user: AUTH.user,
-      qrScannerError: ''
+      qrScannerError: '',
+      scannedLocationData: null,
+      merchantOwner: null
     }
   },
   props: {
@@ -106,10 +108,41 @@ export default {
           payload = splitCode[1]
           type = splitCode[0]
         }
-
-        if (type === 'account' || type === 'location' || type === 'transportation') {
+        let parameter = {
+          condition: [{
+            value: payload,
+            clause: '=',
+            column: 'code'
+          }]
+        }
+        console.log(this.user)
+        this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
+          if(response.data.length > 0){
+            this.scannedLocationData = response.data[0]
+          }
+        })
+        const location = {...this.scannedLocationData}
+        location.account_id = null
+        location.id = null
+        if (type === 'account' || type === 'transportation' || (type === 'location' && this.user.type === 'TEMP_SCANNER') || (type === 'account' && this.user.type === 'TEMP_SCANNER')) {
           this.$emit('toggleState', false)
           ROUTER.push(`/scanned/${type}/${payload}`)
+        } else if(type === 'location' && this.user.type !== 'TEMP_SCANNER' && this.user.linked_account !== null) {
+          const contentE = JSON.stringify({
+            format: 'employee_checkin',
+            status: null,
+            statusLabel: null,
+            location
+          })
+          ROUTER.push(`/form/${'employee_checkin'}&${this.user.assigned_location.account_id}&${contentE}`)
+        } else if(type === 'location' && this.user.linked_account === null) {
+          const contentC = JSON.stringify({
+            format: 'customer',
+            status: null,
+            statusLabel: null,
+            location
+          })
+          ROUTER.push(`/form/${'customer'}&${this.scannedLocationData.account_id}&${contentC}`)
         } else {
           this.qrScannerError = 'Invalid QR Code'
         }

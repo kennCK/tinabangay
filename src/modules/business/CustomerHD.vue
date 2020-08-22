@@ -1,5 +1,6 @@
 <template>
   <div v-if="data !== null" class="mt-5 form-wrapper">
+    <b-alert v-if="alert" show variant="light">Thank you! Your qr code is now ready for scanning!</b-alert>
     <div class="mt-3 text-center">
       <img v-if="data.merchant.logo" :src="config.BACKEND_URL+data.merchant.logo" width="80" height="80" :alt="data.merchant.name" class="img-fluid">
       <span v-else class="fa fa-user-circle-o" style="font-size: 80px"></span>
@@ -390,6 +391,7 @@
         </div>
       </div>
     </form>
+    <showQrCode ref="imageView"></showQrCode>
   </div>  
 </template>
 <style lang="scss">
@@ -501,6 +503,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import CONFIG from 'src/config.js'
+import showQrCode from 'modules/location/ShowMore.vue'
 
 export default {
   mounted() {
@@ -553,10 +556,14 @@ export default {
       transpo: [],
       country: [],
       locality: [],
-      otherSymptoms: 0
+      otherSymptoms: 0,
+      alert: false
     }
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
+  components: {
+    showQrCode
+  },
   methods: {
     getMaxDate() {
       return moment().format('YYYY-MM-DD')
@@ -666,6 +673,9 @@ export default {
       this[type] = this[type].filter(item => item.title !== selectedTitle)
       parent.remove()
     },
+    setCode(code){
+      this.$refs.imageView.setCode(code)
+    },
     submitForm(){
       $('#error').remove()
       let valid = this.checkRequired()
@@ -759,7 +769,7 @@ export default {
             payload: `form_submitted/${this.healthDec.format}`
           }
           this.APIRequest('health_declarations/create', param).then(response => {
-            ROUTER.push(`/form/${response.generated_code}`)
+            // ROUTER.push(`/form/${response.generated_code}`)
           }).fail(() => {
             $('<div>', {
               id: 'error',
@@ -788,6 +798,9 @@ export default {
             }).insertBefore('#submit')
           })
         }
+        this.alert = true
+        this.setCode('transportation/' + this.code)
+        $('#loading').css({display: 'none'})
       } else {
         if($('#error').length === 0) {
           $('<div>', {
