@@ -12,7 +12,7 @@
           <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null" @change="onChange()">
             <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
           </select>
-          <input type="date" class="form-control" v-model="selectedDays" @change="onChange()" placeholder="yyyy-mm-dd">
+          <input type="date" id="datePicker" class="form-control" v-model="selectedDays" @change="onChange()" placeholder="yyyy-mm-dd">
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
         </div>
@@ -21,7 +21,7 @@
         <button class="btn btn-custom btn-primary" @click="exportData" v-show="this.sortedData.length > 1">Export Data&nbsp;<i class="fa fa-download"></i></button>
       </div>
     </div>
-
+    
     <Pager
       :pages="numPages"
       :active="activePage"
@@ -97,10 +97,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Request time out.</h5>
+          <h5 class="modal-title">Please be back soon..</h5>
         </div>
         <div class="modal-body">
-          <p>Please be back soon.</p>
+          <p>Request time out.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" @click="refreshPage">Reload</button>
@@ -228,7 +228,15 @@ export default {
     if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
       ROUTER.push('/dashboard')
     }
+    let today = new Date()
+    let day = String(today.getDate()).padStart(2, '0')
+    let month = String(today.getMonth() + 1).padStart(2, '0')
+    let year = today.getFullYear()
+    today = `${year}-${month}-${day}`
+    document.getElementById('datePicker').value = today
+    let temp = document.getElementById('datePicker').value
     // this.getDate()
+    this.selectedDays = temp
     this.getLocation()
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
