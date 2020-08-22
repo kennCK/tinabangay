@@ -21,10 +21,10 @@
     <div v-if="errorMessage !== null" :class="['alert', errorMessage === 'success' ? 'alert-success' : 'alert-danger']" role="alert">
       {{ errorMessage ? errorMessage === 'success' ? 'Import successfully.' : errorMessage : 'Error'}}
     </div>
-    <table class="table table-responsive table-bordered table-hover table-fixed" v-if="data !== null" >
+    <table class="table table-responsive table-bordered table-hover" v-if="data !== null" >
         <thead class="bg-primary">
             <!-- <th scope="col">Owner</th> -->
-            <th scope="col">{{user.type !== 'USER' ? 'Employee' : 'Employer'}}</th>
+            <th scope="col">{{user.type !== 'USER' ? 'Employee' : 'Business'}}</th>
             <!-- <th scope="col">Name</th> -->
             <th scope="col">Date</th>
             <!-- <th scope="col" v-if="user.type !== 'USER'">
@@ -33,7 +33,7 @@
             <th scope="col" v-if="user.type !== 'USER'">Home Address</th>
             <th scope="col" v-if="user.type !== 'USER'">Assigned Branch</th>
             <th scope="col" v-if="user.type !== 'USER'">Assigned As</th>
-            <th scope="col" v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'">Actions</th>
+            <th scope="col" v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER' && user.type !== 'BUSINESS_AUTHORIZED'">Actions</th>
         </thead>
         <tbody>
             <tr v-for="(item, index) in data" :key="index">
@@ -64,7 +64,7 @@
                   <b>{{item.account.account_type}}</b>
                   </label>
               </td>
-              <td v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'">
+              <td v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER' && user.type !== 'BUSINESS_AUTHORIZED'">
 
                 <div class="dropdownn">
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -308,16 +308,13 @@
   background-color: aliceblue
 }
 
-tbody {
-    display:block;
-    height:70vh;
-    overflow:auto;
+@media (max-width: 991px){
+.table-responsive.table-bordered {
+    border: 0;
+    margin-left: 5%;
 }
-thead, tbody tr {
-    display:table;
-    width:100%;
-    table-layout:fixed;
 }
+
 
 
 </style>
@@ -604,7 +601,7 @@ export default {
     },
     retrieve(flag = false){
       let parameter = null
-      if(this.user.type === 'USER' || this.user.type === 'TEMP_SCANNER'){
+      if(this.user.type === 'USER' || this.user.type === 'TEMP_SCANNER' || this.user.type === 'BUSINESS_AUTHORIZED'){
         parameter = {
           condition: [{
             clause: '=',
