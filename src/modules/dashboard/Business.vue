@@ -76,29 +76,13 @@
               </empty>
             </div>
             <div class="card-footer businessFooter text-center">
-              <button 
-                type="button" 
-                class="btn btn-primary"
-                data-toggle="modal" 
-                data-target="#scan"
-                @click="qrScannerState = true"
-              ><i class="fa fa-expand"></i>&nbsp;Scan QR</button>
+              <qr-code-scanner
+                :btnWidth="'col-sm-12'"
+                :state="qrScannerState"
+                @toggleState="(newState) => qrScannerState = newState"
+              >
+              </qr-code-scanner>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade" id="scan" data-keyboard="false" data-backdrop="static">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="card scannerModal text-center">
-            <qr-code-scanner
-              data-dismiss="modal"
-              :btnWidth="'col-sm-12'"
-              :state="qrScannerState"
-              @toggleState="(newState) => qrScannerState = newState"
-            >
-            </qr-code-scanner>
           </div>
         </div>
       </div>
@@ -192,12 +176,6 @@
   .pagerClicked:hover{
     cursor: pointer;
   }
-  .modal-dialog {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%) !important;
-  }
   @media (min-width: 768px) {  
     .logo {
       max-width: 10%;
@@ -209,11 +187,6 @@
       width: auto;
       text-align: left;
     }
-  }
-</style>
-<style>
-  div.scannerModal button{
-    width: 230px !important;
   }
 </style>
 <script>
@@ -278,7 +251,7 @@ export default {
   methods: {
     retrieveBusinessInfo() {
       let data = JSON.parse(localStorage.getItem('merchants/' + this.user.code))
-      if(data){
+      if(data || data !== undefined || data !== null){
         if(data.data.length > 0){
           this.businessInfo = data.data[0]
         }else{

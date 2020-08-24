@@ -6,7 +6,7 @@
 <template>
   <div>
        <div class="modal fade right" id="scanner" tabindex="-1" role="dialog" aria-labelledby="deleteHeader"
-     aria-hidden="true">
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
       <div class="modal-dialog modal-side modal-notify modal-primary modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
