@@ -140,7 +140,6 @@ export default {
                   statusLabel: null,
                   location
                 })
-                console.log('employee')
                 ROUTER.push(`/form/${'employee_checkin'}&${this.user.assigned_location.account_id}&${contentE}`)
                 $('#scanner').modal('hide')
               } else if(this.user.linked_account === null) { // For users with no merchant
