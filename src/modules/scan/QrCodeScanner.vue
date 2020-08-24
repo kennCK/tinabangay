@@ -5,22 +5,32 @@
 -->
 <template>
   <div>
-    <div v-if="qrScannerError !== '' && state" class="alert alert-warning alert-dismissible fade show" role="alert">
+       <div class="modal fade right" id="scanner" tabindex="-1" role="dialog" aria-labelledby="deleteHeader"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="header">Please align the QR Code within the frame to start scanning..</h6>
+          </div> 
+          <div class="modal-body p-4">
+      <div v-if="qrScannerError !== '' && state" class="alert alert-warning alert-dismissible fade show" role="alert">
       {{ qrScannerError }}
       <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close" >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <qrcode-stream v-if="state && location === 'top'" @init="onInit" @decode="onDecode"></qrcode-stream>
-    <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
-    <button 
-      :class="['btn', 'mb-2', 'btn-lg', 'py-1', 'px-2', {'btn-primary': !state}, {'btn-danger': state}, (btnWidth ? btnWidth : '') ]"
-      @click="toggleScanner()"
-    >
-      <i class="fa" :class="state ? 'fa-ban' : 'fa-expand'"></i>
-      <span class="font-weight-bold">{{ state ? 'Cancel' : 'Scan QR' }}</span>
-    </button>
-
+          <qrcode-stream v-if="state && location === 'top'" @init="onInit" @decode="onDecode"></qrcode-stream>
+         <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger btn-md" data-dismiss="modal" @click="toggleScanner()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#scanner"  @click="toggleScanner()"><i class="fas fa-expand"></i>
+  Scan Qr
+</button>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -45,7 +55,6 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import QrcodeVue from 'qrcode.vue'
 export default {
-  mounted(){},
   data(){
     return {
       user: AUTH.user,
@@ -115,34 +124,46 @@ export default {
             column: 'code'
           }]
         }
-        console.log(this.user)
-        this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
-          if(response.data.length > 0){
-            this.scannedLocationData = response.data[0]
-          }
-        })
         const location = {...this.scannedLocationData}
-        location.account_id = null
-        location.id = null
         if (type === 'account' || type === 'transportation' || (type === 'location' && this.user.type === 'TEMP_SCANNER') || (type === 'account' && this.user.type === 'TEMP_SCANNER')) {
           this.$emit('toggleState', false)
           ROUTER.push(`/scanned/${type}/${payload}`)
-        } else if(type === 'location' && this.user.type !== 'TEMP_SCANNER' && this.user.linked_account !== null) {
-          const contentE = JSON.stringify({
-            format: 'employee_checkin',
-            status: null,
-            statusLabel: null,
-            location
+          $('#scanner').modal('hide')
+        } else if(type === 'location' && this.user.type !== 'TEMP_SCANNER') {
+          this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
+            if(response.data.length > 0){
+              this.scannedLocationData = response.data[0]
+              if(this.user.linked_account !== null && this.scannedLocationData.account_id === this.user.linked_account.owner) { // For employees scanning their own assigned branch location
+                const contentE = JSON.stringify({
+                  format: 'employee_checkin',
+                  status: null,
+                  statusLabel: null,
+                  location
+                })
+                console.log('employee')
+                ROUTER.push(`/form/${'employee_checkin'}&${this.user.assigned_location.account_id}&${contentE}`)
+                $('#scanner').modal('hide')
+              } else if(this.user.linked_account === null) { // For users with no merchant
+                const contentC = JSON.stringify({
+                  format: 'customer',
+                  status: null,
+                  statusLabel: null,
+                  location
+                })
+                ROUTER.push(`/form/${'customer'}&${this.scannedLocationData.account_id}&${contentC}`)
+                $('#scanner').modal('hide')
+              } else if(this.scannedLocationData !== this.user.linked_account.owner) { // For users scanning branch location (different merchant)
+                const contentC = JSON.stringify({
+                  format: 'customer',
+                  status: null,
+                  statusLabel: null,
+                  location
+                })
+                ROUTER.push(`/form/${'customer'}&${this.scannedLocationData.account_id}&${contentC}`)
+                $('#scanner').modal('hide')
+              }
+            }
           })
-          ROUTER.push(`/form/${'employee_checkin'}&${this.user.assigned_location.account_id}&${contentE}`)
-        } else if(type === 'location' && this.user.linked_account === null) {
-          const contentC = JSON.stringify({
-            format: 'customer',
-            status: null,
-            statusLabel: null,
-            location
-          })
-          ROUTER.push(`/form/${'customer'}&${this.scannedLocationData.account_id}&${contentC}`)
         } else {
           this.qrScannerError = 'Invalid QR Code'
         }

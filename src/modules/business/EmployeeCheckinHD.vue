@@ -1,5 +1,9 @@
 <template>
   <div v-if="data !== null" class="mt-5 form-wrapper">
+    <div v-if="!form">
+      Form successfully sent!
+      <button class="btn btn-primary" @click="dashboard()">Back to dashboard</button>
+    </div>
     <div class="mt-3 text-center">
       <img v-if="data.merchant.logo" :src="config.BACKEND_URL+data.merchant.logo" width="80" height="80" :alt="data.merchant.name" class="img-fluid">
       <span v-else class="fa fa-user-circle-o" style="font-size: 80px"></span>
@@ -697,7 +701,6 @@ export default {
     this.formParameters = this.formParam
     this.form = this.isForm
     this.data = this.dataParam
-
     if (this.form) {
       this.healthDec.personalInformation.first_name = this.userInfoParam.first_name
       this.healthDec.personalInformation.middle_name = this.userInfoParam.middle_name
@@ -765,6 +768,9 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    dashboard() {
+      ROUTER.push('/dashboard')
+    },
     getMaxDate() {
       return moment().format('YYYY-MM-DD')
     },
