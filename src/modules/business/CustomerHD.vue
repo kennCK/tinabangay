@@ -1,8 +1,8 @@
 <template>
   <div v-if="data !== null" class="mt-5 form-wrapper">
     <div v-if="!form">
-      Form successfully sent!
       <button class="btn btn-primary" @click="dashboard()">Back to dashboard</button>
+      Form successfully sent!
     </div>
     <div class="mt-3 text-center">
       <img v-if="data.merchant.logo" :src="config.BACKEND_URL+data.merchant.logo" width="80" height="80" :alt="data.merchant.name" class="img-fluid">
@@ -188,14 +188,19 @@
             <div class="form-group col-md-4">
               <label for="gender" class="required">Sex</label>
               <div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" id="male" name="gender" class="custom-control-input" value="male" v-model="healthDec.personalInformation.gender" required>
+                <div class="custom-control custom-radio custom-control-inline" @change="genderOthers()">
+                  <input type="radio" id="male" name="gender" class="custom-control-input" value="male" v-model="gender" required>
                   <label class="custom-control-label" for="male">Male</label>
                 </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                  <input type="radio" id="female" name="gender" class="custom-control-input" value="female" v-model="healthDec.personalInformation.gender">
+                <div class="custom-control custom-radio custom-control-inline" @change="genderOthers()">
+                  <input type="radio" id="female" name="gender" class="custom-control-input" value="female" v-model="gender">
                   <label class="custom-control-label" for="female">Female</label>
                 </div>
+                <div class="custom-control custom-radio custom-control-inline" @change="genderOthers()">
+                  <input type="radio" id="othersGender" name="gender" class="custom-control-input" value="others" v-model="gender">
+                  <label for="othersGender" class="custom-control-label">Others</label>
+                </div>
+                <input type="text" name="gender-others" id="gender" class="form-control" placeholder="Please specify" v-if="gender === 'others'" required>
               </div>
             </div>
 
@@ -562,6 +567,9 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    genderOthers(){
+      console.log(this.gender)
+    },
     dashboard() {
       ROUTER.push('/dashboard')
     },
@@ -685,7 +693,11 @@ export default {
         } else {
           this.healthDec.personalInformation.civil_status = this.civil
         }
-
+        if (this.gender === 'others') {
+          this.healthDec.personalInformation.gender = $('#gender').val()
+        } else {
+          this.healthDec.personalInformation.gender = this.gender
+        }
         this.healthDec.travelHistory.countries = this.country
         this.healthDec.travelHistory.transportation = this.transpo
         this.healthDec.travelHistory.localities = this.locality

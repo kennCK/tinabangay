@@ -1,8 +1,8 @@
 <template>
   <div v-if="data !== null" class="mt-5 form-wrapper">
     <div v-if="!form">
-      Form successfully sent!
       <button class="btn btn-primary" @click="dashboard()">Back to dashboard</button>
+      Form successfully sent!
     </div>
     <div class="mt-3 text-center">
       <img v-if="data.merchant.logo" :src="config.BACKEND_URL+data.merchant.logo" width="80" height="80" :alt="data.merchant.name" class="img-fluid">
