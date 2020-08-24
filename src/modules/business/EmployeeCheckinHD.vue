@@ -254,15 +254,15 @@
             <div class="form-group col-md-4">
               <label for="gender" class="required">Sex</label>
               <div>
-                <div class="custom-control custom-radio custom-control-inline" @change="genderOthers()">
+                <div class="custom-control custom-radio custom-control-inline">
                   <input type="radio" id="male" name="gender" class="custom-control-input" value="male" v-model="gender" required>
                   <label class="custom-control-label" for="male">Male</label>
                 </div>
-                <div class="custom-control custom-radio custom-control-inline" @change="genderOthers()">
+                <div class="custom-control custom-radio custom-control-inline">
                   <input type="radio" id="female" name="gender" class="custom-control-input" value="female" v-model="gender">
                   <label class="custom-control-label" for="female">Female</label>
                 </div>
-                <div class="custom-control custom-radio custom-control-inline" @change="genderOthers()">
+                <div class="custom-control custom-radio custom-control-inline">
                   <input type="radio" id="othersGender" name="gender" class="custom-control-input" value="others" v-model="gender">
                   <label for="othersGender" class="custom-control-label">Others</label>
                 </div>
@@ -774,9 +774,6 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
-    genderOthers(){
-      console.log(this.gender)
-    },
     dashboard() {
       ROUTER.push('/dashboard')
     },
