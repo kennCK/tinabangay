@@ -5,22 +5,32 @@
 -->
 <template>
   <div>
-    <div v-if="qrScannerError !== '' && state" class="alert alert-warning alert-dismissible fade show" role="alert">
+       <div class="modal fade right" id="scanner" tabindex="-1" role="dialog" aria-labelledby="deleteHeader"
+     aria-hidden="true" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog modal-side modal-notify modal-primary modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="header">Please align the QR Code within the frame to start scanning..</h6>
+          </div> 
+          <div class="modal-body p-4">
+      <div v-if="qrScannerError !== '' && state" class="alert alert-warning alert-dismissible fade show" role="alert">
       {{ qrScannerError }}
       <button @click="qrScannerError = ''" type="button" class="close" aria-label="Close" >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <qrcode-stream v-if="state && location === 'top'" @init="onInit" @decode="onDecode"></qrcode-stream>
-    <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
-    <button 
-      :class="['btn', 'mb-2', 'btn-lg', 'py-1', 'px-2', {'btn-primary': !state}, {'btn-danger': state}, (btnWidth ? btnWidth : '') ]"
-      @click="toggleScanner()"
-    >
-      <i class="fa" :class="state ? 'fa-ban' : 'fa-expand'"></i>
-      <span class="font-weight-bold">{{ state ? 'Cancel' : 'Scan QR' }}</span>
-    </button>
-  
+          <qrcode-stream v-if="state && location === 'top'" @init="onInit" @decode="onDecode"></qrcode-stream>
+         <qrcode-stream v-if="state && (location == null || location === 'bottom')" @init="onInit" @decode="onDecode"></qrcode-stream>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger btn-md" data-dismiss="modal" @click="toggleScanner()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#scanner"  @click="toggleScanner()"><i class="fas fa-expand"></i>
+  Scan Qr
+</button>
   </div>
 </template>
 <style lang="scss" scoped> 
@@ -36,6 +46,11 @@
 
   .btn-primary {
     height: unset !important;
+    font-weight: bold;
+  }
+
+  .modal{
+    text-align: center;
   }
 </style>
 <script>
@@ -49,7 +64,8 @@ export default {
   data(){
     return {
       user: AUTH.user,
-      qrScannerError: ''
+      qrScannerError: '',
+      loading: false
     }
   },
   props: {
@@ -68,12 +84,10 @@ export default {
     toggleScanner() {
       this.$emit('toggleState', !this.state)
       if (!this.state) this.qrScannerError = ''
-      $('.user_qrcode').toggleClass('user_qr_hide')
-      $('p.notif').toggleClass('user_qr_hide')
     },
     async onInit (promise) {
       $('#loading').css({display: 'block'})
-
+      this.loading = true
       try {
         await promise
       } catch (error) {
