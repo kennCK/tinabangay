@@ -1,5 +1,9 @@
 <template>
   <div v-if="data !== null" class="mt-5 form-wrapper">
+    <div v-if="!form">
+      <button class="btn btn-primary" @click="dashboard()">Back to dashboard</button>
+      Form successfully sent!
+    </div>
     <div class="mt-3 text-center">
       <img v-if="data.merchant.logo" :src="config.BACKEND_URL+data.merchant.logo" width="80" height="80" :alt="data.merchant.name" class="img-fluid">
       <span v-else class="fa fa-user-circle-o" style="font-size: 80px"></span>
@@ -538,6 +542,9 @@ export default {
   },
   props: ['healthDecParam', 'formParam', 'isForm', 'dataParam', 'userInfoParam', 'isUserCreate'],
   methods: {
+    dashboard() {
+      ROUTER.push('/dashboard')
+    },
     addPerson() {
       const name = $('#person_in_contact_name').val().trim()
       const department = $('#person_in_contact_department').val().trim()

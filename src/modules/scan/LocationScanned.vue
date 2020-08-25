@@ -181,6 +181,7 @@ export default {
       this.scannedLocationData = null
       this.retrieve(this.code, true)
     }
+    console.log(this.scannedLocationData)
   },
   data() {
     return {

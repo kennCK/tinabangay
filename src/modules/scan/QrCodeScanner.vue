@@ -60,11 +60,12 @@ import AUTH from 'src/services/auth'
 import COMMON from 'src/common.js'
 import QrcodeVue from 'qrcode.vue'
 export default {
-  mounted(){},
   data(){
     return {
       user: AUTH.user,
       qrScannerError: '',
+      scannedLocationData: null,
+      merchantOwner: null,
       loading: false
     }
   },
@@ -120,10 +121,52 @@ export default {
           payload = splitCode[1]
           type = splitCode[0]
         }
-
-        if (type === 'account' || type === 'location' || type === 'transportation') {
+        let parameter = {
+          condition: [{
+            value: payload,
+            clause: '=',
+            column: 'code'
+          }]
+        }
+        const location = {...this.scannedLocationData}
+        if (type === 'account' || type === 'transportation' || (type === 'location' && this.user.type === 'TEMP_SCANNER') || (type === 'account' && this.user.type === 'TEMP_SCANNER')) {
           this.$emit('toggleState', false)
           ROUTER.push(`/scanned/${type}/${payload}`)
+          $('#scanner').modal('hide')
+        } else if(type === 'location' && this.user.type !== 'TEMP_SCANNER') {
+          this.APIRequest('locations/retrieve_locations_only', parameter).then(response => {
+            if(response.data.length > 0){
+              this.scannedLocationData = response.data[0]
+              if(this.user.linked_account !== null && this.scannedLocationData.account_id === this.user.linked_account.owner) { // For employees scanning their own assigned branch location
+                const contentE = JSON.stringify({
+                  format: 'employee_checkin',
+                  status: null,
+                  statusLabel: null,
+                  location
+                })
+                ROUTER.push(`/form/${'employee_checkin'}&${this.user.assigned_location.account_id}&${contentE}`)
+                $('#scanner').modal('hide')
+              } else if(this.user.linked_account === null) { // For users with no merchant
+                const contentC = JSON.stringify({
+                  format: 'customer',
+                  status: null,
+                  statusLabel: null,
+                  location
+                })
+                ROUTER.push(`/form/${'customer'}&${this.scannedLocationData.account_id}&${contentC}`)
+                $('#scanner').modal('hide')
+              } else if(this.scannedLocationData !== this.user.linked_account.owner) { // For users scanning branch location (different merchant)
+                const contentC = JSON.stringify({
+                  format: 'customer',
+                  status: null,
+                  statusLabel: null,
+                  location
+                })
+                ROUTER.push(`/form/${'customer'}&${this.scannedLocationData.account_id}&${contentC}`)
+                $('#scanner').modal('hide')
+              }
+            }
+          })
         } else {
           this.qrScannerError = 'Invalid QR Code'
         }

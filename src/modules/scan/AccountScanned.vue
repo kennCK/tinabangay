@@ -15,7 +15,7 @@
     <!-- IF NO RECORD FOUND -->
     <div v-if="scannedUserData === null && !loading && !qrScannerState" class="w-100">
       <h2>Sorry, <mark class="p-0">data</mark> not found. Please try again.</h2>
-      <button class="btn btn-primary" @click="showScanner()">Scan again</button>
+      <button class="btn btn-primary" @click="dashboard()">Scan again</button>
     </div>
 
     <!-- IF RECORD FOUND -->
@@ -97,10 +97,10 @@
 
       <div class="available-options d-flex">
         <button v-if="user.type === 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('send_form')">Send Form</button>
-        <button v-if="user.type === 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('answer_form')">Answer Form</button>
+        <!-- <button v-if="user.type === 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('answer_form')">Answer Form</button> -->
         <button v-if="user.type !== 'USER'" class="btn btn-primary" @click="showModal('add_temperature')">Add temperature</button>
         <button v-if="user.type !== 'USER' && user.type !== 'TEMP_SCANNER'" class="btn btn-primary" @click="showModal('link_my_account')">Link account</button>
-        <button class="btn btn-primary" @click="showScanner()">Scan again</button>
+        <button class="btn btn-primary" @click="dashboard()">Back</button>
       </div>
     </div>
 
@@ -371,8 +371,8 @@ export default {
     }
   },
   methods: {
-    showScanner() {
-      this.$emit('toggleState', true)
+    dashboard() {
+      ROUTER.push('/dashboard')
     },
     retrieve(code) {
       this.loading = true
@@ -387,6 +387,7 @@ export default {
       $('#loading').css({display: 'none'})
       this.APIRequest('customs/getScannedAccountStatus', parameter).then(response => {
         this.scannedUserData = response.account
+        console.log(this.scannedUserData)
         this.scannedUserData.account_information = response.account_information
         this.scannedUserData.temperature = response.temperature
         this.scannedUserData.health_declaration = response.health_declaration !== null ? JSON.parse(response.health_declaration.content) : null

@@ -22,7 +22,13 @@
     <div v-if="!loading && !formNotFound && data.merchant === null" class="col-10 mx-auto mt-5 d-flex align-items-center">
       <h3 class="w-100 text-center alert alert-danger">Invalid: No merchant found</h3>
     </div>
-
+    <div v-if="!loading && userHDFcreate && !isCustomer">
+      Switch HDF to: 
+      <button v-if="formParameters.format !== 'customer'" class="btn btn-primary" @click="switchHDF('customer')">Customer </button>
+      <button v-if="formParameters.format !== 'employee_checkin'" class="btn btn-primary" @click="switchHDF('employee_checkin')">Checkin</button>
+      <button v-if="formParameters.format !== 'employee_checkout'" class="btn btn-primary" @click="switchHDF('employee_checkout')">Checkout</button>
+      <button class="btn btn-secondary" @click="dashboard()">Cancel</button>
+    </div>
     <div v-if="!formNotFound">
       <!-- HEALTH DECLARATION FOR CUSTOMER -->
       <customer-health-declaration
@@ -128,6 +134,9 @@ export default {
       this.retrieve()
     } else {
       const param = this.code.split('&')
+      if(param[0] === 'customer') {
+        this.isCustomer = true
+      }
       if (param[0] === 'customer' || param[0] === 'employee_checkin' || param[0] === 'employee_checkout') {
         this.form = true
         this.userHDFcreate = true
@@ -163,7 +172,8 @@ export default {
       merchantOwner: null,
       userHDFcreate: false,
       userHDFcontent: null,
-      scannedUserAnswerForm: false
+      scannedUserAnswerForm: false,
+      isCustomer: false
     }
   },
   components: {
@@ -207,6 +217,12 @@ export default {
     }
   },
   methods: {
+    switchHDF(type) {
+      this.formParameters.format = type
+    },
+    dashboard() {
+      ROUTER.push('/dashboard')
+    },
     retrieve() {
       this.formNotFound = false
       this.loading = true
