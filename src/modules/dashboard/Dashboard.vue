@@ -2,7 +2,7 @@
   <div style="margin-bottom: 50px;">
     <business v-if="dashType === 'BUSINESS'"></business>
     <user v-else-if="dashType === 'USER' || dashType === 'BUSINESS_AUTHORIZED' || dashType === 'TEMP_SCANNER'"></user>
-    <lguBrgy v-else-if="['AGENCY_BRGY', 'LGU'].includes(dashType)"></lguBrgy> 
+    <lguBrgy v-else-if="['AGENCY_BRGY', 'AGENCY_GOV'].includes(user.type)"></lguBrgy> 
     <Admin v-else-if="dashType === 'ADMIN'"></Admin>
   </div>
 </template>

@@ -46,6 +46,11 @@
 
   .btn-primary {
     height: unset !important;
+    font-weight: bold;
+  }
+
+  .modal{
+    text-align: center;
   }
 </style>
 <script>
@@ -60,7 +65,8 @@ export default {
       user: AUTH.user,
       qrScannerError: '',
       scannedLocationData: null,
-      merchantOwner: null
+      merchantOwner: null,
+      loading: false
     }
   },
   props: {
@@ -79,12 +85,10 @@ export default {
     toggleScanner() {
       this.$emit('toggleState', !this.state)
       if (!this.state) this.qrScannerError = ''
-      $('.user_qrcode').toggleClass('user_qr_hide')
-      $('p.notif').toggleClass('user_qr_hide')
     },
     async onInit (promise) {
       $('#loading').css({display: 'block'})
-
+      this.loading = true
       try {
         await promise
       } catch (error) {

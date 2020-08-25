@@ -61,23 +61,21 @@
                 <div class="card">
                     <div class="card-header QRReminderSection">
                         <center>
-                            <img v-if="agencyInfo.logo !== null"
+                            <img v-if="agencyInfo.logo !== null && agencyInfo.logo !== undefined"
                                 :src="backend + agencyInfo.logo"
                                 alt="logo"
                                 class="AgencyLogo"
                             >
-                            <empty v-else 
-                              :title="'There\'s currently no hot spots logged.'" 
-                              :action="'Stay Home!'" 
-                              :icon="'far fa-smile'" 
-                              :iconColor="'text-danger'"
-                            >
-                            </empty>
+                            <div v-else class="card avatarLogo">
+                              <div class="card-body">
+                                <i class="far fa-image avatarLogoIcon"></i>
+                              </div>
+                            </div>
                         </center>
                     </div>
                     <div class="card-body Binfo-body">
                         <p class="Binfo1" v-if="agencyInfo.name !== null">{{agencyInfo.name}}</p>
-                        <p class="Binfo2" v-if="agencyInfo.address !== null">{{agencyInfo.address}}</p>
+                        <p class="Binfo2" v-if="agencyInfo.address !== null && user.type !== 'AGENCY_GOV'">{{agencyInfo.address}}</p>
                         <p class="Binfo3" v-if="agencyInfo.email !== null">{{agencyInfo.email}}</p>
                     </div>
                     <div class="card-action">
@@ -101,6 +99,20 @@
 .AgencyLogo{
   height:200px !important;
   width:200px !important;
+}
+.avatarLogo{
+  height: 200px !important;
+  width: 100% !important;
+}
+.avatarLogoIcon{
+  font-size: 100px;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  margin-bottom: 20px;
 }
 .Affectedfilter{
   width:100%;
@@ -651,7 +663,6 @@ export default{
       }
     },
     yearFilter(){
-      console.log('---- another year -----')
       let newFilter = new Filtering(this.lineGraphData, this.filterYear)
       newFilter.filteredDaily()
       newFilter.filteredWeekly()
@@ -662,8 +673,6 @@ export default{
       this.filteredMonthlyData = newFilter.getMonthlyData()
       this.filteredYearlyData = newFilter.getYearlyData()
       this.filteredYears = newFilter.getYears()
-      console.log('------ ', newFilter.getDailyData())
-      console.log(' tttt ', this.lineGraphData)
       this.filterby()
     },
     initializeLineGraph(start, stopper, datas){
@@ -718,7 +727,7 @@ export default{
           id: 'topAffected'
         },
         title: {
-          text: ['AFFECTED SITIOS'],
+          text: (this.user.type === 'AGENCY_BRGY') ? 'TOP AFFECTED SITIOS' : 'TOP AFFECTED BRGY',
           align: 'left',
           margin: 10,
           offsetX: 0,

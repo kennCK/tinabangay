@@ -1,3 +1,7 @@
 [0920/165942.203:ERROR:settings.cc(320)] Settings magic is not 1129342067
 [0324/222219.880:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
 [0324/222219.881:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0817/225611.941:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0817/225611.967:ERROR:exception_snapshot_win.cc(98)] thread ID 18460 not found in process
+[0817/225611.928:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0817/225611.968:ERROR:exception_snapshot_win.cc(98)] thread ID 18420 not found in process

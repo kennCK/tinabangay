@@ -15,7 +15,7 @@ export default {
 //
 //
 //
-    {accountType: 'BUSINESS_AUTHORIZED', accountStatus: 'ALL', showOnAdmin: true, description: 'Contact Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
+    {accountType: 'BUSINESS_AUTHORIZED', accountStatus: 'ALL', showOnAdmin: false, description: 'Contact Tracing', icon: 'fa fa-sitemap', path: 'b/tracing/', flag: false, subMenu: null},
     {accountType: 'BUSINESS_AUTHORIZED', accountStatus: 'ALL', showOnAdmin: false, description: 'My Visited Places', icon: 'fa fa-map-marker', path: 'places', flag: false, subMenu: null},
     {accountType: 'BUSINESS_AUTHORIZED', accountStatus: 'ALL', showOnAdmin: false, description: 'My Temperature', icon: 'fa fa-thermometer-half', path: 'temperature/p', flag: false, subMenu: null},
     {accountType: 'BUSINESS_AUTHORIZED', accountStatus: 'ALL', showOnAdmin: false, description: 'My Rides', icon: 'fa fa-car', path: 'rides/p', flag: false, subMenu: null},
