@@ -6,22 +6,22 @@
     <div class="row">
       <div class="col-sm-10">
         <div class="form-group">
-<!--           <select class="form-control" v-model="selectedOption" @change="chageOption()">
+          <!-- <select class="form-control" v-model="selectedOption" @change="chageOption()">
             <option v-for="(item, index) in options" :key="index" :value="item.value">{{item.title}}</option>
           </select> -->
           <select class="form-control" v-model="selectedLocationIndex" v-if="locations !== null" @change="onChange()">
             <option v-for="(item, index) in locations" :key="index" :value="index">{{item.route + ',' + item.locality + ', ' + item.country}}</option>
           </select>
-          <input type="date" class="form-control" v-model="selectedDays" @change="onChange()" placeholder="yyyy-mm-dd">
+          <input type="date" id="datePicker" class="form-control" v-model="selectedDays" @change="onChange()" placeholder="yyyy-mm-dd">
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'customers' && locations !== null">Search</button>
           <button class="btn btn-custom btn-primary" @click="retrieve()" v-if="selectedOption === 'linked_accounts'">Search</button>
         </div>
       </div>
       <div class="col-sm-2 text-right">
-        <button class="btn btn-custom btn-primary" @click="exportData" v-show="isSearch" :disabled="this.sortedData.length < 1" >Export Data&nbsp;<i class="fa fa-download"></i></button>
+        <button class="btn btn-custom btn-primary" @click="exportData" v-show="this.sortedData.length > 1">Export Data&nbsp;<i class="fa fa-download"></i></button>
       </div>
     </div>
-
+    
     <Pager
       :pages="numPages"
       :active="activePage"
@@ -54,7 +54,6 @@
       </tbody>
     </table>
 
-
     <!-- Results for Customers -->
     <table v-if="data.length > 0 && selectedOption === 'customers'" class="table table-bordered table-responsive">
       <thead class="bg-primary">
@@ -81,6 +80,7 @@
           </td>
           <td><i class="fa fa-user" :class="{'text-primary': item.account.information && item.account.information.cellular_number !== null}" :alt="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" :title="item.account.information && item.account.information.cellular_number !== null ? item.account.information.cellular_number : null" v-if="item.account_id !== null"></i>
             <b class="text-danger">{{item.account.information && item.account.information.first_name && item.account.information.last_name ? item.account.information.first_name + ' ' + item.account.information.last_name : item.account.username}}</b>
+            <!-- <b class="text-danger">{{item.name}}</b> -->
           </td>
           <td>
             <span class="badge text-uppercase" :class="{'badge-danger': item.status === 'positive', 'badge-warning': item.status === 'pum', 'badge-primary': item.status === 'pui', 'badge-black': item.status === 'death', 'badge-success': item.status === 'recovered' || item.status === 'negative', 'badge-gray': item.status === 'symptoms'}">{{item.status_label}}</span>
@@ -91,6 +91,23 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- The Modal for Alert 'Reloading page'-->
+  <div class="modal" id="alertModal" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Please be back soon..</h5>
+        </div>
+        <div class="modal-body">
+          <p>Request time out.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="refreshPage">Reload</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <!--MODAL FOR VIEWING HEALTH DECLARATION -->
     <div class="modal fade" id="view_health_dec" tabindex="-1" role="dialog" aria-labelledby="healthDecModal" aria-hidden="true">
@@ -211,7 +228,15 @@ export default {
     if(this.user.type !== 'BUSINESS' && this.user.type !== 'ADMIN' && this.user.type !== 'BUSINESS_AUTHORIZED'){
       ROUTER.push('/dashboard')
     }
+    let today = new Date()
+    let day = String(today.getDate()).padStart(2, '0')
+    let month = String(today.getMonth() + 1).padStart(2, '0')
+    let year = today.getFullYear()
+    today = `${year}-${month}-${day}`
+    document.getElementById('datePicker').value = today
+    let temp = document.getElementById('datePicker').value
     // this.getDate()
+    this.selectedDays = temp
     this.getLocation()
     const {vfs} = vfsFonts.pdfMake
     PdfPrinter.vfs = vfs
@@ -317,7 +342,7 @@ export default {
             }
             linkedAccountsData.push(columns)
           })
-          let csvContent = 'data:text/csv;charset=utf-8,'
+          let csvContent = 'data:text/csv;charse  t=utf-8,'
           csvContent += [Object.keys(linkedAccountsData[0]).join(','), ...linkedAccountsData.map(item => Object.values(item).join(','))].join('\n').replace(/(^\[)|(\]$)/gm, '')
           const data = encodeURI(csvContent)
           const link = document.createElement('a')
@@ -407,6 +432,7 @@ export default {
         $('#loading').css({display: 'block'})
         this.APIRequest('linked_accounts/retrieve_tracing', parameter).then(response => {
           $('#loading').css({display: 'none'})
+          this.isSearch = true
           this.data = response.data
           this.sortedData = response.data
         })
@@ -439,6 +465,12 @@ export default {
           }
         }
         $('#loading').css({display: 'block'})
+        setTimeout(() => {
+          if(this.data.length < 1){
+            $('#loading').css({display: 'none'})
+            $('#alertModal').modal('show')
+          }
+        }, 60000)
         this.APIRequest('visited_places/retrieve_customers_limited', parameter).then(response => {
           response = JSON.parse(response)
           $('#loading').css({display: 'none'})
@@ -510,6 +542,9 @@ export default {
     },
     hideModal(id) {
       $(`#${id}`).modal('hide')
+    },
+    refreshPage(){
+      window.location.reload()
     }
   }
 }
